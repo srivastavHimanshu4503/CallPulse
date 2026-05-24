@@ -3,7 +3,6 @@ import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
 import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
 import * as codebuild from "aws-cdk-lib/aws-codebuild";
 import * as iam from "aws-cdk-lib/aws-iam";
-import * as ssm from "aws-cdk-lib/aws-ssm";
 import { Construct } from "constructs";
 
 export interface PipelineStackProps extends cdk.StackProps {
@@ -16,8 +15,8 @@ export class AntigravityPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    const githubToken = cdk.SecretValue.unsafePlainText(
-      ssm.StringParameter.valueForStringParameter(this, "/indiai/github-token")
+    const githubToken = cdk.SecretValue.secretsManager(
+      "indiai/github-token"
     );
 
     const sourceArtifact = new codepipeline.Artifact("SourceArtifact");
