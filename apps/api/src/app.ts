@@ -10,13 +10,13 @@ app.use(cors({ origin: "*" })); // Configure strictly in production
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health Check Route - returns { success: true, version: "1.0.0" } as requested
+// Health Check Route - returns { success: true, version: "1.1.0" } as requested
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({
     success: true,
-    version: "1.0.0",
+    version: "1.1.0",
     data: {
-      version: "1.0.0",
+      version: "1.1.0",
       status: "healthy",
       timestamp: new Date().toISOString(),
     },
@@ -28,7 +28,7 @@ app.get("/api/v1/health", (_req, res) => {
 app.get("/api/v1", (_req, res) => {
   sendSuccess(res, {
     name: "Antigravity API Service",
-    version: "1.0.0",
+    version: "1.1.0",
   });
 });
 
