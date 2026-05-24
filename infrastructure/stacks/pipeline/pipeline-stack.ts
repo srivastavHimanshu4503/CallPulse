@@ -16,7 +16,9 @@ export class AntigravityPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    const ssmGithubToken = ssm.StringParameter.valueForStringParameter(this, "/indiai/github-token");
+    const githubToken = cdk.SecretValue.unsafePlainText(
+      ssm.StringParameter.valueForStringParameter(this, "/indiai/github-token")
+    );
 
     const sourceArtifact = new codepipeline.Artifact("SourceArtifact");
     const buildArtifact = new codepipeline.Artifact("BuildArtifact");
@@ -117,7 +119,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
           owner: props.githubOwner,
           repo: props.githubRepo,
           branch: props.githubBranch,
-          oauthToken: cdk.SecretValue.unsafePlainText(ssmGithubToken),
+          oauthToken: githubToken,
           output: sourceArtifact,
           trigger: codepipeline_actions.GitHubTrigger.WEBHOOK,
         }),
