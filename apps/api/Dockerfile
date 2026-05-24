@@ -1,7 +1,10 @@
-FROM node:20-alpine
+FROM node:20-slim
 WORKDIR /app
 
-# Copy all workspace files
+# Install OpenSSL for Prisma
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
+# Copy workspace files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/ ./packages/
@@ -10,7 +13,7 @@ COPY packages/ ./packages/
 RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile
 
-# Build shared packages FIRST
+# Build shared packages first
 RUN pnpm --filter @antigravity/types build || true
 RUN pnpm --filter @antigravity/validators build || true
 RUN pnpm --filter @antigravity/config build || true
