@@ -12,7 +12,7 @@ new AntigravityPipelineStack(app, "IndiAiPipelineStack", {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "us-east-1",
   },
-  githubOwner: process.env.GITHUB_OWNER ?? "KumarEnterprises",
+  githubOwner: process.env.GITHUB_OWNER ?? "yogendraft21",
   githubRepo: "IndiAi",
   githubBranch: "main",
 });

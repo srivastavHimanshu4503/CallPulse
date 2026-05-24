@@ -104,8 +104,8 @@ export class ComputeStack extends cdk.Stack {
       "npm install -g pnpm",
       "mkdir -p /app",
       "cd /app",
-      "git clone https://github.com/KumarEnterprises/IndiAi.git indiai || true",
-      "cd indiai",
+      "git clone https://github.com/yogendraft21/IndiAi.git indiAi || true",
+      "cd indiAi",
       "echo 'UserData initial setup done! Ready for pipeline commands.' > /var/log/userdata_antigravity.log"
     );
     this.instance.addUserData(userData.render());
