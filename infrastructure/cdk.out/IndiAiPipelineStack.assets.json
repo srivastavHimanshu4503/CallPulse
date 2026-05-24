@@ -1,16 +1,16 @@
 {
   "version": "53.0.0",
   "files": {
-    "a0cb63aba6847fe459bd83d717efc0fc8a97bc98fda9b736f5b625e43197c8d3": {
+    "e8b6efec09116087afe35e7b21698a47066d331b134497b1ba83c73f2b9fa8f6": {
       "displayName": "IndiAiPipelineStack Template",
       "source": {
         "path": "IndiAiPipelineStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "649367351074-us-east-1-f99fc0cf": {
+        "649367351074-us-east-1-d8dd4ce4": {
           "bucketName": "cdk-hnb659fds-assets-649367351074-us-east-1",
-          "objectKey": "a0cb63aba6847fe459bd83d717efc0fc8a97bc98fda9b736f5b625e43197c8d3.json",
+          "objectKey": "e8b6efec09116087afe35e7b21698a47066d331b134497b1ba83c73f2b9fa8f6.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::649367351074:role/cdk-hnb659fds-file-publishing-role-649367351074-us-east-1"
         }

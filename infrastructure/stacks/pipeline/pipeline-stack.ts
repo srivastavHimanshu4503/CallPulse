@@ -86,7 +86,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
             build: {
               commands: [
                 "INSTANCE_ID=$(aws ssm get-parameter --name /indiai/ec2-instance-id --region us-east-1 --query Parameter.Value --output text)",
-                "COMMAND_ID=$(aws ssm send-command --region ap-south-1 --instance-ids $INSTANCE_ID --document-name AWS-RunShellScript --parameters commands=[\"cd /app/indiAi\",\"git pull origin main\",\"pnpm install --frozen-lockfile\",\"pnpm --filter @antigravity/types build || true\",\"pnpm --filter @antigravity/validators build || true\",\"pnpm --filter api exec prisma generate\",\"pnpm --filter api build\",\"docker compose down\",\"docker compose build --no-cache\",\"docker compose up -d\",\"sleep 10\",\"curl -f http://localhost:3000/api/v1/health && echo Health-check-passed || echo Health-check-failed\"] --query Command.CommandId --output text)",
+                "COMMAND_ID=$(aws ssm send-command --region ap-south-1 --instance-ids $INSTANCE_ID --document-name AWS-RunShellScript --parameters commands=[\"git config --global --add safe.directory /app/indiAi\",\"su - ec2-user -c \\\"cd /app/indiAi && git pull origin main\\\"\",\"cd /app/indiAi && docker compose down\",\"cd /app/indiAi && docker compose build --no-cache\",\"cd /app/indiAi && docker compose up -d\",\"sleep 15\",\"curl -f http://localhost:3000/api/v1/health && echo Health-check-passed || echo Health-check-failed\"] --query Command.CommandId --output text)",
                 "aws ssm wait command-executed --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1",
                 "aws ssm get-command-invocation --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1"
               ],
