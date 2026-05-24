@@ -85,16 +85,10 @@ export class AntigravityPipelineStack extends cdk.Stack {
           phases: {
             build: {
               commands: [
-                `INSTANCE_ID=$(aws ssm get-parameter --name "/indiai/ec2-instance-id" --query "Parameter.Value" --output text)`,
-                `echo "Deploying to EC2 instance: $INSTANCE_ID"`,
-                `COMMAND_ID=$(aws ssm send-command \\
-                  --instance-ids "$INSTANCE_ID" \\
-                  --document-name "AWS-RunShellScript" \\
-                  --parameters commands='["cd /app/indiai", "git pull origin main", "pnpm install --frozen-lockfile", "pnpm --filter api build", "docker compose up -d --build --remove-orphans", "echo \\"Deploy complete $(date)\\""]' \\
-                  --query "Command.CommandId" --output text)`,
-                `echo "SSM Command sent. Command ID: $COMMAND_ID"`,
-                `aws ssm wait command-executed --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID"`,
-                `aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID"`,
+                "INSTANCE_ID=$(aws ssm get-parameter --name /indiai/ec2-instance-id --region us-east-1 --query Parameter.Value --output text)",
+                "COMMAND_ID=$(aws ssm send-command --region ap-south-1 --instance-ids $INSTANCE_ID --document-name AWS-RunShellScript --parameters commands=[\"cd /app/indiAi\",\"git pull origin main\",\"pnpm install --frozen-lockfile\",\"pnpm --filter api build\",\"docker compose up -d --build --remove-orphans\",\"echo Deploy complete\"] --query Command.CommandId --output text)",
+                "aws ssm wait command-executed --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1",
+                "aws ssm get-command-invocation --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1"
               ],
             },
           },
