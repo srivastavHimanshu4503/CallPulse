@@ -1,0 +1,23 @@
+{
+  "name": "infrastructure",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "synth": "cdk synth",
+    "cdk": "cdk",
+    "deploy:dev": "cdk deploy --all --profile indiai",
+    "deploy:pipeline": "cdk deploy IndiAiPipelineStack --profile indiai",
+    "diff": "cdk diff --profile indiai",
+    "destroy:dev": "cdk destroy --all --profile indiai"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "aws-cdk": "^2.110.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.110.3",
+    "constructs": "^10.0.0"
+  }
+}

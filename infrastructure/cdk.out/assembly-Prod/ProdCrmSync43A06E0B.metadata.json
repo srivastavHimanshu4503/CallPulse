@@ -1,0 +1,97 @@
+{
+  "/Prod/CrmSync": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:45:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/CrmSync/SyncWorkerRoleArnOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SyncWorkerRoleArnOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new CrmSyncStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/domains/crm/crm-sync-stack.ts:40:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:45:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/CrmSync/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/CrmSync/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/CrmSync/CrmSyncWorkerRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CrmSyncWorkerRole29B783D1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in .pnpm...",
+        "new CrmSyncStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/domains/crm/crm-sync-stack.ts:18:27)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:45:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/CrmSync/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/CrmSync/CrmSyncWorkerRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CrmSyncWorkerRoleDefaultPolicyF64AF39F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in .pnpm...",
+        "new CrmSyncStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/domains/crm/crm-sync-stack.ts:24:25)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:45:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)"
+      ]
+    }
+  ]
+}

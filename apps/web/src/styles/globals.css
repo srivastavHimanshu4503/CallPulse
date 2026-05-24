@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 99 102 241; /* #6366F1 HSL coordinates roughly in RGB */
+    
+    /* Light Mode */
+    --background: 0 0% 100%; /* #FFFFFF */
+    --surface: 210 20% 98%; /* #F9FAFB */
+    --border: 220 13% 91%; /* #E5E7EB */
+    --text: 224 71% 4%; /* #111827 */
+    --muted: 220 9% 46%; /* #6B7280 */
+  }
+
+  .dark {
+    /* Dark Mode (Default) */
+    --background: 0 0% 6%; /* #0F0F0F */
+    --surface: 0 0% 10%; /* #1A1A1A */
+    --border: 0 0% 16%; /* #2A2A2A */
+    --text: 210 20% 98%; /* #F9FAFB */
+    --muted: 220 9% 46%; /* #6B7280 */
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism Surface effect */
+.glass-panel {
+  background: rgba(26, 26, 26, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(42, 42, 42, 0.5);
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0F0F0F;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6366F1;
+}

@@ -1,0 +1,149 @@
+{
+ "Resources": {
+  "ApiLogGroup1DEDFC07": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/indiai/dev/api",
+    "RetentionInDays": 30
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Dev/Monitoring/ApiLogGroup/Resource"
+   }
+  },
+  "WorkerLogGroup31FDBE4A": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/indiai/dev/worker",
+    "RetentionInDays": 30
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Dev/Monitoring/WorkerLogGroup/Resource"
+   }
+  },
+  "Alarmindiaidevcrmtypesensesyncdlq7FF75E85": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmName": "indiai-dev-indiai-dev-crm-typesense-sync-dlq-messages-alarm",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": "indiai-dev-crm-typesense-sync-dlq"
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Sum",
+    "Threshold": 0,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev/Monitoring/Alarm-indiai-dev-crm-typesense-sync-dlq/Resource"
+   }
+  },
+  "Alarmindiaidevvoicecallprocessingdlq30D1107E": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmName": "indiai-dev-indiai-dev-voice-call-processing-dlq-messages-alarm",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": "indiai-dev-voice-call-processing-dlq"
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Sum",
+    "Threshold": 0,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev/Monitoring/Alarm-indiai-dev-voice-call-processing-dlq/Resource"
+   }
+  },
+  "AlarmindiaidevworkflowjobsdlqBECC0B87": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmName": "indiai-dev-indiai-dev-workflow-jobs-dlq-messages-alarm",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": "indiai-dev-workflow-jobs-dlq"
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Sum",
+    "Threshold": 0,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev/Monitoring/Alarm-indiai-dev-workflow-jobs-dlq/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zXJQQrCMBBA0bN0n4w2UFyLCzeCoAeQNKk1bZopmYxZhNxdqrj6D74C1R1g3+hM0thZetdDuSdtZqEzPYrHkaBccDxH5FWcnuHvKoxHtlkn84Jy9Dou2/6i1o1XTiunKgLaASbavZUC1ULbTOScjBySWwa4/foB6zvKv4kAAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev/Monitoring/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "MonitoringConfigStatusOutput": {
+   "Description": "Status of Monitoring elements setup",
+   "Value": "SUCCESS",
+   "Export": {
+    "Name": "indiai-dev-MonitoringConfigStatus"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

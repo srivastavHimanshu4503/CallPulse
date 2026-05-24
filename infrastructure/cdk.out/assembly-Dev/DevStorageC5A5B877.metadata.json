@@ -1,0 +1,181 @@
+{
+  "/Dev/Storage": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:30:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:21:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Dev/Storage/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+      "data": true
+    }
+  ],
+  "/Dev/Storage/RecordingsBucketArnOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RecordingsBucketArnOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new StorageStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/storage-stack.ts:54:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:30:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:21:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Dev/Storage/RecordingsBucketNameOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RecordingsBucketNameOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new StorageStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/storage-stack.ts:60:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:30:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:21:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Dev/Storage/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Dev/Storage/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Dev/Storage/RecordingsBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RecordingsBucketAA52F499"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in .pnpm...",
+        "new StorageStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/storage-stack.ts:19:29)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:30:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:21:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/Dev/Storage/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Dev/Storage/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Dev/Storage/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Dev/Storage/Exports/Output{\"Fn::GetAtt\":[\"RecordingsBucketAA52F499\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttRecordingsBucketAA52F499ArnCFFA8A17"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Dev/Storage/RecordingsBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RecordingsBucketPolicy7D6C1F47"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in .pnpm...",
+        "new StorageStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/storage-stack.ts:19:29)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:30:21)"
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/Dev/Storage/RecordingsBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RecordingsBucketAutoDeleteObjectsCustomResource0D202F09"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

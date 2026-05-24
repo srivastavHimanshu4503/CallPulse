@@ -1,0 +1,297 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum CustomFieldType {
+  TEXT
+  NUMBER
+  BOOLEAN
+  DROPDOWN
+  DATE
+}
+
+enum CustomFieldParentType {
+  CONTACT
+  DEAL
+}
+
+enum CustomFieldValueSource {
+  CALL
+  SMS
+  MANUAL
+  WORKFLOW
+}
+
+enum CommunicationDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum ActivityType {
+  CALL_INBOUND
+  CALL_OUTBOUND
+  SMS_SENT
+  SMS_RECEIVED
+  WHATSAPP_SENT
+  WHATSAPP_RECEIVED
+  DEAL_CREATED
+  DEAL_STAGE_CHANGED
+  BOOKING_CREATED
+  FIELD_UPDATED
+  WORKFLOW_TRIGGERED
+  NOTE_ADDED
+  CONTACT_CREATED
+}
+
+model Tenant {
+  id        String    @id @default(uuid())
+  name      String
+  tenantId  String    @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  users    User[]
+  contacts Contact[]
+}
+
+model User {
+  id           String    @id @default(uuid())
+  tenantId     String
+  email        String
+  passwordHash String
+  name         String
+  role         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, email])
+}
+
+model Contact {
+  id        String    @id @default(uuid())
+  tenantId  String
+  firstName String
+  lastName  String
+  emails    String[]
+  phones    String[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  customFields CustomFieldValue[]
+  activities   Activity[]
+  callLogs     CallLog[]
+  smsLogs      SmsLog[]
+  whatsappLogs WhatsappLog[]
+  emailLogs    EmailLog[]
+  deals        Deal[]
+  bookings     Booking[]
+  notes        Note[]
+}
+
+model CustomFieldDefinition {
+  id         String                @id @default(uuid())
+  tenantId   String
+  name       String
+  type       CustomFieldType
+  parentType CustomFieldParentType
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+
+  values CustomFieldValue[]
+}
+
+model CustomFieldValue {
+  id                 String                 @id @default(uuid())
+  tenantId           String
+  contactId          String
+  fieldDefinitionId  String
+  textValue          String?
+  numberValue        Float?
+  booleanValue       Boolean?
+  dateValue          DateTime?
+  source             CustomFieldValueSource
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+
+  contact         Contact               @relation(fields: [contactId], references: [id])
+  fieldDefinition CustomFieldDefinition @relation(fields: [fieldDefinitionId], references: [id])
+}
+
+model CallLog {
+  id           String                 @id @default(uuid())
+  tenantId     String
+  contactId    String
+  direction    CommunicationDirection
+  duration     Int
+  recordingUrl String?
+  transcript   String?
+  summary      String?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+}
+
+model SmsLog {
+  id        String                 @id @default(uuid())
+  tenantId  String
+  contactId String
+  direction CommunicationDirection
+  message   String
+  status    String
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+}
+
+model WhatsappLog {
+  id        String                 @id @default(uuid())
+  tenantId  String
+  contactId String
+  direction CommunicationDirection
+  message   String
+  status    String
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+}
+
+model EmailLog {
+  id        String                 @id @default(uuid())
+  tenantId  String
+  contactId String
+  direction CommunicationDirection
+  subject   String
+  body      String
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+}
+
+model Deal {
+  id        String    @id @default(uuid())
+  tenantId  String
+  contactId String
+  title     String
+  value     Float
+  stage     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+}
+
+model Booking {
+  id        String   @id @default(uuid())
+  tenantId  String
+  contactId String
+  title     String
+  startTime DateTime
+  endTime   DateTime
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  tenantId  String
+  contactId String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+}
+
+model WorkflowDefinition {
+  id          String   @id @default(uuid())
+  tenantId    String
+  name        String
+  triggerType String
+  actions     Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  runs WorkflowRun[]
+}
+
+model WorkflowRun {
+  id                   String    @id @default(uuid())
+  tenantId             String
+  workflowDefinitionId String
+  status               String
+  startedAt            DateTime  @default(now())
+  completedAt          DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  definition WorkflowDefinition @relation(fields: [workflowDefinitionId], references: [id])
+  activities Activity[]
+}
+
+model AIAgent {
+  id           String   @id @default(uuid())
+  tenantId     String
+  name         String
+  systemPrompt String
+  modelName    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Activity {
+  id            String       @id @default(uuid())
+  tenantId      String
+  contactId     String
+  type          ActivityType
+  summary       String
+  occurredAt    DateTime     @default(now())
+  callLogId     String?
+  smsLogId      String?
+  whatsappLogId String?
+  emailLogId    String?
+  dealId        String?
+  bookingId     String?
+  noteId        String?
+  workflowRunId String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  contact     Contact      @relation(fields: [contactId], references: [id])
+  callLog     CallLog?     @relation(fields: [callLogId], references: [id])
+  smsLog      SmsLog?      @relation(fields: [smsLogId], references: [id])
+  whatsappLog WhatsappLog? @relation(fields: [whatsappLogId], references: [id])
+  emailLog    EmailLog?    @relation(fields: [emailLogId], references: [id])
+  deal        Deal?        @relation(fields: [dealId], references: [id])
+  booking     Booking?     @relation(fields: [bookingId], references: [id])
+  note        Note?        @relation(fields: [noteId], references: [id])
+  workflowRun WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+
+  @@index([contactId, occurredAt(sort: Desc)])
+}

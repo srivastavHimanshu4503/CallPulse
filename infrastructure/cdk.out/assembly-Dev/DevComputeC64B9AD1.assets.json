@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "1cc80249ba431123cf8d5d94192ffcd91bb2a6cdd51b533030748510cc29aacd": {
+      "displayName": "Dev-Compute Template",
+      "source": {
+        "path": "DevComputeC64B9AD1.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "649367351074-ap-south-1-ebd69da4": {
+          "bucketName": "cdk-hnb659fds-assets-649367351074-ap-south-1",
+          "objectKey": "1cc80249ba431123cf8d5d94192ffcd91bb2a6cdd51b533030748510cc29aacd.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::649367351074:role/cdk-hnb659fds-file-publishing-role-649367351074-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

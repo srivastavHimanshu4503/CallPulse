@@ -1,0 +1,1246 @@
+{
+ "Parameters": {
+  "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/indiai/github-token"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Resources": {
+  "BuildProjectRoleAA92C755": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/BuildProject/Role/Resource"
+   }
+  },
+  "BuildProjectRoleDefaultPolicy3E9F248C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:649367351074:log-group:/aws/codebuild/",
+           {
+            "Ref": "BuildProject097C5DB7"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:649367351074:log-group:/aws/codebuild/",
+           {
+            "Ref": "BuildProject097C5DB7"
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:codebuild:us-east-1:649367351074:report-group/",
+          {
+           "Ref": "BuildProject097C5DB7"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifactsBucket22248F97",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifactsBucket22248F97",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineArtifactsBucketEncryptionKey01D58D69",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineArtifactsBucketEncryptionKey01D58D69",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BuildProjectRoleDefaultPolicy3E9F248C",
+    "Roles": [
+     {
+      "Ref": "BuildProjectRoleAA92C755"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/BuildProject/Role/DefaultPolicy/Resource"
+   }
+  },
+  "BuildProject097C5DB7": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "CODEPIPELINE"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": {
+     "Fn::GetAtt": [
+      "PipelineArtifactsBucketEncryptionKey01D58D69",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "Image": "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "Name": "indiai-pipeline-build",
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "BuildProjectRoleAA92C755",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"runtime-versions\": {\n        \"nodejs\": \"20\"\n      },\n      \"commands\": [\n        \"npm install -g pnpm\"\n      ]\n    },\n    \"pre_build\": {\n      \"commands\": [\n        \"pnpm install --frozen-lockfile\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"pnpm --filter api build || true\",\n        \"cd infrastructure && npx cdk synth -o ../cdk.out\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"base-directory\": \"cdk.out\",\n    \"files\": [\n      \"**/*\"\n    ]\n  }\n}",
+     "Type": "CODEPIPELINE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/BuildProject/Resource"
+   }
+  },
+  "PipelineDeployRole5DD46740": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/PipelineDeployRole/Resource"
+   }
+  },
+  "PipelineDeployRoleDefaultPolicy65A3ED87": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ssm:SendCommand",
+        "ssm:GetCommandInvocation",
+        "ssm:GetParameter"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:649367351074:log-group:/aws/codebuild/",
+           {
+            "Ref": "DeployProjectdev33C2A350"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:649367351074:log-group:/aws/codebuild/",
+           {
+            "Ref": "DeployProjectdev33C2A350"
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:codebuild:us-east-1:649367351074:report-group/",
+          {
+           "Ref": "DeployProjectdev33C2A350"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:649367351074:log-group:/aws/codebuild/",
+           {
+            "Ref": "DeployProjectprod68D09449"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:649367351074:log-group:/aws/codebuild/",
+           {
+            "Ref": "DeployProjectprod68D09449"
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:codebuild:us-east-1:649367351074:report-group/",
+          {
+           "Ref": "DeployProjectprod68D09449"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifactsBucket22248F97",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifactsBucket22248F97",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineArtifactsBucketEncryptionKey01D58D69",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineArtifactsBucketEncryptionKey01D58D69",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PipelineDeployRoleDefaultPolicy65A3ED87",
+    "Roles": [
+     {
+      "Ref": "PipelineDeployRole5DD46740"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/PipelineDeployRole/DefaultPolicy/Resource"
+   }
+  },
+  "DeployProjectdev33C2A350": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "CODEPIPELINE"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": {
+     "Fn::GetAtt": [
+      "PipelineArtifactsBucketEncryptionKey01D58D69",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "Image": "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "Name": "indiai-pipeline-deploy-dev",
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "PipelineDeployRole5DD46740",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"INSTANCE_ID=$(aws ssm get-parameter --name \\\"/indiai/ec2-instance-id\\\" --query \\\"Parameter.Value\\\" --output text)\",\n        \"echo \\\"Deploying to EC2 instance: $INSTANCE_ID\\\"\",\n        \"COMMAND_ID=$(aws ssm send-command \\\\\\n                  --instance-ids \\\"$INSTANCE_ID\\\" \\\\\\n                  --document-name \\\"AWS-RunShellScript\\\" \\\\\\n                  --parameters commands='[\\\"cd /app/indiai\\\", \\\"git pull origin main\\\", \\\"pnpm install --frozen-lockfile\\\", \\\"pnpm --filter api build\\\", \\\"docker compose up -d --build --remove-orphans\\\", \\\"echo \\\\\\\"Deploy complete $(date)\\\\\\\"\\\"]' \\\\\\n                  --query \\\"Command.CommandId\\\" --output text)\",\n        \"echo \\\"SSM Command sent. Command ID: $COMMAND_ID\\\"\",\n        \"aws ssm wait command-executed --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\",\n        \"aws ssm get-command-invocation --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\"\n      ]\n    }\n  }\n}",
+     "Type": "CODEPIPELINE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/DeployProject-dev/Resource"
+   }
+  },
+  "DeployProjectprod68D09449": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "CODEPIPELINE"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": {
+     "Fn::GetAtt": [
+      "PipelineArtifactsBucketEncryptionKey01D58D69",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "Image": "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "Name": "indiai-pipeline-deploy-prod",
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "PipelineDeployRole5DD46740",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"INSTANCE_ID=$(aws ssm get-parameter --name \\\"/indiai/ec2-instance-id\\\" --query \\\"Parameter.Value\\\" --output text)\",\n        \"echo \\\"Deploying to EC2 instance: $INSTANCE_ID\\\"\",\n        \"COMMAND_ID=$(aws ssm send-command \\\\\\n                  --instance-ids \\\"$INSTANCE_ID\\\" \\\\\\n                  --document-name \\\"AWS-RunShellScript\\\" \\\\\\n                  --parameters commands='[\\\"cd /app/indiai\\\", \\\"git pull origin main\\\", \\\"pnpm install --frozen-lockfile\\\", \\\"pnpm --filter api build\\\", \\\"docker compose up -d --build --remove-orphans\\\", \\\"echo \\\\\\\"Deploy complete $(date)\\\\\\\"\\\"]' \\\\\\n                  --query \\\"Command.CommandId\\\" --output text)\",\n        \"echo \\\"SSM Command sent. Command ID: $COMMAND_ID\\\"\",\n        \"aws ssm wait command-executed --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\",\n        \"aws ssm get-command-invocation --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\"\n      ]\n    }\n  }\n}",
+     "Type": "CODEPIPELINE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/DeployProject-prod/Resource"
+   }
+  },
+  "PipelineArtifactsBucketEncryptionKey01D58D69": {
+   "Type": "AWS::KMS::Key",
+   "Properties": {
+    "KeyPolicy": {
+     "Statement": [
+      {
+       "Action": "kms:*",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::649367351074:root"
+       },
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/ArtifactsBucketEncryptionKey/Resource"
+   }
+  },
+  "PipelineArtifactsBucketEncryptionKeyAlias5C510EEE": {
+   "Type": "AWS::KMS::Alias",
+   "Properties": {
+    "AliasName": "alias/codepipeline-indiaipipelinestackpipeline417c141f",
+    "TargetKeyId": {
+     "Fn::GetAtt": [
+      "PipelineArtifactsBucketEncryptionKey01D58D69",
+      "Arn"
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/ArtifactsBucketEncryptionKeyAlias/Resource"
+   }
+  },
+  "PipelineArtifactsBucket22248F97": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "KMSMasterKeyID": {
+         "Fn::GetAtt": [
+          "PipelineArtifactsBucketEncryptionKey01D58D69",
+          "Arn"
+         ]
+        },
+        "SSEAlgorithm": "aws:kms"
+       }
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/ArtifactsBucket/Resource"
+   }
+  },
+  "PipelineArtifactsBucketPolicyD4F9712A": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "PipelineArtifactsBucket22248F97"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifactsBucket22248F97",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifactsBucket22248F97",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/ArtifactsBucket/Policy/Resource"
+   }
+  },
+  "PipelineRoleD68726F7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codepipeline.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/Role/Resource"
+   }
+  },
+  "PipelineRoleDefaultPolicyC7A05455": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifactsBucket22248F97",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifactsBucket22248F97",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineArtifactsBucketEncryptionKey01D58D69",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineBuildCodeBuildBuildCodePipelineActionRole8F901CF6",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineDeployDevSSMDeployDevCodePipelineActionRole9E45089A",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineManualApprovalApproveProdDeploymentCodePipelineActionRole07D4444E",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "PipelineDeployProdSSMDeployProdCodePipelineActionRoleD69FBAEC",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PipelineRoleDefaultPolicyC7A05455",
+    "Roles": [
+     {
+      "Ref": "PipelineRoleD68726F7"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/Role/DefaultPolicy/Resource"
+   }
+  },
+  "PipelineC660917D": {
+   "Type": "AWS::CodePipeline::Pipeline",
+   "Properties": {
+    "ArtifactStore": {
+     "EncryptionKey": {
+      "Id": {
+       "Fn::GetAtt": [
+        "PipelineArtifactsBucketEncryptionKey01D58D69",
+        "Arn"
+       ]
+      },
+      "Type": "KMS"
+     },
+     "Location": {
+      "Ref": "PipelineArtifactsBucket22248F97"
+     },
+     "Type": "S3"
+    },
+    "Name": "IndiAi-Deployment-Pipeline",
+    "RestartExecutionOnUpdate": true,
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "PipelineRoleD68726F7",
+      "Arn"
+     ]
+    },
+    "Stages": [
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Source",
+         "Owner": "ThirdParty",
+         "Provider": "GitHub",
+         "Version": "1"
+        },
+        "Configuration": {
+         "Owner": "KumarEnterprises",
+         "Repo": "IndiAi",
+         "Branch": "main",
+         "OAuthToken": {
+          "Ref": "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter"
+         },
+         "PollForSourceChanges": false
+        },
+        "Name": "GitHub_Source",
+        "OutputArtifacts": [
+         {
+          "Name": "SourceArtifact"
+         }
+        ],
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Source"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "BuildProject097C5DB7"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "SourceArtifact"
+         }
+        ],
+        "Name": "CodeBuild_Build",
+        "OutputArtifacts": [
+         {
+          "Name": "BuildArtifact"
+         }
+        ],
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "PipelineBuildCodeBuildBuildCodePipelineActionRole8F901CF6",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Build"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "DeployProjectdev33C2A350"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "BuildArtifact"
+         }
+        ],
+        "Name": "SSM_Deploy_Dev",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "PipelineDeployDevSSMDeployDevCodePipelineActionRole9E45089A",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "DeployDev"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Approval",
+         "Owner": "AWS",
+         "Provider": "Manual",
+         "Version": "1"
+        },
+        "Configuration": {
+         "CustomData": "Verify Dev environment testing has passed successfully before approving."
+        },
+        "Name": "Approve_Prod_Deployment",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "PipelineManualApprovalApproveProdDeploymentCodePipelineActionRole07D4444E",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "ManualApproval"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "DeployProjectprod68D09449"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "BuildArtifact"
+         }
+        ],
+        "Name": "SSM_Deploy_Prod",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "PipelineDeployProdSSMDeployProdCodePipelineActionRoleD69FBAEC",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "DeployProd"
+     }
+    ]
+   },
+   "DependsOn": [
+    "PipelineRoleDefaultPolicyC7A05455",
+    "PipelineRoleD68726F7"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/Resource"
+   }
+  },
+  "PipelineSourceGitHubSourceWebhookResource8EECEFFF": {
+   "Type": "AWS::CodePipeline::Webhook",
+   "Properties": {
+    "Authentication": "GITHUB_HMAC",
+    "AuthenticationConfiguration": {
+     "SecretToken": {
+      "Ref": "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter"
+     }
+    },
+    "Filters": [
+     {
+      "JsonPath": "$.ref",
+      "MatchEquals": "refs/heads/{Branch}"
+     }
+    ],
+    "RegisterWithThirdParty": true,
+    "TargetAction": "GitHub_Source",
+    "TargetPipeline": {
+     "Ref": "PipelineC660917D"
+    },
+    "TargetPipelineVersion": 1
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/Source/GitHub_Source/WebhookResource"
+   }
+  },
+  "PipelineBuildCodeBuildBuildCodePipelineActionRole8F901CF6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "PipelineRoleD68726F7",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/Build/CodeBuild_Build/CodePipelineActionRole/Resource"
+   }
+  },
+  "PipelineBuildCodeBuildBuildCodePipelineActionRoleDefaultPolicy92C965E2": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BuildProject097C5DB7",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PipelineBuildCodeBuildBuildCodePipelineActionRoleDefaultPolicy92C965E2",
+    "Roles": [
+     {
+      "Ref": "PipelineBuildCodeBuildBuildCodePipelineActionRole8F901CF6"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/Build/CodeBuild_Build/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "PipelineDeployDevSSMDeployDevCodePipelineActionRole9E45089A": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "PipelineRoleD68726F7",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/DeployDev/SSM_Deploy_Dev/CodePipelineActionRole/Resource"
+   }
+  },
+  "PipelineDeployDevSSMDeployDevCodePipelineActionRoleDefaultPolicy828257E3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "DeployProjectdev33C2A350",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PipelineDeployDevSSMDeployDevCodePipelineActionRoleDefaultPolicy828257E3",
+    "Roles": [
+     {
+      "Ref": "PipelineDeployDevSSMDeployDevCodePipelineActionRole9E45089A"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/DeployDev/SSM_Deploy_Dev/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "PipelineManualApprovalApproveProdDeploymentCodePipelineActionRole07D4444E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "PipelineRoleD68726F7",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/ManualApproval/Approve_Prod_Deployment/CodePipelineActionRole/Resource"
+   }
+  },
+  "PipelineDeployProdSSMDeployProdCodePipelineActionRoleD69FBAEC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "PipelineRoleD68726F7",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/DeployProd/SSM_Deploy_Prod/CodePipelineActionRole/Resource"
+   }
+  },
+  "PipelineDeployProdSSMDeployProdCodePipelineActionRoleDefaultPolicyA336C3B0": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "DeployProjectprod68D09449",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PipelineDeployProdSSMDeployProdCodePipelineActionRoleDefaultPolicyA336C3B0",
+    "Roles": [
+     {
+      "Ref": "PipelineDeployProdSSMDeployProdCodePipelineActionRoleD69FBAEC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/Pipeline/DeployProd/SSM_Deploy_Prod/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OvQ7CMAyEn4U9NRCEmIGRgaoMjChNjXCTNlV+QCjKu6OkSDDd59P5bA58u4PVQrxcJTtVaWohXryQih3vYy2sGNCjZQ06E6xEJl7uFqXpsA2kO4g1TahpxNqaHqUvWzMmRmKA2BiN2S1aG03yXUKFEstV07fj11YSf3zF9mGMSkwNDuIJS0WWvSbh8lAgMbeBeAhSYfnkS7P8bv/PKWXnHPwUfGKj6RB6t3xyDnwN60XviCobRk8DQjPrB9eUDZo0AQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "IndiAiPipelineStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "PipelineArnOutput": {
+   "Description": "ARN of the GitOps deployment pipeline",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "arn:aws:codepipeline:us-east-1:649367351074:",
+      {
+       "Ref": "PipelineC660917D"
+      }
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "indiai-PipelineArn"
+   }
+  },
+  "PipelineConsoleUrlOutput": {
+   "Description": "AWS Management Console URL for pipeline tracking",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://console.aws.amazon.com/codesuite/codepipeline/pipelines/",
+      {
+       "Ref": "PipelineC660917D"
+      },
+      "/view"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "indiai-PipelineConsoleUrl"
+   }
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

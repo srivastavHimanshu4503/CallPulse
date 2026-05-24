@@ -1,0 +1,152 @@
+{
+ "Resources": {
+  "Paramindiaiproddatabaseurl1E39BD8B": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Placeholder value for /indiai/prod/database-url. Update post deployment.",
+    "Name": "/indiai/prod/database-url",
+    "Type": "String",
+    "Value": "CHANGE_ME"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/Param--indiai-prod-database-url/Resource"
+   }
+  },
+  "Paramindiaiprodjwtsecret2C9A7502": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Placeholder value for /indiai/prod/jwt-secret. Update post deployment.",
+    "Name": "/indiai/prod/jwt-secret",
+    "Type": "String",
+    "Value": "CHANGE_ME"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/Param--indiai-prod-jwt-secret/Resource"
+   }
+  },
+  "Paramindiaiprodjwtrefreshsecret4E7B7B38": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Placeholder value for /indiai/prod/jwt-refresh-secret. Update post deployment.",
+    "Name": "/indiai/prod/jwt-refresh-secret",
+    "Type": "String",
+    "Value": "CHANGE_ME"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/Param--indiai-prod-jwt-refresh-secret/Resource"
+   }
+  },
+  "Paramindiaiprodtypesenseapikey5F91066A": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Placeholder value for /indiai/prod/typesense-api-key. Update post deployment.",
+    "Name": "/indiai/prod/typesense-api-key",
+    "Type": "String",
+    "Value": "local-dev-key"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/Param--indiai-prod-typesense-api-key/Resource"
+   }
+  },
+  "Paramindiaiprodexotelapikey9F438CE5": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Placeholder value for /indiai/prod/exotel-api-key. Update post deployment.",
+    "Name": "/indiai/prod/exotel-api-key",
+    "Type": "String",
+    "Value": "CHANGE_ME"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/Param--indiai-prod-exotel-api-key/Resource"
+   }
+  },
+  "Paramindiaiprodexotelapitoken10F8E971": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Placeholder value for /indiai/prod/exotel-api-token. Update post deployment.",
+    "Name": "/indiai/prod/exotel-api-token",
+    "Type": "String",
+    "Value": "CHANGE_ME"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/Param--indiai-prod-exotel-api-token/Resource"
+   }
+  },
+  "Paramindiaiprodaiapikey0188471D": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Placeholder value for /indiai/prod/ai-api-key. Update post deployment.",
+    "Name": "/indiai/prod/ai-api-key",
+    "Type": "String",
+    "Value": "CHANGE_ME"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/Param--indiai-prod-ai-api-key/Resource"
+   }
+  },
+  "GlobalGitHubTokenParamD4097037": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "GitHub Webhook Token Placeholder for Pipeline orchestration. Update post deployment.",
+    "Name": "/indiai/github-token",
+    "Type": "String",
+    "Value": "CHANGE_ME"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/GlobalGitHubTokenParam/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zPSMzI11zNQTCwv1k1OydbNyUzSqw4uSUzO1kksL44vLs4FcYsy89IDEosSc1NLUot0nNPy4JxaEM+/tKSgtKRWJy8/JVUvq1i/zMhIz8hQz1AxqzgzU7eoNK8kMzdVLwhCAwCZWVfScgAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "Prod/Data/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DataConfigStatusOutput": {
+   "Description": "Status of SSM placeholders injection",
+   "Value": "SUCCESS",
+   "Export": {
+    "Name": "indiai-prod-DataConfigStatus"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

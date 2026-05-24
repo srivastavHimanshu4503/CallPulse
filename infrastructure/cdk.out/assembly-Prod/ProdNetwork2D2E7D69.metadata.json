@@ -1,0 +1,291 @@
+{
+  "/Prod/Network": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/VpcIdOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIdOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:52:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/SecurityGroupIdOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SecurityGroupIdOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:58:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/Network/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Vpc8378EB38"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in .pnpm...",
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:15:16)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/IGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIGWD7BA715C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in .pnpm...",
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:15:16)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/VPCGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcVPCGWBF912B6E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in .pnpm...",
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:15:16)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/AppSecurityGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AppSecurityGroupC396D536"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in .pnpm...",
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:27:29)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/Network/Exports/Output{\"Fn::GetAtt\":[\"AppSecurityGroupC396D536\",\"GroupId\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttAppSecurityGroupC396D536GroupId4ECD26A6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/Network/Exports/Output{\"Ref\":\"VpcpublicSubnet1Subnet2BB74ED7\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpcpublicSubnet1Subnet2BB74ED74EB42ADC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1Subnet2BB74ED7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in .pnpm...",
+        "Array.forEach (:)",
+        "....pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1RouteTable15C15F8E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in .pnpm...",
+        "Array.forEach (:)",
+        "....pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1RouteTableAssociation4E83B6E4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in .pnpm...",
+        "Array.forEach (:)",
+        "....pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1DefaultRouteB88F9E93"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:197 in .pnpm...",
+        "Array.forEach (:)",
+        "...new Vpc2 in .pnpm...",
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:15:16)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2SubnetE34B022A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in .pnpm...",
+        "Array.forEach (:)",
+        "....pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2RouteTableC5A6DF77"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in .pnpm...",
+        "Array.forEach (:)",
+        "....pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2RouteTableAssociationCCE257FF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in .pnpm...",
+        "Array.forEach (:)",
+        "....pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Network/Vpc/publicSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2DefaultRoute732F0BEB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:197 in .pnpm...",
+        "Array.forEach (:)",
+        "...new Vpc2 in .pnpm...",
+        "new NetworkStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/network-stack.ts:15:16)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:27:21)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals..."
+      ]
+    }
+  ]
+}

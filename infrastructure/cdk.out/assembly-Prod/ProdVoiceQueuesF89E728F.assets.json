@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "5f883bb62e6fcb71b3007fc3605c9e8c40cdc346fe6e1fa909472f16a847c080": {
+      "displayName": "Prod-VoiceQueues Template",
+      "source": {
+        "path": "ProdVoiceQueuesF89E728F.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "649367351074-ap-south-1-89fbea22": {
+          "bucketName": "cdk-hnb659fds-assets-649367351074-ap-south-1",
+          "objectKey": "5f883bb62e6fcb71b3007fc3605c9e8c40cdc346fe6e1fa909472f16a847c080.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::649367351074:role/cdk-hnb659fds-file-publishing-role-649367351074-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

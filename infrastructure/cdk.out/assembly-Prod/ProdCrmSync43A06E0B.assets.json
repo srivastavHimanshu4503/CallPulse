@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "5a4c0078c89728a34c6d0c378bcfab238e54b60b25c56f901b0f2877e78a0f87": {
+      "displayName": "Prod-CrmSync Template",
+      "source": {
+        "path": "ProdCrmSync43A06E0B.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "649367351074-ap-south-1-48ccb94e": {
+          "bucketName": "cdk-hnb659fds-assets-649367351074-ap-south-1",
+          "objectKey": "5a4c0078c89728a34c6d0c378bcfab238e54b60b25c56f901b0f2877e78a0f87.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::649367351074:role/cdk-hnb659fds-file-publishing-role-649367351074-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

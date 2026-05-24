@@ -1,0 +1,36 @@
+services:
+  api:
+    build: ./apps/api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - typesense
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: indiai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localpass}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  typesense:
+    image: typesense/typesense:27.0
+    ports:
+      - "8108:8108"
+    volumes:
+      - tsdata:/data
+    command: --data-dir /data --api-key=${TYPESENSE_API_KEY:-local-dev-key}
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  tsdata:

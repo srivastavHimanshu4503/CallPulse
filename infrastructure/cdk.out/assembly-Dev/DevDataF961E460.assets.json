@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "46e242f8882c6bd134513c5d0b6d5c6cc4005d2bca734f92a168fec339c640d2": {
+      "displayName": "Dev-Data Template",
+      "source": {
+        "path": "DevDataF961E460.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "649367351074-ap-south-1-37a0da02": {
+          "bucketName": "cdk-hnb659fds-assets-649367351074-ap-south-1",
+          "objectKey": "46e242f8882c6bd134513c5d0b6d5c6cc4005d2bca734f92a168fec339c640d2.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::649367351074:role/cdk-hnb659fds-file-publishing-role-649367351074-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,440 @@
+{
+  "/IndiAiPipelineStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/SsmParameterValue:--indiai--github-token:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...Function.valueForStringParameter in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:19:48)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline": [
+    {
+      "type": "aws:cdk:warning",
+      "data": "V1 pipeline type is implicitly selected when `pipelineType` is not set. If you want to use V2 type, set `PipelineType.V2`. [ack: @aws-cdk/aws-codepipeline:unspecifiedPipelineType]",
+      "trace": [
+        "Annotations.addMessage (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2399)",
+        "Annotations.addWarningV2 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1087)",
+        "new Pipeline2 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-codepipeline/lib/pipeline.js:1:13690)",
+        "new Pipeline2 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:855)",
+        "new Pipeline2 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/core/lib/no-box-stack-traces.js:1:345)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "Object.<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "Module._compile (node:internal/modules/cjs/loader:1706:14)",
+        "Module.m._compile (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/ts-node@10.9.2_@types+node@20.19.41_typescript@5.9.3/node_modules/ts-node/src/index.ts:1618:23)",
+        "node:internal/modules/cjs/loader:1839:10",
+        "Object.require.extensions.<computed> [as .ts] (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/ts-node@10.9.2_@types+node@20.19.41_typescript@5.9.3/node_modules/ts-node/src/index.ts:1621:12)",
+        "Module.load (node:internal/modules/cjs/loader:1441:32)",
+        "Function._load (node:internal/modules/cjs/loader:1263:12)",
+        "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:237:24)",
+        "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)",
+        "phase4 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/ts-node@10.9.2_@types+node@20.19.41_typescript@5.9.3/node_modules/ts-node/src/bin.ts:649:14)",
+        "bootstrap (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/ts-node@10.9.2_@types+node@20.19.41_typescript@5.9.3/node_modules/ts-node/src/bin.ts:95:10)",
+        "main (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/ts-node@10.9.2_@types+node@20.19.41_typescript@5.9.3/node_modules/ts-node/src/bin.ts:55:10)",
+        "Object.<anonymous> (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/ts-node@10.9.2_@types+node@20.19.41_typescript@5.9.3/node_modules/ts-node/src/bin.ts:800:3)",
+        "Module._compile (node:internal/modules/cjs/loader:1706:14)",
+        "Object.<anonymous> (node:internal/modules/cjs/loader:1839:10)",
+        "Module.load (node:internal/modules/cjs/loader:1441:32)",
+        "Function._load (node:internal/modules/cjs/loader:1263:12)",
+        "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:237:24)",
+        "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)",
+        "node:internal/main/run_main_module:36:49"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/PipelineArnOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineArnOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:171:5)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/PipelineConsoleUrlOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineConsoleUrlOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:177:5)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in .pnpm...",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:38:5)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in .pnpm...",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:38:5)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/BuildProject/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildProject097C5DB7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new PipelineProject2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:24:26)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/PipelineDeployRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineDeployRole5DD46740"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:60:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/DeployProject-dev/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DeployProjectdev33C2A350"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new PipelineProject2 in .pnpm...",
+        "createDeployProject (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:76:14)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:104:30)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/DeployProject-prod/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DeployProjectprod68D09449"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new PipelineProject2 in .pnpm...",
+        "createDeployProject (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:76:14)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:105:31)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineC660917D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Pipeline2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in .pnpm...",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:38:5)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/BuildProject/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildProjectRoleAA92C755"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new PipelineProject2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:24:26)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/PipelineDeployRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineDeployRoleDefaultPolicy65A3ED87"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:64:16)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/ArtifactsBucketEncryptionKey/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineArtifactsBucketEncryptionKey01D58D69"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Pipeline2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/ArtifactsBucketEncryptionKeyAlias/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineArtifactsBucketEncryptionKeyAlias5C510EEE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Pipeline2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/ArtifactsBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineArtifactsBucket22248F97"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Pipeline2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineRoleD68726F7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Pipeline2 in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/BuildProject/Role/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BuildProjectRoleDefaultPolicy3E9F248C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/ArtifactsBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineArtifactsBucketPolicyD4F9712A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/Role/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineRoleDefaultPolicyC7A05455"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/Source/GitHub_Source/WebhookResource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineSourceGitHubSourceWebhookResource8EECEFFF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:112:14)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/Build/CodeBuild_Build/CodePipelineActionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineBuildCodeBuildBuildCodePipelineActionRole8F901CF6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:127:14)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/DeployDev/SSM_Deploy_Dev/CodePipelineActionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineDeployDevSSMDeployDevCodePipelineActionRole9E45089A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:139:14)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/ManualApproval/Approve_Prod_Deployment/CodePipelineActionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineManualApprovalApproveProdDeploymentCodePipelineActionRole07D4444E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:155:14)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/DeployProd/SSM_Deploy_Prod/CodePipelineActionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineDeployProdSSMDeployProdCodePipelineActionRoleD69FBAEC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in .pnpm...",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:160:14)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/Build/CodeBuild_Build/CodePipelineActionRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineBuildCodeBuildBuildCodePipelineActionRoleDefaultPolicy92C965E2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/DeployDev/SSM_Deploy_Dev/CodePipelineActionRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineDeployDevSSMDeployDevCodePipelineActionRoleDefaultPolicy828257E3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/IndiAiPipelineStack/Pipeline/DeployProd/SSM_Deploy_Prod/CodePipelineActionRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PipelineDeployProdSSMDeployProdCodePipelineActionRoleDefaultPolicyA336C3B0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "/Prod/Monitoring": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:25:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Monitoring/MonitoringConfigStatusOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MonitoringConfigStatusOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new MonitoringStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:80:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:25:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Monitoring/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/Monitoring/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/Prod/Monitoring/ApiLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiLogGroup1DEDFC07"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in .pnpm...",
+        "new MonitoringStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:14:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:25:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Monitoring/WorkerLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WorkerLogGroup31FDBE4A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in .pnpm...",
+        "new MonitoringStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:20:5)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:25:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Monitoring/Alarm-indiai-prod-crm-typesense-sync-dlq/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlarmindiaiprodcrmtypesensesyncdlqD70F906E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Alarm2 in .pnpm...",
+        "/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:41 (:)",
+        "Array.forEach (:)",
+        "new MonitoringStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:32:14)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:25:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Monitoring/Alarm-indiai-prod-voice-call-processing-dlq/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Alarmindiaiprodvoicecallprocessingdlq8A639B75"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Alarm2 in .pnpm...",
+        "/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:41 (:)",
+        "Array.forEach (:)",
+        "new MonitoringStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:32:14)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:25:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Monitoring/Alarm-indiai-prod-workflow-jobs-dlq/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlarmindiaiprodworkflowjobsdlqD7AA5F99"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Alarm2 in .pnpm...",
+        "/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:41 (:)",
+        "Array.forEach (:)",
+        "new MonitoringStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/monitoring-stack.ts:32:14)",
+        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:25:24)",
+        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:30:1)",
+        "...node internals, .pnpm..."
+      ]
+    }
+  ],
+  "/Prod/Monitoring/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "....pnpm...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "antigravity-monorepo",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel dev",
+    "build": "pnpm --filter=packages/* --filter=apps/* build",
+    "lint": "pnpm -r lint",
+    "db:generate": "pnpm --filter api db:generate",
+    "db:migrate": "pnpm --filter api db:migrate",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "clean": "pnpm -r exec rm -rf node_modules .turbo dist build",
+    "cdk": "pnpm --filter infrastructure cdk"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
