@@ -25,7 +25,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
     const buildProject = new codebuild.PipelineProject(this, "BuildProject", {
       projectName: "indiai-pipeline-build",
       environment: {
-        buildImage: codebuild.LinuxBuildImage.AMAZON_LINUX_2_4,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         computeType: codebuild.ComputeType.SMALL,
       },
       buildSpec: codebuild.BuildSpec.fromObject({
@@ -78,7 +78,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
         projectName: `indiai-pipeline-deploy-${env}`,
         role: deployRole,
         environment: {
-          buildImage: codebuild.LinuxBuildImage.AMAZON_LINUX_2_4,
+          buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         },
         buildSpec: codebuild.BuildSpec.fromObject({
           version: "0.2",
