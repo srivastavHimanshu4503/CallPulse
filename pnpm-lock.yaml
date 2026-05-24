@@ -143,10 +143,10 @@ importers:
   infrastructure:
     dependencies:
       aws-cdk-lib:
-        specifier: ^2.110.3
+        specifier: ^2.257.0
         version: 2.257.0(constructs@10.6.0)
       constructs:
-        specifier: ^10.0.0
+        specifier: ^10.6.0
         version: 10.6.0
     devDependencies:
       '@types/node':

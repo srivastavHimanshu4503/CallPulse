@@ -8,21 +8,6 @@
       ]
     }
   ],
-  "/IndiAiPipelineStack/SsmParameterValue:--indiai--github-token:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...Function.valueForStringParameter in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:19:48)",
-        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
-        "...node internals, .pnpm, .pnpm..."
-      ]
-    }
-  ],
   "/IndiAiPipelineStack/Pipeline": [
     {
       "type": "aws:cdk:warning",
@@ -33,7 +18,7 @@
         "new Pipeline2 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/aws-codepipeline/lib/pipeline.js:1:13690)",
         "new Pipeline2 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:855)",
         "new Pipeline2 (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/aws-cdk-lib@2.257.0_constructs@10.6.0/node_modules/aws-cdk-lib/core/lib/no-box-stack-traces.js:1:345)",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:102:22)",
         "Object.<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "Module._compile (node:internal/modules/cjs/loader:1706:14)",
         "Module.m._compile (/Users/apple/Desktop/IndiAI/node_modules/.pnpm/ts-node@10.9.2_@types+node@20.19.41_typescript@5.9.3/node_modules/ts-node/src/index.ts:1618:23)",
@@ -67,7 +52,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:171:5)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:166:5)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm, .pnpm..."
       ]
@@ -81,7 +66,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:177:5)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:172:5)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm, .pnpm..."
       ]
@@ -122,7 +107,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new PipelineProject2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:24:26)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:25:26)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm..."
       ]
@@ -137,7 +122,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Role2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:60:24)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:61:24)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm, .pnpm..."
       ]
@@ -152,8 +137,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new PipelineProject2 in .pnpm...",
-        "createDeployProject (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:76:14)",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:104:30)",
+        "createDeployProject (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:77:14)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:99:30)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm..."
       ]
@@ -168,8 +153,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new PipelineProject2 in .pnpm...",
-        "createDeployProject (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:76:14)",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:105:31)",
+        "createDeployProject (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:77:14)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:100:31)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm..."
       ]
@@ -184,7 +169,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Pipeline2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:102:22)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm, .pnpm..."
       ]
@@ -213,7 +198,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new PipelineProject2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:24:26)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:25:26)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals..."
       ]
@@ -228,7 +213,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:64:16)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:65:16)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals..."
       ]
@@ -243,7 +228,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Pipeline2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:102:22)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm..."
       ]
@@ -258,7 +243,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Pipeline2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:102:22)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm..."
       ]
@@ -273,7 +258,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Pipeline2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:102:22)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm..."
       ]
@@ -288,7 +273,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Pipeline2 in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:22)",
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:102:22)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:10:1)",
         "...node internals, .pnpm..."
       ]
@@ -342,7 +327,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:112:14)"
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:107:14)"
       ]
     }
   ],
@@ -355,7 +340,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:127:14)"
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:122:14)"
       ]
     }
   ],
@@ -368,7 +353,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:139:14)"
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:134:14)"
       ]
     }
   ],
@@ -381,7 +366,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:155:14)"
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:150:14)"
       ]
     }
   ],
@@ -394,7 +379,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in .pnpm...",
-        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:160:14)"
+        "new AntigravityPipelineStack (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/pipeline-stack.ts:155:14)"
       ]
     }
   ],

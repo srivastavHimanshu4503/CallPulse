@@ -148,7 +148,7 @@
      }
     ],
     "UserData": {
-     "Fn::Base64": "#!/bin/bash\n#!/bin/bash\ndnf update -y\ndnf install -y git\ndnf install -y docker\nsystemctl enable --now docker\nusermod -aG docker ec2-user\nmkdir -p /usr/local/lib/docker/cli-plugins\ncurl -SL https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose\nchmod +x /usr/local/lib/docker/cli-plugins/docker-compose\nfnm_installed=$(which fnm 2>/dev/null)\ncurl -fsSL https://fnm.vercel.app/install | bash\nexport PATH=\"/root/.local/share/fnm:$PATH\"\neval \"$(fnm env --use-on-cd)\"\nfnm install 20\nnpm install -g pnpm\nmkdir -p /app\ncd /app\ngit clone https://github.com/KumarEnterprises/IndiAi.git indiai || true\ncd indiai\necho 'UserData initial setup done! Ready for pipeline commands.' > /var/log/userdata_antigravity.log"
+     "Fn::Base64": "#!/bin/bash\n#!/bin/bash\ndnf update -y\ndnf install -y git\ndnf install -y docker\nsystemctl enable --now docker\nusermod -aG docker ec2-user\nmkdir -p /usr/local/lib/docker/cli-plugins\ncurl -SL https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose\nchmod +x /usr/local/lib/docker/cli-plugins/docker-compose\nfnm_installed=$(which fnm 2>/dev/null)\ncurl -fsSL https://fnm.vercel.app/install | bash\nexport PATH=\"/root/.local/share/fnm:$PATH\"\neval \"$(fnm env --use-on-cd)\"\nfnm install 20\nnpm install -g pnpm\nmkdir -p /app\ncd /app\ngit clone https://github.com/yogendraft21/IndiAi.git indiAi || true\ncd indiAi\necho 'UserData initial setup done! Ready for pipeline commands.' > /var/log/userdata_antigravity.log"
     }
    },
    "DependsOn": [

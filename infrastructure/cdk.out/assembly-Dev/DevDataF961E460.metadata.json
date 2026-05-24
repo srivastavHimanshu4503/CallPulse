@@ -17,7 +17,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DataStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/data-stack.ts:36:5)",
+        "new DataStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/data-stack.ts:30:5)",
         "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:33:18)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:21:1)",
         "...node internals, .pnpm, .pnpm..."
@@ -173,22 +173,6 @@
         "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:33:18)",
         "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:21:1)",
         "...node internals, .pnpm..."
-      ]
-    }
-  ],
-  "/Dev/Data/GlobalGitHubTokenParam/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "GlobalGitHubTokenParamD4097037"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...new StringParameter2 in .pnpm...",
-        "new DataStack (/Users/apple/Desktop/IndiAI/infrastructure/lib/shared/data-stack.ts:30:5)",
-        "new DeploymentStage (/Users/apple/Desktop/IndiAI/infrastructure/stacks/pipeline/deployment-stage.ts:33:18)",
-        "<anonymous> (/Users/apple/Desktop/IndiAI/infrastructure/bin/app.ts:21:1)",
-        "...node internals, .pnpm, .pnpm..."
       ]
     }
   ],

@@ -27,12 +27,6 @@ export class DataStack extends cdk.Stack {
       });
     });
 
-    new ssm.StringParameter(this, "GlobalGitHubTokenParam", {
-      parameterName: "/indiai/github-token",
-      stringValue: "CHANGE_ME",
-      description: "GitHub Webhook Token Placeholder for Pipeline orchestration. Update post deployment.",
-    });
-
     new cdk.CfnOutput(this, "DataConfigStatusOutput", {
       value: "SUCCESS",
       exportName: `indiai-${env}-DataConfigStatus`,

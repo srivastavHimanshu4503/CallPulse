@@ -84,18 +84,6 @@
     "aws:cdk:path": "Prod/Data/Param--indiai-prod-ai-api-key/Resource"
    }
   },
-  "GlobalGitHubTokenParamD4097037": {
-   "Type": "AWS::SSM::Parameter",
-   "Properties": {
-    "Description": "GitHub Webhook Token Placeholder for Pipeline orchestration. Update post deployment.",
-    "Name": "/indiai/github-token",
-    "Type": "String",
-    "Value": "CHANGE_ME"
-   },
-   "Metadata": {
-    "aws:cdk:path": "Prod/Data/GlobalGitHubTokenParam/Resource"
-   }
-  },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {

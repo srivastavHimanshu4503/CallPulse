@@ -1,15 +1,4 @@
 {
- "Parameters": {
-  "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter": {
-   "Type": "AWS::SSM::Parameter::Value<String>",
-   "Default": "/indiai/github-token"
-  },
-  "BootstrapVersion": {
-   "Type": "AWS::SSM::Parameter::Value<String>",
-   "Default": "/cdk-bootstrap/hnb659fds/version",
-   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
-  }
- },
  "Resources": {
   "BuildProjectRoleAA92C755": {
    "Type": "AWS::IAM::Role",
@@ -190,7 +179,7 @@
     },
     "Environment": {
      "ComputeType": "BUILD_GENERAL1_SMALL",
-     "Image": "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+     "Image": "aws/codebuild/standard:7.0",
      "ImagePullCredentialsType": "CODEBUILD",
      "PrivilegedMode": false,
      "Type": "LINUX_CONTAINER"
@@ -444,7 +433,7 @@
     },
     "Environment": {
      "ComputeType": "BUILD_GENERAL1_SMALL",
-     "Image": "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+     "Image": "aws/codebuild/standard:7.0",
      "ImagePullCredentialsType": "CODEBUILD",
      "PrivilegedMode": false,
      "Type": "LINUX_CONTAINER"
@@ -457,7 +446,7 @@
      ]
     },
     "Source": {
-     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"INSTANCE_ID=$(aws ssm get-parameter --name \\\"/indiai/ec2-instance-id\\\" --query \\\"Parameter.Value\\\" --output text)\",\n        \"echo \\\"Deploying to EC2 instance: $INSTANCE_ID\\\"\",\n        \"COMMAND_ID=$(aws ssm send-command \\\\\\n                  --instance-ids \\\"$INSTANCE_ID\\\" \\\\\\n                  --document-name \\\"AWS-RunShellScript\\\" \\\\\\n                  --parameters commands='[\\\"cd /app/indiai\\\", \\\"git pull origin main\\\", \\\"pnpm install --frozen-lockfile\\\", \\\"pnpm --filter api build\\\", \\\"docker compose up -d --build --remove-orphans\\\", \\\"echo \\\\\\\"Deploy complete $(date)\\\\\\\"\\\"]' \\\\\\n                  --query \\\"Command.CommandId\\\" --output text)\",\n        \"echo \\\"SSM Command sent. Command ID: $COMMAND_ID\\\"\",\n        \"aws ssm wait command-executed --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\",\n        \"aws ssm get-command-invocation --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\"\n      ]\n    }\n  }\n}",
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"INSTANCE_ID=$(aws ssm get-parameter --name /indiai/ec2-instance-id --region us-east-1 --query Parameter.Value --output text)\",\n        \"COMMAND_ID=$(aws ssm send-command --region ap-south-1 --instance-ids $INSTANCE_ID --document-name AWS-RunShellScript --parameters commands=[\\\"cd /app/indiAi\\\",\\\"git pull origin main\\\",\\\"pnpm install --frozen-lockfile\\\",\\\"pnpm --filter api build\\\",\\\"docker compose up -d --build --remove-orphans\\\",\\\"echo Deploy complete\\\"] --query Command.CommandId --output text)\",\n        \"aws ssm wait command-executed --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1\",\n        \"aws ssm get-command-invocation --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1\"\n      ]\n    }\n  }\n}",
      "Type": "CODEPIPELINE"
     }
    },
@@ -482,7 +471,7 @@
     },
     "Environment": {
      "ComputeType": "BUILD_GENERAL1_SMALL",
-     "Image": "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+     "Image": "aws/codebuild/standard:7.0",
      "ImagePullCredentialsType": "CODEBUILD",
      "PrivilegedMode": false,
      "Type": "LINUX_CONTAINER"
@@ -495,7 +484,7 @@
      ]
     },
     "Source": {
-     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"INSTANCE_ID=$(aws ssm get-parameter --name \\\"/indiai/ec2-instance-id\\\" --query \\\"Parameter.Value\\\" --output text)\",\n        \"echo \\\"Deploying to EC2 instance: $INSTANCE_ID\\\"\",\n        \"COMMAND_ID=$(aws ssm send-command \\\\\\n                  --instance-ids \\\"$INSTANCE_ID\\\" \\\\\\n                  --document-name \\\"AWS-RunShellScript\\\" \\\\\\n                  --parameters commands='[\\\"cd /app/indiai\\\", \\\"git pull origin main\\\", \\\"pnpm install --frozen-lockfile\\\", \\\"pnpm --filter api build\\\", \\\"docker compose up -d --build --remove-orphans\\\", \\\"echo \\\\\\\"Deploy complete $(date)\\\\\\\"\\\"]' \\\\\\n                  --query \\\"Command.CommandId\\\" --output text)\",\n        \"echo \\\"SSM Command sent. Command ID: $COMMAND_ID\\\"\",\n        \"aws ssm wait command-executed --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\",\n        \"aws ssm get-command-invocation --command-id \\\"$COMMAND_ID\\\" --instance-id \\\"$INSTANCE_ID\\\"\"\n      ]\n    }\n  }\n}",
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"INSTANCE_ID=$(aws ssm get-parameter --name /indiai/ec2-instance-id --region us-east-1 --query Parameter.Value --output text)\",\n        \"COMMAND_ID=$(aws ssm send-command --region ap-south-1 --instance-ids $INSTANCE_ID --document-name AWS-RunShellScript --parameters commands=[\\\"cd /app/indiAi\\\",\\\"git pull origin main\\\",\\\"pnpm install --frozen-lockfile\\\",\\\"pnpm --filter api build\\\",\\\"docker compose up -d --build --remove-orphans\\\",\\\"echo Deploy complete\\\"] --query Command.CommandId --output text)\",\n        \"aws ssm wait command-executed --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1\",\n        \"aws ssm get-command-invocation --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1\"\n      ]\n    }\n  }\n}",
      "Type": "CODEPIPELINE"
     }
    },
@@ -793,12 +782,10 @@
          "Version": "1"
         },
         "Configuration": {
-         "Owner": "KumarEnterprises",
+         "Owner": "yogendraft21",
          "Repo": "IndiAi",
          "Branch": "main",
-         "OAuthToken": {
-          "Ref": "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter"
-         },
+         "OAuthToken": "{{resolve:secretsmanager:indiai/github-token:SecretString:::}}",
          "PollForSourceChanges": false
         },
         "Name": "GitHub_Source",
@@ -949,9 +936,7 @@
    "Properties": {
     "Authentication": "GITHUB_HMAC",
     "AuthenticationConfiguration": {
-     "SecretToken": {
-      "Ref": "SsmParameterValueindiaigithubtokenC96584B6F00A464EAD1953AFF4B05118Parameter"
-     }
+     "SecretToken": "{{resolve:secretsmanager:indiai/github-token:SecretString:::}}"
     },
     "Filters": [
      {
@@ -1172,7 +1157,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OvQ7CMAyEn4U9NRCEmIGRgaoMjChNjXCTNlV+QCjKu6OkSDDd59P5bA58u4PVQrxcJTtVaWohXryQih3vYy2sGNCjZQ06E6xEJl7uFqXpsA2kO4g1TahpxNqaHqUvWzMmRmKA2BiN2S1aG03yXUKFEstV07fj11YSf3zF9mGMSkwNDuIJS0WWvSbh8lAgMbeBeAhSYfnkS7P8bv/PKWXnHPwUfGKj6RB6t3xyDnwN60XviCobRk8DQjPrB9eUDZo0AQAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OwQrCMBBEv6X3dLUR8awePVj04FHSdMVt0qaYxCIh/y5JC3qaN8Mwuxz4dgfrQky2lK0qNTUQrk5IxcRk70GaFhtPuoVQ04iaBqxfpkPp2PExLBgZiR7CxWhMadbaaJKfXMoUWZoal43fWm788Q2bpzEqMtVbCCfME0n2moRNJkNkdgPh4KXC/MlCs/xu//sYU3L2bvQussG0CJ1dvTkHXkFVdJaofPnBUY9wmfULisKXCB4BAAA="
    },
    "Metadata": {
     "aws:cdk:path": "IndiAiPipelineStack/CDKMetadata/Default"
@@ -1214,6 +1199,13 @@
    "Export": {
     "Name": "indiai-PipelineConsoleUrl"
    }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
   }
  },
  "Rules": {
