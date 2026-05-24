@@ -21,15 +21,55 @@ enum CustomFieldParentType {
 }
 
 enum CustomFieldValueSource {
-  CALL
-  SMS
   MANUAL
   WORKFLOW
+  CALL
+  SMS
 }
 
-enum CommunicationDirection {
+enum Direction {
   INBOUND
   OUTBOUND
+}
+
+enum CommType {
+  CALL
+  SMS
+  WHATSAPP
+  EMAIL
+}
+
+enum CommStatus {
+  IN_PROGRESS
+  COMPLETED
+  NO_ANSWER
+  FAILED
+  VOICEMAIL
+  BUSY
+  SENT
+  DELIVERED
+  RECEIVED
+  READ
+}
+
+enum ExtractionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  SKIPPED
+}
+
+enum Plan {
+  FREE
+  GROWTH
+  PRO
+}
+
+enum TeamSize {
+  SOLO
+  SMALL
+  MEDIUM
+  LARGE
 }
 
 enum ActivityType {
@@ -48,17 +88,47 @@ enum ActivityType {
   CONTACT_CREATED
 }
 
-model Tenant {
-  id        String    @id @default(uuid())
-  name      String
-  tenantId  String    @default(uuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+// ─────────────────────────────────────────────
+// TENANT — with onboarding fields
+// ─────────────────────────────────────────────
 
-  users    User[]
-  contacts Contact[]
+model Tenant {
+  id              String        @id @default(uuid())
+  name            String        // business name
+  slug            String        @unique
+  plan            Plan          @default(FREE)
+  timezone        String        @default("Asia/Kolkata")
+  businessType    String?       // retail | real estate | garage | ecommerce
+  websiteUrl      String?       // auto-scraped for first agent KB
+  teamSize        TeamSize?
+  monthlyRevenue  String?       // optional range: "0-1L" | "1-10L" | "10L+"
+  onboardingStep  Int           @default(0)
+  onboardingDone  Boolean       @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  users               User[]
+  contacts            Contact[]
+  customFieldDefs     CustomFieldDefinition[]
+  deals               Deal[]
+  workflows           WorkflowDefinition[]
+  workflowRuns        WorkflowRun[]
+  aiAgents            AIAgent[]
+  phoneNumbers        PhoneNumber[]
+  communicationLogs   CommunicationLog[]
+  activities          Activity[]
+  notes               Note[]
+  bookings            Booking[]
+  knowledgeBase       KnowledgeBase[]
+
+  @@map("tenants")
 }
+
+// ─────────────────────────────────────────────
+// USER — team members
+// ─────────────────────────────────────────────
 
 model User {
   id           String    @id @default(uuid())
@@ -74,7 +144,12 @@ model User {
   tenant Tenant @relation(fields: [tenantId], references: [id])
 
   @@unique([tenantId, email])
+  @@map("users")
 }
+
+// ─────────────────────────────────────────────
+// CONTACT — center of CRM
+// ─────────────────────────────────────────────
 
 model Contact {
   id        String    @id @default(uuid())
@@ -89,16 +164,19 @@ model Contact {
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 
-  customFields CustomFieldValue[]
-  activities   Activity[]
-  callLogs     CallLog[]
-  smsLogs      SmsLog[]
-  whatsappLogs WhatsappLog[]
-  emailLogs    EmailLog[]
-  deals        Deal[]
-  bookings     Booking[]
-  notes        Note[]
+  customFields      CustomFieldValue[]
+  deals             Deal[]
+  bookings          Booking[]
+  notes             Note[]
+  activities        Activity[]
+  communicationLogs CommunicationLog[]
+
+  @@map("contacts")
 }
+
+// ─────────────────────────────────────────────
+// CUSTOM FIELD DEF — typed field declarations
+// ─────────────────────────────────────────────
 
 model CustomFieldDefinition {
   id         String                @id @default(uuid())
@@ -109,83 +187,38 @@ model CustomFieldDefinition {
   createdAt  DateTime              @default(now())
   updatedAt  DateTime              @updatedAt
 
+  tenant Tenant @relation(fields: [tenantId], references: [id])
   values CustomFieldValue[]
+
+  @@map("custom_field_defs")
 }
 
+// ─────────────────────────────────────────────
+// CUSTOM FIELD VALUE — typed values per contact
+// ─────────────────────────────────────────────
+
 model CustomFieldValue {
-  id                 String                 @id @default(uuid())
-  tenantId           String
-  contactId          String
-  fieldDefinitionId  String
-  textValue          String?
-  numberValue        Float?
-  booleanValue       Boolean?
-  dateValue          DateTime?
-  source             CustomFieldValueSource
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
+  id                String                 @id @default(uuid())
+  tenantId          String
+  contactId         String
+  fieldDefinitionId String
+  textValue         String?
+  numberValue       Float?
+  booleanValue      Boolean?
+  dateValue         DateTime?
+  source            CustomFieldValueSource
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
 
   contact         Contact               @relation(fields: [contactId], references: [id])
   fieldDefinition CustomFieldDefinition @relation(fields: [fieldDefinitionId], references: [id])
+
+  @@map("custom_field_values")
 }
 
-model CallLog {
-  id           String                 @id @default(uuid())
-  tenantId     String
-  contactId    String
-  direction    CommunicationDirection
-  duration     Int
-  recordingUrl String?
-  transcript   String?
-  summary      String?
-  createdAt    DateTime               @default(now())
-  updatedAt    DateTime               @updatedAt
-
-  contact    Contact    @relation(fields: [contactId], references: [id])
-  activities Activity[]
-}
-
-model SmsLog {
-  id        String                 @id @default(uuid())
-  tenantId  String
-  contactId String
-  direction CommunicationDirection
-  message   String
-  status    String
-  createdAt DateTime               @default(now())
-  updatedAt DateTime               @updatedAt
-
-  contact    Contact    @relation(fields: [contactId], references: [id])
-  activities Activity[]
-}
-
-model WhatsappLog {
-  id        String                 @id @default(uuid())
-  tenantId  String
-  contactId String
-  direction CommunicationDirection
-  message   String
-  status    String
-  createdAt DateTime               @default(now())
-  updatedAt DateTime               @updatedAt
-
-  contact    Contact    @relation(fields: [contactId], references: [id])
-  activities Activity[]
-}
-
-model EmailLog {
-  id        String                 @id @default(uuid())
-  tenantId  String
-  contactId String
-  direction CommunicationDirection
-  subject   String
-  body      String
-  createdAt DateTime               @default(now())
-  updatedAt DateTime               @updatedAt
-
-  contact    Contact    @relation(fields: [contactId], references: [id])
-  activities Activity[]
-}
+// ─────────────────────────────────────────────
+// DEAL — sales pipeline
+// ─────────────────────────────────────────────
 
 model Deal {
   id        String    @id @default(uuid())
@@ -198,9 +231,16 @@ model Deal {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
   contact    Contact    @relation(fields: [contactId], references: [id])
   activities Activity[]
+
+  @@map("deals")
 }
+
+// ─────────────────────────────────────────────
+// BOOKING — appointments
+// ─────────────────────────────────────────────
 
 model Booking {
   id        String   @id @default(uuid())
@@ -213,9 +253,16 @@ model Booking {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
   contact    Contact    @relation(fields: [contactId], references: [id])
   activities Activity[]
+
+  @@map("bookings")
 }
+
+// ─────────────────────────────────────────────
+// NOTE — manual notes
+// ─────────────────────────────────────────────
 
 model Note {
   id        String   @id @default(uuid())
@@ -225,9 +272,16 @@ model Note {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
   contact    Contact    @relation(fields: [contactId], references: [id])
   activities Activity[]
+
+  @@map("notes")
 }
+
+// ─────────────────────────────────────────────
+// WORKFLOW DEF — agent-owned workflows
+// ─────────────────────────────────────────────
 
 model WorkflowDefinition {
   id          String   @id @default(uuid())
@@ -238,8 +292,15 @@ model WorkflowDefinition {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  runs WorkflowRun[]
+  tenant Tenant        @relation(fields: [tenantId], references: [id])
+  runs   WorkflowRun[]
+
+  @@map("workflow_definitions")
 }
+
+// ─────────────────────────────────────────────
+// WORKFLOW RUN — execution logs
+// ─────────────────────────────────────────────
 
 model WorkflowRun {
   id                   String    @id @default(uuid())
@@ -251,9 +312,17 @@ model WorkflowRun {
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
-  definition WorkflowDefinition @relation(fields: [workflowDefinitionId], references: [id])
-  activities Activity[]
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  definition        WorkflowDefinition @relation(fields: [workflowDefinitionId], references: [id])
+  activities        Activity[]
+  communicationLogs CommunicationLog[]
+
+  @@map("workflow_runs")
 }
+
+// ─────────────────────────────────────────────
+// AI AGENT — agent with full persona + settings
+// ─────────────────────────────────────────────
 
 model AIAgent {
   id           String   @id @default(uuid())
@@ -263,35 +332,126 @@ model AIAgent {
   modelName    String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  communicationLogs CommunicationLog[]
+  knowledgeBases    KnowledgeBase[]
+
+  @@map("ai_agents")
 }
 
+// ─────────────────────────────────────────────
+// PHONE NUMBER — assigned numbers
+// ─────────────────────────────────────────────
+
+model PhoneNumber {
+  id          String   @id @default(uuid())
+  tenantId    String
+  phoneNumber String   @unique
+  label       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("phone_numbers")
+}
+
+// ─────────────────────────────────────────────
+// KNOWLEDGE BASE — per-agent knowledge
+// ─────────────────────────────────────────────
+
+model KnowledgeBase {
+  id        String   @id @default(uuid())
+  tenantId  String
+  agentId   String
+  name      String
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant  @relation(fields: [tenantId], references: [id])
+  agent  AIAgent @relation(fields: [agentId], references: [id])
+
+  @@map("knowledge_bases")
+}
+
+// ─────────────────────────────────────────────
+// SINGLE TABLE FOR ALL COMMUNICATION LOGS
+// Replaces: CallLog, SmsLog, WhatsappLog
+// ─────────────────────────────────────────────
+
+model CommunicationLog {
+  id               String           @id @default(uuid())
+  tenantId         String
+  contactId        String
+  agentId          String
+  workflowRunId    String?
+  phoneNumberId    String?
+  type             CommType
+  direction        Direction
+  status           CommStatus
+  duration         Int?
+  recordingUrl     String?
+  transcript       String?
+  transcriptJson   Json?
+  sentimentScore   Float?
+  extractionStatus ExtractionStatus @default(PENDING)
+  extractedFields  Json?
+  body             String?
+  mediaUrl         String?
+  subject          String?
+  deliveredAt      DateTime?
+  provider         String?
+  providerRef      String?
+  metadata         Json?
+  occurredAt       DateTime
+  createdAt        DateTime         @default(now())
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id])
+  contact     Contact      @relation(fields: [contactId], references: [id])
+  agent       AIAgent      @relation(fields: [agentId], references: [id])
+  workflowRun WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+  activities  Activity[]
+
+  @@index([tenantId, occurredAt(sort: Desc)])
+  @@index([contactId, occurredAt(sort: Desc)])
+  @@index([agentId, occurredAt(sort: Desc)])
+  @@index([tenantId, type, occurredAt(sort: Desc)])
+  @@index([tenantId, agentId, type])
+  @@map("communication_logs")
+}
+
+// ─────────────────────────────────────────────
+// ACTIVITY — updated to reference CommunicationLog
+// ─────────────────────────────────────────────
+
 model Activity {
-  id            String       @id @default(uuid())
+  id            String            @id @default(uuid())
   tenantId      String
   contactId     String
   type          ActivityType
+  direction     Direction?
   summary       String
-  occurredAt    DateTime     @default(now())
-  callLogId     String?
-  smsLogId      String?
-  whatsappLogId String?
-  emailLogId    String?
+  metadata      Json?
+  commLogId     String?
   dealId        String?
   bookingId     String?
-  noteId        String?
   workflowRunId String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  noteId        String?
+  occurredAt    DateTime
+  createdAt     DateTime          @default(now())
 
-  contact     Contact      @relation(fields: [contactId], references: [id])
-  callLog     CallLog?     @relation(fields: [callLogId], references: [id])
-  smsLog      SmsLog?      @relation(fields: [smsLogId], references: [id])
-  whatsappLog WhatsappLog? @relation(fields: [whatsappLogId], references: [id])
-  emailLog    EmailLog?    @relation(fields: [emailLogId], references: [id])
-  deal        Deal?        @relation(fields: [dealId], references: [id])
-  booking     Booking?     @relation(fields: [bookingId], references: [id])
-  note        Note?        @relation(fields: [noteId], references: [id])
-  workflowRun WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+  tenant      Tenant            @relation(fields: [tenantId], references: [id])
+  contact     Contact           @relation(fields: [contactId], references: [id])
+  commLog     CommunicationLog? @relation(fields: [commLogId], references: [id])
+  deal        Deal?             @relation(fields: [dealId], references: [id])
+  booking     Booking?          @relation(fields: [bookingId], references: [id])
+  workflowRun WorkflowRun?      @relation(fields: [workflowRunId], references: [id])
+  note        Note?             @relation(fields: [noteId], references: [id])
 
   @@index([contactId, occurredAt(sort: Desc)])
+  @@index([tenantId, occurredAt(sort: Desc)])
+  @@index([tenantId, type])
+  @@map("activities")
 }
