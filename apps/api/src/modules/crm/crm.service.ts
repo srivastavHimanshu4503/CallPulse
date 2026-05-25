@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "../../config/database.js";
 import type { 
   Contact, 
   Deal, 
@@ -7,14 +7,12 @@ import type {
   SerializedContactDetails 
 } from "@antigravity/types";
 
-const prisma = new PrismaClient();
-
 export class CrmService {
   /**
    * Fetch contacts with their custom field values
    */
   async getContacts(tenantId: string): Promise<Contact[]> {
-    const list = await prisma.contact.findMany({
+    const list = await db.contact.findMany({
       where: {
         tenantId,
         deletedAt: null,
@@ -41,7 +39,7 @@ export class CrmService {
       createdAt: c.createdAt.toISOString(),
       updatedAt: c.updatedAt.toISOString(),
       deletedAt: c.deletedAt ? c.deletedAt.toISOString() : null,
-      customFields: c.customFields.map((cv) => ({
+      customFields: c.customFields.map((cv: any) => ({
         id: cv.id,
         tenantId: cv.tenantId,
         contactId: cv.contactId,
@@ -63,7 +61,7 @@ export class CrmService {
    * Create contact atomically with a CONTACT_CREATED system activity
    */
   async createContact(tenantId: string, data: { firstName: string; lastName: string; emails?: string[]; phones?: string[] }): Promise<Contact> {
-    return prisma.$transaction(async (tx) => {
+    return db.$transaction(async (tx: any) => {
       const created = await tx.contact.create({
         data: {
           tenantId,
@@ -103,7 +101,7 @@ export class CrmService {
    * Fetch full high-density contact details with timeline events
    */
   async getContactDetails(tenantId: string, id: string): Promise<SerializedContactDetails | null> {
-    const contact = await prisma.contact.findFirst({
+    const contact = await db.contact.findFirst({
       where: {
         id,
         tenantId,
@@ -210,7 +208,7 @@ export class CrmService {
    * Fetch all deals with their contacts
    */
   async getDeals(tenantId: string): Promise<Deal[]> {
-    const list = await prisma.deal.findMany({
+    const list = await db.deal.findMany({
       where: {
         tenantId,
         deletedAt: null,
@@ -241,7 +239,7 @@ export class CrmService {
    * Create deal linked to contact
    */
   async createDeal(tenantId: string, data: { contactId: string; title: string; value: number; stage: string }): Promise<Deal> {
-    return prisma.$transaction(async (tx) => {
+    return db.$transaction(async (tx: any) => {
       const created = await tx.deal.create({
         data: {
           tenantId,
@@ -281,7 +279,7 @@ export class CrmService {
    * Update deal stage (moves on board)
    */
   async updateDealStage(tenantId: string, id: string, stage: string): Promise<Deal> {
-    return prisma.$transaction(async (tx) => {
+    return db.$transaction(async (tx: any) => {
       const existing = await tx.deal.findFirst({
         where: { id, tenantId, deletedAt: null },
       });
@@ -324,7 +322,7 @@ export class CrmService {
    * Fetch custom fields definitions
    */
   async getCustomFields(tenantId: string): Promise<any[]> {
-    return prisma.customFieldDefinition.findMany({
+    return db.customFieldDefinition.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
     });
@@ -334,7 +332,7 @@ export class CrmService {
    * Create custom field definition
    */
   async createCustomField(tenantId: string, data: { name: string; type: "TEXT" | "NUMBER" | "BOOLEAN" | "DROPDOWN" | "DATE"; parentType?: "CONTACT" | "DEAL" }): Promise<any> {
-    return prisma.customFieldDefinition.create({
+    return db.customFieldDefinition.create({
       data: {
         tenantId,
         name: data.name,
@@ -348,7 +346,7 @@ export class CrmService {
    * Create note on contact details profile
    */
   async createNote(tenantId: string, contactId: string, content: string): Promise<Note> {
-    return prisma.$transaction(async (tx) => {
+    return db.$transaction(async (tx: any) => {
       const created = await tx.note.create({
         data: {
           tenantId,
@@ -383,7 +381,7 @@ export class CrmService {
    * Book appointment
    */
   async createBooking(tenantId: string, contactId: string, data: { title: string; startTime: Date; endTime: Date }): Promise<Booking> {
-    return prisma.$transaction(async (tx) => {
+    return db.$transaction(async (tx: any) => {
       const created = await tx.booking.create({
         data: {
           tenantId,
@@ -424,7 +422,7 @@ export class CrmService {
    * Update dynamic custom field values on Contact details
    */
   async updateContactCustomFieldValues(tenantId: string, contactId: string, values: { fieldDefinitionId: string; value: any }[]): Promise<void> {
-    await prisma.$transaction(async (tx) => {
+    await db.$transaction(async (tx: any) => {
       for (const item of values) {
         const def = await tx.customFieldDefinition.findFirst({
           where: { id: item.fieldDefinitionId, tenantId },
