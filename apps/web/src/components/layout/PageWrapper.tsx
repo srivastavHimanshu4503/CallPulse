@@ -4,22 +4,23 @@ import { Topbar } from "./Topbar.js";
 
 interface PageWrapperProps {
   children: React.ReactNode;
+  noScroll?: boolean;
 }
 
-export function PageWrapper({ children }: PageWrapperProps): React.JSX.Element {
+export function PageWrapper({ children, noScroll = false }: PageWrapperProps): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-white text-[#111111] font-sans antialiased">
+    <div className="h-screen overflow-hidden bg-white text-[#111111] font-sans antialiased">
       {/* Structural Sidebar - uses #FAFAFA, border #E5E5E5, width 240px */}
       <Sidebar />
 
       {/* Main Container */}
-      <div className="pl-[240px] flex flex-col min-h-screen bg-white">
+      <div className="pl-[240px] flex flex-col h-screen overflow-hidden bg-white">
         {/* Top Header Navigation - height 56px */}
         <Topbar />
 
         {/* Content Body Area - starts after Topbar */}
-        <main className="flex-1 pt-[56px] px-8 py-8 animate-in fade-in duration-200">
-          <div className="max-w-[1200px] mx-auto">
+        <main className={`flex-1 pt-[76px] px-8 pb-6 animate-in fade-in duration-200 flex flex-col ${noScroll ? "overflow-hidden" : "overflow-y-auto"}`}>
+          <div className={`max-w-[1200px] mx-auto w-full h-full flex flex-col ${noScroll ? "overflow-hidden" : ""}`}>
             {children}
           </div>
         </main>

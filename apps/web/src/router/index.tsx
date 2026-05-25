@@ -8,6 +8,8 @@ const Login = React.lazy(() => import("../pages/auth/Login.js"));
 const Register = React.lazy(() => import("../pages/auth/Register.js"));
 const ForgotPassword = React.lazy(() => import("../pages/auth/ForgotPassword.js"));
 const ResetPassword = React.lazy(() => import("../pages/auth/ResetPassword.js"));
+const Agents = React.lazy(() => import("../pages/agents/Agents.js"));
+const AgentLogs = React.lazy(() => import("../pages/agents/AgentLogs.js"));
 
 interface AuthGuardProps {
   children: React.JSX.Element;
@@ -47,6 +49,25 @@ export function AppRouter(): React.JSX.Element {
           element={
             <AuthGuard>
               <Dashboard />
+            </AuthGuard>
+          }
+        />
+
+        {/* Protected Agents Routes */}
+        <Route
+          path="/agents"
+          element={
+            <AuthGuard>
+              <Agents />
+            </AuthGuard>
+          }
+        />
+
+        <Route
+          path="/agents/:id/logs"
+          element={
+            <AuthGuard>
+              <AgentLogs />
             </AuthGuard>
           }
         />

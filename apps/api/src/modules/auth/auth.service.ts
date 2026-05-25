@@ -2,32 +2,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { db } from "../../config/database.js";
 import { env } from "../../config/env.js";
+import { generateTokens } from "../../utils/auth.helpers.js";
+import { generateBusinessSlug } from "@antigravity/utils";
 import type { RegisterInput, LoginInput, ResetPasswordInput } from "@antigravity/validators";
 import type { AuthResponseData, AuthTokens } from "@antigravity/types";
-
-// Helper to slugify business name and append a random 4-character suffix
-function generateBusinessSlug(businessName: string): string {
-  const clean = businessName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-  const suffix = Math.random().toString(36).substring(2, 6);
-  return `${clean}-${suffix}`;
-}
-
-// Helper to generate access and refresh tokens
-function generateTokens(userId: string, tenantId: string, email: string, name: string, role: string): AuthTokens {
-  const payload = { userId, tenantId, email, name, role };
-  
-  const accessToken = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "15m" });
-  const refreshToken = jwt.sign(payload, env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
-  
-  return {
-    accessToken,
-    refreshToken,
-    expiresIn: 900, // 15 minutes in seconds
-  };
-}
 
 export class AuthService {
   async register(data: RegisterInput): Promise<AuthResponseData> {

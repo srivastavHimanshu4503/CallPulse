@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { AuthService } from "./auth.service.js";
 import { sendSuccess, sendError } from "../../utils/response.js";
+import { getCleanErrorMessage } from "@antigravity/utils";
 import {
   registerSchema,
   loginSchema,
@@ -10,36 +11,6 @@ import {
 } from "@antigravity/validators";
 
 const authService = new AuthService();
-
-// Helper to filter raw database/Prisma constraints out, presenting clean text responses
-function getCleanErrorMessage(error: any): string {
-  if (!error) return "An unexpected error occurred";
-  
-  const msg = error.message || "";
-  
-  // Clean up database unique constraint violations
-  if (msg.includes("Unique constraint failed") || msg.includes("P2002")) {
-    if (msg.includes("email")) {
-      return "This email address is already in use by another workspace.";
-    }
-    if (msg.includes("slug") || msg.includes("Tenant")) {
-      return "A business with this exact name already exists. Please try a different name.";
-    }
-    return "A record with these unique details already exists.";
-  }
-  
-  // Clean up database foreign key constraint violations
-  if (msg.includes("Foreign key constraint violated") || msg.includes("P2003")) {
-    return "An integrity security check failed. Please ensure all related settings are valid.";
-  }
-  
-  // If it's a Prisma error, don't expose stack details to the user
-  if (msg.includes("PrismaClient") || msg.includes("invocation in") || msg.includes("Prisma Client")) {
-    return "A database operation error occurred. Please contact our support team.";
-  }
-  
-  return error.message || "An unexpected error occurred";
-}
 
 export class AuthController {
   async register(req: Request, res: Response): Promise<void> {

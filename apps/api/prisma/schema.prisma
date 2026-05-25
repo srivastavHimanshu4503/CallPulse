@@ -325,13 +325,36 @@ model WorkflowRun {
 // ─────────────────────────────────────────────
 
 model AIAgent {
-  id           String   @id @default(uuid())
-  tenantId     String
-  name         String
-  systemPrompt String
-  modelName    String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String             @id @default(uuid())
+  tenantId         String
+  name             String
+  role             String             @default("Support")
+  language         String             @default("Hinglish")
+  greetingMessage  String             @default("Namaste! Main aapki kaise help kar sakti hoon?")
+  tone             String             @default("Friendly")
+  fallbackMessage  String             @default("I'll connect you with our team for this. One moment please.")
+  businessInfo     String?
+  websiteUrl       String?
+  maxDuration      Int                @default(10)
+  dndCompliance    Boolean            @default(true)
+  recordingConsent Boolean            @default(true)
+  isActive         Boolean            @default(true)
+  systemPrompt     String
+  modelName        String
+  voice            String             @default("Priya (Indian Female)")
+  intakeWorkflowId String?
+  smsWorkflowId    String?
+  phoneNumberId    String?
+  intakeEnabled    Boolean            @default(false)
+  intakeFields     String[]           @default([])
+  intakePrompt     String?
+  smsEnabled       Boolean            @default(false)
+  smsTriggerCondition String?
+  smsTemplate      String?
+  smsAgentReply    String?
+  deletedAt        DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   tenant            Tenant             @relation(fields: [tenantId], references: [id])
   communicationLogs CommunicationLog[]

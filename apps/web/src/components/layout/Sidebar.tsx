@@ -1,20 +1,17 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, PhoneCall, Workflow, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, PhoneCall, Workflow, Settings, LogOut, Bot } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
 
 export function Sidebar(): React.JSX.Element {
   const location = useLocation();
   const logout = useAuthStore((state) => state.logout);
-  const tenant = useAuthStore((state) => state.tenant);
-
-  const tenantName = tenant?.name || "My Business Workspace";
-
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Contacts", href: "/contacts", icon: Users },
     { name: "Communication", href: "/comms", icon: PhoneCall },
     { name: "Workflows", href: "/workflows", icon: Workflow },
+    { name: "Agents", href: "/agents", icon: Bot },
     { name: "Settings", href: "/settings", icon: Settings },
   ];
 
@@ -22,21 +19,15 @@ export function Sidebar(): React.JSX.Element {
     <aside className="fixed inset-y-0 left-0 z-20 flex w-[240px] flex-col border-r border-[#E5E5E5] bg-[#FAFAFA] text-[#111111] transition-all select-none">
       
       {/* Brand area */}
-      <div className="flex h-14 items-center justify-start gap-2.5 px-6 border-b border-[#E5E5E5]">
-        <svg className="h-4.5 w-4.5 text-[#2563EB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-        <span className="font-semibold text-sm tracking-tight text-[#111111]">
+      <div className="flex h-14 items-center gap-3 px-6 border-b border-[#E5E5E5] bg-[#FAFAFA]">
+        <div className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] shrink-0">
+          <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <span className="font-bold text-sm tracking-tight text-[#111111] uppercase tracking-wider">
           IndiAI
         </span>
-      </div>
-
-      {/* Tenant Context Indicator */}
-      <div className="px-6 py-3 border-b border-[#E5E5E5] bg-white">
-        <div className="text-[10px] font-medium text-[#666666] uppercase tracking-wider mb-0.5">Workspace</div>
-        <div className="text-xs font-semibold truncate text-[#111111]" title={tenantName}>
-          {tenantName}
-        </div>
       </div>
 
       {/* Navigation List */}

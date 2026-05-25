@@ -36,21 +36,22 @@ body {
   border: 1px solid rgba(42, 42, 42, 0.5);
 }
 
-/* Custom premium scrollbar */
+/* Custom premium scrollbar - clean light theme minimal style */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0F0F0F;
+  background: #FAFAFA;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2A2A2A;
+  background: #E5E5E5;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6366F1;
+  background: #2563EB;
 }
+
