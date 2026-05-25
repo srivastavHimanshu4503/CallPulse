@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, PhoneCall, Workflow, Settings, LogOut, Bot } from "lucide-react";
+import { LayoutDashboard, Users, PhoneCall, Workflow, Settings, LogOut, Bot, Sparkles } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
 
 export function Sidebar(): React.JSX.Element {
@@ -8,7 +8,7 @@ export function Sidebar(): React.JSX.Element {
   const logout = useAuthStore((state) => state.logout);
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Contacts", href: "/contacts", icon: Users },
+    { name: "CRM", href: "/crm", icon: Users },
     { name: "Communication", href: "/comms", icon: PhoneCall },
     { name: "Workflows", href: "/workflows", icon: Workflow },
     { name: "Agents", href: "/agents", icon: Bot },
@@ -21,9 +21,7 @@ export function Sidebar(): React.JSX.Element {
       {/* Brand area */}
       <div className="flex h-14 items-center gap-3 px-6 border-b border-[#E5E5E5] bg-[#FAFAFA]">
         <div className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] shrink-0">
-          <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
+          <Sparkles className="h-4.5 w-4.5 text-[#2563EB]" />
         </div>
         <span className="font-bold text-sm tracking-tight text-[#111111] uppercase tracking-wider">
           IndiAI
