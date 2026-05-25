@@ -1,11 +1,10 @@
-import * as express from "express";
+import { UserSession } from "@antigravity/types";
 
 declare global {
   namespace Express {
     interface Request {
-      tenantId?: string;
       userId?: string;
+      tenantId?: string;
     }
   }
 }
-export {};

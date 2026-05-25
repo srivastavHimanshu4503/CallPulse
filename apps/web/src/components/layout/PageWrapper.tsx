@@ -8,18 +8,20 @@ interface PageWrapperProps {
 
 export function PageWrapper({ children }: PageWrapperProps): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-background-dark dark:bg-background-light transition-colors duration-200">
-      {/* Structural Layout Side Navigation */}
+    <div className="min-h-screen bg-white text-[#111111] font-sans antialiased">
+      {/* Structural Sidebar - uses #FAFAFA, border #E5E5E5, width 240px */}
       <Sidebar />
 
       {/* Main Container */}
-      <div className="pl-sidebar flex flex-col min-h-screen">
-        {/* Top Header Navigation */}
+      <div className="pl-[240px] flex flex-col min-h-screen bg-white">
+        {/* Top Header Navigation - height 56px */}
         <Topbar />
 
-        {/* Content Body Area */}
-        <main className="flex-1 pt-16 px-8 py-8 animate-in fade-in slide-in-from-bottom-3 duration-300">
-          {children}
+        {/* Content Body Area - starts after Topbar */}
+        <main className="flex-1 pt-[56px] px-8 py-8 animate-in fade-in duration-200">
+          <div className="max-w-[1200px] mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

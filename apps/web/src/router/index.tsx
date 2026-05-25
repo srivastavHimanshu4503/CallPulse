@@ -5,6 +5,9 @@ import { useAuthStore } from "../stores/auth.store.js";
 // Lazy-loaded pages as per Rules
 const Dashboard = React.lazy(() => import("../pages/dashboard/Dashboard.js"));
 const Login = React.lazy(() => import("../pages/auth/Login.js"));
+const Register = React.lazy(() => import("../pages/auth/Register.js"));
+const ForgotPassword = React.lazy(() => import("../pages/auth/ForgotPassword.js"));
+const ResetPassword = React.lazy(() => import("../pages/auth/ResetPassword.js"));
 
 interface AuthGuardProps {
   children: React.JSX.Element;
@@ -21,18 +24,26 @@ function AuthGuard({ children }: AuthGuardProps): React.JSX.Element {
 }
 
 export function AppRouter(): React.JSX.Element {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   return (
     <React.Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-background-dark text-primary text-lg font-bold">
+        <div className="flex min-h-screen items-center justify-center bg-[#0F0F0F] text-[#6366F1] text-lg font-bold">
           <div className="animate-spin text-3xl mr-3">🌀</div> Loading Antigravity...
         </div>
       }
     >
       <Routes>
+        {/* Auth routing shortcuts */}
+        <Route 
+          path="/" 
+          element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} 
+        />
+
         {/* Protected Dashboard Route */}
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <AuthGuard>
               <Dashboard />
@@ -40,8 +51,11 @@ export function AppRouter(): React.JSX.Element {
           }
         />
 
-        {/* Public Login Route */}
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Fallback Catch-All */}
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -50,3 +64,4 @@ export function AppRouter(): React.JSX.Element {
   );
 }
 export default AppRouter;
+

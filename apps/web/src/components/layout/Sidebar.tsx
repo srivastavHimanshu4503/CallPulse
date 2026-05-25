@@ -1,16 +1,17 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, PhoneCall, Workflow, Settings, LogOut } from "lucide-react";
-import { useAuth } from "../../hooks/useAuth.js";
-import { useTenantStore } from "../../stores/tenant.store.js";
+import { useAuthStore } from "../../stores/auth.store.js";
 
 export function Sidebar(): React.JSX.Element {
   const location = useLocation();
-  const { logout } = useAuth();
-  const tenantName = useTenantStore((state) => state.tenantName) || "Indian SMB";
+  const logout = useAuthStore((state) => state.logout);
+  const tenant = useAuthStore((state) => state.tenant);
+
+  const tenantName = tenant?.name || "My Business Workspace";
 
   const navigation = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Contacts", href: "/contacts", icon: Users },
     { name: "Communication", href: "/comms", icon: PhoneCall },
     { name: "Workflows", href: "/workflows", icon: Workflow },
@@ -18,23 +19,28 @@ export function Sidebar(): React.JSX.Element {
   ];
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-20 flex w-sidebar flex-col border-r border-border-dark dark:border-border-light bg-surface-dark dark:bg-surface-light text-text-dark dark:text-text-light transition-all">
+    <aside className="fixed inset-y-0 left-0 z-20 flex w-[240px] flex-col border-r border-[#E5E5E5] bg-[#FAFAFA] text-[#111111] transition-all select-none">
+      
       {/* Brand area */}
-      <div className="flex h-16 items-center justify-between px-6 border-b border-border-dark dark:border-border-light bg-black bg-opacity-20">
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg tracking-wide text-primary">
-          <span className="text-2xl">🌀</span>
-          <span>Antigravity</span>
-        </Link>
+      <div className="flex h-14 items-center justify-start gap-2.5 px-6 border-b border-[#E5E5E5]">
+        <svg className="h-4.5 w-4.5 text-[#2563EB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <span className="font-semibold text-sm tracking-tight text-[#111111]">
+          IndiAI
+        </span>
       </div>
 
       {/* Tenant Context Indicator */}
-      <div className="px-6 py-4 border-b border-border-dark dark:border-border-light bg-primary bg-opacity-5">
-        <div className="text-xs text-muted font-medium uppercase tracking-wider">Active Tenant</div>
-        <div className="text-sm font-semibold truncate text-primary">{tenantName}</div>
+      <div className="px-6 py-3 border-b border-[#E5E5E5] bg-white">
+        <div className="text-[10px] font-medium text-[#666666] uppercase tracking-wider mb-0.5">Workspace</div>
+        <div className="text-xs font-semibold truncate text-[#111111]" title={tenantName}>
+          {tenantName}
+        </div>
       </div>
 
       {/* Navigation List */}
-      <nav className="flex-1 space-y-1.5 px-4 py-6">
+      <nav className="flex-1 space-y-1 px-3 py-4">
         {navigation.map((item) => {
           const isActive = location.pathname === item.href;
           const Icon = item.icon;
@@ -43,13 +49,13 @@ export function Sidebar(): React.JSX.Element {
             <Link
               key={item.name}
               to={item.href}
-              className={`flex items-center gap-3.5 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 group ${
+              className={`flex items-center gap-3 rounded-[6px] px-3.5 py-2 text-xs font-medium transition-all ${
                 isActive
-                  ? "bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]"
-                  : "text-muted hover:bg-surface-dark dark:hover:bg-surface-light hover:text-text-dark dark:hover:text-text-light"
+                  ? "bg-[#EFF6FF] text-[#2563EB]"
+                  : "text-[#666666] hover:bg-[#F7F7F7] hover:text-[#111111]"
               }`}
             >
-              <Icon className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 ${isActive ? "text-white" : "text-muted"}`} />
+              <Icon className={`h-4.5 w-4.5 ${isActive ? "text-[#2563EB]" : "text-[#999999]"}`} />
               {item.name}
             </Link>
           );
@@ -57,12 +63,12 @@ export function Sidebar(): React.JSX.Element {
       </nav>
 
       {/* Logout Footer Section */}
-      <div className="border-t border-border-dark dark:border-border-light p-4">
+      <div className="border-t border-[#E5E5E5] p-3 bg-white">
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3.5 rounded-lg px-4 py-3 text-sm font-medium text-error hover:bg-error hover:bg-opacity-10 transition-colors"
+          className="flex w-full items-center gap-3 rounded-[6px] border border-[#DC2626] bg-white px-3.5 py-2 text-xs font-medium text-[#DC2626] hover:bg-[#DC2626]/5 transition-colors h-10"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-4.5 w-4.5 text-[#DC2626]" />
           Logout
         </button>
       </div>

@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import cors from "cors";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import { sendSuccess } from "./utils/response.js";
+import { authRouter } from "./modules/auth/auth.router.js";
 
 const app: Express = express();
 
@@ -9,6 +10,10 @@ const app: Express = express();
 app.use(cors({ origin: "*" })); // Configure strictly in production
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Register routes
+app.use("/api/v1/auth", authRouter);
+
 
 // Health Check Route - returns { success: true, version: "1.0.0" } as requested
 app.get("/api/v1/health", (_req, res) => {

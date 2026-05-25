@@ -9,9 +9,26 @@ export interface UserSession {
 export interface AuthTokens {
   accessToken: string;
   refreshToken: string;
+  expiresIn: number;
+}
+
+export interface SerializedUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface SerializedTenant {
+  id: string;
+  name: string;
+  slug: string;
+  plan: string;
 }
 
 export interface AuthResponseData {
-  user: UserSession;
+  user: SerializedUser;
+  tenant: SerializedTenant;
   tokens: AuthTokens;
 }
+
