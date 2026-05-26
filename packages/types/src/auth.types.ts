@@ -24,6 +24,9 @@ export interface SerializedTenant {
   name: string;
   slug: string;
   plan: string;
+  businessType?: string | null;
+  websiteUrl?: string | null;
+  teamSize?: string | null;
 }
 
 export interface AuthResponseData {

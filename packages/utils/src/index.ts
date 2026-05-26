@@ -75,3 +75,44 @@ export function getCleanErrorMessage(error: unknown): string {
   return msg || "An unexpected error occurred";
 }
 
+// Helper to format activity summaries by replacing Unix timestamp values with formatted dates
+export function formatActivitySummary(summary: string): string {
+  if (!summary) return "";
+  
+  return summary.replace(/"(\d{10})"/g, (match, p1) => {
+    const timestamp = parseInt(p1, 10);
+    if (timestamp > 1500000000 && timestamp < 2100000000) {
+      try {
+        const dateObj = new Date(timestamp * 1000);
+        return `"${dateObj.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}"`;
+      } catch {
+        return match;
+      }
+    }
+    return match;
+  }).replace(/\b(\d{10})\b/g, (match) => {
+    const timestamp = parseInt(match, 10);
+    if (timestamp > 1500000000 && timestamp < 2100000000) {
+      try {
+        const dateObj = new Date(timestamp * 1000);
+        return dateObj.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } catch {
+        return match;
+      }
+    }
+    return match;
+  });
+}
+

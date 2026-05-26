@@ -1,10 +1,10 @@
 import { db } from "../../config/database.js";
-import type { 
-  Contact, 
-  Deal, 
-  Booking, 
-  Note, 
-  SerializedContactDetails 
+import type {
+  Contact,
+  Deal,
+  Booking,
+  Note,
+  SerializedContactDetails
 } from "@antigravity/types";
 
 export class CrmService {
@@ -29,7 +29,7 @@ export class CrmService {
       },
     });
 
-    return list.map((c) => ({
+    return list.map((c: any) => ({
       id: c.id,
       tenantId: c.tenantId,
       firstName: c.firstName,
@@ -47,7 +47,7 @@ export class CrmService {
         textValue: cv.textValue,
         numberValue: cv.numberValue,
         booleanValue: cv.booleanValue,
-        dateValue: cv.dateValue ? cv.dateValue.toISOString() : null,
+        dateValue: cv.dateValue ? Math.floor(cv.dateValue.getTime() / 1000) : null,
         source: cv.source,
         createdAt: cv.createdAt.toISOString(),
         updatedAt: cv.updatedAt.toISOString(),
@@ -140,17 +140,18 @@ export class CrmService {
       lastName: contact.lastName,
       emails: contact.emails,
       phones: contact.phones,
-      customFields: contact.customFields.map((cv) => ({
+      customFields: contact.customFields.map((cv: any) => ({
         id: cv.id,
         fieldDefinitionId: cv.fieldDefinitionId,
         name: cv.fieldDefinition.name,
         type: cv.fieldDefinition.type,
-        value: cv.textValue ?? cv.numberValue ?? cv.booleanValue ?? cv.dateValue?.toISOString() ?? "",
+        value: cv.textValue ?? cv.numberValue ?? cv.booleanValue ?? (cv.dateValue ? Math.floor(cv.dateValue.getTime() / 1000) : ""),
       })),
-      deals: contact.deals.map((d) => ({
+      deals: contact.deals.map((d: any) => ({
         id: d.id,
         tenantId: d.tenantId,
         contactId: d.contactId,
+        pipelineId: d.pipelineId,
         title: d.title,
         value: d.value,
         stage: d.stage,
@@ -158,7 +159,7 @@ export class CrmService {
         updatedAt: d.updatedAt.toISOString(),
         deletedAt: d.deletedAt ? d.deletedAt.toISOString() : null,
       })),
-      bookings: contact.bookings.map((b) => ({
+      bookings: contact.bookings.map((b: any) => ({
         id: b.id,
         tenantId: b.tenantId,
         contactId: b.contactId,
@@ -169,7 +170,7 @@ export class CrmService {
         createdAt: b.createdAt.toISOString(),
         updatedAt: b.updatedAt.toISOString(),
       })),
-      notes: contact.notes.map((n) => ({
+      notes: contact.notes.map((n: any) => ({
         id: n.id,
         tenantId: n.tenantId,
         contactId: n.contactId,
@@ -177,7 +178,7 @@ export class CrmService {
         createdAt: n.createdAt.toISOString(),
         updatedAt: n.updatedAt.toISOString(),
       })),
-      activities: contact.activities.map((a) => ({
+      activities: contact.activities.map((a: any) => ({
         id: a.id,
         tenantId: a.tenantId,
         contactId: a.contactId,
@@ -221,10 +222,11 @@ export class CrmService {
       },
     });
 
-    return list.map((d) => ({
+    return list.map((d: any) => ({
       id: d.id,
       tenantId: d.tenantId,
       contactId: d.contactId,
+      pipelineId: d.pipelineId,
       title: d.title,
       value: d.value,
       stage: d.stage,
@@ -238,12 +240,13 @@ export class CrmService {
   /**
    * Create deal linked to contact
    */
-  async createDeal(tenantId: string, data: { contactId: string; title: string; value: number; stage: string }): Promise<Deal> {
+  async createDeal(tenantId: string, data: { contactId: string; pipelineId?: string | null; title: string; value: number; stage: string }): Promise<Deal> {
     return db.$transaction(async (tx: any) => {
       const created = await tx.deal.create({
         data: {
           tenantId,
           contactId: data.contactId,
+          pipelineId: data.pipelineId || null,
           title: data.title,
           value: data.value,
           stage: data.stage,
@@ -265,6 +268,7 @@ export class CrmService {
         id: created.id,
         tenantId: created.tenantId,
         contactId: created.contactId,
+        pipelineId: created.pipelineId,
         title: created.title,
         value: created.value,
         stage: created.stage,
@@ -308,6 +312,7 @@ export class CrmService {
         id: updated.id,
         tenantId: updated.tenantId,
         contactId: updated.contactId,
+        pipelineId: updated.pipelineId,
         title: updated.title,
         value: updated.value,
         stage: updated.stage,
@@ -331,14 +336,104 @@ export class CrmService {
   /**
    * Create custom field definition
    */
-  async createCustomField(tenantId: string, data: { name: string; type: "TEXT" | "NUMBER" | "BOOLEAN" | "DROPDOWN" | "DATE"; parentType?: "CONTACT" | "DEAL" }): Promise<any> {
+  async createCustomField(tenantId: string, data: { name: string; type: "TEXT" | "NUMBER" | "BOOLEAN" | "DROPDOWN" | "DATE"; parentType?: "CONTACT" | "DEAL"; options?: string[] }): Promise<any> {
     return db.customFieldDefinition.create({
       data: {
         tenantId,
         name: data.name,
         type: data.type,
         parentType: data.parentType || "CONTACT",
+        options: data.options || [],
       },
+    });
+  }
+
+  /**
+   * Get dynamic custom pipelines. If none exist, seeds a default "Sales Pipeline"
+   */
+  async getPipelines(tenantId: string): Promise<any[]> {
+    const list = await db.pipeline.findMany({
+      where: { tenantId },
+      orderBy: { createdAt: "asc" },
+    });
+
+    if (list.length > 0) return list;
+
+    // Seed a default Sales Pipeline atomically
+    const defaultPipeline = await db.pipeline.create({
+      data: {
+        tenantId,
+        name: "Sales Pipeline",
+        stages: [
+          "Contacted Us",
+          "Prospect Contacted",
+          "Visited",
+          "Prospect",
+          "Application Received"
+        ],
+      },
+    });
+
+    return [defaultPipeline];
+  }
+
+  /**
+   * Create custom pipeline
+   */
+  async createPipeline(tenantId: string, data: { name: string; stages: string[]; filters?: any[] | null }): Promise<any> {
+    return db.pipeline.create({
+      data: {
+        tenantId,
+        name: data.name,
+        stages: data.stages,
+        filters: (data.filters as any) || undefined,
+      },
+    });
+  }
+
+  /**
+   * Update dynamic custom pipeline stages or settings
+   */
+  async updatePipeline(tenantId: string, id: string, data: { name: string; stages: string[]; filters?: any[] | null }): Promise<any> {
+    const existing = await db.pipeline.findFirst({
+      where: { id, tenantId },
+    });
+
+    if (!existing) {
+      throw new Error("Pipeline not found");
+    }
+
+    return db.pipeline.update({
+      where: { id },
+      data: {
+        name: data.name,
+        stages: data.stages,
+        filters: (data.filters as any) || null,
+      },
+    });
+  }
+
+  /**
+   * Delete dynamic custom pipeline
+   */
+  async deletePipeline(tenantId: string, id: string): Promise<void> {
+    const existing = await db.pipeline.findFirst({
+      where: { id, tenantId },
+    });
+
+    if (!existing) {
+      throw new Error("Pipeline not found");
+    }
+
+    await db.$transaction(async (tx: any) => {
+      await tx.deal.updateMany({
+        where: { pipelineId: id, tenantId },
+        data: { pipelineId: null },
+      });
+
+      await tx.pipeline.delete({
+        where: { id },
+      });
     });
   }
 
@@ -441,7 +536,21 @@ export class CrmService {
         const textVal = def.type === "TEXT" || def.type === "DROPDOWN" ? String(item.value) : null;
         const numVal = def.type === "NUMBER" ? Number(item.value) : null;
         const boolVal = def.type === "BOOLEAN" ? Boolean(item.value) : null;
-        const dateVal = def.type === "DATE" && item.value ? new Date(item.value) : null;
+        
+        let dateVal: Date | null = null;
+        if (def.type === "DATE" && item.value) {
+          const val = item.value;
+          if (typeof val === "number") {
+            const isSeconds = val < 10000000000;
+            dateVal = new Date(isSeconds ? val * 1000 : val);
+          } else if (typeof val === "string" && /^\d+$/.test(val)) {
+            const num = Number(val);
+            const isSeconds = num < 10000000000;
+            dateVal = new Date(isSeconds ? num * 1000 : num);
+          } else {
+            dateVal = new Date(val);
+          }
+        }
 
         if (match) {
           await tx.customFieldValue.update({
@@ -479,6 +588,92 @@ export class CrmService {
           },
         });
       }
+    });
+  }
+
+  /**
+   * Soft delete deal record
+   */
+  async deleteDeal(tenantId: string, id: string): Promise<void> {
+    await db.$transaction(async (tx: any) => {
+      const existing = await tx.deal.findFirst({
+        where: { id, tenantId, deletedAt: null },
+      });
+
+      if (!existing) {
+        throw new Error("Deal not found");
+      }
+
+      await tx.deal.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
+
+      // Log activity
+      await tx.activity.create({
+        data: {
+          tenantId,
+          contactId: existing.contactId,
+          dealId: existing.id,
+          type: "DEAL_STAGE_CHANGED",
+          summary: `Pipeline record opportunity "${existing.title}" was removed`,
+          occurredAt: new Date(),
+        },
+      });
+    });
+  }
+
+  /**
+   * Update deal details (title, value, stage)
+   */
+  async updateDeal(tenantId: string, id: string, data: { title?: string; value?: number; stage?: string }): Promise<any> {
+    return db.$transaction(async (tx: any) => {
+      const existing = await tx.deal.findFirst({
+        where: { id, tenantId, deletedAt: null },
+      });
+
+      if (!existing) {
+        throw new Error("Deal not found");
+      }
+
+      const updated = await tx.deal.update({
+        where: { id },
+        data: {
+          title: data.title !== undefined ? data.title : undefined,
+          value: data.value !== undefined ? data.value : undefined,
+          stage: data.stage !== undefined ? data.stage : undefined,
+        },
+      });
+
+      // Log activity if stage changed or title changed
+      let summary = `Pipeline record "${updated.title}" updated`;
+      if (data.stage !== undefined && data.stage !== existing.stage) {
+        summary = `Deal "${updated.title}" moved stage from "${existing.stage}" to "${updated.stage}"`;
+      }
+
+      await tx.activity.create({
+        data: {
+          tenantId,
+          contactId: updated.contactId,
+          type: "DEAL_STAGE_CHANGED",
+          dealId: updated.id,
+          summary,
+          occurredAt: new Date(),
+        },
+      });
+
+      return {
+        id: updated.id,
+        tenantId: updated.tenantId,
+        contactId: updated.contactId,
+        pipelineId: updated.pipelineId,
+        title: updated.title,
+        value: updated.value,
+        stage: updated.stage,
+        createdAt: updated.createdAt.toISOString(),
+        updatedAt: updated.updatedAt.toISOString(),
+        deletedAt: null,
+      };
     });
   }
 }

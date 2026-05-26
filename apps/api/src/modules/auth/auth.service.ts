@@ -107,6 +107,9 @@ export class AuthService {
         name: result.tenant.name,
         slug: result.tenant.slug,
         plan: result.tenant.plan,
+        businessType: result.tenant.businessType,
+        websiteUrl: result.tenant.websiteUrl,
+        teamSize: result.tenant.teamSize,
       },
       tokens,
     };
@@ -162,6 +165,9 @@ export class AuthService {
         name: user.tenant.name,
         slug: user.tenant.slug,
         plan: user.tenant.plan,
+        businessType: user.tenant.businessType,
+        websiteUrl: user.tenant.websiteUrl,
+        teamSize: user.tenant.teamSize,
       },
       tokens,
     };
@@ -336,6 +342,9 @@ export class AuthService {
         name: true,
         slug: true,
         plan: true,
+        businessType: true,
+        websiteUrl: true,
+        teamSize: true,
       },
     });
 

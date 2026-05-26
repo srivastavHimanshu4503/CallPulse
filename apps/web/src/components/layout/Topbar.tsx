@@ -1,27 +1,18 @@
 import * as React from "react";
-import { Bell, Search, User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
+import { useUIStore } from "../../stores/ui.store.js";
 
 export function Topbar(): React.JSX.Element {
   const user = useAuthStore((state) => state.user);
+  const sidebarMinimized = useUIStore((state) => state.sidebarMinimized);
   
   const userName = user?.name || "Workspace Owner";
   const userRole = user?.role || "OWNER";
 
   return (
-    <header className="fixed top-0 right-0 left-[240px] z-10 flex h-14 items-center justify-between border-b border-[#E5E5E5] bg-white px-8 select-none">
+    <header className={`fixed top-0 right-0 z-10 flex h-14 items-center justify-end border-b border-[#E5E5E5] bg-white px-8 select-none transition-all duration-200 ${sidebarMinimized ? "left-[64px]" : "left-[240px]"}`}>
       
-      {/* Search Input Placeholder */}
-      <div className="flex w-96 items-center gap-2.5 rounded-[6px] border border-[#E5E5E5] bg-white px-3 py-1.5 focus-within:border-[#2563EB] transition-colors">
-        <Search className="h-4 w-4 text-[#999999]" />
-        <input
-          type="text"
-          placeholder="Quick search... (Press '/' to focus)"
-          className="w-full bg-transparent text-xs text-[#111111] placeholder-[#999999] focus:outline-none"
-          disabled
-        />
-      </div>
-
       {/* Action / Profile items */}
       <div className="flex items-center gap-5">
         {/* Notifications Icon */}
@@ -44,4 +35,6 @@ export function Topbar(): React.JSX.Element {
     </header>
   );
 }
+
 export default Topbar;
+

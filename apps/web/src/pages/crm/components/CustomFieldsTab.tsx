@@ -14,6 +14,7 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
   const [isAddOpen, setIsAddOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [type, setType] = React.useState<"TEXT" | "NUMBER" | "BOOLEAN" | "DROPDOWN" | "DATE">("TEXT");
+  const [dropdownOptionsText, setDropdownOptionsText] = React.useState("");
 
   const createFieldMutation = useMutation({
     mutationFn: async (payload: any) => {
@@ -26,6 +27,7 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
       setIsAddOpen(false);
       setName("");
       setType("TEXT");
+      setDropdownOptionsText("");
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.error || "Failed to create custom field definition");
@@ -39,10 +41,20 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
       return;
     }
 
+    const options = type === "DROPDOWN"
+      ? dropdownOptionsText.split(",").map((o) => o.trim()).filter(Boolean)
+      : [];
+
+    if (type === "DROPDOWN" && options.length === 0) {
+      toast.error("Dropdown fields require at least one option");
+      return;
+    }
+
     createFieldMutation.mutate({
       name: name.trim(),
       type,
       parentType: "CONTACT",
+      options,
     });
   };
 
@@ -93,9 +105,16 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
                   <td className="px-6 text-center font-bold text-[#999999]">{idx + 1}</td>
                   <td className="px-6 font-bold text-[#111111]">{def.name}</td>
                   <td className="px-6 font-medium">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] uppercase tracking-wide border border-[#2563EB]/10">
-                      {def.type}
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span className="w-fit inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] uppercase tracking-wide border border-[#2563EB]/10">
+                        {def.type}
+                      </span>
+                      {def.type === "DROPDOWN" && def.options && def.options.length > 0 && (
+                        <span className="text-[10px] text-[#999999] leading-tight font-medium max-w-xs truncate" title={def.options.join(", ")}>
+                          Values: {def.options.join(", ")}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 font-medium capitalize">{def.parentType.toLowerCase()}</td>
                   <td className="px-6 font-medium">
@@ -158,6 +177,23 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
                   <option value="DROPDOWN">DROPDOWN (Fixed option menus)</option>
                 </select>
               </div>
+
+              {type === "DROPDOWN" && (
+                <div className="animate-in fade-in slide-in-from-top-1 duration-150">
+                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Selectable Options (comma-separated) *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Hot Lead, Warm Lead, Cold Lead"
+                    value={dropdownOptionsText}
+                    onChange={(e) => setDropdownOptionsText(e.target.value)}
+                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
+                  />
+                  <p className="text-[9px] text-[#999999] mt-1 font-medium leading-relaxed">
+                    Provide exact option labels separated by commas.
+                  </p>
+                </div>
+              )}
 
               <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
                 <Button

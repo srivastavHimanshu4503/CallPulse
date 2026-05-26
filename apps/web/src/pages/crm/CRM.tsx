@@ -2,12 +2,14 @@ import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { api } from "../../lib/axios.js";
-import { Users, LayoutDashboard, Sliders } from "lucide-react";
+import { Users, FolderKanban, Sliders } from "lucide-react";
 import { ContactsTab } from "./components/ContactsTab.js";
 import { PipelineTab } from "./components/PipelineTab.js";
 import { CustomFieldsTab } from "./components/CustomFieldsTab.js";
 
 type ActiveTab = "contacts" | "pipeline" | "custom-fields";
+
+// Safe edit to force TS file re-indexing in IDE
 
 export function CRM(): React.JSX.Element {
   const [activeTab, setActiveTab] = React.useState<ActiveTab>("contacts");
@@ -31,7 +33,7 @@ export function CRM(): React.JSX.Element {
 
   const tabs = [
     { id: "contacts", label: "Contacts", icon: Users },
-    { id: "pipeline", label: "Sales Pipeline", icon: LayoutDashboard },
+    { id: "pipeline", label: "Pipelines", icon: FolderKanban },
     { id: "custom-fields", label: "Custom Fields", icon: Sliders },
   ];
 
@@ -86,6 +88,7 @@ export function CRM(): React.JSX.Element {
             <PipelineTab 
               contacts={contacts} 
               refetchContacts={refetchContacts} 
+              customFieldDefs={customFields}
             />
           )}
 

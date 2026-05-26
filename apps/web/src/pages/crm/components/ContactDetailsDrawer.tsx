@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "@antigravity/ui";
 import { toast } from "sonner";
+import { formatActivitySummary } from "@antigravity/utils";
 
 interface ContactDetailsDrawerProps {
   contactId: string;
@@ -27,6 +28,22 @@ export function ContactDetailsDrawer({
   const [bookingStart, setBookingStart] = React.useState("");
   const [isBookingOpen, setIsBookingOpen] = React.useState(false);
 
+  // Pipeline register / Deal states
+  const [isDealOpen, setIsDealOpen] = React.useState(false);
+  const [dealTitle, setDealTitle] = React.useState("");
+  const [dealValue, setDealValue] = React.useState("");
+  const [dealPipelineId, setDealPipelineId] = React.useState("");
+  const [dealStage, setDealStage] = React.useState("");
+
+  // Fetch dynamic pipelines list for mapping
+  const { data: pipelines = [] } = useQuery({
+    queryKey: ["pipelines"],
+    queryFn: async () => {
+      const res = await api.get("/crm/pipelines");
+      return res.data.data;
+    },
+  });
+
   // Custom fields edited values map: { fieldDefinitionId: value }
   const [fieldValues, setFieldValues] = React.useState<Record<string, string>>({});
 
@@ -43,8 +60,31 @@ export function ContactDetailsDrawer({
   React.useEffect(() => {
     if (details?.customFields) {
       const map: Record<string, string> = {};
+      const parseDateVal = (val: any) => {
+        if (typeof val === "number") {
+          const isSeconds = val < 10000000000;
+          return new Date(isSeconds ? val * 1000 : val);
+        }
+        if (typeof val === "string" && /^\d+$/.test(val)) {
+          const num = Number(val);
+          const isSeconds = num < 10000000000;
+          return new Date(isSeconds ? num * 1000 : num);
+        }
+        return new Date(val);
+      };
+
       details.customFields.forEach((cf: any) => {
-        map[cf.fieldDefinitionId] = String(cf.value ?? "");
+        if (cf.type === "DATE" && cf.value) {
+          try {
+            const d = parseDateVal(cf.value);
+            const pad = (num: number) => String(num).padStart(2, "0");
+            map[cf.fieldDefinitionId] = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+          } catch {
+            map[cf.fieldDefinitionId] = String(cf.value ?? "");
+          }
+        } else {
+          map[cf.fieldDefinitionId] = String(cf.value ?? "");
+        }
       });
       setFieldValues(map);
     }
@@ -85,6 +125,25 @@ export function ContactDetailsDrawer({
     },
   });
 
+  const createDealMutation = useMutation({
+    mutationFn: async (payload: any) => {
+      const res = await api.post("/crm/deals", payload);
+      return res.data.data;
+    },
+    onSuccess: () => {
+      toast.success("Opportunity successfully moved/registered in pipeline!");
+      setDealTitle("");
+      setDealValue("");
+      setDealPipelineId("");
+      setDealStage("");
+      setIsDealOpen(false);
+      refetch();
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.error || "Failed to create pipeline record");
+    },
+  });
+
   // 4. Save Custom Fields values Mutation
   const saveFieldsMutation = useMutation({
     mutationFn: async (values: any[]) => {
@@ -100,10 +159,17 @@ export function ContactDetailsDrawer({
   });
 
   const handleSaveFields = () => {
-    const payload = Object.entries(fieldValues).map(([defId, val]) => ({
-      fieldDefinitionId: defId,
-      value: val,
-    }));
+    const payload = Object.entries(fieldValues).map(([defId, val]) => {
+      const def = customFieldDefs.find((f: any) => f.id === defId);
+      let finalVal: any = val;
+      if (def?.type === "DATE" && val) {
+        finalVal = Math.floor(new Date(val).getTime() / 1000);
+      }
+      return {
+        fieldDefinitionId: defId,
+        value: finalVal,
+      };
+    });
     saveFieldsMutation.mutate(payload);
   };
 
@@ -171,13 +237,36 @@ export function ContactDetailsDrawer({
                 {customFieldDefs.map((def: any) => (
                   <div key={def.id} className="space-y-1.5">
                     <label className="block text-[11px] font-bold text-[#111111] uppercase tracking-wider">{def.name}</label>
-                    <input
-                      type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "date" : "text"}
-                      placeholder={`Enter custom ${def.name}...`}
-                      value={fieldValues[def.id] || ""}
-                      onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
-                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-8 px-2.5 focus:outline-none"
-                    />
+                    {def.type === "DROPDOWN" ? (
+                      <select
+                        value={fieldValues[def.id] || ""}
+                        onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
+                        className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-8 px-2 focus:outline-none"
+                      >
+                        <option value="">Select option...</option>
+                        {def.options?.map((opt: string) => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    ) : def.type === "BOOLEAN" ? (
+                      <select
+                        value={fieldValues[def.id] || ""}
+                        onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
+                        className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-8 px-2 focus:outline-none"
+                      >
+                        <option value="">Select option...</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    ) : (
+                      <input
+                        type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "datetime-local" : "text"}
+                        placeholder={`Enter custom ${def.name}...`}
+                        value={fieldValues[def.id] || ""}
+                        onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
+                        className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-8 px-2.5 focus:outline-none"
+                      />
+                    )}
                   </div>
                 ))}
                 <Button
@@ -213,7 +302,9 @@ export function ContactDetailsDrawer({
                             {isCall ? <PhoneCall className="h-3.5 w-3.5" /> : <MessageSquare className="h-3.5 w-3.5" />}
                           </div>
                           <div>
-                            <h5 className="text-xs font-bold text-[#111111] leading-snug">{a.summary}</h5>
+                            <h5 className="text-xs font-bold text-[#111111] leading-snug">
+                              {formatActivitySummary(a.summary)}
+                            </h5>
                             <span className="text-[9px] font-semibold text-[#999999] uppercase tracking-wider block mt-1">
                               {new Date(a.occurredAt).toLocaleString("en-IN")}
                             </span>
@@ -249,9 +340,110 @@ export function ContactDetailsDrawer({
 
           {/* COLUMN 4: Linked Objects & Action triggers (1/4 width) */}
           <div className="p-5 overflow-y-auto space-y-5 select-none">
-            <div className="text-[10px] font-bold text-[#999999] uppercase tracking-wider border-b border-[#E5E5E5] pb-1.5 flex items-center gap-1">
-              <Layers className="h-3.5 w-3.5" /> Opportunity objects
+            <div className="text-[10px] font-bold text-[#999999] uppercase tracking-wider border-b border-[#E5E5E5] pb-1.5 flex items-center justify-between">
+              <span className="flex items-center gap-1"><Layers className="h-3.5 w-3.5" /> Opportunity objects</span>
+              {!isDealOpen && (
+                <button 
+                  onClick={() => setIsDealOpen(true)}
+                  className="text-[10px] font-bold text-[#2563EB] hover:text-[#1D4ED8]"
+                >
+                  + Add
+                </button>
+              )}
             </div>
+
+            {/* Inline deal/pipeline creation form */}
+            {isDealOpen && (
+              <div className="space-y-3 bg-[#FAFAFA] border border-[#E5E5E5] rounded-[6px] p-3 text-left animate-in slide-in-from-top-4 duration-150">
+                <h4 className="text-[10px] font-bold text-[#111111] uppercase tracking-wider">Link to Pipeline</h4>
+                
+                <div>
+                  <label className="block text-[9px] font-semibold text-[#666666] mb-1">Opportunity Title</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Upgrade License..."
+                    value={dealTitle}
+                    onChange={(e) => setDealTitle(e.target.value)}
+                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[4px] h-7 px-2 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[9px] font-semibold text-[#666666] mb-1">Estimated Value (Rs.)</label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 50000"
+                    value={dealValue}
+                    onChange={(e) => setDealValue(e.target.value)}
+                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[4px] h-7 px-2 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[9px] font-semibold text-[#666666] mb-1">Select Pipeline</label>
+                  <select
+                    value={dealPipelineId}
+                    onChange={(e) => {
+                      setDealPipelineId(e.target.value);
+                      const selectedPipe = pipelines.find((p: any) => p.id === e.target.value);
+                      if (selectedPipe?.stages?.length > 0) {
+                        setDealStage(selectedPipe.stages[0]);
+                      } else {
+                        setDealStage("");
+                      }
+                    }}
+                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[4px] h-7 px-1.5 focus:outline-none"
+                  >
+                    <option value="">Choose pipeline...</option>
+                    {pipelines.map((p: any) => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {dealPipelineId && (
+                  <div>
+                    <label className="block text-[9px] font-semibold text-[#666666] mb-1">Pipeline Stage</label>
+                    <select
+                      value={dealStage}
+                      onChange={(e) => setDealStage(e.target.value)}
+                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[4px] h-7 px-1.5 focus:outline-none"
+                    >
+                      <option value="">Select stage...</option>
+                      {pipelines.find((p: any) => p.id === dealPipelineId)?.stages?.map((s: string) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  <button 
+                    type="button"
+                    onClick={() => setIsDealOpen(false)} 
+                    className="text-[10px] font-bold text-[#666666]"
+                  >
+                    Cancel
+                  </button>
+                  <Button
+                    variant="primary"
+                    disabled={createDealMutation.isPending || !dealTitle || !dealValue || !dealPipelineId || !dealStage}
+                    onClick={() => {
+                      createDealMutation.mutate({
+                        contactId,
+                        pipelineId: dealPipelineId,
+                        title: dealTitle.trim(),
+                        value: Number(dealValue),
+                        stage: dealStage,
+                      });
+                    }}
+                    className="bg-[#2563EB] text-white font-semibold text-[10px] h-6 px-3 rounded-[4px]"
+                  >
+                    Move to Pipeline
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Linked Deals list */}
             <div className="space-y-2.5">

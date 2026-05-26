@@ -18,7 +18,7 @@ export interface CustomFieldValue {
   textValue: string | null;
   numberValue: number | null;
   booleanValue: boolean | null;
-  dateValue: string | null;
+  dateValue: string | number | null;
   source: string;
   createdAt: string;
   updatedAt: string;

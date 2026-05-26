@@ -22,10 +22,18 @@ router.put("/contacts/:contactId/custom-fields", controller.updateContactCustomF
 router.get("/deals", controller.getDeals);
 router.post("/deals", controller.createDeal);
 router.put("/deals/:id/stage", controller.updateDealStage);
+router.put("/deals/:id", controller.updateDeal);
+router.delete("/deals/:id", controller.deleteDeal);
 
 // Custom fields manager endpoints
 router.get("/custom-fields", controller.getCustomFields);
 router.post("/custom-fields", controller.createCustomField);
+
+// Custom pipeline endpoints
+router.get("/pipelines", controller.getPipelines);
+router.post("/pipelines", controller.createPipeline);
+router.put("/pipelines/:id", controller.updatePipeline);
+router.delete("/pipelines/:id", controller.deletePipeline);
 
 export const crmRouter = router;
 export default crmRouter;

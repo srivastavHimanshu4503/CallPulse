@@ -2,12 +2,24 @@ export interface Deal {
   id: string;
   tenantId: string;
   contactId: string;
+  pipelineId: string | null;
   title: string;
   value: number;
   stage: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  contactName?: string;
+}
+
+export interface Pipeline {
+  id: string;
+  tenantId: string;
+  name: string;
+  stages: string[];
+  filters?: any[] | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Booking {
@@ -62,3 +74,27 @@ export interface SerializedContactDetails {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum FilterLogicalOperator {
+  AND = "AND",
+  OR = "OR",
+}
+
+export enum FilterOperator {
+  CONTAINS = "contains",
+  EQUALS = "equals",
+  GREATER_THAN_OR_EQUAL = "gt",
+  LESS_THAN_OR_EQUAL = "lt",
+  IS_EMPTY = "empty",
+  IS_NOT_EMPTY = "not_empty",
+  IS_AFTER = "after",
+  IS_BEFORE = "before",
+}
+
+export interface FilterCondition {
+  id: string;
+  fieldId: string;
+  operator: FilterOperator;
+  value: string;
+}
+

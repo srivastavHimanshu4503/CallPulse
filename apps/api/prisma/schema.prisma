@@ -113,6 +113,7 @@ model Tenant {
   contacts            Contact[]
   customFieldDefs     CustomFieldDefinition[]
   deals               Deal[]
+  pipelines           Pipeline[]
   workflows           WorkflowDefinition[]
   workflowRuns        WorkflowRun[]
   aiAgents            AIAgent[]
@@ -184,6 +185,7 @@ model CustomFieldDefinition {
   name       String
   type       CustomFieldType
   parentType CustomFieldParentType
+  options    String[]              @default([])
   createdAt  DateTime              @default(now())
   updatedAt  DateTime              @updatedAt
 
@@ -221,21 +223,38 @@ model CustomFieldValue {
 // ─────────────────────────────────────────────
 
 model Deal {
-  id        String    @id @default(uuid())
-  tenantId  String
-  contactId String
-  title     String
-  value     Float
-  stage     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  id         String    @id @default(uuid())
+  tenantId   String
+  contactId  String
+  pipelineId String?
+  title      String
+  value      Float
+  stage      String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
 
   tenant     Tenant     @relation(fields: [tenantId], references: [id])
   contact    Contact    @relation(fields: [contactId], references: [id])
+  pipeline   Pipeline?  @relation(fields: [pipelineId], references: [id])
   activities Activity[]
 
   @@map("deals")
+}
+
+model Pipeline {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  stages    String[]
+  filters   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  deals  Deal[]
+
+  @@map("pipelines")
 }
 
 // ─────────────────────────────────────────────

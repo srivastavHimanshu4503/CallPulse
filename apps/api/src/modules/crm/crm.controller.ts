@@ -5,7 +5,8 @@ import {
   createDealSchema, 
   createCustomFieldSchema,
   createNoteSchema,
-  createBookingSchema 
+  createBookingSchema,
+  createPipelineSchema
 } from "@antigravity/validators";
 import { getCleanErrorMessage } from "@antigravity/utils";
 
@@ -14,7 +15,7 @@ const crmService = new CrmService();
 export class CrmController {
   async getContacts(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const data = await crmService.getContacts(tenantId);
       res.json({ success: true, data, error: null });
     } catch (err) {
@@ -24,7 +25,7 @@ export class CrmController {
 
   async createContact(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const parsed = createContactSchema.safeParse(req.body);
       if (!parsed.success) {
         res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
@@ -40,7 +41,7 @@ export class CrmController {
 
   async getContactDetails(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const { id } = req.params;
       if (!id) {
         res.status(400).json({ success: false, data: null, error: "Contact ID is required" });
@@ -61,7 +62,7 @@ export class CrmController {
 
   async getDeals(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const data = await crmService.getDeals(tenantId);
       res.json({ success: true, data, error: null });
     } catch (err) {
@@ -71,7 +72,7 @@ export class CrmController {
 
   async createDeal(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const parsed = createDealSchema.safeParse(req.body);
       if (!parsed.success) {
         res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
@@ -87,7 +88,7 @@ export class CrmController {
 
   async updateDealStage(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const { id } = req.params;
       const { stage } = req.body;
       if (!id || !stage) {
@@ -104,7 +105,7 @@ export class CrmController {
 
   async getCustomFields(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const data = await crmService.getCustomFields(tenantId);
       res.json({ success: true, data, error: null });
     } catch (err) {
@@ -114,7 +115,7 @@ export class CrmController {
 
   async createCustomField(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const parsed = createCustomFieldSchema.safeParse(req.body);
       if (!parsed.success) {
         res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
@@ -130,7 +131,7 @@ export class CrmController {
 
   async createNote(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const { contactId } = req.params;
       const parsed = createNoteSchema.safeParse(req.body);
       if (!contactId || !parsed.success) {
@@ -147,7 +148,7 @@ export class CrmController {
 
   async createBooking(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const { contactId } = req.params;
       const parsed = createBookingSchema.safeParse(req.body);
       if (!contactId || !parsed.success) {
@@ -168,7 +169,7 @@ export class CrmController {
 
   async updateContactCustomFields(req: Request, res: Response): Promise<void> {
     try {
-      const tenantId = (req as any).user.tenantId;
+      const tenantId = (req as any).tenantId;
       const { contactId } = req.params;
       const { values } = req.body; // array of { fieldDefinitionId: string, value: any }
       if (!contactId || !Array.isArray(values)) {
@@ -178,6 +179,104 @@ export class CrmController {
 
       await crmService.updateContactCustomFieldValues(tenantId, contactId, values);
       res.json({ success: true, data: null, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async getPipelines(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const data = await crmService.getPipelines(tenantId);
+      res.json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async createPipeline(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const parsed = createPipelineSchema.safeParse(req.body);
+      if (!parsed.success) {
+        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        return;
+      }
+
+      const data = await crmService.createPipeline(tenantId, parsed.data);
+      res.status(201).json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async deleteDeal(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Deal ID is required" });
+        return;
+      }
+
+      await crmService.deleteDeal(tenantId, id);
+      res.json({ success: true, data: null, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async updatePipeline(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Pipeline ID is required" });
+        return;
+      }
+
+      const parsed = createPipelineSchema.safeParse(req.body);
+      if (!parsed.success) {
+        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        return;
+      }
+
+      const data = await crmService.updatePipeline(tenantId, id, parsed.data);
+      res.json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async deletePipeline(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Pipeline ID is required" });
+        return;
+      }
+
+      await crmService.deletePipeline(tenantId, id);
+      res.json({ success: true, data: null, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async updateDeal(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      const { title, value, stage } = req.body;
+
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Deal ID is required" });
+        return;
+      }
+
+      const data = await crmService.updateDeal(tenantId, id, { title, value, stage });
+      res.json({ success: true, data, error: null });
     } catch (err) {
       res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
     }
