@@ -10,10 +10,22 @@ async function main() {
     await db.$connect();
     logger.info("PostgreSQL Database connected successfully!");
 
-    app.listen(env.PORT, () => {
+    const server = app.listen(env.PORT, () => {
       logger.info(`🚀 Antigravity Core API started in ${env.NODE_ENV} mode on port ${env.PORT}`);
       logger.info(`Health check available at http://localhost:${env.PORT}/api/v1/health`);
     });
+
+    // Graceful shutdown handling
+    const gracefulShutdown = async () => {
+      logger.info("Shutting down API server gracefully...");
+      server.close();
+      await db.$disconnect();
+      process.exit(0);
+    };
+
+    process.once("SIGTERM", gracefulShutdown);
+    process.once("SIGINT", gracefulShutdown);
+
   } catch (error) {
     logger.error("Failed to start Antigravity Core API:", error);
     process.exit(1);

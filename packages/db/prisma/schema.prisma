@@ -1,0 +1,513 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma-client"
+}
+
+enum CustomFieldType {
+  TEXT
+  NUMBER
+  BOOLEAN
+  DROPDOWN
+  DATE
+}
+
+enum CustomFieldParentType {
+  CONTACT
+  DEAL
+}
+
+enum CustomFieldValueSource {
+  MANUAL
+  WORKFLOW
+  CALL
+  SMS
+}
+
+enum Direction {
+  INBOUND
+  OUTBOUND
+}
+
+enum CommType {
+  CALL
+  SMS
+  WHATSAPP
+  EMAIL
+}
+
+enum CommStatus {
+  IN_PROGRESS
+  COMPLETED
+  NO_ANSWER
+  FAILED
+  VOICEMAIL
+  BUSY
+  SENT
+  DELIVERED
+  RECEIVED
+  READ
+}
+
+enum ExtractionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  SKIPPED
+}
+
+enum Plan {
+  FREE
+  GROWTH
+  PRO
+}
+
+enum TeamSize {
+  SOLO
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum ActivityType {
+  CALL_INBOUND
+  CALL_OUTBOUND
+  SMS_SENT
+  SMS_RECEIVED
+  WHATSAPP_SENT
+  WHATSAPP_RECEIVED
+  DEAL_CREATED
+  DEAL_STAGE_CHANGED
+  BOOKING_CREATED
+  FIELD_UPDATED
+  WORKFLOW_TRIGGERED
+  NOTE_ADDED
+  CONTACT_CREATED
+}
+
+// ─────────────────────────────────────────────
+// TENANT — with onboarding fields
+// ─────────────────────────────────────────────
+
+model Tenant {
+  id              String        @id @default(uuid())
+  name            String        // business name
+  slug            String        @unique
+  plan            Plan          @default(FREE)
+  timezone        String        @default("Asia/Kolkata")
+  businessType    String?       // retail | real estate | garage | ecommerce
+  websiteUrl      String?       // auto-scraped for first agent KB
+  teamSize        TeamSize?
+  monthlyRevenue  String?       // optional range: "0-1L" | "1-10L" | "10L+"
+  onboardingStep  Int           @default(0)
+  onboardingDone  Boolean       @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  users               User[]
+  contacts            Contact[]
+  customFieldDefs     CustomFieldDefinition[]
+  deals               Deal[]
+  pipelines           Pipeline[]
+  workflows           WorkflowDefinition[]
+  workflowRuns        WorkflowRun[]
+  aiAgents            AIAgent[]
+  phoneNumbers        PhoneNumber[]
+  communicationLogs   CommunicationLog[]
+  activities          Activity[]
+  notes               Note[]
+  bookings            Booking[]
+  knowledgeBase       KnowledgeBase[]
+
+  @@map("tenants")
+}
+
+// ─────────────────────────────────────────────
+// USER — team members
+// ─────────────────────────────────────────────
+
+model User {
+  id           String    @id @default(uuid())
+  tenantId     String
+  email        String
+  passwordHash String
+  name         String
+  role         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, email])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────
+// CONTACT — center of CRM
+// ─────────────────────────────────────────────
+
+model Contact {
+  id        String    @id @default(uuid())
+  tenantId  String
+  firstName String
+  lastName  String
+  emails    String[]
+  phones    String[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  customFields      CustomFieldValue[]
+  deals             Deal[]
+  bookings          Booking[]
+  notes             Note[]
+  activities        Activity[]
+  communicationLogs CommunicationLog[]
+
+  @@map("contacts")
+}
+
+// ─────────────────────────────────────────────
+// CUSTOM FIELD DEF — typed field declarations
+// ─────────────────────────────────────────────
+
+model CustomFieldDefinition {
+  id         String                @id @default(uuid())
+  tenantId   String
+  name       String
+  type       CustomFieldType
+  parentType CustomFieldParentType
+  options    String[]              @default([])
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  values CustomFieldValue[]
+
+  @@map("custom_field_defs")
+}
+
+// ─────────────────────────────────────────────
+// CUSTOM FIELD VALUE — typed values per contact
+// ─────────────────────────────────────────────
+
+model CustomFieldValue {
+  id                String                 @id @default(uuid())
+  tenantId          String
+  contactId         String
+  fieldDefinitionId String
+  textValue         String?
+  numberValue       Float?
+  booleanValue      Boolean?
+  dateValue         DateTime?
+  source            CustomFieldValueSource
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  contact         Contact               @relation(fields: [contactId], references: [id])
+  fieldDefinition CustomFieldDefinition @relation(fields: [fieldDefinitionId], references: [id])
+
+  @@map("custom_field_values")
+}
+
+// ─────────────────────────────────────────────
+// DEAL — sales pipeline
+// ─────────────────────────────────────────────
+
+model Deal {
+  id         String    @id @default(uuid())
+  tenantId   String
+  contactId  String
+  pipelineId String?
+  title      String
+  value      Float
+  stage      String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  pipeline   Pipeline?  @relation(fields: [pipelineId], references: [id])
+  activities Activity[]
+
+  @@map("deals")
+}
+
+model Pipeline {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  stages    String[]
+  filters   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  deals  Deal[]
+
+  @@map("pipelines")
+}
+
+// ─────────────────────────────────────────────
+// BOOKING — appointments
+// ─────────────────────────────────────────────
+
+model Booking {
+  id        String   @id @default(uuid())
+  tenantId  String
+  contactId String
+  title     String
+  startTime DateTime
+  endTime   DateTime
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+
+  @@map("bookings")
+}
+
+// ─────────────────────────────────────────────
+// NOTE — manual notes
+// ─────────────────────────────────────────────
+
+model Note {
+  id        String   @id @default(uuid())
+  tenantId  String
+  contactId String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  activities Activity[]
+
+  @@map("notes")
+}
+
+// ─────────────────────────────────────────────
+// WORKFLOW DEF — agent-owned workflows
+// ─────────────────────────────────────────────
+
+model WorkflowDefinition {
+  id          String   @id @default(uuid())
+  tenantId    String
+  name        String
+  triggerType String
+  actions     Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant Tenant        @relation(fields: [tenantId], references: [id])
+  runs   WorkflowRun[]
+
+  @@map("workflow_definitions")
+}
+
+// ─────────────────────────────────────────────
+// WORKFLOW RUN — execution logs
+// ─────────────────────────────────────────────
+
+model WorkflowRun {
+  id                   String    @id @default(uuid())
+  tenantId             String
+  workflowDefinitionId String
+  status               String
+  startedAt            DateTime  @default(now())
+  completedAt          DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  definition        WorkflowDefinition @relation(fields: [workflowDefinitionId], references: [id])
+  activities        Activity[]
+  communicationLogs CommunicationLog[]
+
+  @@map("workflow_runs")
+}
+
+// ─────────────────────────────────────────────
+// AI AGENT — agent with full persona + settings
+// ─────────────────────────────────────────────
+
+model AIAgent {
+  id               String             @id @default(uuid())
+  tenantId         String
+  name             String
+  role             String             @default("Support")
+  language         String             @default("Hinglish")
+  greetingMessage  String             @default("Namaste! Main aapki kaise help kar sakti hoon?")
+  tone             String             @default("Friendly")
+  fallbackMessage  String             @default("I'll connect you with our team for this. One moment please.")
+  businessInfo     String?
+  websiteUrl       String?
+  maxDuration      Int                @default(10)
+  dndCompliance    Boolean            @default(true)
+  recordingConsent Boolean            @default(true)
+  isActive         Boolean            @default(true)
+  systemPrompt     String
+  modelName        String
+  voice            String             @default("Priya (Indian Female)")
+  intakeWorkflowId String?
+  smsWorkflowId    String?
+  phoneNumberId    String?
+  intakeEnabled    Boolean            @default(false)
+  intakeFields     String[]           @default([])
+  intakePrompt     String?
+  smsEnabled       Boolean            @default(false)
+  smsTriggerCondition String?
+  smsTemplate      String?
+  smsAgentReply    String?
+  deletedAt        DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  communicationLogs CommunicationLog[]
+  knowledgeBases    KnowledgeBase[]
+
+  @@map("ai_agents")
+}
+
+// ─────────────────────────────────────────────
+// PHONE NUMBER — assigned numbers
+// ─────────────────────────────────────────────
+
+model PhoneNumber {
+  id          String   @id @default(uuid())
+  tenantId    String
+  phoneNumber String   @unique
+  label       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("phone_numbers")
+}
+
+// ─────────────────────────────────────────────
+// KNOWLEDGE BASE — per-agent knowledge
+// ─────────────────────────────────────────────
+
+model KnowledgeBase {
+  id        String   @id @default(uuid())
+  tenantId  String
+  agentId   String
+  name      String
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant  @relation(fields: [tenantId], references: [id])
+  agent  AIAgent @relation(fields: [agentId], references: [id])
+
+  @@map("knowledge_bases")
+}
+
+// ─────────────────────────────────────────────
+// SINGLE TABLE FOR ALL COMMUNICATION LOGS
+// Replaces: CallLog, SmsLog, WhatsappLog
+// ─────────────────────────────────────────────
+
+model CommunicationLog {
+  id               String           @id @default(uuid())
+  tenantId         String
+  contactId        String
+  agentId          String
+  workflowRunId    String?
+  phoneNumberId    String?
+  type             CommType
+  direction        Direction
+  status           CommStatus
+  duration         Int?
+  recordingUrl     String?
+  transcript       String?
+  transcriptJson   Json?
+  sentimentScore   Float?
+  extractionStatus ExtractionStatus @default(PENDING)
+  extractedFields  Json?
+  body             String?
+  mediaUrl         String?
+  subject          String?
+  deliveredAt      DateTime?
+  provider         String?
+  providerRef      String?
+  metadata         Json?
+  occurredAt       DateTime
+  createdAt        DateTime         @default(now())
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id])
+  contact     Contact      @relation(fields: [contactId], references: [id])
+  agent       AIAgent      @relation(fields: [agentId], references: [id])
+  workflowRun WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+  activities  Activity[]
+
+  @@index([tenantId, occurredAt(sort: Desc)])
+  @@index([contactId, occurredAt(sort: Desc)])
+  @@index([agentId, occurredAt(sort: Desc)])
+  @@index([tenantId, type, occurredAt(sort: Desc)])
+  @@index([tenantId, agentId, type])
+  @@map("communication_logs")
+}
+
+// ─────────────────────────────────────────────
+// ACTIVITY — updated to reference CommunicationLog
+// ─────────────────────────────────────────────
+
+model Activity {
+  id            String            @id @default(uuid())
+  tenantId      String
+  contactId     String
+  type          ActivityType
+  direction     Direction?
+  summary       String
+  metadata      Json?
+  commLogId     String?
+  dealId        String?
+  bookingId     String?
+  workflowRunId String?
+  noteId        String?
+  occurredAt    DateTime
+  createdAt     DateTime          @default(now())
+
+  tenant      Tenant            @relation(fields: [tenantId], references: [id])
+  contact     Contact           @relation(fields: [contactId], references: [id])
+  commLog     CommunicationLog? @relation(fields: [commLogId], references: [id])
+  deal        Deal?             @relation(fields: [dealId], references: [id])
+  booking     Booking?          @relation(fields: [bookingId], references: [id])
+  workflowRun WorkflowRun?      @relation(fields: [workflowRunId], references: [id])
+  note        Note?             @relation(fields: [noteId], references: [id])
+
+  @@index([contactId, occurredAt(sort: Desc)])
+  @@index([tenantId, occurredAt(sort: Desc)])
+  @@index([tenantId, type])
+  @@map("activities")
+}
+
+model PasswordResetOtp {
+  id        String   @id @default(uuid())
+  userId    String
+  otp       String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("password_reset_otps")
+}
+

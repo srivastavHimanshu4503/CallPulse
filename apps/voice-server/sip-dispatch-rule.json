@@ -1,0 +1,21 @@
+{
+  "dispatch_rule": {
+    "rule": {
+      "dispatchRuleIndividual": {
+        "roomPrefix": "call-"
+      }
+    },
+    "name": "Test rule",
+    "trunk_ids": [
+      "ST_JDqFzDudNfKg"
+    ],
+    "roomConfig": {
+      "agents": [
+        {
+          "agentName": "inbound-agent",
+          "metadata": "{}"
+        }
+      ]
+    }
+  }
+}

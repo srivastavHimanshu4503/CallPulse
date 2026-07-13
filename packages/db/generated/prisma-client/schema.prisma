@@ -5,6 +5,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma-client"
 }
 
 enum CustomFieldType {
@@ -93,36 +94,36 @@ enum ActivityType {
 // ─────────────────────────────────────────────
 
 model Tenant {
-  id              String        @id @default(uuid())
-  name            String        // business name
-  slug            String        @unique
-  plan            Plan          @default(FREE)
-  timezone        String        @default("Asia/Kolkata")
-  businessType    String?       // retail | real estate | garage | ecommerce
-  websiteUrl      String?       // auto-scraped for first agent KB
-  teamSize        TeamSize?
-  monthlyRevenue  String?       // optional range: "0-1L" | "1-10L" | "10L+"
-  onboardingStep  Int           @default(0)
-  onboardingDone  Boolean       @default(false)
-  deletedAt       DateTime?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id             String    @id @default(uuid())
+  name           String // business name
+  slug           String    @unique
+  plan           Plan      @default(FREE)
+  timezone       String    @default("Asia/Kolkata")
+  businessType   String? // retail | real estate | garage | ecommerce
+  websiteUrl     String? // auto-scraped for first agent KB
+  teamSize       TeamSize?
+  monthlyRevenue String? // optional range: "0-1L" | "1-10L" | "10L+"
+  onboardingStep Int       @default(0)
+  onboardingDone Boolean   @default(false)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   // Relations
-  users               User[]
-  contacts            Contact[]
-  customFieldDefs     CustomFieldDefinition[]
-  deals               Deal[]
-  pipelines           Pipeline[]
-  workflows           WorkflowDefinition[]
-  workflowRuns        WorkflowRun[]
-  aiAgents            AIAgent[]
-  phoneNumbers        PhoneNumber[]
-  communicationLogs   CommunicationLog[]
-  activities          Activity[]
-  notes               Note[]
-  bookings            Booking[]
-  knowledgeBase       KnowledgeBase[]
+  users             User[]
+  contacts          Contact[]
+  customFieldDefs   CustomFieldDefinition[]
+  deals             Deal[]
+  pipelines         Pipeline[]
+  workflows         WorkflowDefinition[]
+  workflowRuns      WorkflowRun[]
+  aiAgents          AIAgent[]
+  phoneNumbers      PhoneNumber[]
+  communicationLogs CommunicationLog[]
+  activities        Activity[]
+  notes             Note[]
+  bookings          Booking[]
+  knowledgeBase     KnowledgeBase[]
 
   @@map("tenants")
 }
@@ -189,7 +190,7 @@ model CustomFieldDefinition {
   createdAt  DateTime              @default(now())
   updatedAt  DateTime              @updatedAt
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
+  tenant Tenant             @relation(fields: [tenantId], references: [id])
   values CustomFieldValue[]
 
   @@map("custom_field_defs")
@@ -344,36 +345,36 @@ model WorkflowRun {
 // ─────────────────────────────────────────────
 
 model AIAgent {
-  id               String             @id @default(uuid())
-  tenantId         String
-  name             String
-  role             String             @default("Support")
-  language         String             @default("Hinglish")
-  greetingMessage  String             @default("Namaste! Main aapki kaise help kar sakti hoon?")
-  tone             String             @default("Friendly")
-  fallbackMessage  String             @default("I'll connect you with our team for this. One moment please.")
-  businessInfo     String?
-  websiteUrl       String?
-  maxDuration      Int                @default(10)
-  dndCompliance    Boolean            @default(true)
-  recordingConsent Boolean            @default(true)
-  isActive         Boolean            @default(true)
-  systemPrompt     String
-  modelName        String
-  voice            String             @default("Priya (Indian Female)")
-  intakeWorkflowId String?
-  smsWorkflowId    String?
-  phoneNumberId    String?
-  intakeEnabled    Boolean            @default(false)
-  intakeFields     String[]           @default([])
-  intakePrompt     String?
-  smsEnabled       Boolean            @default(false)
+  id                  String    @id @default(uuid())
+  tenantId            String
+  name                String
+  role                String    @default("Support")
+  language            String    @default("Hinglish")
+  greetingMessage     String    @default("Namaste! Main aapki kaise help kar sakti hoon?")
+  tone                String    @default("Friendly")
+  fallbackMessage     String    @default("I'll connect you with our team for this. One moment please.")
+  businessInfo        String?
+  websiteUrl          String?
+  maxDuration         Int       @default(10)
+  dndCompliance       Boolean   @default(true)
+  recordingConsent    Boolean   @default(true)
+  isActive            Boolean   @default(true)
+  systemPrompt        String
+  modelName           String
+  voice               String    @default("Priya (Indian Female)")
+  intakeWorkflowId    String?
+  smsWorkflowId       String?
+  phoneNumberId       String?
+  intakeEnabled       Boolean   @default(false)
+  intakeFields        String[]  @default([])
+  intakePrompt        String?
+  smsEnabled          Boolean   @default(false)
   smsTriggerCondition String?
-  smsTemplate      String?
-  smsAgentReply    String?
-  deletedAt        DateTime?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  smsTemplate         String?
+  smsAgentReply       String?
+  deletedAt           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   tenant            Tenant             @relation(fields: [tenantId], references: [id])
   communicationLogs CommunicationLog[]
@@ -469,7 +470,7 @@ model CommunicationLog {
 // ─────────────────────────────────────────────
 
 model Activity {
-  id            String            @id @default(uuid())
+  id            String       @id @default(uuid())
   tenantId      String
   contactId     String
   type          ActivityType
@@ -482,7 +483,7 @@ model Activity {
   workflowRunId String?
   noteId        String?
   occurredAt    DateTime
-  createdAt     DateTime          @default(now())
+  createdAt     DateTime     @default(now())
 
   tenant      Tenant            @relation(fields: [tenantId], references: [id])
   contact     Contact           @relation(fields: [contactId], references: [id])
@@ -509,4 +510,3 @@ model PasswordResetOtp {
   @@index([userId])
   @@map("password_reset_otps")
 }
-

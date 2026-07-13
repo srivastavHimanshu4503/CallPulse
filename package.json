@@ -9,8 +9,9 @@
     "dev": "pnpm --parallel dev",
     "build": "pnpm --filter=packages/* --filter=apps/* build",
     "lint": "pnpm -r lint",
-    "db:generate": "pnpm --filter api db:generate",
-    "db:migrate": "pnpm --filter api db:migrate",
+    "db:generate": "pnpm --filter @antigravity/db db:generate",
+    "db:migrate": "pnpm --filter @antigravity/db db:migrate",
+    "db:studio": "pnpm --filter @antigravity/db db:studio",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "clean": "pnpm -r exec rm -rf node_modules .turbo dist build",
@@ -18,5 +19,26 @@
   },
   "devDependencies": {
     "typescript": "^5.3.3"
+  },
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": [
+        "darwin"
+      ],
+      "cpu": [
+        "x64",
+        "arm64"
+      ]
+    },
+    "overrides": {
+      "onnxruntime-node": "1.23.2"
+    },
+    "onlyBuiltDependencies": [
+      "@google/genai",
+      "@livekit/local-inference",
+      "onnxruntime-node",
+      "protobufjs",
+      "sharp"
+    ]
   }
 }
