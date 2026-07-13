@@ -52,4 +52,5 @@ export interface KnowledgeBaseEntry {
  */
 export interface AgentConfigProvider {
   getByPhoneNumber(phoneNumber: string): Promise<AgentPersonaConfig | null>;
+  getById(agentId: string): Promise<AgentPersonaConfig | null>;
 }

@@ -5,8 +5,9 @@ import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { Button } from "@antigravity/ui";
 import { api } from "../../lib/axios.js";
 import { toast } from "sonner";
-import { Bot, Plus, Phone, PhoneCall, AlertCircle, Settings, Activity, Trash2 } from "lucide-react";
+import { Bot, Plus, Phone, PhoneCall, AlertCircle, Settings, Activity, Trash2, Radio } from "lucide-react";
 import { AgentWizard } from "./components/AgentWizard.js";
+import { TestCallModal } from "./components/TestCallModal.js";
 import type { SerializedAgent } from "@antigravity/types";
 
 export function Agents(): React.JSX.Element {
@@ -16,6 +17,7 @@ export function Agents(): React.JSX.Element {
   // Wizard active/inactive states
   const [isWizardOpen, setIsWizardOpen] = React.useState(false);
   const [editingAgent, setEditingAgent] = React.useState<SerializedAgent | null>(null);
+  const [testingAgent, setTestingAgent] = React.useState<SerializedAgent | null>(null);
 
   // 1. Fetch AI Agents List
   const { data: agents, isLoading, error } = useQuery({
@@ -252,10 +254,18 @@ export function Agents(): React.JSX.Element {
                 <div className="flex items-center gap-2">
                   <Button
                     variant="primary"
-                    onClick={() => handleOpenConfigure(agent)}
-                    className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs h-8 px-3.5 rounded-[6px] flex items-center gap-1.5 shadow-none border-none"
+                    onClick={() => setTestingAgent(agent)}
+                    disabled={!agent.isActive}
+                    className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs h-8 px-3.5 rounded-[6px] flex items-center gap-1.5 shadow-none border-none disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Settings className="h-3.5 w-3.5" /> Configure
+                    <Radio className="h-3.5 w-3.5" /> Test Call
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleOpenConfigure(agent)}
+                    className="bg-white hover:bg-[#F7F7F7] border border-[#E5E5E5] text-[#111111] font-semibold text-xs h-8 px-3.5 rounded-[6px] flex items-center gap-1.5 shadow-none"
+                  >
+                    <Settings className="h-3.5 w-3.5 text-[#666666]" /> Configure
                   </Button>
                   <Button
                     variant="secondary"
@@ -277,6 +287,15 @@ export function Agents(): React.JSX.Element {
             </div>
           ))}
         </div>
+      )}
+
+      {testingAgent && (
+        <TestCallModal
+          agentId={testingAgent.id}
+          agentName={testingAgent.name}
+          isOpen={!!testingAgent}
+          onClose={() => setTestingAgent(null)}
+        />
       )}
     </PageWrapper>
   );

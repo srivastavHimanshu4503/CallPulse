@@ -51,3 +51,46 @@ export const getAgentByPhoneNumber = async (
     knowledgeBases,
   };
 };
+
+/**
+ * Look up the AI agent by its primary key. Used for in-app test calls where
+ * the browser client passes the target agentId via LiveKit room metadata
+ * (no phone number is dialed). PhoneNumber may be null if the agent hasn't
+ * been assigned a line yet.
+ */
+export const getAgentById = async (agentId: string): Promise<AgentContext | null> => {
+  const agent = await db.aIAgent.findFirst({
+    where: {
+      id: agentId,
+      isActive: true,
+      deletedAt: null,
+    },
+    include: {
+      knowledgeBases: true,
+      tenant: true,
+    },
+  });
+  if (!agent) return null;
+
+  let phoneNumber: PhoneNumber | null = null;
+  if (agent.phoneNumberId) {
+    phoneNumber = await db.phoneNumber.findUnique({ where: { id: agent.phoneNumberId } });
+  }
+
+  const { knowledgeBases, tenant, ...agentCore } = agent;
+  return {
+    agent: agentCore as AIAgent,
+    tenant,
+    // For test calls without a linked phone we still need SOMETHING for
+    // the ids block downstream; use a synthesized placeholder.
+    phoneNumber: phoneNumber ?? {
+      id: "test-call",
+      tenantId: agent.tenantId,
+      phoneNumber: "test-call",
+      label: "In-app test call",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    knowledgeBases,
+  };
+};

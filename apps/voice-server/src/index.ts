@@ -74,6 +74,15 @@ if (agentsPkg && config.livekit.isConfigured) {
         apiKey: config.livekit.apiKey!,
         apiSecret: config.livekit.apiSecret!,
         agentName: "inbound-agent",
+        // The child job process has to cold-import the whole dep graph
+        // (Prisma generated client, LiveKit plugins, Sarvam/OpenAI SDKs) on
+        // every spawn. LiveKit's default 10s budget is too tight in dev on
+        // a Mac. Bump to 30s so we never falsely time out. In production
+        // with `numIdleProcesses` warmed, real dispatch latency is < 100ms.
+        initializeProcessTimeout: 30_000,
+        // Keep 2 child processes warm and idle so an incoming job can be
+        // handed to a ready worker instead of paying the cold-start tax.
+        numIdleProcesses: 2,
       })
     );
     worker

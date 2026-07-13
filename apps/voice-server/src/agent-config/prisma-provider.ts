@@ -1,4 +1,4 @@
-import { getAgentByPhoneNumber, type AgentContext } from "@antigravity/db";
+import { getAgentByPhoneNumber, getAgentById, type AgentContext } from "@antigravity/db";
 import { createLogger } from "../logger.js";
 import type { AgentConfigProvider, AgentPersonaConfig } from "./types.js";
 
@@ -6,8 +6,10 @@ const log = createLogger("agent-config:prisma");
 
 /**
  * Backed by `@antigravity/db`. Reads the AIAgent + Tenant + KnowledgeBase
- * rows for the phone number the caller dialed and shapes them into the
- * pipeline-friendly `AgentPersonaConfig`.
+ * rows and shapes them into the pipeline-friendly `AgentPersonaConfig`.
+ * Two lookup paths:
+ *   - `getByPhoneNumber` for real inbound calls (SIP)
+ *   - `getById` for in-app test calls (browser WebRTC)
  */
 export class PrismaAgentConfigProvider implements AgentConfigProvider {
   async getByPhoneNumber(phoneNumber: string): Promise<AgentPersonaConfig | null> {
@@ -16,9 +18,24 @@ export class PrismaAgentConfigProvider implements AgentConfigProvider {
       log.warn("no agent registered for phone number", { phoneNumber });
       return null;
     }
-    log.info("agent loaded", {
+    log.info("agent loaded by phone", {
       phoneNumber,
       agentId: ctx.agent.id,
+      agentName: ctx.agent.name,
+      tenant: ctx.tenant.name,
+      knowledgeBases: ctx.knowledgeBases.length,
+    });
+    return shape(ctx);
+  }
+
+  async getById(agentId: string): Promise<AgentPersonaConfig | null> {
+    const ctx = await getAgentById(agentId);
+    if (!ctx) {
+      log.warn("no active agent found by id", { agentId });
+      return null;
+    }
+    log.info("agent loaded by id", {
+      agentId,
       agentName: ctx.agent.name,
       tenant: ctx.tenant.name,
       knowledgeBases: ctx.knowledgeBases.length,

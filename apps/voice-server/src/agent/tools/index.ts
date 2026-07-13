@@ -49,7 +49,7 @@ export const buildTools = (ctx: ToolContext) => {
 
     end_call: llm.tool({
       description:
-        "End the phone call. Invoke when the caller clearly signals they want to hang up — any explicit goodbye phrase like 'bye', 'goodbye', 'thank you bye', 'thank you goodbye', 'ok bye', 'phir milte', 'chalo bye', 'rakhta hoon', 'that's all', 'I have to go'. Do NOT invoke for filler acknowledgments like 'okay', 'haan', 'hmm', 'theek hai', 'ji' — those are not goodbyes. Say a short warm goodbye line first, then invoke this.",
+        "Hang up the phone call. THIS TOOL IS THE ONLY WAY TO ACTUALLY END THE CALL — speaking the words 'goodbye', 'bye', 'phir milte' in your reply does NOT hang up the line by itself. Whenever your reply contains a closing farewell, you MUST invoke this tool in the same turn. Invoke when the caller has spoken an unambiguous farewell — one of: 'bye', 'bye bye', 'goodbye', 'thank you bye', 'thank you goodbye', 'thanks bye', 'okay thanks bye', 'okay bye', 'phir milte', 'phir baat karenge', 'chalo bye'. Note that a leading 'okay'/'ok'/'haan' before the farewell (e.g. 'okay thanks bye') still counts as a farewell — do not be misled by the prefix. Do NOT invoke for: bare single-word acks ('okay', 'haan', 'hmm', 'ji', 'yes', 'sure', 'ok') with no farewell word after them, 'thank you' alone, statements like 'that's all', 'I have to go', 'call me later', 'let me check', 'I'll think about it', or silence. Always say a short warm goodbye line first, then invoke this in the same turn.",
       parameters: z.object({
         reason: z.string().describe(
           "One short phrase describing why the call is ending, e.g. 'caller said bye', 'query resolved and caller said thanks bye'."

@@ -20,6 +20,7 @@ router.get("/:id", controller.getAgentById);
 router.put("/:id", controller.updateAgent);
 router.delete("/:id", controller.deleteAgent);
 router.get("/:id/logs", controller.getAgentLogs);
+router.post("/:id/test-call/token", controller.createTestCallToken);
 
 export const agentsRouter = router;
 export default agentsRouter;

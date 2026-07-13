@@ -66,6 +66,33 @@ export class AgentsController {
     }
   }
 
+  async createTestCallToken(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = req.tenantId;
+      const userId = req.userId;
+      const { id } = req.params;
+
+      if (!tenantId || !userId || !id) {
+        sendError(res, "Invalid request context", 400);
+        return;
+      }
+
+      const result = await agentsService.createTestCallToken(
+        tenantId,
+        id,
+        userId,
+        (req.body?.userName as string | undefined) ?? userId
+      );
+      sendSuccess(res, result, 200);
+    } catch (error: any) {
+      const msg = getCleanErrorMessage(error);
+      const status = /not found|inactive/i.test(msg) ? 404
+                    : /not configured/i.test(msg) ? 503
+                    : 500;
+      sendError(res, msg, status);
+    }
+  }
+
   async updateAgent(req: Request, res: Response): Promise<void> {
     try {
       const tenantId = req.tenantId;

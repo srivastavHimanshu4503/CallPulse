@@ -2,6 +2,7 @@ import { db } from "../../config/database.js";
 import type { CreateAgentInput, UpdateAgentInput } from "@antigravity/validators";
 import type { SerializedAgent } from "@antigravity/types";
 import type { LogFilters } from "./agents.types.js";
+import { createTestCallCredentials, type TestCallCredentials } from "../../config/livekit.js";
 
 type AIAgent = NonNullable<Awaited<ReturnType<typeof db.aIAgent.findFirst>>>;
 
@@ -194,6 +195,34 @@ export class AgentsService {
 
     if (!agent) return null;
     return this.serializeAgent(agent, tenantId);
+  }
+
+  /**
+   * Issue a short-lived LiveKit access token that the browser uses to join a
+   * dedicated test-call room. The voice-server agent worker gets dispatched
+   * into the same room and loads this agent's config via room metadata —
+   * no phone / Twilio involvement.
+   */
+  async createTestCallToken(
+    tenantId: string,
+    agentId: string,
+    userId: string,
+    userName: string
+  ): Promise<TestCallCredentials> {
+    // Ownership check — this agent must belong to the caller's tenant.
+    const agent = await db.aIAgent.findFirst({
+      where: { id: agentId, tenantId, deletedAt: null, isActive: true },
+      select: { id: true },
+    });
+    if (!agent) {
+      throw new Error("Agent not found for this tenant or is inactive");
+    }
+
+    return createTestCallCredentials({
+      agentId,
+      userIdentity: `test-${userId}`,
+      userName,
+    });
   }
 
   async updateAgent(tenantId: string, id: string, data: UpdateAgentInput): Promise<SerializedAgent> {

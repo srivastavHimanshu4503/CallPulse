@@ -14,6 +14,12 @@ const envSchema = z.object({
   TYPESENSE_API_KEY: z.string().min(1, { message: "TYPESENSE_API_KEY is required" }),
   JWT_SECRET: z.string().min(10, { message: "JWT_SECRET must be at least 10 chars" }),
   JWT_REFRESH_SECRET: z.string().min(10, { message: "JWT_REFRESH_SECRET must be at least 10 chars" }),
+
+  // LiveKit (required for in-app test calls; optional for other flows)
+  LIVEKIT_URL: z.string().min(1).optional(),
+  LIVEKIT_API_KEY: z.string().min(1).optional(),
+  LIVEKIT_API_SECRET: z.string().min(1).optional(),
+  LIVEKIT_AGENT_NAME: z.string().default("inbound-agent"),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -9,8 +9,12 @@ export interface STTBuildOptions {
   /** Sarvam language code (BCP-47), e.g. `hi-IN`, `en-IN`. */
   language: string;
   /**
-   * Recognition mode. `codemix` is Sarvam's Hinglish-aware mode — the caller
-   * can freely mix Hindi and English and the transcript stays coherent.
+   * Recognition mode.
+   *   - `translit` (default): Hindi/Indic content is transliterated to Roman
+   *     script. English words stay as English. Produces a fully-Roman
+   *     transcript that matches the way the LLM writes its replies, so the
+   *     UI shows a consistent-looking chat.
+   *   - `codemix`: mixed Devanagari + Roman (Sarvam's default Hinglish output).
    */
   mode?: "transcribe" | "verbatim" | "translit" | "codemix";
 }
@@ -29,7 +33,7 @@ export const createSTT = (opts: STTBuildOptions): agentsSTT.STT => {
   if (!config.tts.sarvamApiKey) {
     throw new Error("SARVAM_API_KEY is required for the default STT provider");
   }
-  const mode = opts.mode ?? "codemix";
+  const mode = opts.mode ?? "translit";
   log.info("initializing stt provider", {
     provider: "sarvam",
     model: "saaras:v3",

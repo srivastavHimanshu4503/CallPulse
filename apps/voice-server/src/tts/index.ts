@@ -23,11 +23,17 @@ export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
   if (!config.tts.sarvamApiKey) {
     throw new Error("SARVAM_API_KEY is required for the default TTS provider");
   }
+  // Speed and prosody defaults are tuned for a phone-natural feel:
+  //   pace 1.15  → ~15% faster than default; matches a real receptionist's
+  //                cadence instead of the sluggish default
+  //   temperature 0.85 → more prosodic variation, less monotone / robotic
+  const pace = opts.pace ?? 1.15;
   log.info("initializing tts provider", {
     provider: "sarvam",
     model: "bulbul:v3",
     language: opts.language,
     speaker: opts.speaker,
+    pace,
   });
   return new sarvam.TTS({
     apiKey: config.tts.sarvamApiKey,
@@ -35,7 +41,7 @@ export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
     streaming: true,
     speaker: opts.speaker,
     targetLanguageCode: opts.language,
-    pace: opts.pace ?? 1.0,
-    temperature: 0.6,
+    pace,
+    temperature: 0.85,
   });
 };

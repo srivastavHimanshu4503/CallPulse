@@ -1,4 +1,7 @@
-import { defineAgent, voice, type JobContext } from "@livekit/agents";
+import { defineAgent, voice, type JobContext, type JobProcess } from "@livekit/agents";
+import { RoomEvent } from "@livekit/rtc-node";
+import { RoomServiceClient } from "livekit-server-sdk";
+import { db } from "@antigravity/db";
 
 import { config } from "../config.js";
 import { createLogger } from "../logger.js";
@@ -38,12 +41,53 @@ const extractCallerNumberFromRoom = (roomName: string): string | undefined => {
  */
 const getDialedNumber = (): string | undefined => config.twilio.phoneNumber;
 
+interface RoomLookupHint {
+  agentId?: string;
+  callSource?: "sip" | "browser";
+}
+
+/**
+ * Room metadata is JSON minted by whoever provisioned the room. For SIP calls
+ * LiveKit provides no metadata here; for in-app test calls the api server
+ * mints a token with metadata `{ agentId, callSource: "browser" }`.
+ */
+const parseRoomMetadata = (raw: string | undefined): RoomLookupHint => {
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    return {
+      agentId: typeof parsed.agentId === "string" ? parsed.agentId : undefined,
+      callSource: parsed.callSource === "browser" ? "browser" : undefined,
+    };
+  } catch {
+    return {};
+  }
+};
+
 export default defineAgent({
+  /**
+   * Runs ONCE per child job process before it picks up a job. LiveKit keeps
+   * `numIdleProcesses` of these warm so the DB pool + Prisma engine + provider
+   * singleton are ready when a real call arrives.
+   */
+  prewarm: async (_proc: JobProcess) => {
+    try {
+      await db.$connect();
+      // Instantiating the provider primes its module graph + Prisma client.
+      agentConfigProvider;
+      log.info("child process prewarmed");
+    } catch (err) {
+      log.error("child process prewarm failed", { message: (err as Error)?.message });
+    }
+  },
+
   entry: async (ctx: JobContext) => {
     const roomName = ctx.room.name || "";
     const callSid = extractCallSidFromRoom(roomName, ctx.job.id);
     const callerNumber = extractCallerNumberFromRoom(roomName) ?? "unknown";
     const dialedNumber = getDialedNumber();
+    const roomHint = parseRoomMetadata(ctx.room.metadata);
+    const callSource = roomHint.callSource ?? "sip";
     const callLog = log.child(callSid);
 
     callLog.info("job starting", {
@@ -51,18 +95,31 @@ export default defineAgent({
       room: roomName,
       caller: callerNumber,
       dialed: dialedNumber,
+      source: callSource,
+      hintAgentId: roomHint.agentId,
     });
 
-    if (!dialedNumber) {
-      callLog.error("no dialed number configured — cannot look up agent config");
-      return;
-    }
-
-    const persona = await agentConfigProvider.getByPhoneNumber(dialedNumber);
-    if (!persona) {
-      callLog.error("no agent registered in DB for dialed number — aborting call", {
-        dialedNumber,
-      });
+    // Test calls from the web app pass agentId via room metadata; real SIP
+    // calls fall back to phone-number lookup.
+    let persona = null;
+    if (roomHint.agentId) {
+      persona = await agentConfigProvider.getById(roomHint.agentId);
+      if (!persona) {
+        callLog.error("no active agent found by hint agentId — aborting call", {
+          hintAgentId: roomHint.agentId,
+        });
+        return;
+      }
+    } else if (dialedNumber) {
+      persona = await agentConfigProvider.getByPhoneNumber(dialedNumber);
+      if (!persona) {
+        callLog.error("no agent registered in DB for dialed number — aborting call", {
+          dialedNumber,
+        });
+        return;
+      }
+    } else {
+      callLog.error("no agentId hint and no dialed number configured — aborting call");
       return;
     }
 
@@ -81,29 +138,90 @@ export default defineAgent({
     await ctx.connect();
     callLog.info("participant connected", { agent: persona.agentName, tenant: persona.businessName });
 
-    const twilio = config.twilio.isConfigured ? new TwilioTelephonyProvider() : undefined;
+    // Twilio provider retained only for feature-flagged fallback; the primary
+    // hangup path is `RoomServiceClient.deleteRoom`, which drops SIP + browser
+    // participants uniformly. Deleting the room triggers LiveKit-SIP to tear
+    // down the Twilio trunk leg automatically — no Twilio REST call needed.
+    void (config.twilio.isConfigured ? new TwilioTelephonyProvider() : undefined);
 
     let hangupRequested = false;
+    const callStartedAt = Date.now();
+    // Defensive grace period: refuse to hang up in the first 6 seconds of a
+    // call. If the LLM mistakes the greeting acknowledgment ("hello", "hi")
+    // for a farewell and calls end_call too early, we ignore it and keep the
+    // conversation going. Legitimate goodbyes always happen later.
+    const HANGUP_GRACE_MS = 6000;
+
+    // Unified hangup path. Whether the LLM invoked `end_call`, the assistant
+    // heuristic fired, the caller said goodbye, the idle timer expired, or
+    // the max-duration cap was reached — everything routes through here and
+    // deletes the LiveKit room. Room-delete drops every participant in the
+    // room (agent, browser test caller, and any SIP participant), and
+    // LiveKit-SIP tears down the Twilio trunk leg on its own.
     const endCall = async (reason: string): Promise<void> => {
-      if (hangupRequested) return;
+      const elapsed = Date.now() - callStartedAt;
+      if (elapsed < HANGUP_GRACE_MS) {
+        callLog.warn("end_call ignored — inside grace period", {
+          reason,
+          elapsedMs: elapsed,
+          graceMs: HANGUP_GRACE_MS,
+        });
+        return;
+      }
+      if (hangupRequested) {
+        callLog.warn("end_call re-invoked — ignoring (already teardown in progress)", { reason });
+        return;
+      }
       hangupRequested = true;
-      callLog.info("end_call invoked — waiting for TTS to finish then hanging up", { reason });
+      callLog.info("end_call invoked — waiting for TTS to finish then hanging up", {
+        reason,
+        source: callSource,
+        elapsedMs: elapsed,
+        room: roomName,
+      });
       // Give TTS a beat to finish speaking the goodbye line before tearing
-      // down the SIP leg. Otherwise the caller hears mid-word cut-off.
+      // down the call. Tuned tight — long enough to avoid mid-word cutoff,
+      // short enough to feel snappy.
       setTimeout(async () => {
-        try {
-          if (twilio && callSid.startsWith("CA")) {
-            await twilio.endCall(callSid);
+        const teardownStart = Date.now();
+        callLog.info("teardown starting after TTS grace");
+        if (config.livekit.url && config.livekit.apiKey && config.livekit.apiSecret) {
+          try {
+            const rs = new RoomServiceClient(
+              config.livekit.url.replace(/^ws:\/\//, "http://").replace(/^wss:\/\//, "https://"),
+              config.livekit.apiKey,
+              config.livekit.apiSecret
+            );
+            const deleteStart = Date.now();
+            await rs.deleteRoom(roomName);
+            callLog.info("room deleted — SIP + browser participants dropped", {
+              room: roomName,
+              deleteMs: Date.now() - deleteStart,
+              teardownTotalMs: Date.now() - teardownStart,
+            });
+            return;
+          } catch (err) {
+            callLog.warn(
+              "deleteRoom failed — falling back to agent-side ctx.room.disconnect (SIP/browser leg may linger)",
+              { message: (err as Error).message, room: roomName }
+            );
           }
-        } catch (err) {
-          callLog.warn("twilio.endCall failed", { message: (err as Error).message });
+        } else {
+          callLog.warn(
+            "deleteRoom skipped — missing LiveKit server creds. Only the agent will disconnect; the caller's leg may hang."
+          );
         }
+        // Fallback: at least drop the agent side.
         try {
+          const disconnectStart = Date.now();
           await ctx.room.disconnect();
+          callLog.info("agent side ctx.room.disconnect() complete", {
+            disconnectMs: Date.now() - disconnectStart,
+          });
         } catch (err) {
           callLog.warn("room disconnect failed", { message: (err as Error).message });
         }
-      }, 1500);
+      }, 900);
     };
 
     const systemPrompt = buildSystemPrompt(persona);
@@ -143,35 +261,45 @@ export default defineAgent({
     });
 
     const agentSession = new voice.AgentSession({
+      useTtsAlignedTranscript: true,
       turnHandling: {
         // Silero VAD detects audio-level silence. Sarvam's own END_SPEECH
         // signal arrives ~200ms before its FINAL_TRANSCRIPT, which caused
         // the "reply lands one turn late" bug when using "stt" mode.
         turnDetection: "vad",
-        endpointing: {
-          mode: "fixed",
-          // 500ms is enough for Sarvam's ~200-300ms transcript latency and
-          // trims the perceived pause between user's silence and reply.
-          minDelay: 500,
-          maxDelay: 3000,
-        },
-        interruption: { enabled: false },
-        // LLM starts generating on the interim transcript so by the time
-        // the turn commits, we already have partial output. TTS still waits
-        // for turn commit (preemptiveTts: false) so nothing gets played
-        // prematurely.
-        preemptiveGeneration: {
+        endpointing: { mode: "fixed", minDelay: 300, maxDelay: 2500 },
+        // Barge-in with matched thresholds from the reference production
+        // system (Python `min_interruption_words=2`, which maps to
+        // `min_duration = 0.2 + 0.15*sensitivity = 0.5s` in their v2
+        // config). minWords=2 filters out one-word backchannels ("haan",
+        // "hmm") that would otherwise cut off the agent's own sentences.
+        //
+        // `mode: "vad"` pins interruption detection to the Silero VAD we
+        // already load — leaving mode `undefined` lets the SDK auto-select
+        // "adaptive" which loads an additional ML classifier and adds
+        // per-frame processing overhead. Reference uses VAD-based detection.
+        interruption: {
           enabled: true,
-          preemptiveTts: false,
-          maxSpeechDuration: 10000,
+          mode: "vad",
+          minWords: 2,
+          minDuration: 500,
         },
+        preemptiveGeneration: { enabled: true, preemptiveTts: false, maxSpeechDuration: 10000 },
       },
     });
+
+    // Tracks whether the *caller* has already said a clear goodbye. The
+    // next transition of the agent from `speaking` → `listening` (i.e. the
+    // agent has just finished its farewell reply) forces a hangup. This
+    // path is deterministic — it doesn't depend on the LLM invoking a tool
+    // or on parsing the agent's own content shape.
+    let userSaidFarewell = false;
+    let lastAgentState: string | undefined;
 
     agentSession.on(voice.AgentSessionEventTypes.ConversationItemAdded, (ev: any) => {
       const msg = ev?.item;
       if (!msg || !("role" in msg)) return;
-      const text = typeof msg.content === "string" ? msg.content : "";
+      const text = extractItemText(msg.content);
       if (!text) return;
       callLog.info("transcript", { role: msg.role, text });
       eventBus.emit("transcript.final", {
@@ -180,17 +308,67 @@ export default defineAgent({
         role: msg.role,
         text,
       });
+
+      // Safety net #1 (assistant side): gpt-4o-mini reliably *speaks* the
+      // goodbye line but frequently skips invoking `end_call` alongside it,
+      // stranding the caller on a silent open line. If the assistant's own
+      // committed transcript contains an unambiguous farewell phrase and no
+      // hangup is in flight, trigger it ourselves.
+      if (msg.role === "assistant" && !hangupRequested && ASSISTANT_FAREWELL_RE.test(text)) {
+        callLog.warn(
+          "assistant spoke farewell without invoking end_call — forcing hangup via heuristic",
+          { text }
+        );
+        void endCall("assistant farewell heuristic fallback");
+      }
     });
 
     agentSession.on(voice.AgentSessionEventTypes.AgentStateChanged, (ev: any) => {
       const state = ev?.newState ?? ev;
-      if (typeof state === "string") callLog.info("agent state", { state });
+      if (typeof state !== "string") return;
+      callLog.info("agent state", { state });
+
+      // Safety net #3 (state-transition): the caller previously said an
+      // unambiguous farewell and the agent has just finished its response
+      // (speaking → listening). Force hangup — nothing else is going to
+      // happen on this call. Content extraction can't fail us here because
+      // this path is driven purely by state transitions.
+      if (
+        lastAgentState === "speaking" &&
+        state === "listening" &&
+        userSaidFarewell &&
+        !hangupRequested
+      ) {
+        callLog.warn(
+          "agent returned to listening after user farewell — forcing hangup via state transition"
+        );
+        void endCall("user farewell + agent reply complete");
+      }
+      lastAgentState = state;
     });
+
+    // Idle-hangup state. Reference (Python) uses 20s silence → warn → 10s
+    // → +5s → hangup (~35s total). We do a slimmer version: warn at 25s,
+    // hang up at 40s. Reset on every user transcript.
+    let lastUserActivityAt = Date.now();
+    let idleWarnFired = false;
+    const IDLE_WARN_MS = 25_000;
+    const IDLE_HANGUP_MS = 40_000;
 
     agentSession.on(voice.AgentSessionEventTypes.UserInputTranscribed, (ev: any) => {
       const text = ev?.transcript ?? "";
       const isFinal = ev?.isFinal ?? false;
-      if (text && isFinal) callLog.info("user said", { text });
+      if (!text || !isFinal) return;
+      lastUserActivityAt = Date.now();
+      idleWarnFired = false;
+      callLog.info("user said", { text });
+      // Safety net #2 (user side): if the caller says an unambiguous
+      // farewell, arm the state-transition hangup above so we hang up the
+      // moment the agent finishes its reply.
+      if (!userSaidFarewell && USER_FAREWELL_RE.test(text)) {
+        userSaidFarewell = true;
+        callLog.warn("user farewell detected — arming state-transition hangup", { text });
+      }
     });
 
     agentSession.on(voice.AgentSessionEventTypes.SpeechCreated, (ev: any) => {
@@ -202,7 +380,80 @@ export default defineAgent({
       callLog.error("session error", { detail });
     });
 
+    // Hard idle-hangup timer. Polls every 5s; on 25s of silence the agent
+    // prompts once ("Hello, are you still there?"); on 40s total it hangs
+    // up unconditionally. This is a policy floor — the LLM's `end_call`
+    // tool + farewell heuristics may hang up sooner, but nothing runs past
+    // 40s of dead air.
+    const idleTimer = setInterval(() => {
+      if (hangupRequested) return;
+      const idleFor = Date.now() - lastUserActivityAt;
+      if (idleFor >= IDLE_HANGUP_MS) {
+        callLog.warn("idle hangup — no user activity", { idleForMs: idleFor });
+        void endCall("idle timeout");
+        return;
+      }
+      if (idleFor >= IDLE_WARN_MS && !idleWarnFired) {
+        idleWarnFired = true;
+        callLog.info("idle warn — prompting caller", { idleForMs: idleFor });
+        try {
+          agentSession.say("Hello, are you still there?", { allowInterruptions: true });
+        } catch (err) {
+          callLog.warn("idle warn say failed", { message: (err as Error)?.message });
+        }
+      }
+    }, 5_000);
+
+    // Hard max-duration cap with a 10s buffer past the persona's configured
+    // maximum. Even if every other safety net misses, we don't leave a call
+    // running indefinitely on the LiveKit-SIP meter.
+    const maxDurationMs = Math.max(60_000, persona.maxDurationMinutes * 60_000 + 10_000);
+    const maxDurationTimer = setTimeout(() => {
+      if (hangupRequested) return;
+      callLog.warn("max duration reached — forcing hangup", { maxDurationMs });
+      void endCall("max duration reached");
+    }, maxDurationMs);
+
+    // Caller-hangs-up path. LiveKit fires `ParticipantDisconnected` when the
+    // remote SIP or browser participant leaves. `closeOnDisconnect: true` on
+    // RoomInputOptions closes the AgentSession automatically for us, but we
+    // still want an explicit log and a fast room-delete so any lingering
+    // trunk leg drops immediately.
+    ctx.room.on(RoomEvent.ParticipantDisconnected, (participant) => {
+      const identity = participant.identity ?? "";
+      // The agent's own participant identity starts with `agent-`. Skip if
+      // somehow this fires for the local (agent) side — we only want to
+      // react to the *caller* leaving.
+      if (identity.startsWith("agent-")) return;
+      callLog.info("participant disconnected", {
+        identity,
+        kind: (participant as unknown as { kind?: number }).kind,
+      });
+      if (hangupRequested) return;
+      hangupRequested = true;
+      // No TTS to wait for — the caller is already gone. Fire immediately.
+      (async () => {
+        if (config.livekit.url && config.livekit.apiKey && config.livekit.apiSecret) {
+          try {
+            const rs = new RoomServiceClient(
+              config.livekit.url.replace(/^ws:\/\//, "http://").replace(/^wss:\/\//, "https://"),
+              config.livekit.apiKey,
+              config.livekit.apiSecret
+            );
+            await rs.deleteRoom(roomName);
+            callLog.info("room deleted after participant disconnect", { room: roomName });
+          } catch (err) {
+            callLog.warn("deleteRoom on participant disconnect failed", {
+              message: (err as Error).message,
+            });
+          }
+        }
+      })();
+    });
+
     ctx.addShutdownCallback(async () => {
+      clearInterval(idleTimer);
+      clearTimeout(maxDurationTimer);
       callLog.info("shutdown", { jobId: ctx.job.id });
       endSession(callSid);
       eventBus.emit("call.ended", {
@@ -216,7 +467,25 @@ export default defineAgent({
       });
     });
 
-    await agentSession.start({ agent, room: ctx.room });
+    await agentSession.start({
+      agent,
+      room: ctx.room,
+      // Auto-close the session if the linked participant leaves for any
+      // reason (mobile hangup, browser tab close, room deleted). Combined
+      // with `deleteRoomOnClose`, this closes the loop: caller hangs up →
+      // session closes → room is deleted → SIP trunk drops.
+      inputOptions: {
+        closeOnDisconnect: true,
+        deleteRoomOnClose: true,
+      },
+      // `transcriptionEnabled: true` matches the reference production
+      // config — LiveKit auto-publishes STT + agent transcript segments to
+      // the room on the `lk.transcription` topic. Defaults to true in this
+      // SDK version but we set it explicitly to lock behavior.
+      outputOptions: {
+        transcriptionEnabled: true,
+      },
+    });
 
     agentSession.say(persona.greetingMessage, {
       allowInterruptions: false,
@@ -224,6 +493,52 @@ export default defineAgent({
     });
   },
 });
+
+// Assistant-side farewell heuristic. Deliberately narrow — matches phrases
+// only the AI would use to *close* the call, not incidental "thanks" or
+// polite affirmations. Anchored on \b so "goodbye" matches but "goodbyes"
+// doesn't; explicit multi-word Hindi close phrases require the exact form
+// the prompt trains the model to produce.
+const ASSISTANT_FAREWELL_RE =
+  /\b(?:goodbye|bye\s*bye|bye\.?\s*$|phir\s+milte|phir\s+baat\s+karenge|chalo\s+bye)\b/i;
+
+// User-side farewell — matches what the caller is likely to say. Broader
+// than the assistant regex because callers hedge ("okay thanks bye", "haan
+// thik hai bye"). The word boundary keeps it from firing on "goodbyes",
+// "bypass", or "byahaan".
+const USER_FAREWELL_RE =
+  /\b(?:bye|goodbye|bye\s*bye|thank\s*you\s+bye|thanks?\s+bye|okay\s+bye|ok\s+bye|okay\s+thanks?\s+bye|phir\s+milte|phir\s+baat\s+karenge|chalo\s+bye|alvida)\b/i;
+
+/**
+ * `ConversationItemAdded.item.content` can be a plain string OR an array of
+ * content parts (each `{ type: "text", text: string }` or similar) depending
+ * on the LiveKit agents SDK version and the LLM adapter in use. We flatten
+ * to a single string so the assistant farewell heuristic can see the text.
+ * Previously we returned "" for anything non-string, which silently
+ * disabled the hangup safety net.
+ */
+const extractItemText = (content: unknown): string => {
+  if (typeof content === "string") return content.trim();
+  if (Array.isArray(content)) {
+    return content
+      .map((part) => {
+        if (typeof part === "string") return part;
+        if (part && typeof part === "object") {
+          const p = part as Record<string, unknown>;
+          if (typeof p.text === "string") return p.text;
+          if (typeof p.content === "string") return p.content;
+        }
+        return "";
+      })
+      .join(" ")
+      .trim();
+  }
+  if (content && typeof content === "object") {
+    const c = content as Record<string, unknown>;
+    if (typeof c.text === "string") return c.text.trim();
+  }
+  return "";
+};
 
 const normalizeLanguage = (raw: string): VoiceKey => {
   const lower = raw.toLowerCase();
