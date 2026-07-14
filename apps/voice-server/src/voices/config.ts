@@ -9,10 +9,13 @@ export interface LanguageCodes {
   speaker: string;
 }
 
+// Warm male voices from bulbul:v3. Other options if you want to swap:
+//   Hindi/Hinglish male: aditya, rahul, dev, kabir, anand, advait
+//   English (en-IN) male: anand, advait, sunny, tarun, soham
 const CODES: Record<VoiceKey, LanguageCodes> = {
-  hinglish: { stt: "hi-IN", tts: "hi-IN", speaker: "ritu" },
-  hindi:    { stt: "hi-IN", tts: "hi-IN", speaker: "ritu" },
-  english:  { stt: "en-IN", tts: "en-IN", speaker: "amelia" },
+  hinglish: { stt: "hi-IN", tts: "hi-IN", speaker: "shubh" },
+  hindi:    { stt: "hi-IN", tts: "hi-IN", speaker: "shubh" },
+  english:  { stt: "en-IN", tts: "en-IN", speaker: "anand" },
 };
 
 export const resolveLanguageCodes = (key: VoiceKey): LanguageCodes => CODES[key];

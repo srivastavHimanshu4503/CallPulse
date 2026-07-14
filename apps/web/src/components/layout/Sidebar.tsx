@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, Workflow, Settings, LogOut, Bot, Sparkles, Menu, Bell, BarChart3 } from "lucide-react";
+import { LayoutDashboard, Users, Workflow, Settings, LogOut, Bot, Menu, Bell, BarChart3 } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
 import { useUIStore } from "../../stores/ui.store.js";
+import { Logo } from "../common/Logo.js";
 import { toast } from "sonner";
 
 export function Sidebar(): React.JSX.Element {
@@ -27,19 +28,10 @@ export function Sidebar(): React.JSX.Element {
       {/* Brand area */}
       <div className={`flex h-14 items-center ${sidebarMinimized ? "justify-center" : "justify-between"} px-4 border-b border-[#E5E5E5] bg-white transition-all`}>
         {!sidebarMinimized && (
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] shrink-0">
-              <Sparkles className="h-4.5 w-4.5 text-[#2563EB]" />
-            </div>
-            <span className="font-bold text-sm tracking-tight text-[#111111] uppercase tracking-wider">
-              IndiAI
-            </span>
-          </div>
+          <Logo height={56} />
         )}
         {sidebarMinimized && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] shrink-0">
-            <Sparkles className="h-4.5 w-4.5 text-[#2563EB]" />
-          </div>
+          <Logo variant="mark" height={56} />
         )}
         
         <button

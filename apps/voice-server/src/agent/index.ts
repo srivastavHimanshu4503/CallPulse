@@ -323,6 +323,29 @@ export default defineAgent({
       }
     });
 
+    // Idle-hangup state. Reference (Python) uses 20s silence → warn → 10s
+    // → +5s → hangup (~35s total). We do warn at 30s, hang up at 45s.
+    //
+    // The clock counts elapsed silence while the agent is IDLE-LISTENING for
+    // the caller — it does NOT run while the agent is speaking, thinking,
+    // initializing, or during the greeting. This avoids the common bug
+    // where the "Hello, are you still there?" prompt fires before the
+    // greeting even finishes.
+    let idleWindowStart: number | null = null;
+    let idleWarnFired = false;
+    const IDLE_WARN_MS = 30_000;
+    const IDLE_HANGUP_MS = 45_000;
+    const resetIdleClock = (reason: string) => {
+      idleWindowStart = null;
+      idleWarnFired = false;
+      callLog.info("idle clock reset", { reason });
+    };
+    const armIdleClock = (reason: string) => {
+      idleWindowStart = Date.now();
+      idleWarnFired = false;
+      callLog.info("idle clock armed", { reason });
+    };
+
     agentSession.on(voice.AgentSessionEventTypes.AgentStateChanged, (ev: any) => {
       const state = ev?.newState ?? ev;
       if (typeof state !== "string") return;
@@ -344,23 +367,24 @@ export default defineAgent({
         );
         void endCall("user farewell + agent reply complete");
       }
+
+      // Only arm the idle clock when the agent finishes talking and is now
+      // actually waiting on the caller. Reset it any time the agent is
+      // doing something (thinking, speaking, initializing).
+      if (state === "listening") {
+        armIdleClock(`agent state → listening (from ${lastAgentState ?? "?"})`);
+      } else if (idleWindowStart !== null) {
+        resetIdleClock(`agent state → ${state}`);
+      }
+
       lastAgentState = state;
     });
-
-    // Idle-hangup state. Reference (Python) uses 20s silence → warn → 10s
-    // → +5s → hangup (~35s total). We do a slimmer version: warn at 25s,
-    // hang up at 40s. Reset on every user transcript.
-    let lastUserActivityAt = Date.now();
-    let idleWarnFired = false;
-    const IDLE_WARN_MS = 25_000;
-    const IDLE_HANGUP_MS = 40_000;
 
     agentSession.on(voice.AgentSessionEventTypes.UserInputTranscribed, (ev: any) => {
       const text = ev?.transcript ?? "";
       const isFinal = ev?.isFinal ?? false;
       if (!text || !isFinal) return;
-      lastUserActivityAt = Date.now();
-      idleWarnFired = false;
+      resetIdleClock("user transcript received");
       callLog.info("user said", { text });
       // Safety net #2 (user side): if the caller says an unambiguous
       // farewell, arm the state-transition hangup above so we hang up the
@@ -380,14 +404,14 @@ export default defineAgent({
       callLog.error("session error", { detail });
     });
 
-    // Hard idle-hangup timer. Polls every 5s; on 25s of silence the agent
-    // prompts once ("Hello, are you still there?"); on 40s total it hangs
-    // up unconditionally. This is a policy floor — the LLM's `end_call`
-    // tool + farewell heuristics may hang up sooner, but nothing runs past
-    // 40s of dead air.
+    // Hard idle-hangup timer. Polls every 5s. Only fires while the agent
+    // is actively waiting on the caller (state=listening); paused while the
+    // agent is thinking, speaking, initializing, or during the greeting.
+    // At 30s of silence the agent prompts once; at 45s it hangs up.
     const idleTimer = setInterval(() => {
       if (hangupRequested) return;
-      const idleFor = Date.now() - lastUserActivityAt;
+      if (idleWindowStart === null) return; // agent isn't in a listening window
+      const idleFor = Date.now() - idleWindowStart;
       if (idleFor >= IDLE_HANGUP_MS) {
         callLog.warn("idle hangup — no user activity", { idleForMs: idleFor });
         void endCall("idle timeout");

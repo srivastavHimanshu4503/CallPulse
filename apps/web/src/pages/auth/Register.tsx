@@ -2,6 +2,7 @@ import * as React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button, Input } from "@antigravity/ui";
 import { useAuthStore } from "../../stores/auth.store.js";
+import { Logo } from "../../components/common/Logo.js";
 
 export function Register(): React.JSX.Element {
   const navigate = useNavigate();
@@ -131,11 +132,8 @@ export function Register(): React.JSX.Element {
         {step < 4 && (
           <>
             {/* Header branding logo */}
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <svg className="h-5 w-5 text-[#2563EB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span className="text-lg font-semibold tracking-tight text-[#111111]">IndiAI</span>
+            <div className="flex items-center justify-center mb-6">
+              <Logo height={72} />
             </div>
 
             <div className="text-center mb-6">
@@ -453,7 +451,7 @@ export function Register(): React.JSX.Element {
             </div>
             
             <h2 className="text-xl font-semibold text-[#111111] mb-2 tracking-tight">
-              Welcome to IndiAI, {name}!
+              Welcome to Indi AI, {name}!
             </h2>
             <p className="text-xs text-[#666666] leading-relaxed max-w-sm mx-auto mb-6">
               Your business workspace and custom support AI agent have been configured successfully.

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "../stores/auth.store.js";
+import { Logo } from "../components/common/Logo.js";
 
 // Lazy-loaded pages as per Rules
 const Dashboard = React.lazy(() => import("../pages/dashboard/Dashboard.js"));
@@ -32,8 +33,9 @@ export function AppRouter(): React.JSX.Element {
   return (
     <React.Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[#0F0F0F] text-[#6366F1] text-lg font-bold">
-          <div className="animate-spin text-3xl mr-3">🌀</div> Loading Antigravity...
+        <div className="flex min-h-screen flex-col items-center justify-center bg-white gap-4">
+          <Logo height={96} className="animate-pulse" />
+          <div className="text-sm font-medium text-[#666666]">Loading Indi AI...</div>
         </div>
       }
     >
