@@ -2,14 +2,14 @@ import * as React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../../lib/axios.js";
 import { toast } from "sonner";
-import { Button, Input } from "@antigravity/ui";
-import { Phone, ShoppingBag, X } from "lucide-react";
+import { Button, Input, Modal } from "@antigravity/ui";
+import { Phone, Search, Sparkles, ShoppingBag, ShieldCheck, Loader2 } from "lucide-react";
 
 export const SIMULATED_NUMBERS = [
-  { number: "+91 22 6901 4455", label: "Mumbai Virtual Twilio Line (Premium)" },
-  { number: "+91 80 4402 3311", label: "Bangalore Virtual Twilio Line" },
-  { number: "+91 11 5566 2200", label: "Delhi National Toll-Free Virtual Line" },
-  { number: "+91 44 2288 1199", label: "Chennai Virtual Twilio Line" }
+  { number: "+91 22 6901 4455", label: "Mumbai — Premium" },
+  { number: "+91 80 4402 3311", label: "Bangalore" },
+  { number: "+91 11 5566 2200", label: "Delhi — Toll-Free" },
+  { number: "+91 44 2288 1199", label: "Chennai" },
 ];
 
 interface TelephonySetupProps {
@@ -25,7 +25,7 @@ export function TelephonySetup({
   setPhoneNumberId,
   phoneNumbers,
   refetchPhoneNumbers,
-  disabled
+  disabled,
 }: TelephonySetupProps): React.JSX.Element {
   const [isOpen, setIsOpen] = React.useState(false);
   const [selectedNum, setSelectedNum] = React.useState(SIMULATED_NUMBERS[0]?.number || "");
@@ -38,9 +38,9 @@ export function TelephonySetup({
   }, [phoneNumberId, phoneNumbers]);
 
   const filteredNumbers = React.useMemo(() => {
-    return SIMULATED_NUMBERS.filter((n) =>
-      n.number.includes(searchQuery) ||
-      n.label.toLowerCase().includes(searchQuery.toLowerCase())
+    return SIMULATED_NUMBERS.filter(
+      (n) =>
+        n.number.includes(searchQuery) || n.label.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery]);
 
@@ -51,195 +51,203 @@ export function TelephonySetup({
     },
     onSuccess: (data: any) => {
       refetchPhoneNumbers();
-      setPhoneNumberId(data.id); // Auto-assign the purchased number
-      toast.success(`Successfully purchased and assigned Twilio line: ${data.phoneNumber}`);
+      setPhoneNumberId(data.id);
+      toast.success(`Phone number assigned: ${data.phoneNumber}`);
       setIsOpen(false);
       setLabel("");
       setSearchQuery("");
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.error || "Failed to purchase virtual Twilio line");
-    }
+      toast.error(err.response?.data?.error || "Failed to assign phone number");
+    },
   });
 
   const handlePurchase = (e: React.FormEvent) => {
     e.preventDefault();
     purchaseMutation.mutate({
       phoneNumber: selectedNum,
-      label: label.trim() || "Virtual AI Receptionist Line",
+      label: label.trim() || "AI Receptionist",
     });
   };
 
   return (
-    <div className="space-y-4 font-sans">
-      <div className="flex items-center justify-between">
-        <label className="block text-[13px] font-semibold text-[#111111]">
-          Assigned Twilio Number *
-        </label>
-        {!assignedLine && (
-          <button
-            type="button"
-            onClick={() => setIsOpen(true)}
-            disabled={disabled}
-            className="text-[#2563EB] hover:text-[#1D4ED8] text-xs font-bold flex items-center gap-1 focus:outline-none"
-          >
-            <ShoppingBag className="h-3.5 w-3.5" /> Purchase Twilio Line (+)
-          </button>
+    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 space-y-4 font-sans">
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-semibold text-[#111111]">Phone number</h3>
+          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">
+            Every agent needs its own dedicated number — sharing one line across agents causes dispatch conflicts.
+          </p>
+        </div>
+        {assignedLine && (
+          <span className="inline-flex items-center gap-1 bg-[#DCFCE7] border border-[#16A34A]/20 text-[#15803D] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full shrink-0">
+            <ShieldCheck className="h-3 w-3" /> Assigned
+          </span>
         )}
-      </div>
+      </header>
 
       {assignedLine ? (
-        <div className="rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA]/50 p-4 flex items-center justify-between gap-4 animate-in fade-in duration-200">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-[#EFF6FF] border border-[#2563EB]/10 rounded-[6px] flex items-center justify-center text-[#2563EB]">
+        <div className="rounded-[8px] border border-[#E5E5E5] bg-[#FAFAFA] p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-in fade-in duration-200">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-11 w-11 bg-[#EFF6FF] border border-[#2563EB]/15 rounded-[8px] flex items-center justify-center text-[#2563EB] shrink-0">
               <Phone className="h-5 w-5" />
             </div>
-            <div>
-              <div className="text-sm font-semibold text-[#111111]">{assignedLine.phoneNumber}</div>
-              <div className="text-[10px] text-[#666666] font-medium mt-0.5 uppercase tracking-wider">
-                {assignedLine.label || "Dedicated Twilio Regional Line"}
+            <div className="min-w-0">
+              <div className="text-base font-semibold text-[#111111] tabular-nums truncate">
+                {assignedLine.phoneNumber}
+              </div>
+              <div className="text-[11px] text-[#666666] font-medium mt-0.5 truncate">
+                {assignedLine.label || "Dedicated line"}
               </div>
             </div>
           </div>
-          <button
+          <Button
+            variant="secondary"
             type="button"
             onClick={() => setIsOpen(true)}
             disabled={disabled}
-            className="text-[#2563EB] hover:text-[#1D4ED8] text-xs font-semibold focus:outline-none"
+            className="border border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-3.5 rounded-[6px] shadow-none self-start sm:self-auto shrink-0"
           >
-            Change Number
-          </button>
+            Change number
+          </Button>
         </div>
       ) : (
-        <div className="rounded-[6px] border border-dashed border-[#E5E5E5] bg-[#FAFAFA]/20 p-6 text-center space-y-4 animate-in fade-in duration-200">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EFF6FF]/40 text-[#2563EB] mx-auto">
-            <Phone className="h-6 w-6 text-[#2563EB]" />
+        <div className="rounded-[8px] border border-dashed border-[#E5E5E5] bg-[#FAFAFA]/60 p-6 sm:p-8 text-center animate-in fade-in duration-200">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white border border-[#E5E5E5] text-[#2563EB] mx-auto mb-3">
+            <Phone className="h-5 w-5" />
           </div>
-          <div className="max-w-xs mx-auto">
-            <h4 className="text-xs font-bold text-[#111111] uppercase tracking-wide">No Dedicated Line Allocated</h4>
-            <p className="text-[11px] text-[#666666] mt-1 leading-relaxed font-medium">
-              Every AI Agent receptionist requires a dedicated virtual Twilio regional line to prevent call dispatch conflicts. The primary business hotline cannot be shared.
-            </p>
-          </div>
+          <h4 className="text-sm font-semibold text-[#111111]">No number assigned yet</h4>
+          <p className="text-[12px] text-[#666666] mt-1.5 leading-relaxed max-w-sm mx-auto">
+            Pick a dedicated phone number so this agent can start receiving calls.
+          </p>
           <Button
             variant="primary"
             type="button"
             onClick={() => setIsOpen(true)}
             disabled={disabled}
-            className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-5 rounded-[6px] hover:bg-[#1D4ED8] shadow-none border-none"
+            className="bg-[#2563EB] text-white font-semibold text-xs h-10 px-5 rounded-[6px] hover:bg-[#1D4ED8] shadow-none border-none mt-4 inline-flex items-center gap-2"
           >
-            + Purchase & Allocate Twilio Regional Line
+            <ShoppingBag className="h-4 w-4" /> Assign phone number
           </Button>
         </div>
       )}
 
-      {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-          <div className="bg-white border border-[#E5E5E5] rounded-[6px] shadow-none max-w-lg w-full overflow-hidden">
-            <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-[#FAFAFA]">
-              <h3 className="text-sm font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
-                <Phone className="h-4.5 w-4.5 text-[#2563EB]" /> Purchase Twilio Line (India)
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none"
-              >
-                <X className="h-5 w-5" />
-              </button>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        size="lg"
+        title="Assign a phone number"
+        backdropBlur={true}
+      >
+        <form onSubmit={handlePurchase} className="flex flex-col max-h-[80vh]">
+          <div className="p-5 sm:p-6 space-y-5 overflow-y-auto">
+            <div className="flex items-start gap-2 rounded-[8px] bg-[#EFF6FF] border border-[#2563EB]/15 p-3 text-[11px] text-[#1D4ED8] leading-relaxed">
+              <Sparkles className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+              <span>
+                Numbers are provisioned instantly and support Hinglish + regional accents out of the box.
+              </span>
             </div>
 
-            <form onSubmit={handlePurchase} className="p-6 space-y-4">
-              <p className="text-xs text-[#666666] leading-relaxed">
-                Virtual regional numbers are active immediately and support Hinglish voice parsing out-of-the-box.
-              </p>
-
-              <div className="space-y-2">
-                <label className="block text-[13px] font-semibold text-[#111111]">
-                  Search Available Virtual Lines
-                </label>
+            <div>
+              <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+                Search available numbers
+              </label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999]" />
                 <input
                   type="text"
                   placeholder="Search city or prefix (e.g. Mumbai, 022, Delhi)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 w-full focus:outline-none"
+                  className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 pl-9 pr-3 w-full focus:outline-none focus:ring-0"
                 />
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <label className="block text-[13px] font-semibold text-[#111111]">
-                  Select Twilio Regional Number (India)
-                </label>
-                <div className="border border-[#E5E5E5] rounded-[6px] bg-[#FAFAFA]/30 max-h-[220px] overflow-y-auto p-3 pr-1.5">
-                  {filteredNumbers.length === 0 ? (
-                    <div className="py-6 text-center text-xs text-[#666666] bg-white border border-dashed border-[#E5E5E5] rounded-[6px] font-medium">
-                      No matching virtual numbers available
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {filteredNumbers.map((n) => {
-                        const isSelected = selectedNum === n.number;
-                        return (
-                          <div
-                            key={n.number}
-                            onClick={() => setSelectedNum(n.number)}
-                            className={`p-3 cursor-pointer rounded-[6px] border transition-all flex items-start justify-between ${
-                              isSelected
-                                ? "bg-[#EFF6FF]/40 border-[#2563EB] text-[#2563EB]"
-                                : "bg-white border-[#E5E5E5] hover:border-[#2563EB]/40 hover:bg-[#F7F7F7]"
-                            }`}
-                          >
-                            <div className="min-w-0">
-                              <div className="text-xs font-semibold text-[#111111]">{n.number}</div>
-                              <div className="text-[9px] text-[#666666] mt-1 font-medium leading-tight truncate" title={n.label}>
-                                {n.label}
-                              </div>
-                            </div>
-                            {isSelected && <span className="text-[10px] font-bold text-[#2563EB] shrink-0 ml-1 mt-0.5">Selected</span>}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+            <div>
+              <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+                Pick a number
+              </label>
+              {filteredNumbers.length === 0 ? (
+                <div className="py-8 text-center text-xs text-[#666666] bg-[#FAFAFA] border border-dashed border-[#E5E5E5] rounded-[8px] font-medium">
+                  No matching numbers.
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[280px] overflow-y-auto pr-1 -mr-1">
+                  {filteredNumbers.map((n) => {
+                    const isSelected = selectedNum === n.number;
+                    return (
+                      <button
+                        key={n.number}
+                        type="button"
+                        onClick={() => setSelectedNum(n.number)}
+                        className={`text-left p-3 rounded-[8px] border transition-all ${
+                          isSelected
+                            ? "bg-[#EFF6FF]/60 border-[#2563EB] ring-1 ring-[#2563EB]/15"
+                            : "bg-white border-[#E5E5E5] hover:border-[#2563EB]/40"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-semibold text-[#111111] tabular-nums">
+                            {n.number}
+                          </span>
+                          {isSelected && (
+                            <span className="text-[10px] font-bold text-[#2563EB]">Selected</span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-[#666666] mt-1 font-medium leading-tight">
+                          {n.label}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
-              <div className="space-y-2">
-                <label className="block text-[13px] font-semibold text-[#111111]">
-                  Line Nickname / Label
-                </label>
-                <Input
-                  type="text"
-                  placeholder="e.g. Primary Inbound Receptionist"
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value)}
-                  className="bg-white border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 px-3 w-full"
-                />
-              </div>
-
-              <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={() => setIsOpen(false)}
-                  type="button"
-                  className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-10 px-4 rounded-[6px] shadow-none"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  disabled={purchaseMutation.isPending}
-                  className="bg-[#2563EB] text-white font-semibold text-xs h-10 px-5 rounded-[6px] hover:bg-[#1D4ED8] flex items-center gap-2 border-none shadow-none"
-                >
-                  {purchaseMutation.isPending ? "Purchasing..." : "Purchase Twilio Line"}
-                </Button>
-              </div>
-            </form>
+            <div>
+              <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+                Nickname
+              </label>
+              <Input
+                type="text"
+                placeholder="e.g. Primary inbound receptionist"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 px-3 w-full shadow-none"
+              />
+              <p className="text-[11px] text-[#999999] mt-1.5">
+                Optional. Helps identify this number in reports later.
+              </p>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+
+          <div className="border-t border-[#E5E5E5] px-5 sm:px-6 py-3 flex items-center justify-end gap-2 bg-[#FAFAFA]">
+            <Button
+              variant="secondary"
+              onClick={() => setIsOpen(false)}
+              type="button"
+              className="border border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-10 px-4 rounded-[6px] shadow-none"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={purchaseMutation.isPending}
+              className="bg-[#2563EB] text-white font-semibold text-xs h-10 px-5 rounded-[6px] hover:bg-[#1D4ED8] flex items-center gap-2 border-none shadow-none disabled:opacity-70"
+            >
+              {purchaseMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Assigning...
+                </>
+              ) : (
+                <>Assign number</>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    </section>
   );
 }

@@ -2,7 +2,17 @@ import * as React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button, Input } from "@antigravity/ui";
 import { useAuthStore } from "../../stores/auth.store.js";
-import { Logo } from "../../components/common/Logo.js";
+import { AuthLayout } from "../../components/auth/AuthLayout.js";
+
+const inputClass =
+  "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-11 px-3.5 w-full transition-all";
+
+const goldButton =
+  "w-full h-11 text-[#0a0416] font-bold text-[14px] rounded-[10px] flex items-center justify-center transition-all hover:brightness-110 shadow-[0_10px_30px_-10px_rgba(251,191,36,0.55)] disabled:opacity-70";
+
+const goldStyle: React.CSSProperties = {
+  background: "linear-gradient(135deg, #FFE9A0 0%, #F5B849 50%, #F97316 100%)",
+};
 
 export function Login(): React.JSX.Element {
   const navigate = useNavigate();
@@ -13,8 +23,7 @@ export function Login(): React.JSX.Element {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-  
-  // Real-time validations
+
   const [emailError, setEmailError] = React.useState("");
   const [passwordError, setPasswordError] = React.useState("");
   const [formError, setFormError] = React.useState("");
@@ -26,44 +35,26 @@ export function Login(): React.JSX.Element {
   }, [isAuthenticated, navigate]);
 
   const validateEmail = (val: string) => {
-    if (!val) {
-      setEmailError("Email address is required");
-      return false;
-    }
+    if (!val) { setEmailError("Email address is required"); return false; }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(val)) {
-      setEmailError("Please enter a valid email address");
-      return false;
-    }
+    if (!emailRegex.test(val)) { setEmailError("Please enter a valid email address"); return false; }
     setEmailError("");
     return true;
   };
 
   const validatePassword = (val: string) => {
-    if (!val) {
-      setPasswordError("Password is required");
-      return false;
-    }
-    if (val.length < 8) {
-      setPasswordError("Password must be at least 8 characters");
-      return false;
-    }
+    if (!val) { setPasswordError("Password is required"); return false; }
+    if (val.length < 8) { setPasswordError("Password must be at least 8 characters"); return false; }
     setPasswordError("");
     return true;
   };
 
-  const handleBlurEmail = () => validateEmail(email);
-  const handleBlurPassword = () => validatePassword(password);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
-
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
-
     if (!isEmailValid || !isPasswordValid) return;
-
     try {
       await login(email, password);
       navigate("/dashboard");
@@ -73,76 +64,62 @@ export function Login(): React.JSX.Element {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white font-sans antialiased text-[#111111] px-4">
-      {/* 400px wide centered white card, border 1px #E5E5E5, radius 8px, padding 32px (p-8) */}
-      <div className="w-full max-w-[400px] bg-white border border-[#E5E5E5] rounded-[8px] p-8 shadow-none">
-        
-        {/* Branding logo */}
-        <div className="flex items-center justify-center mb-6">
-          <Logo height={72} />
-        </div>
-
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-[#111111]">Sign in</h1>
-          <p className="text-sm text-[#666666] mt-1.5">to access your SMB workspace</p>
+    <AuthLayout>
+      <div className="w-full">
+        <div className="mb-7">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">
+            <span className="h-1 w-1 rounded-full bg-orange-600" />
+            Welcome back
+          </span>
+          <h1 className="text-[30px] leading-tight font-bold tracking-tight text-[#111111]">
+            Sign in to your workspace
+          </h1>
+          <p className="text-[14px] text-[#666666] mt-2">
+            Log in to manage your AI receptionist, calls, and leads.
+          </p>
         </div>
 
         {formError && (
-          <div className="mb-5 rounded-[6px] bg-[#DC2626]/5 border border-[#DC2626]/20 p-3.5 text-xs text-[#DC2626] font-medium leading-normal flex items-start gap-2">
-            <span>⚠️</span>
-            <div className="flex-1">{formError}</div>
+          <div className="mb-5 rounded-[10px] bg-rose-50 border border-rose-200 p-3.5 text-[13px] text-rose-700 font-medium leading-normal flex items-start gap-2.5">
+            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 mt-0.5 shrink-0">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M12 8v5M12 16.5v.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+            <span className="flex-1">{formError}</span>
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-[13px] font-medium text-[#111111] mb-2">
-              Email Address
-            </label>
+            <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Email address</label>
             <Input
-              type="email"
-              placeholder="name@company.com"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (emailError) validateEmail(e.target.value);
-              }}
-              onBlur={handleBlurEmail}
-              error={emailError}
-              disabled={isLoading}
-              required
-              className="bg-white border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 px-3 focus:ring-0 w-full"
+              type="email" placeholder="name@company.com" value={email}
+              onChange={(e) => { setEmail(e.target.value); if (emailError) validateEmail(e.target.value); }}
+              onBlur={() => validateEmail(email)}
+              error={emailError} disabled={isLoading} required
+              className={inputClass}
             />
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="block text-[13px] font-medium text-[#111111]">
-                Password
-              </label>
-              <Link to="/forgot-password" className="text-[13px] text-[#2563EB] hover:text-[#1D4ED8] focus:outline-none font-medium">
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-[13px] font-semibold text-[#111111]">Password</label>
+              <Link to="/forgot-password" className="text-[12.5px] text-orange-600 hover:text-orange-700 font-semibold">
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
               <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (passwordError) validatePassword(e.target.value);
-                }}
-                onBlur={handleBlurPassword}
-                error={passwordError}
-                disabled={isLoading}
-                required
-                className="bg-white border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 pl-3 pr-12 focus:ring-0 w-full"
+                type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password}
+                onChange={(e) => { setPassword(e.target.value); if (passwordError) validatePassword(e.target.value); }}
+                onBlur={() => validatePassword(password)}
+                error={passwordError} disabled={isLoading} required
+                className={`${inputClass} pr-14`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-3 text-[#666666] hover:text-[#111111] text-[12px] font-medium focus:outline-none"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666] hover:text-[#111111] text-[11.5px] font-semibold focus:outline-none uppercase tracking-wider"
                 tabIndex={-1}
               >
                 {showPassword ? "Hide" : "Show"}
@@ -150,24 +127,26 @@ export function Login(): React.JSX.Element {
             </div>
           </div>
 
-          <Button 
-            type="submit" 
-            variant="primary" 
-            className="w-full h-10 bg-[#2563EB] text-white font-semibold text-sm rounded-[6px] flex items-center justify-center hover:bg-[#1D4ED8] transition-colors focus:ring-0 mt-6 shadow-none"
-            disabled={isLoading}
-          >
-            {isLoading ? "Signing in..." : "Sign In"}
+          <Button type="submit" variant="primary" className={`${goldButton} mt-2`} style={goldStyle} disabled={isLoading}>
+            {isLoading ? (
+              <span className="inline-flex items-center gap-2">
+                <span className="h-3.5 w-3.5 rounded-full border-2 border-[#0a0416]/30 border-t-[#0a0416] animate-spin" />
+                Signing in…
+              </span>
+            ) : (
+              <>Sign in →</>
+            )}
           </Button>
         </form>
 
-        <div className="mt-8 border-t border-[#E5E5E5] pt-5 text-center text-sm text-[#666666]">
-          Don't have an account?{" "}
-          <Link to="/register" className="text-[#2563EB] font-semibold hover:underline">
-            Register your business
+        <div className="mt-8 text-center text-[13.5px] text-[#666666]">
+          New to Indi AI?{" "}
+          <Link to="/register" className="text-[#111111] font-bold hover:text-orange-600 transition-colors">
+            Create a business account
           </Link>
         </div>
       </div>
-    </div>
+    </AuthLayout>
   );
 }
 export default Login;

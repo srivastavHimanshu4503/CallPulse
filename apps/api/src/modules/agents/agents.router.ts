@@ -16,6 +16,7 @@ router.get("/telephony/numbers", controller.getTelephonyNumbers);
 router.post("/telephony/purchase", controller.purchaseTelephonyNumber);
 router.get("/workflows/list", controller.getWorkflowsList);
 router.post("/workflows", controller.createWorkflow);
+router.post("/test-voice", controller.testVoice);
 router.get("/:id", controller.getAgentById);
 router.put("/:id", controller.updateAgent);
 router.delete("/:id", controller.deleteAgent);

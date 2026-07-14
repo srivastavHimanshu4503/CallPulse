@@ -27,16 +27,19 @@ const SRC_H = 1024;
 // visible logo with the rest being blank canvas.
 //
 // Full artwork (mark + INDIAI wordmark + "AI RECEPTIONIST" tagline).
-const FULL_X = 220;
-const FULL_Y = 245;
-const FULL_W = 1135;
-const FULL_H = 520;
+// Tightened to hug the artwork so a taller aspect ratio → same height renders
+// noticeably wider than a boxy crop would.
+const FULL_X = 218;
+const FULL_Y = 252;
+const FULL_W = 1130;
+const FULL_H = 470;
 
-// Just the mark icon (the speech-bubble face).
-const MARK_X = 225;
-const MARK_Y = 250;
-const MARK_W = 395;
-const MARK_H = 500;
+// Just the mark icon (speech-bubble face + tail). Tightened around the actual
+// mark so no dead whitespace shifts it off-center in the minimized sidebar.
+const MARK_X = 226;
+const MARK_Y = 252;
+const MARK_W = 252;
+const MARK_H = 470;
 
 // Remote source (transparent-background version hosted on ibb).
 const LOGO_URL =

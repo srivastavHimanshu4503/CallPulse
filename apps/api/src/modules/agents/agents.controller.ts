@@ -226,5 +226,25 @@ export class AgentsController {
       sendError(res, getCleanErrorMessage(error), 400);
     }
   }
+
+  async testVoice(req: Request, res: Response): Promise<void> {
+    try {
+      const { provider, voice, language } = req.body;
+      if (!provider || !voice) {
+        sendError(res, "Provider and voice are required", 400);
+        return;
+      }
+      const audioBuffer = await agentsService.generateTestVoice({
+        provider,
+        voice,
+        language
+      });
+      const contentType = provider === "openai" ? "audio/mpeg" : "audio/wav";
+      res.setHeader("Content-Type", contentType);
+      res.send(audioBuffer);
+    } catch (error: any) {
+      sendError(res, getCleanErrorMessage(error), 500);
+    }
+  }
 }
 

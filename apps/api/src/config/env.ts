@@ -20,6 +20,10 @@ const envSchema = z.object({
   LIVEKIT_API_KEY: z.string().min(1).optional(),
   LIVEKIT_API_SECRET: z.string().min(1).optional(),
   LIVEKIT_AGENT_NAME: z.string().default("inbound-agent"),
+
+  // Speech APIs
+  SARVAM_API_KEY: z.string().min(1).optional(),
+  OPENAI_API_KEY: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

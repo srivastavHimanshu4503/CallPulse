@@ -1,138 +1,347 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, Workflow, Settings, LogOut, Bot, Menu, Bell, BarChart3 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Workflow,
+  Settings,
+  LogOut,
+  Bot,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Bell,
+  BarChart3,
+  ChevronUp,
+  Zap,
+  CreditCard,
+  Code2,
+} from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
 import { useUIStore } from "../../stores/ui.store.js";
 import { Logo } from "../common/Logo.js";
 import { toast } from "sonner";
 
+interface NavItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const NAV: NavItem[] = [
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Agents", href: "/agents", icon: Bot },
+  { name: "CRM", href: "/crm", icon: Users },
+  { name: "Workflows", href: "/workflows", icon: Workflow },
+  { name: "Widget", href: "/widget", icon: Code2 },
+  { name: "Analytics", href: "/analytics", icon: BarChart3 },
+  { name: "Notifications", href: "/notifications", icon: Bell },
+  { name: "Settings", href: "/settings", icon: Settings },
+];
+
 export function Sidebar(): React.JSX.Element {
   const location = useLocation();
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
   const sidebarMinimized = useUIStore((state) => state.sidebarMinimized);
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
 
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "CRM", href: "/crm", icon: Users },
-    { name: "Outbound Workflows", href: "/workflows", icon: Workflow },
-    { name: "Notifications", href: "/notifications", icon: Bell },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
-    { name: "Agents", href: "/agents", icon: Bot },
-    { name: "Settings", href: "/settings", icon: Settings },
-  ];
+  const [profileOpen, setProfileOpen] = React.useState(false);
+  const profileRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (!profileOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [profileOpen]);
+
+  const userName = user?.name || "Workspace Owner";
+  const userEmail = user?.email || "";
+  const userRole = user?.role || "OWNER";
+  const initial = userName.trim().charAt(0).toUpperCase() || "I";
+
+  const renderNavItem = (item: NavItem) => {
+    const isActive =
+      location.pathname === item.href ||
+      (item.href !== "/" && location.pathname.startsWith(item.href + "/"));
+    const Icon = item.icon;
+
+    return (
+      <Link
+        key={item.name}
+        to={item.href}
+        className={[
+          "group relative flex items-center rounded-lg transition-all",
+          sidebarMinimized
+            ? "h-10 w-10 mx-auto justify-center"
+            : "gap-3 px-3 h-9",
+          isActive
+            ? "bg-active-nav text-active-navText shadow-sm font-semibold"
+            : "text-fg-secondary hover:bg-bg-muted hover:text-fg-primary",
+        ].join(" ")}
+        title={sidebarMinimized ? item.name : undefined}
+      >
+        <Icon
+          className={[
+            "h-[17px] w-[17px] shrink-0",
+            isActive ? "text-active-navText" : "text-fg-muted group-hover:text-fg-secondary",
+          ].join(" ")}
+        />
+        {!sidebarMinimized && (
+          <span className="text-[13px] font-medium tracking-tight">{item.name}</span>
+        )}
+      </Link>
+    );
+  };
 
   return (
-    <aside className={`fixed inset-y-0 left-0 z-20 flex flex-col border-r border-[#E5E5E5] bg-white text-[#111111] transition-all duration-200 select-none ${sidebarMinimized ? "w-[64px]" : "w-[240px]"}`}>
-      
-      {/* Brand area */}
-      <div className={`flex h-14 items-center ${sidebarMinimized ? "justify-center" : "justify-between"} px-4 border-b border-[#E5E5E5] bg-white transition-all`}>
+    <aside
+      className={[
+        "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-line-default bg-white text-fg-primary transition-all duration-200 select-none",
+        sidebarMinimized ? "w-[68px]" : "w-[220px]",
+      ].join(" ")}
+    >
+      {/* Brand */}
+      <div
+        className={[
+          "flex h-14 items-center border-b border-line-subtle px-3 shrink-0",
+          sidebarMinimized ? "justify-center" : "justify-between",
+        ].join(" ")}
+      >
+        {sidebarMinimized ? <Logo variant="mark" height={30} /> : <Logo height={38} />}
         {!sidebarMinimized && (
-          <Logo height={56} />
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className="text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+            title="Minimize sidebar"
+          >
+            <PanelLeftClose className="h-4 w-4" />
+          </button>
         )}
-        {sidebarMinimized && (
-          <Logo variant="mark" height={56} />
-        )}
-        
+      </div>
+
+      {sidebarMinimized && (
         <button
           type="button"
           onClick={toggleSidebar}
-          className="text-[#666666] hover:text-[#111111] p-1.5 rounded-[6px] hover:bg-[#F7F7F7] focus:outline-none transition-colors ml-1"
-          title={sidebarMinimized ? "Expand Sidebar" : "Minimize Sidebar"}
+          className="mx-auto mt-1 text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+          title="Expand sidebar"
         >
-          <Menu className="h-4.5 w-4.5" />
+          <PanelLeftOpen className="h-4 w-4" />
         </button>
-      </div>
+      )}
 
-      {/* Navigation List */}
-      <nav className="flex-1 space-y-1 px-2.5 py-4 overflow-y-auto custom-scrollbar">
-        {navigation.map((item) => {
-          const isActive = location.pathname === item.href;
-          const Icon = item.icon;
-
-          return (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`flex items-center ${sidebarMinimized ? "justify-center" : "gap-3"} rounded-[6px] px-3 py-2 text-xs font-medium transition-all ${
-                isActive
-                  ? "bg-[#EFF6FF] text-[#2563EB]"
-                  : "text-[#666666] hover:bg-[#F7F7F7] hover:text-[#111111]"
-              }`}
-              title={sidebarMinimized ? item.name : undefined}
-            >
-              <Icon className={`h-4.5 w-4.5 shrink-0 ${isActive ? "text-[#2563EB]" : "text-[#999999]"}`} />
-              {!sidebarMinimized && <span>{item.name}</span>}
-            </Link>
-          );
-        })}
+      {/* Navigation */}
+      <nav className="flex-1 px-2.5 py-3 overflow-y-auto">
+        <div className="space-y-0.5">{NAV.map(renderNavItem)}</div>
       </nav>
 
-      {/* Dynamic Credit & Usage Telemetry Section */}
-      <div className="border-t border-[#E5E5E5] p-4 bg-white flex flex-col justify-center select-none shrink-0">
+      {/* Billing / Usage — rich gradient card */}
+      <div className="border-t border-line-subtle p-3 shrink-0">
         {sidebarMinimized ? (
           <button
             type="button"
-            onClick={() => toast.info("Workspace Usage: 4,850 mins remaining of 5,000 mins. Business Pro Plan.")}
-            className="flex h-10 w-10 items-center justify-center rounded-[6px] border border-[#2563EB]/15 bg-[#EFF6FF] text-[#2563EB] font-bold text-xs hover:bg-[#2563EB]/10 transition-colors relative"
-            title="Usage: 97% available"
+            onClick={() =>
+              toast.info("Workspace usage: 4,850 of 5,000 minutes remaining · Business Pro plan.")
+            }
+            className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all hover:brightness-110"
+            style={{
+              background:
+                "linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)",
+              boxShadow: "0 4px 12px -4px rgba(139,92,246,0.55)",
+              color: "#FFFFFF",
+            }}
+            title="Business Pro · 97% available"
           >
-            <span>⚡</span>
-            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-[#16A34A] animate-ping" />
+            <Zap className="h-[17px] w-[17px]" />
           </button>
         ) : (
-          <div className="space-y-3">
-            {/* Plan Header */}
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[#111111] uppercase tracking-wider">Business Pro Plan</span>
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#F0FDF4] border border-[#16A34A]/25 text-[#16A34A] uppercase tracking-wide">
-                Active
-              </span>
-            </div>
+          <div
+            className="relative rounded-xl p-3 overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, #EEF2FF 0%, #FDF4FF 55%, #FFF1F2 100%)",
+              boxShadow:
+                "0 1px 2px rgba(15,23,42,0.06), 0 8px 20px -12px rgba(99,102,241,0.35)",
+              border: "1px solid rgba(139,92,246,0.18)",
+            }}
+          >
+            {/* Decorative blur orbs */}
+            <div
+              className="absolute -top-6 -right-4 h-16 w-16 rounded-full blur-2xl pointer-events-none"
+              style={{ backgroundColor: "rgba(236,72,153,0.35)" }}
+            />
+            <div
+              className="absolute -bottom-6 -left-4 h-16 w-16 rounded-full blur-2xl pointer-events-none"
+              style={{ backgroundColor: "rgba(99,102,241,0.35)" }}
+            />
 
-            {/* Quota Usage and Progress Bar */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-[11px] font-semibold text-[#666666]">
-                <span>Voice Quota Usage</span>
-                <span className="text-[#111111] font-bold">4,850 / 5,000 min</span>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-2">
+                <span
+                  className="text-[11px] font-bold uppercase tracking-wider bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(90deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)",
+                  }}
+                >
+                  Business Pro
+                </span>
+                <span
+                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide"
+                  style={{
+                    backgroundColor: "#F0FDF4",
+                    color: "#16A34A",
+                    boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.28)",
+                  }}
+                >
+                  <span
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: "#16A34A" }}
+                  />
+                  Active
+                </span>
               </div>
-              
-              {/* Premium Progress Bar */}
-              <div className="h-1.5 w-full bg-[#F3F4F6] rounded-full overflow-hidden border border-[#E5E5E5]/45">
-                <div 
-                  className="h-full bg-gradient-to-r from-[#2563EB] to-[#3B82F6] rounded-full transition-all duration-500" 
-                  style={{ width: "97%" }} 
-                />
-              </div>
-              
-              <div className="flex justify-between text-[9px] text-[#999999] font-bold tracking-wide uppercase">
-                <span>97% Available</span>
-                <span>Renews in 12 days</span>
-              </div>
-            </div>
 
-            {/* Quota Action Controls */}
-            <button
-              type="button"
-              onClick={() => toast.warning("Low balance! Billing portal is out of scope for MVP - coming soon!")}
-              className="w-full h-8 bg-white hover:bg-[#F9FAFB] border border-[#E5E5E5] text-[#111111] hover:text-[#2563EB] rounded-[6px] text-[10px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
-            >
-              <span>💳</span> Manage Billing
-            </button>
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-[11px] font-medium">
+                  <span style={{ color: "#475569" }}>Voice quota</span>
+                  <span className="font-semibold" style={{ color: "#0F172A" }}>
+                    4,850 / 5,000
+                  </span>
+                </div>
+                <div
+                  className="h-2 w-full rounded-full overflow-hidden"
+                  style={{ backgroundColor: "rgba(15,23,42,0.06)" }}
+                >
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: "97%",
+                      background:
+                        "linear-gradient(90deg, #6366F1 0%, #8B5CF6 45%, #EC4899 100%)",
+                      boxShadow: "0 0 8px rgba(139,92,246,0.5)",
+                    }}
+                  />
+                </div>
+                <div className="flex justify-between text-[9.5px] font-semibold tracking-wide uppercase" style={{ color: "#94A3B8" }}>
+                  <span>97% available</span>
+                  <span>12d renewal</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => toast.warning("Billing portal coming soon.")}
+                className="w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 text-white hover:brightness-110"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)",
+                  boxShadow: "0 2px 8px -2px rgba(139,92,246,0.55)",
+                }}
+              >
+                <CreditCard className="h-3.5 w-3.5" />
+                Manage billing
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Logout Footer Section */}
-      <div className="border-t border-[#E5E5E5] p-3 bg-white flex justify-center">
+      {/* Profile + Logout — bottom popover */}
+      <div className="relative border-t border-line-subtle px-2 py-3 mb-2 shrink-0" ref={profileRef}>
         <button
-          onClick={logout}
-          className={`flex items-center ${sidebarMinimized ? "justify-center w-10 h-10 px-0" : "w-full px-3.5 py-2"} rounded-[6px] border border-[#DC2626] bg-white text-xs font-medium text-[#DC2626] hover:bg-[#DC2626]/5 transition-colors h-10`}
-          title="Logout"
+          type="button"
+          onClick={() => setProfileOpen((v) => !v)}
+          className={[
+            "w-full flex items-center rounded-lg hover:bg-bg-muted transition-all py-1.5",
+            sidebarMinimized ? "justify-center" : "justify-between gap-2 px-2",
+          ].join(" ")}
+          title={sidebarMinimized ? userName : undefined}
         >
-          <LogOut className="h-4.5 w-4.5 text-[#DC2626] shrink-0" />
-          {!sidebarMinimized && <span className="ml-3">Logout</span>}
+          <div className={sidebarMinimized ? "" : "flex items-center gap-2.5 min-w-0"}>
+            {(user as any)?.avatarUrl ? (
+              <img src={(user as any).avatarUrl} alt={userName} className="h-8 w-8 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center text-[11.5px] font-semibold shrink-0">
+                {initial}
+              </div>
+            )}
+            {!sidebarMinimized && (
+              <div className="min-w-0 text-left">
+                <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">
+                  {userName}
+                </div>
+                <div className="text-[10.5px] text-fg-muted truncate">{userEmail}</div>
+              </div>
+            )}
+          </div>
+          {!sidebarMinimized && (
+            <ChevronUp
+              className={[
+                "h-4 w-4 text-fg-muted shrink-0 transition-transform",
+                profileOpen ? "" : "rotate-180",
+              ].join(" ")}
+            />
+          )}
         </button>
+
+        {profileOpen && (
+          <div
+            className={[
+              "absolute bottom-[calc(100%-6px)] mb-2 z-30",
+              sidebarMinimized ? "left-[68px]" : "left-2 right-2",
+            ].join(" ")}
+          >
+            <div
+              className="rounded-lg border border-line-default bg-white shadow-pop overflow-hidden"
+              style={{ minWidth: sidebarMinimized ? "240px" : undefined }}
+            >
+              <div className="px-3.5 py-3 border-b border-line-subtle flex items-center gap-3">
+                {(user as any)?.avatarUrl ? (
+                  <img src={(user as any).avatarUrl} alt={userName} className="h-10 w-10 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-[12.5px] font-semibold shrink-0">
+                    {initial}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <div className="text-[13px] font-semibold text-fg-primary truncate">{userName}</div>
+                  <div className="text-[11px] text-fg-muted truncate">{userEmail}</div>
+                  <div className="mt-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-brand-50 border border-brand-500/20 text-brand-600 uppercase tracking-wide">
+                    {userRole.toLowerCase()}
+                  </div>
+                </div>
+              </div>
+              <div className="p-1.5">
+                <Link
+                  to="/settings"
+                  onClick={() => setProfileOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[12.5px] font-medium text-fg-secondary hover:bg-bg-muted hover:text-fg-primary transition-all"
+                >
+                  <Settings className="h-4 w-4 text-fg-muted" />
+                  Account settings
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    logout();
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-[12.5px] font-medium text-negative-500 hover:bg-negative-50 transition-all"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </aside>
   );

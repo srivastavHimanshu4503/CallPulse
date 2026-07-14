@@ -281,4 +281,103 @@ export class CrmController {
       res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
     }
   }
+
+  async deleteContact(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Contact ID is required" });
+        return;
+      }
+      await crmService.softDeleteContact(tenantId, id);
+      res.json({ success: true, data: null, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async bulkDeleteContacts(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { ids } = req.body as { ids?: string[] };
+      if (!Array.isArray(ids) || ids.length === 0) {
+        res.status(400).json({ success: false, data: null, error: "ids array required" });
+        return;
+      }
+      const result = await crmService.bulkDeleteContacts(tenantId, ids);
+      res.json({ success: true, data: result, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async bulkImport(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { rows } = req.body as {
+        rows?: Array<{ firstName: string; lastName: string; email?: string; phone?: string }>;
+      };
+      if (!Array.isArray(rows) || rows.length === 0) {
+        res.status(400).json({ success: false, data: null, error: "rows array required" });
+        return;
+      }
+      if (rows.length > 5000) {
+        res.status(400).json({ success: false, data: null, error: "Max 5000 rows per import" });
+        return;
+      }
+      const result = await crmService.bulkImport(tenantId, rows);
+      res.json({ success: true, data: result, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async findDuplicates(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const data = await crmService.findDuplicates(tenantId);
+      res.json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async mergeContacts(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { targetId, sourceId } = req.body as { targetId?: string; sourceId?: string };
+      if (!targetId || !sourceId) {
+        res.status(400).json({ success: false, data: null, error: "targetId and sourceId required" });
+        return;
+      }
+      await crmService.mergeContacts(tenantId, targetId, sourceId);
+      res.json({ success: true, data: null, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  /**
+   * Internal hook — call this from the voice-server / webhook after a call
+   * completes with extracted intent fields. Applies auto-deal creation.
+   * Also usable from the UI ("Apply AI rules") for retro processing.
+   */
+  async postCallHook(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { contactId, extractedFields } = req.body as {
+        contactId?: string;
+        extractedFields?: Record<string, any>;
+      };
+      if (!contactId || !extractedFields) {
+        res.status(400).json({ success: false, data: null, error: "contactId and extractedFields required" });
+        return;
+      }
+      const result = await crmService.applyPostCallRule(tenantId, contactId, extractedFields);
+      res.json({ success: true, data: result, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
 }

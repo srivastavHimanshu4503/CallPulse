@@ -1,12 +1,42 @@
 import * as React from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../../lib/axios.js";
-import { Search, Plus, User, ArrowRight, UserPlus, Filter, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Filter,
+  Trash2,
+  Download,
+  Upload,
+  Users,
+  Star,
+  X,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { Button } from "@antigravity/ui";
 import { toast } from "sonner";
-import { ContactDetailsDrawer } from "./ContactDetailsDrawer.js";
-import { FilterLogicalOperator, FilterOperator } from "@antigravity/types";
+import { FilterLogicalOperator } from "@antigravity/types";
 import type { FilterCondition } from "@antigravity/types";
+import { formatTimeAgo } from "@antigravity/utils";
+import {
+  DataTable,
+  Pagination,
+  SearchInput,
+  StatusPill,
+  EmptyState,
+  Avatar,
+  FilterBuilder,
+  evaluateCondition,
+  computeLeadScore,
+  BAND_LABEL,
+  BAND_TONE,
+  buildSmartSegments,
+} from "../../../components/ui-ext/index.js";
+import type { Column, FilterFieldDef } from "../../../components/ui-ext/index.js";
+import { AddContactModal } from "./AddContactModal.js";
+import { ImportContactsModal } from "./ImportContactsModal.js";
+import { DuplicatesModal } from "./DuplicatesModal.js";
 
 interface ContactsTabProps {
   contacts: any[];
@@ -15,873 +45,579 @@ interface ContactsTabProps {
   customFields: any[];
 }
 
-export function ContactsTab({ contacts, isLoading, refetch, customFields }: ContactsTabProps): React.JSX.Element {
+const SEGMENTS = buildSmartSegments();
+
+export function ContactsTab({
+  contacts,
+  isLoading,
+  refetch,
+  customFields,
+}: ContactsTabProps): React.JSX.Element {
+  const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [selectedContactId, setSelectedContactId] = React.useState<string | null>(null);
-  const [isAddOpen, setIsAddOpen] = React.useState(false);
+  const [conditions, setConditions] = React.useState<FilterCondition[]>([]);
+  const [logical, setLogical] = React.useState<FilterLogicalOperator>(FilterLogicalOperator.AND);
+  const [isFilterOpen, setIsFilterOpen] = React.useState(false);
+  const [activeSegment, setActiveSegment] = React.useState<string | null>(null);
+  const [showSegments, setShowSegments] = React.useState(true);
 
-  // Advanced HubSpot-style CRM Filter Builder States
-  const [filterConditions, setFilterConditions] = React.useState<FilterCondition[]>([]);
-  const [filterOperator, setFilterOperator] = React.useState<FilterLogicalOperator>(FilterLogicalOperator.AND);
-  const [sortBy, setSortBy] = React.useState<string>("created-newest"); // "created-newest", "created-oldest", "name-asc", "name-desc"
-  const [isFilterBuilderOpen, setIsFilterBuilderOpen] = React.useState(false);
-
-  // Table Pagination states
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const [itemsPerPage, setItemsPerPage] = React.useState(20);
+  const [pageSize, setPageSize] = React.useState(25);
 
-  // New Contact form states
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  
-  // Custom field values state in creation form
-  const [formFieldValues, setFormFieldValues] = React.useState<Record<string, string>>({});
+  const [isAddOpen, setIsAddOpen] = React.useState(false);
+  const [isImportOpen, setIsImportOpen] = React.useState(false);
+  const [isDupesOpen, setIsDupesOpen] = React.useState(false);
 
-  const createContactMutation = useMutation({
-    mutationFn: async (payload: any) => {
-      const res = await api.post("/crm/contacts", payload);
-      return res.data.data;
-    },
-    onSuccess: async (data) => {
-      // Check and save dynamic custom fields values immediately
-      const customFieldValuesArray = Object.entries(formFieldValues)
-        .map(([defId, val]) => {
-          const def = customFields.find((f: any) => f.id === defId);
-          let finalVal: any = val;
-          if (def?.type === "DATE" && val) {
-            finalVal = Math.floor(new Date(val).getTime() / 1000);
-          }
-          return {
-            fieldDefinitionId: defId,
-            value: finalVal,
-          };
-        })
-        .filter((item) => item.value !== "");
+  const enrichedContacts = React.useMemo(() => {
+    return contacts.map((c) => ({
+      ...c,
+      _computedScore: computeLeadScore(c),
+      _latestSentiment: c.latestSentiment,
+    }));
+  }, [contacts]);
 
-      if (customFieldValuesArray.length > 0) {
-        try {
-          await api.put(`/crm/contacts/${data.id}/custom-fields`, { values: customFieldValuesArray });
-        } catch (err) {
-          console.error("Failed to map dynamic custom fields on manual contact creation", err);
-        }
-      }
-
-      toast.success(`Successfully onboarded lead: ${data.firstName} ${data.lastName}`);
-      refetch();
-      setIsAddOpen(false);
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setFormFieldValues({});
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.error || "Failed to create contact");
-    },
-  });
-
-  const handleAddSubmit = (e: React.FormEvent): void => {
-    e.preventDefault();
-    if (!firstName.trim() || !lastName.trim()) {
-      toast.error("First name and Last name are required");
-      return;
-    }
-
-    createContactMutation.mutate({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      emails: email.trim() ? [email.trim()] : [],
-      phones: phone.trim() ? [phone.trim()] : [],
-    });
-  };
-
-  // Reset page when filters change
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, filterConditions, filterOperator, sortBy]);
-
-  // State handlers for condition rows with explicit return types
-  const addCondition = (): void => {
-    const newCond: FilterCondition = {
-      id: Math.random().toString(36).substring(7),
-      fieldId: "name",
-      operator: FilterOperator.CONTAINS,
-      value: "",
-    };
-    setFilterConditions((prev) => [...prev, newCond]);
-  };
-
-  const removeCondition = (id: string): void => {
-    setFilterConditions((prev) => prev.filter((c) => c.id !== id));
-  };
-
-  const handleFieldChange = (id: string, fieldId: string): void => {
-    setFilterConditions((prev) =>
-      prev.map((c) => {
-        if (c.id !== id) return c;
-        let defaultOp = FilterOperator.CONTAINS;
-        if (fieldId === "createdAt" || customFields.find((f) => f.id === fieldId)?.type === "DATE") {
-          defaultOp = FilterOperator.IS_AFTER;
-        } else if (fieldId === "hasOpenDeals" || customFields.find((f) => f.id === fieldId)?.type === "BOOLEAN" || customFields.find((f) => f.id === fieldId)?.type === "DROPDOWN") {
-          defaultOp = FilterOperator.EQUALS;
-        }
-        return {
-          ...c,
-          fieldId,
-          operator: defaultOp,
-          value: fieldId === "hasOpenDeals" ? "yes" : "",
-        };
-      })
-    );
-  };
-
-  const handleOperatorChange = (id: string, operator: FilterOperator): void => {
-    setFilterConditions((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, operator } : c))
-    );
-  };
-
-  const handleValueChange = (id: string, value: string): void => {
-    setFilterConditions((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, value } : c))
-    );
-  };
-
-  const getAvailableOperators = (fieldId: string): { value: FilterOperator; label: string }[] => {
-    if (fieldId === "createdAt") {
-      return [
-        { value: FilterOperator.IS_AFTER, label: "is after" },
-        { value: FilterOperator.IS_BEFORE, label: "is before" },
-        { value: FilterOperator.IS_EMPTY, label: "is empty" },
-        { value: FilterOperator.IS_NOT_EMPTY, label: "is not empty" },
-      ];
-    }
-    if (fieldId === "hasOpenDeals") {
-      return [
-        { value: FilterOperator.EQUALS, label: "equals" },
-      ];
-    }
-    const customDef = customFields.find((f) => f.id === fieldId);
-    if (customDef) {
-      if (customDef.type === "NUMBER") {
-        return [
-          { value: FilterOperator.EQUALS, label: "equals" },
-          { value: FilterOperator.GREATER_THAN_OR_EQUAL, label: "is greater than or equal (>=)" },
-          { value: FilterOperator.LESS_THAN_OR_EQUAL, label: "is less than or equal (<=)" },
-          { value: FilterOperator.IS_EMPTY, label: "is empty" },
-          { value: FilterOperator.IS_NOT_EMPTY, label: "is not empty" },
-        ];
-      }
-      if (customDef.type === "DATE") {
-        return [
-          { value: FilterOperator.IS_AFTER, label: "is after" },
-          { value: FilterOperator.IS_BEFORE, label: "is before" },
-          { value: FilterOperator.IS_EMPTY, label: "is empty" },
-          { value: FilterOperator.IS_NOT_EMPTY, label: "is not empty" },
-        ];
-      }
-      if (customDef.type === "BOOLEAN" || customDef.type === "DROPDOWN") {
-        return [
-          { value: FilterOperator.EQUALS, label: "equals" },
-          { value: FilterOperator.IS_EMPTY, label: "is empty" },
-          { value: FilterOperator.IS_NOT_EMPTY, label: "is not empty" },
-        ];
-      }
-    }
-    return [
-      { value: FilterOperator.CONTAINS, label: "contains" },
-      { value: FilterOperator.EQUALS, label: "equals" },
-      { value: FilterOperator.IS_EMPTY, label: "is empty" },
-      { value: FilterOperator.IS_NOT_EMPTY, label: "is not empty" },
+  const filterFields: FilterFieldDef[] = React.useMemo(() => {
+    const base: FilterFieldDef[] = [
+      { id: "name", label: "Name", type: "text" },
+      { id: "email", label: "Email", type: "text" },
+      { id: "phone", label: "Phone", type: "text" },
+      { id: "createdAt", label: "Created date", type: "date" },
+      { id: "hasOpenDeals", label: "Has open deals", type: "select", options: ["yes", "no"] },
+      { id: "score", label: "Lead score", type: "number" },
     ];
+    for (const cf of customFields) {
+      let t: FilterFieldDef["type"] = "text";
+      if (cf.type === "NUMBER") t = "number";
+      else if (cf.type === "DATE") t = "date";
+      else if (cf.type === "BOOLEAN") t = "boolean";
+      else if (cf.type === "DROPDOWN") t = "select";
+      base.push({ id: cf.id, label: cf.name, type: t, options: cf.options });
+    }
+    return base;
+  }, [customFields]);
+
+  const resolveValue = (c: any, fieldId: string): any => {
+    switch (fieldId) {
+      case "name":
+        return `${c.firstName} ${c.lastName}`;
+      case "email":
+        return c.emails?.[0] || "";
+      case "phone":
+        return c.phones?.[0] || "";
+      case "createdAt":
+        return c.createdAt;
+      case "hasOpenDeals":
+        return c.deals && c.deals.length > 0 ? "yes" : "no";
+      case "score":
+        return c.score ?? c._computedScore?.score;
+      default: {
+        const cf = c.customFields?.find((cf: any) => cf.fieldDefinitionId === fieldId);
+        if (!cf) return "";
+        return cf.textValue ?? cf.numberValue ?? cf.booleanValue ?? cf.dateValue ?? "";
+      }
+    }
   };
 
-  // Premium HubSpot-style combined dynamic filter and sorting logic
-  const filteredAndSortedContacts = React.useMemo(() => {
-    let result = [...contacts];
-
-    // Search query
+  const filtered = React.useMemo(() => {
+    let result = enrichedContacts;
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase();
       result = result.filter(
         (c) =>
-          `${c.firstName} ${c.lastName}`.toLowerCase().includes(query) ||
-          (c.emails && c.emails.some((e: string) => e.toLowerCase().includes(query))) ||
-          (c.phones && c.phones.some((p: string) => p.includes(query)))
+          `${c.firstName} ${c.lastName}`.toLowerCase().includes(q) ||
+          (c.emails && c.emails.some((e: string) => e.toLowerCase().includes(q))) ||
+          (c.phones && c.phones.some((p: string) => p.includes(q))),
       );
     }
-
-    // Apply HubSpot-style Conditional Filter Builder
-    if (filterConditions.length > 0) {
-      result = result.filter((c) => {
-        const matchResults = filterConditions.map((cond) => {
-          let actualVal: any = "";
-
-          // Resolve field value
-          if (cond.fieldId === "name") {
-            actualVal = `${c.firstName} ${c.lastName}`;
-          } else if (cond.fieldId === "email") {
-            actualVal = c.emails?.[0] || "";
-          } else if (cond.fieldId === "phone") {
-            actualVal = c.phones?.[0] || "";
-          } else if (cond.fieldId === "createdAt") {
-            actualVal = c.createdAt;
-          } else if (cond.fieldId === "hasOpenDeals") {
-            const hasDeals = c.deals && c.deals.length > 0;
-            actualVal = hasDeals ? "yes" : "no";
-          } else {
-            // Retrieve dynamic custom fields
-            const valObj = c.customFields?.find((cf: any) => cf.fieldDefinitionId === cond.fieldId);
-            if (valObj) {
-              actualVal = valObj.textValue ?? valObj.numberValue ?? valObj.booleanValue ?? valObj.dateValue ?? "";
-            }
-          }
-
-          const condVal = cond.value;
-
-          // Process HubSpot logic operators
-          switch (cond.operator) {
-            case FilterOperator.CONTAINS:
-              return String(actualVal || "").toLowerCase().includes(String(condVal).toLowerCase());
-            case FilterOperator.EQUALS:
-              return String(actualVal || "").toLowerCase() === String(condVal).toLowerCase();
-            case FilterOperator.GREATER_THAN_OR_EQUAL:
-              return Number(actualVal || 0) >= Number(condVal || 0);
-            case FilterOperator.LESS_THAN_OR_EQUAL:
-              return Number(actualVal || 0) <= Number(condVal || 0);
-            case FilterOperator.IS_EMPTY:
-              return !actualVal || String(actualVal).trim() === "";
-            case FilterOperator.IS_NOT_EMPTY:
-              return !!actualVal && String(actualVal).trim() !== "";
-            case FilterOperator.IS_AFTER:
-              if (!actualVal) return false;
-              return new Date(actualVal).getTime() >= new Date(condVal).getTime();
-            case FilterOperator.IS_BEFORE:
-              if (!actualVal) return false;
-              return new Date(actualVal).getTime() <= new Date(condVal).getTime();
-            default:
-              return true;
-          }
-        });
-
-        if (filterOperator === FilterLogicalOperator.OR) {
-          return matchResults.some(Boolean);
+    if (activeSegment) {
+      const seg = SEGMENTS.find((s) => s.id === activeSegment);
+      if (seg) {
+        if (seg.clientMatcher) {
+          result = result.filter((c) => seg.clientMatcher!(c));
         } else {
-          return matchResults.every(Boolean);
+          result = result.filter((c) => {
+            const matches = seg.conditions.map((cond) =>
+              evaluateCondition(cond, resolveValue(c, cond.fieldId)),
+            );
+            return seg.logical === FilterLogicalOperator.OR
+              ? matches.some(Boolean)
+              : matches.every(Boolean);
+          });
         }
+      }
+    }
+    if (conditions.length > 0) {
+      result = result.filter((c) => {
+        const matches = conditions.map((cond) =>
+          evaluateCondition(cond, resolveValue(c, cond.fieldId)),
+        );
+        return logical === FilterLogicalOperator.OR ? matches.some(Boolean) : matches.every(Boolean);
       });
     }
-
-    // Sort contacts list
-    if (sortBy === "name-asc") {
-      result.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
-    } else if (sortBy === "name-desc") {
-      result.sort((a, b) => `${b.firstName} ${a.lastName}`.localeCompare(`${a.firstName} ${a.lastName}`));
-    } else if (sortBy === "created-oldest") {
-      result.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    } else {
-      // default: created-newest
-      result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    }
-
     return result;
-  }, [contacts, searchQuery, filterConditions, filterOperator, sortBy]);
+  }, [enrichedContacts, searchQuery, conditions, logical, activeSegment]);
 
-  // Derived Paginated Contacts List
-  const paginatedContacts = React.useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return filteredAndSortedContacts.slice(start, end);
-  }, [filteredAndSortedContacts, currentPage, itemsPerPage]);
-
-  const totalPages = React.useMemo(() => {
-    return Math.max(1, Math.ceil(filteredAndSortedContacts.length / itemsPerPage));
-  }, [filteredAndSortedContacts, itemsPerPage]);
-
-  const hasActiveFilters = React.useMemo(() => {
-    return filterConditions.length > 0;
-  }, [filterConditions]);
-
-  const handleClearFilters = (): void => {
-    setFilterConditions([]);
-    setFilterOperator(FilterLogicalOperator.AND);
-    setSortBy("created-newest");
+  React.useEffect(() => {
     setCurrentPage(1);
+    setSelectedIds([]);
+  }, [searchQuery, conditions, logical, activeSegment]);
+
+  const paginated = React.useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, currentPage, pageSize]);
+
+  // Inline stat strip counts (recomputed cheaply from enrichedContacts)
+  const stats = React.useMemo(() => {
+    const hot = enrichedContacts.filter((c) => c._computedScore?.band === "hot").length;
+    const newWeek = enrichedContacts.filter(
+      (c) => new Date(c.createdAt).getTime() > Date.now() - 7 * 86_400_000,
+    ).length;
+    const withDeals = enrichedContacts.filter((c) => c.deals && c.deals.length > 0).length;
+    return { hot, newWeek, withDeals };
+  }, [enrichedContacts]);
+
+  // Per-segment counts (for segment chips)
+  const segmentCounts = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const seg of SEGMENTS) {
+      counts[seg.id] = enrichedContacts.filter((c) => {
+        if (seg.clientMatcher) return seg.clientMatcher(c);
+        const matches = seg.conditions.map((cond) => evaluateCondition(cond, resolveValue(c, cond.fieldId)));
+        return seg.logical === FilterLogicalOperator.OR ? matches.some(Boolean) : matches.every(Boolean);
+      }).length;
+    }
+    return counts;
+  }, [enrichedContacts]);
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const res = await api.post("/crm/contacts/bulk-delete", { ids });
+      return res.data.data;
+    },
+    onSuccess: (data: any) => {
+      toast.success(`Deleted ${data.deleted} contact${data.deleted === 1 ? "" : "s"}`);
+      setSelectedIds([]);
+      refetch();
+    },
+    onError: (err: any) => toast.error(err.response?.data?.error || "Failed to delete contacts"),
+  });
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    if (!window.confirm(`Delete ${selectedIds.length} contact${selectedIds.length === 1 ? "" : "s"}?`)) return;
+    bulkDeleteMutation.mutate(selectedIds);
   };
 
-  return (
-    <div className="flex flex-col h-full overflow-hidden font-sans">
-      
-      {/* Search and Action Header */}
-      <div className="flex items-center justify-between gap-4 mb-3 shrink-0">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#999999]" />
-          <input
-            type="text"
-            placeholder="Search contacts by name, email, or phone line..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 pl-9 pr-4 focus:outline-none"
-          />
-        </div>
+  const handleExportCsv = () => {
+    const rows = filtered.map((c) => ({
+      "First name": c.firstName,
+      "Last name": c.lastName,
+      Email: c.emails?.[0] || "",
+      Phone: c.phones?.[0] || "",
+      Score: c.score ?? c._computedScore?.score ?? "",
+      Band: c._computedScore?.band ?? "",
+      "Open deals": c.deals?.length || 0,
+      "Created at": c.createdAt,
+    }));
+    const header = Object.keys(rows[0] || { "First name": "" });
+    const csv = [
+      header.join(","),
+      ...rows.map((r) =>
+        header
+          .map((h) => {
+            const v = (r as any)[h] ?? "";
+            const s = String(v).replace(/"/g, '""');
+            return /[,\n"]/.test(s) ? `"${s}"` : s;
+          })
+          .join(","),
+      ),
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `contacts-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exported ${rows.length} contacts`);
+  };
 
-        <Button
-          variant="primary"
-          onClick={() => setIsAddOpen(true)}
-          className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs h-9 px-3.5 rounded-[6px] flex items-center gap-1.5 border-none shadow-none"
+  const columns: Column<any>[] = [
+    {
+      id: "name",
+      header: "Name",
+      sortValue: (r) => `${r.firstName} ${r.lastName}`.toLowerCase(),
+      cell: (c) => (
+        <div className="flex items-center gap-2.5 min-w-0">
+          <Avatar name={`${c.firstName} ${c.lastName}`} size={26} />
+          <div className="min-w-0">
+            <div className="text-[12.5px] font-semibold text-fg-primary truncate capitalize leading-tight">
+              {c.firstName} {c.lastName}
+            </div>
+            <div className="text-[10.5px] text-fg-muted truncate">
+              {c.emails?.[0] || c.phones?.[0] || "—"}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "score",
+      header: "Score",
+      sortValue: (r) => r.score ?? r._computedScore?.score ?? 0,
+      width: "104px",
+      cell: (c) => {
+        const band = c._computedScore?.band ?? "cold";
+        const score = c.score ?? c._computedScore?.score ?? 0;
+        return (
+          <div className="flex items-center gap-1.5">
+            <StatusPill tone={BAND_TONE[band as keyof typeof BAND_TONE]} dot pulse={band === "hot"}>
+              {BAND_LABEL[band as keyof typeof BAND_LABEL]}
+            </StatusPill>
+            <span className="text-[11px] font-semibold text-fg-secondary tabular-nums">{score}</span>
+          </div>
+        );
+      },
+    },
+    {
+      id: "channels",
+      header: "Channels",
+      width: "128px",
+      cell: (c) => {
+        const chs = c.channelsUsed || [];
+        if (chs.length === 0) return <span className="text-fg-muted">—</span>;
+        return (
+          <div className="flex items-center gap-1 flex-wrap">
+            {chs.slice(0, 3).map((ch: string) => (
+              <StatusPill key={ch} tone="muted">
+                {ch}
+              </StatusPill>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      id: "lastCall",
+      header: "Last call",
+      sortValue: (r) => (r.lastCallAt ? new Date(r.lastCallAt) : null),
+      width: "120px",
+      cell: (c) => (
+        <span className="text-[11.5px] text-fg-secondary">
+          {c.lastCallAt ? formatTimeAgo(c.lastCallAt) : <span className="text-fg-muted">Never</span>}
+        </span>
+      ),
+    },
+    {
+      id: "openDeals",
+      header: "Deals",
+      sortValue: (r) => r.deals?.length || 0,
+      width: "72px",
+      cell: (c) => {
+        const n = c.deals?.length || 0;
+        return n > 0 ? (
+          <span className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-brand-600">
+            <Star className="h-3 w-3 fill-brand-500 text-brand-500" />
+            {n}
+          </span>
+        ) : (
+          <span className="text-fg-muted text-[11px]">—</span>
+        );
+      },
+    },
+    {
+      id: "createdAt",
+      header: "Added",
+      sortValue: (r) => new Date(r.createdAt),
+      width: "100px",
+      cell: (c) => <span className="text-[11.5px] text-fg-secondary">{formatTimeAgo(c.createdAt)}</span>,
+    },
+  ];
+
+  for (const cf of customFields.slice(0, 2)) {
+    columns.splice(columns.length - 1, 0, {
+      id: `cf-${cf.id}`,
+      header: cf.name,
+      width: "116px",
+      cell: (c) => {
+        const val = c.customFields?.find((v: any) => v.fieldDefinitionId === cf.id);
+        if (!val) return <span className="text-fg-muted">—</span>;
+        if (cf.type === "BOOLEAN") return <span className="text-[11.5px]">{val.booleanValue ? "Yes" : "No"}</span>;
+        if (cf.type === "DATE" && val.dateValue) {
+          const t = typeof val.dateValue === "number" ? val.dateValue : Number(val.dateValue);
+          const d = new Date(t < 10000000000 ? t * 1000 : t);
+          return <span className="text-[11.5px]">{d.toLocaleDateString("en-IN")}</span>;
+        }
+        return (
+          <span className="text-[11.5px] text-fg-secondary truncate max-w-[110px] inline-block">
+            {val.textValue ?? val.numberValue ?? "—"}
+          </span>
+        );
+      },
+    });
+  }
+
+  return (
+    <div className="flex flex-col h-full overflow-hidden font-sans gap-2">
+      {/* ============ Slim inline stat strip ============ */}
+      <div className="flex items-center flex-wrap gap-x-4 gap-y-1 text-[11.5px] shrink-0 px-0.5">
+        <span className="inline-flex items-center gap-1.5 text-fg-secondary">
+          <Users className="h-3 w-3 text-fg-muted" />
+          <b className="text-fg-primary tabular-nums">{contacts.length.toLocaleString("en-IN")}</b>
+          <span className="text-fg-muted">contacts</span>
+        </span>
+        <span className="text-line-strong">·</span>
+        <span className="text-fg-secondary">
+          <b className="text-positive-600 tabular-nums">{stats.hot}</b>
+          <span className="text-fg-muted"> hot</span>
+        </span>
+        <span className="text-line-strong">·</span>
+        <span className="text-fg-secondary">
+          <b className="text-fg-primary tabular-nums">{stats.newWeek}</b>
+          <span className="text-fg-muted"> new this week</span>
+        </span>
+        <span className="text-line-strong">·</span>
+        <span className="text-fg-secondary">
+          <b className="text-brand-600 tabular-nums">{stats.withDeals}</b>
+          <span className="text-fg-muted"> with open deals</span>
+        </span>
+        <button
+          type="button"
+          onClick={() => setIsDupesOpen(true)}
+          className="ml-auto text-[11px] font-semibold text-brand-600 hover:text-brand-700"
         >
-          <Plus className="h-4 w-4" /> Add Contact
-        </Button>
+          Find duplicates
+        </button>
       </div>
 
-      {/* HubSpot Filters Toggle Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 shrink-0 bg-white border border-[#E5E5E5] p-2.5 rounded-[6px]">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#111111] uppercase tracking-wider border-r border-[#E5E5E5] pr-3 mr-1 shrink-0 select-none">
-            <Filter className="h-3.5 w-3.5 text-[#2563EB]" /> Advanced Filters
-          </div>
+      {/* ============ Toolbar ============ */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 shrink-0">
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search by name, email, or phone…"
+          className="flex-1 max-w-sm"
+        />
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setShowSegments((v) => !v)}
+            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted transition-colors"
+            title={showSegments ? "Hide quick views" : "Show quick views"}
+          >
+            {showSegments ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+            Views
+          </button>
 
           <button
             type="button"
-            onClick={() => setIsFilterBuilderOpen(true)}
-            className={`h-8 px-3 rounded-[6px] border text-xs font-semibold flex items-center gap-1.5 transition-colors focus:outline-none ${
-              hasActiveFilters
-                ? "border-[#2563EB] text-[#2563EB] bg-[#EFF6FF]"
-                : "border-[#E5E5E5] bg-white text-[#666666] hover:text-[#111111]"
+            onClick={() => setIsFilterOpen(true)}
+            className={`inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border transition-colors ${
+              conditions.length > 0
+                ? "border-brand-500 text-brand-700 bg-brand-50"
+                : "border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted"
             }`}
           >
-            Configure Filters
-            {hasActiveFilters && (
-              <span className="bg-[#2563EB] text-white text-[10px] font-bold h-4.5 min-w-4.5 px-1 rounded-full flex items-center justify-center">
-                {filterConditions.length}
+            <Filter className="h-3.5 w-3.5" />
+            Filters
+            {conditions.length > 0 && (
+              <span className="bg-brand-500 text-white text-[10px] font-bold h-4 min-w-4 px-1 rounded-full inline-flex items-center justify-center ml-0.5">
+                {conditions.length}
               </span>
             )}
           </button>
 
-          {/* Sort selector */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="h-8 bg-white border border-[#E5E5E5] text-[11px] font-semibold text-[#666666] rounded-[6px] px-2 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-          >
-            <option value="created-newest">Sort: Newest First</option>
-            <option value="created-oldest">Sort: Oldest First</option>
-            <option value="name-asc">Sort: Name (A-Z)</option>
-            <option value="name-desc">Sort: Name (Z-A)</option>
-          </select>
-        </div>
-
-        {hasActiveFilters && (
           <button
             type="button"
-            onClick={handleClearFilters}
-            className="h-8 px-3 rounded-[6px] border border-[#E5E5E5] bg-white text-[#DC2626] hover:bg-[#DC2626]/5 text-xs font-bold transition-colors"
+            onClick={handleExportCsv}
+            disabled={filtered.length === 0}
+            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted disabled:opacity-40 transition-colors"
           >
-            Clear All Filters
+            <Download className="h-3.5 w-3.5" />
+            Export
           </button>
-        )}
+
+          <button
+            type="button"
+            onClick={() => setIsImportOpen(true)}
+            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted transition-colors"
+          >
+            <Upload className="h-3.5 w-3.5" />
+            Import
+          </button>
+
+          <Button
+            variant="primary"
+            onClick={() => setIsAddOpen(true)}
+            className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold bg-brand-500 hover:bg-brand-600 text-white shadow-card border-none"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add contact
+          </Button>
+        </div>
       </div>
 
-      {/* HubSpot-style Advanced Filters Right Slide-Over Drawer */}
-      {isFilterBuilderOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden font-sans select-none animate-in fade-in duration-150">
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-[#111111]/30 backdrop-blur-[1px]" onClick={() => setIsFilterBuilderOpen(false)} />
+      {/* ============ Inline segments chip row (no card wrapper) ============ */}
+      {showSegments && (
+        <div className="flex items-center flex-wrap gap-1.5 shrink-0 pb-1">
+          <SegmentChip
+            active={activeSegment === null}
+            onClick={() => setActiveSegment(null)}
+            label="All"
+            count={contacts.length}
+          />
+          {SEGMENTS.map((seg) => {
+            const Icon = seg.icon;
+            const active = activeSegment === seg.id;
+            const count = segmentCounts[seg.id] ?? 0;
+            return (
+              <SegmentChip
+                key={seg.id}
+                active={active}
+                onClick={() => setActiveSegment(active ? null : seg.id)}
+                label={seg.name}
+                count={count}
+                Icon={Icon}
+              />
+            );
+          })}
+        </div>
+      )}
 
-          {/* Drawer Container */}
-          <div className="absolute inset-y-0 right-0 w-full md:w-[480px] bg-white border-l border-[#E5E5E5] flex flex-col h-full overflow-hidden shadow-2xl animate-in slide-in-from-right duration-200">
-            
-            {/* Drawer Header */}
-            <div className="h-14 border-b border-[#E5E5E5] px-6 bg-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2">
-                <Filter className="h-4.5 w-4.5 text-[#2563EB]" />
-                <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">
-                  Advanced Filters ({filterConditions.length})
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsFilterBuilderOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Drawer Body - scrollable */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              <div>
-                <label className="block text-[10px] font-bold text-[#666666] uppercase tracking-wider mb-2">
-                  Matching Logic
-                </label>
-                <select
-                  value={filterOperator}
-                  onChange={(e) => setFilterOperator(e.target.value as FilterLogicalOperator)}
-                  className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs font-bold text-[#111111] rounded-[6px] px-3 focus:outline-none cursor-pointer"
-                >
-                  <option value={FilterLogicalOperator.AND}>ALL conditions must match (AND)</option>
-                  <option value={FilterLogicalOperator.OR}>ANY condition can match (OR)</option>
-                </select>
-                <p className="text-[10px] text-[#999999] mt-1 font-medium leading-normal">
-                  Connect multiple logical filters dynamically to refine your CRM contacts view.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-2">
-                  <span className="text-[10px] font-bold text-[#666666] uppercase tracking-wider">
-                    Filter Rules
-                  </span>
-                </div>
-
-                {filterConditions.length === 0 ? (
-                  <div className="py-12 border border-dashed border-[#E5E5E5] rounded-[6px] text-center text-xs text-[#999999] px-4">
-                    No active rules configured. Click "+ Add Rule" below to start filtering your leads.
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {filterConditions.map((cond, idx) => {
-                      const availableOps = getAvailableOperators(cond.fieldId);
-                      const isValHidden = cond.operator === FilterOperator.IS_EMPTY || cond.operator === FilterOperator.IS_NOT_EMPTY;
-                      const customDef = customFields.find((f) => f.id === cond.fieldId);
-
-                      return (
-                        <div key={cond.id} className="border border-[#E5E5E5] rounded-[6px] p-3 space-y-3 bg-white hover:border-[#2563EB]/25 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-[#999999] uppercase">
-                              {idx === 0 ? "Where Rule" : `Connector: ${filterOperator}`}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => removeCondition(cond.id)}
-                              className="text-[#DC2626] hover:bg-[#DC2626]/5 rounded-[4px] p-1 transition-colors"
-                              title="Delete Rule"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-
-                          <div className="space-y-2.5">
-                            {/* Field Selector */}
-                            <div>
-                              <label className="block text-[9px] font-bold text-[#999999] uppercase tracking-wider mb-1">Field</label>
-                              <select
-                                value={cond.fieldId}
-                                onChange={(e) => handleFieldChange(cond.id, e.target.value)}
-                                className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-                              >
-                                <option value="name">Customer Name</option>
-                                <option value="email">Primary Email</option>
-                                <option value="phone">Phone Line</option>
-                                <option value="createdAt">Onboarded Date</option>
-                                <option value="hasOpenDeals">Open Deals Status</option>
-                                {customFields.map((cf) => (
-                                  <option key={cf.id} value={cf.id}>{cf.name} (Custom)</option>
-                                ))}
-                              </select>
-                            </div>
-
-                            {/* Operator Selector */}
-                            <div>
-                              <label className="block text-[9px] font-bold text-[#999999] uppercase tracking-wider mb-1">Condition</label>
-                              <select
-                                value={cond.operator}
-                                onChange={(e) => handleOperatorChange(cond.id, e.target.value as FilterOperator)}
-                                className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-                              >
-                                {availableOps.map((op) => (
-                                  <option key={op.value} value={op.value}>{op.label}</option>
-                                ))}
-                              </select>
-                            </div>
-
-                            {/* Value Selector/Input */}
-                            {!isValHidden && (
-                              <div>
-                                <label className="block text-[9px] font-bold text-[#999999] uppercase tracking-wider mb-1">Value</label>
-                                {cond.fieldId === "hasOpenDeals" ? (
-                                  <select
-                                    value={cond.value}
-                                    onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-                                  >
-                                    <option value="yes">With Open Deals</option>
-                                    <option value="no">Without Deals</option>
-                                  </select>
-                                ) : customDef?.type === "DROPDOWN" ? (
-                                  <select
-                                    value={cond.value}
-                                    onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-                                  >
-                                    <option value="">Select option...</option>
-                                    {customDef.options?.map((opt: string) => (
-                                      <option key={opt} value={opt}>{opt}</option>
-                                    ))}
-                                  </select>
-                                ) : customDef?.type === "BOOLEAN" ? (
-                                  <select
-                                    value={cond.value}
-                                    onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-                                  >
-                                    <option value="true">Yes</option>
-                                    <option value="false">No</option>
-                                  </select>
-                                ) : cond.fieldId === "createdAt" || customDef?.type === "DATE" ? (
-                                  <input
-                                    type="date"
-                                    value={cond.value}
-                                    onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB]"
-                                  />
-                                ) : customDef?.type === "NUMBER" ? (
-                                  <input
-                                    type="number"
-                                    placeholder="Enter threshold value..."
-                                    value={cond.value}
-                                    onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB]"
-                                  />
-                                ) : (
-                                  <input
-                                    type="text"
-                                    placeholder="Match text..."
-                                    value={cond.value}
-                                    onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB]"
-                                  />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Drawer Footer - sticky */}
-            <div className="border-t border-[#E5E5E5] p-6 bg-[#FAFAFA] flex items-center justify-between shrink-0">
-              <Button
-                variant="secondary"
-                onClick={addCondition}
-                className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px] flex items-center gap-1.5"
-              >
-                <Plus className="h-3.5 w-3.5" /> Add Rule
-              </Button>
-
-              <div className="flex items-center gap-3">
-                {hasActiveFilters && (
-                  <button
-                    type="button"
-                    onClick={handleClearFilters}
-                    className="text-xs text-[#DC2626] font-bold hover:underline"
-                  >
-                    Clear All
-                  </button>
-                )}
-                <Button
-                  variant="primary"
-                  onClick={() => setIsFilterBuilderOpen(false)}
-                  className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
-                >
-                  Apply & Close
-                </Button>
-              </div>
-            </div>
-
+      {/* ============ Bulk action bar ============ */}
+      {selectedIds.length > 0 && (
+        <div className="flex items-center justify-between gap-3 bg-brand-50 border border-brand-500/30 rounded-md px-2.5 py-1.5 shrink-0 animate-in fade-in duration-150">
+          <div className="text-[11.5px] font-semibold text-brand-700">
+            {selectedIds.length} selected
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handleBulkDelete}
+              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md text-[11px] font-semibold bg-white border border-negative-500 text-negative-500 hover:bg-negative-50"
+            >
+              <Trash2 className="h-3 w-3" />
+              Delete
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedIds([])}
+              className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-semibold text-fg-secondary hover:text-fg-primary hover:bg-white"
+            >
+              <X className="h-3 w-3" />
+              Clear
+            </button>
           </div>
         </div>
       )}
 
-      {/* Main Grid/List Container */}
-      <div className="flex-1 overflow-y-auto border border-[#E5E5E5] rounded-[6px] min-h-0 bg-white flex flex-col justify-between">
-        <div className="flex-1 overflow-y-auto min-h-0">
-          {isLoading ? (
-            <div className="p-8 space-y-4 animate-pulse">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-10 bg-[#F7F7F7] border border-[#E5E5E5] rounded-[6px]" />
-              ))}
-            </div>
-          ) : paginatedContacts.length === 0 ? (
-            <div className="p-20 text-center space-y-3">
-              <User className="h-10 w-10 text-[#999999] mx-auto" />
-              <h4 className="text-sm font-bold text-[#111111]">No records matched criteria</h4>
-              <p className="text-xs text-[#666666] max-w-xs mx-auto leading-relaxed">
-                No contacts match the currently applied filter criteria or search query. Click 'Configure Filters' to reset.
-              </p>
-            </div>
-          ) : (
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-[#E5E5E5] bg-white text-[10px] font-bold text-[#666666] uppercase tracking-wider select-none h-10">
-                  <th className="px-6 w-12 text-center">#</th>
-                  <th className="px-6">Customer Name</th>
-                  <th className="px-6">Primary Email</th>
-                  <th className="px-6">Phone Lines</th>
-                  {customFields.map((def: any) => (
-                    <th key={def.id} className="px-6">{def.name}</th>
-                  ))}
-                  <th className="px-6">Onboarded</th>
-                  <th className="px-6 text-right w-16"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E5E5E5] text-xs text-[#666666]">
-                {paginatedContacts.map((c, idx) => (
-                  <tr
-                    key={c.id}
-                    onClick={() => setSelectedContactId(c.id)}
-                    className="hover:bg-[#F7F7F7] hover:text-[#111111] cursor-pointer transition-colors h-11"
-                  >
-                    <td className="px-6 text-center font-bold text-[#999999]">{(currentPage - 1) * itemsPerPage + idx + 1}</td>
-                    <td className="px-6 font-bold text-[#111111] capitalize">
-                      {c.firstName} {c.lastName}
-                    </td>
-                    <td className="px-6 font-medium">
-                      {c.emails?.[0] || <span className="text-[#999999] font-normal">--</span>}
-                    </td>
-                    <td className="px-6 font-medium">
-                      {c.phones?.[0] || <span className="text-[#999999] font-normal">--</span>}
-                    </td>
-                    {customFields.map((def: any) => {
-                      const valObj = c.customFields?.find((cf: any) => cf.fieldDefinitionId === def.id);
-                      let displayVal = "--";
-                      if (valObj) {
-                        if (def.type === "DATE" && valObj.dateValue) {
-                          try {
-                            const d = typeof valObj.dateValue === "number"
-                              ? new Date(valObj.dateValue < 10000000000 ? valObj.dateValue * 1000 : valObj.dateValue)
-                              : new Date(valObj.dateValue);
-                            const pad = (num: number) => String(num).padStart(2, "0");
-                            displayVal = `${pad(d.getDate())}/${pad(d.getMonth() + 1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-                          } catch {
-                            displayVal = String(valObj.dateValue);
-                          }
-                        } else if (def.type === "BOOLEAN") {
-                          displayVal = valObj.booleanValue === true || String(valObj.booleanValue) === "true" ? "Yes" : valObj.booleanValue === false || String(valObj.booleanValue) === "false" ? "No" : "--";
-                        } else {
-                          displayVal = valObj.textValue ?? (valObj.numberValue !== null ? String(valObj.numberValue) : null) ?? valObj.booleanValue ?? "--";
-                        }
-                      }
-                      return (
-                        <td key={def.id} className="px-6 font-medium text-[11px] text-[#666666] max-w-[120px] truncate select-all">
-                          {displayVal}
-                        </td>
-                      );
-                    })}
-                    <td className="px-6 font-medium">
-                      {new Date(c.createdAt).toLocaleDateString("en-IN")}
-                    </td>
-                    <td className="px-6 text-right">
-                      <ArrowRight className="h-4 w-4 text-[#999999] opacity-0 group-hover:opacity-100 shrink-0 inline" />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        {/* Modern Pagination Footer */}
-        {!isLoading && filteredAndSortedContacts.length > 0 && (
-          <div className="flex items-center justify-between border-t border-[#E5E5E5] px-6 py-3 bg-white shrink-0 select-none text-xs text-[#666666]">
-            <div className="flex items-center gap-2">
-              <span>Show</span>
-              <select
-                value={itemsPerPage}
-                onChange={(e) => {
-                  setItemsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-                className="h-8 bg-white border border-[#E5E5E5] text-[11px] font-semibold text-[#111111] rounded-[6px] px-2 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-              >
-                <option value={10}>10 items</option>
-                <option value={20}>20 items</option>
-                <option value={50}>50 items</option>
-                <option value={100}>100 items</option>
-              </select>
-              <span>per page</span>
-            </div>
-
-            <div className="font-semibold text-[#111111]">
-              Showing {filteredAndSortedContacts.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-              {Math.min(currentPage * itemsPerPage, filteredAndSortedContacts.length)} of{" "}
-              {filteredAndSortedContacts.length} records
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <Button
-                variant="secondary"
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="h-8 px-3 rounded-[6px] border border-[#E5E5E5] text-xs font-semibold disabled:opacity-40"
-              >
-                Previous
-              </Button>
-              
-              <span className="px-2 font-bold text-[#111111]">
-                Page {currentPage} of {totalPages}
-              </span>
-
-              <Button
-                variant="secondary"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage >= totalPages}
-                className="h-8 px-3 rounded-[6px] border border-[#E5E5E5] text-xs font-semibold disabled:opacity-40"
-              >
-                Next
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* QUICK ONBOARD LEAD MODAL WITH DYNAMIC CUSTOM FIELDS */}
-      {isAddOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-          <div className={`bg-white border border-[#E5E5E5] rounded-[6px] shadow-none w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150 ${customFields.length > 0 ? "max-w-md" : "max-w-sm"}`}>
-            <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-white">
-              <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
-                <UserPlus className="h-4.5 w-4.5 text-[#2563EB]" /> Add New CRM Record
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsAddOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleAddSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">First Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Drew"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Last Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Coleman"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#111111] mb-1.5">Email Address</label>
-                <input
-                  type="email"
-                  placeholder="e.g. drew.coleman@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#111111] mb-1.5">Phone Number</label>
-                <input
-                  type="text"
-                  placeholder="e.g. +15033513739"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
-                />
-              </div>
-
-              {/* Dynamic custom field inputs */}
-              {customFields.length > 0 && (
-                <div className="space-y-4 pt-4 border-t border-[#E5E5E5] mt-2 max-h-48 overflow-y-auto pr-1 select-none">
-                  <h4 className="text-[10px] font-bold text-[#999999] uppercase tracking-wider">Custom Profile Mapping</h4>
-                  {customFields.map((def: any) => (
-                    <div key={def.id} className="space-y-1.5">
-                      <label className="block text-xs font-semibold text-[#111111]">{def.name}</label>
-                      {def.type === "DROPDOWN" ? (
-                        <select
-                          value={formFieldValues[def.id] || ""}
-                          onChange={(e) => setFormFieldValues({ ...formFieldValues, [def.id]: e.target.value })}
-                          className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
-                        >
-                          <option value="">Select option...</option>
-                          {def.options?.map((opt: string) => (
-                              <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </select>
-                      ) : def.type === "BOOLEAN" ? (
-                        <select
-                          value={formFieldValues[def.id] || ""}
-                          onChange={(e) => setFormFieldValues({ ...formFieldValues, [def.id]: e.target.value })}
-                          className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
-                        >
-                          <option value="">Select option...</option>
-                          <option value="true">Yes</option>
-                          <option value="false">No</option>
-                        </select>
-                      ) : (
-                        <input
-                          type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "datetime-local" : "text"}
-                          placeholder={`Enter ${def.name.toLowerCase()}...`}
-                          value={formFieldValues[def.id] || ""}
-                          onChange={(e) => setFormFieldValues({ ...formFieldValues, [def.id]: e.target.value })}
-                          className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={() => setIsAddOpen(false)}
-                  type="button"
-                  className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px]"
-                >
-                  Cancel
-                </Button>
+      {/* ============ Table (takes ALL remaining space) ============ */}
+      <div className="flex-1 min-h-0 flex flex-col">
+        <DataTable
+          rows={paginated}
+          columns={columns}
+          getRowId={(r) => r.id}
+          onRowClick={(r) => navigate(`/crm/contacts/${r.id}`)}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          isLoading={isLoading}
+          stickyHeader
+          scrollClassName="flex-1"
+          className="flex-1"
+          emptyState={
+            <EmptyState
+              icon={Users}
+              title={searchQuery || conditions.length > 0 || activeSegment ? "No matching contacts" : "No contacts yet"}
+              description={
+                searchQuery || conditions.length > 0 || activeSegment
+                  ? "Try clearing filters, or add a contact manually."
+                  : "Contacts flow in automatically from your AI agent's calls, or you can add them here."
+              }
+              action={
                 <Button
                   variant="primary"
-                  type="submit"
-                  disabled={createContactMutation.isPending}
-                  className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
+                  onClick={() => setIsAddOpen(true)}
+                  className="bg-brand-500 hover:bg-brand-600 text-white h-9 px-3.5 text-[12px] font-semibold rounded-md border-none shadow-card"
                 >
-                  {createContactMutation.isPending ? "Creating..." : "Add Record"}
+                  Add first contact
                 </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* COMPREHENSIVE CRM DETAIL SLIDE-OVER TIMELINE */}
-      {selectedContactId && (
-        <ContactDetailsDrawer
-          contactId={selectedContactId}
-          onClose={() => {
-            setSelectedContactId(null);
-            refetch();
-          }}
-          customFieldDefs={customFields}
+              }
+              size="sm"
+            />
+          }
         />
+        {filtered.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filtered.length}
+            itemsPerPage={pageSize}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={(v) => {
+              setPageSize(v);
+              setCurrentPage(1);
+            }}
+          />
+        )}
+      </div>
+
+      {/* Filter drawer (portalled) */}
+      <FilterBuilder
+        fields={filterFields}
+        conditions={conditions}
+        onConditionsChange={setConditions}
+        logical={logical}
+        onLogicalChange={setLogical}
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+      />
+
+      {isAddOpen && (
+        <AddContactModal customFields={customFields} onClose={() => setIsAddOpen(false)} onCreated={refetch} />
+      )}
+      {isImportOpen && (
+        <ImportContactsModal onClose={() => setIsImportOpen(false)} onImported={refetch} />
+      )}
+      {isDupesOpen && (
+        <DuplicatesModal onClose={() => setIsDupesOpen(false)} onMerged={refetch} />
       )}
     </div>
+  );
+}
+
+/* ---------------- Segment chip (tinted so it's visible on white) ---------------- */
+
+interface SegmentChipProps {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+  Icon?: React.ComponentType<{ className?: string }>;
+}
+
+function SegmentChip({ active, onClick, label, count, Icon }: SegmentChipProps): React.JSX.Element {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 h-7 pl-2.5 pr-2 rounded-full text-[11.5px] font-semibold transition-colors ${
+        active
+          ? "bg-blue-600 text-white shadow-card"
+          : "bg-bg-subtle border border-line-default text-fg-secondary hover:text-fg-primary hover:bg-bg-muted hover:border-line-strong"
+      }`}
+    >
+      {Icon && <Icon className="h-3 w-3" />}
+      {label}
+      <span
+        className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center tabular-nums ${
+          active ? "bg-white/20 text-white" : "bg-white text-fg-muted border border-line-default"
+        }`}
+      >
+        {count}
+      </span>
+    </button>
   );
 }

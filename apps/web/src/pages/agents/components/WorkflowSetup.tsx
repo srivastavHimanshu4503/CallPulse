@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Layers, Plus } from "lucide-react";
+import { Plus, ClipboardList, MessageSquareText } from "lucide-react";
 import { toast } from "sonner";
 import { IntakeScenario, IntakeScenarioCard } from "./IntakeScenarioCard.js";
 import { SmsScenario, SmsScenarioCard } from "./SmsScenarioCard.js";
@@ -40,9 +40,8 @@ export function WorkflowSetup({
   setSmsTemplate,
   smsAgentReply,
   setSmsAgentReply,
-  disabled
+  disabled,
 }: WorkflowSetupProps): React.JSX.Element {
-  // Parse or initialize Intake Scenarios
   const [intakeScenarios, setIntakeScenarios] = React.useState<IntakeScenario[]>(() => {
     try {
       if (intakePrompt) {
@@ -56,7 +55,7 @@ export function WorkflowSetup({
             id: parsed.id || "intake-1",
             triggerName: parsed.triggerName || "General Intake Questionnaire",
             questions: qs.length > 0 ? qs : [""],
-            completionMessage: parsed.completionMessage || "Maine aapki requirements save kar li hain."
+            completionMessage: parsed.completionMessage || "Maine aapki requirements save kar li hain.",
           }];
         }
       }
@@ -65,11 +64,11 @@ export function WorkflowSetup({
       id: "intake-1",
       triggerName: "Lead Details Gathering",
       questions: ["What is your target budget range?", "Which location or area are you looking in?"],
-      completionMessage: "Thank you! Maine aapki requirements save kar li hain. Humari team brochures WhatsApp par share karegi."
+      completionMessage:
+        "Thank you! Maine aapki requirements save kar li hain. Humari team brochures WhatsApp par share karegi.",
     }];
   });
 
-  // Parse or initialize SMS Scenarios
   const [smsScenarios, setSmsScenarios] = React.useState<SmsScenario[]>(() => {
     try {
       if (smsTemplate) {
@@ -85,19 +84,21 @@ export function WorkflowSetup({
         id: "sms-1",
         triggerCondition: smsTriggerCondition || "When pricing is requested by caller",
         smsTemplate: smsTemplate,
-        agentReply: smsAgentReply || "Maine aapko SMS ke through listings and pricing details send kar di hain."
+        agentReply:
+          smsAgentReply || "Maine aapko SMS ke through listings and pricing details send kar di hain.",
       }];
     }
 
     return [{
       id: "sms-1",
       triggerCondition: "When pricing or brochures requested",
-      smsTemplate: "Hi {name}, pricing details Sharma Realty ki details: price list/brochures check karein: http://brochure.Sharma...",
-      agentReply: "Maine aapko SMS ke through pricing aur listings details send kar di hain. Please check karein."
+      smsTemplate:
+        "Hi {name}, pricing details Sharma Realty ki details: price list/brochures check karein: http://brochure.Sharma...",
+      agentReply:
+        "Maine aapko SMS ke through pricing aur listings details send kar di hain. Please check karein.",
     }];
   });
 
-  // Sync state back to parent forms on change
   React.useEffect(() => {
     setIntakePrompt(JSON.stringify(intakeScenarios));
     const allFields: string[] = [];
@@ -121,7 +122,6 @@ export function WorkflowSetup({
     }
   }, [smsScenarios, setSmsTemplate, setSmsTriggerCondition, setSmsAgentReply]);
 
-  // Dynamic actions: Intake
   const handleUpdateIntakeScenario = (idx: number, updated: IntakeScenario) => {
     const nextList = [...intakeScenarios];
     nextList[idx] = updated;
@@ -135,8 +135,8 @@ export function WorkflowSetup({
         id: `intake-${Math.random().toString()}`,
         triggerName: "",
         questions: [""],
-        completionMessage: ""
-      }
+        completionMessage: "",
+      },
     ]);
   };
 
@@ -148,7 +148,6 @@ export function WorkflowSetup({
     }
   };
 
-  // Dynamic actions: SMS
   const handleUpdateSmsScenario = (idx: number, updated: SmsScenario) => {
     const nextList = [...smsScenarios];
     nextList[idx] = updated;
@@ -162,8 +161,8 @@ export function WorkflowSetup({
         id: `sms-${Math.random().toString()}`,
         triggerCondition: "",
         smsTemplate: "",
-        agentReply: ""
-      }
+        agentReply: "",
+      },
     ]);
   };
 
@@ -176,104 +175,146 @@ export function WorkflowSetup({
   };
 
   return (
-    <div className="space-y-6 font-sans">
-      <div className="text-[10px] font-bold text-[#666666] uppercase tracking-wider border-b border-[#E5E5E5] pb-2 flex items-center gap-1.5">
-        <Layers className="h-3.5 w-3.5" /> WORKFLOW CONFIGURATION
-      </div>
-
-      {/* 1. INTAKE WORKFLOW SECTION */}
-      <div className="rounded-[6px] border border-[#E5E5E5] bg-white p-4 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h4 className="text-xs font-bold text-[#111111] uppercase tracking-wider">
-              In-Call Lead Intake Workflow
-            </h4>
-            <p className="text-[11px] text-[#666666] mt-0.5 leading-relaxed font-medium">
-              Collect specific caller detail parameters dynamically during the live call.
-            </p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={intakeEnabled}
-              onChange={(e) => setIntakeEnabled(e.target.checked)}
+    <div className="space-y-5 font-sans">
+      {/* INTAKE */}
+      <FeatureBlock
+        icon={ClipboardList}
+        title="In-call lead intake"
+        description="Ask callers specific questions in real-time and capture the answers as structured leads."
+        enabled={intakeEnabled}
+        setEnabled={setIntakeEnabled}
+        countBadge={intakeEnabled ? `${intakeScenarios.length} scenario${intakeScenarios.length > 1 ? "s" : ""}` : undefined}
+        disabled={disabled}
+      >
+        <div className="space-y-3">
+          {intakeScenarios.map((sc, idx) => (
+            <IntakeScenarioCard
+              key={sc.id}
+              scenario={sc}
+              index={idx}
+              onUpdate={(upd) => handleUpdateIntakeScenario(idx, upd)}
+              onDelete={() => handleRemoveIntakeScenario(idx)}
               disabled={disabled}
-              className="sr-only peer"
             />
-            <div className="w-9 h-5 bg-[#E5E5E5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#E5E5E5] after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2563EB]"></div>
-          </label>
+          ))}
+          <button
+            type="button"
+            onClick={handleAddIntakeScenario}
+            disabled={disabled}
+            className="w-full text-[#2563EB] hover:text-[#1D4ED8] text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-[#EFF6FF]/60 border border-dashed border-[#2563EB]/30 rounded-[8px] py-2.5 hover:bg-[#EFF6FF] transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" /> Add intake scenario
+          </button>
         </div>
+      </FeatureBlock>
 
-        {intakeEnabled && (
-          <div className="space-y-4 pt-3 border-t border-[#E5E5E5] animate-in fade-in duration-200">
-            {intakeScenarios.map((sc, idx) => (
-              <IntakeScenarioCard
-                key={sc.id}
-                scenario={sc}
-                index={idx}
-                onUpdate={(upd) => handleUpdateIntakeScenario(idx, upd)}
-                onDelete={() => handleRemoveIntakeScenario(idx)}
-                disabled={disabled}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={handleAddIntakeScenario}
+      {/* SMS */}
+      <FeatureBlock
+        icon={MessageSquareText}
+        title="In-call SMS dispatch"
+        description="Send a pricing sheet, brochure link, or map SMS during the live call — automatically."
+        enabled={smsEnabled}
+        setEnabled={setSmsEnabled}
+        countBadge={smsEnabled ? `${smsScenarios.length} scenario${smsScenarios.length > 1 ? "s" : ""}` : undefined}
+        disabled={disabled}
+      >
+        <div className="space-y-3">
+          {smsScenarios.map((sc, idx) => (
+            <SmsScenarioCard
+              key={sc.id}
+              scenario={sc}
+              index={idx}
+              onUpdate={(upd) => handleUpdateSmsScenario(idx, upd)}
+              onDelete={() => handleRemoveSmsScenario(idx)}
               disabled={disabled}
-              className="text-[#2563EB] hover:text-[#1D4ED8] text-xs font-bold flex items-center gap-1 mt-2 focus:outline-none bg-[#2563EB]/5 border border-[#2563EB]/10 rounded-[6px] py-2 px-3 hover:bg-[#2563EB]/10 transition-colors"
-            >
-              <Plus className="h-3.5 w-3.5" /> + Deploy New Intake Scenario
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* 2. SMS DISPATCH WORKFLOW SECTION */}
-      <div className="rounded-[6px] border border-[#E5E5E5] bg-white p-4 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h4 className="text-xs font-bold text-[#111111] uppercase tracking-wider">
-              In-Call SMS Dispatch Workflow (Real-Time)
-            </h4>
-            <p className="text-[11px] text-[#666666] mt-0.5 leading-relaxed font-medium">
-              Send an automated SMS containing prices, links, or brochures in real-time *during* the active call.
-            </p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={smsEnabled}
-              onChange={(e) => setSmsEnabled(e.target.checked)}
-              disabled={disabled}
-              className="sr-only peer"
             />
-            <div className="w-9 h-5 bg-[#E5E5E5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#E5E5E5] after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2563EB]"></div>
-          </label>
+          ))}
+          <button
+            type="button"
+            onClick={handleAddSmsScenario}
+            disabled={disabled}
+            className="w-full text-[#2563EB] hover:text-[#1D4ED8] text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-[#EFF6FF]/60 border border-dashed border-[#2563EB]/30 rounded-[8px] py-2.5 hover:bg-[#EFF6FF] transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" /> Add SMS scenario
+          </button>
         </div>
-
-        {smsEnabled && (
-          <div className="space-y-4 pt-3 border-t border-[#E5E5E5] animate-in fade-in duration-200">
-            {smsScenarios.map((sc, idx) => (
-              <SmsScenarioCard
-                key={sc.id}
-                scenario={sc}
-                index={idx}
-                onUpdate={(upd) => handleUpdateSmsScenario(idx, upd)}
-                onDelete={() => handleRemoveSmsScenario(idx)}
-                disabled={disabled}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={handleAddSmsScenario}
-              disabled={disabled}
-              className="text-[#2563EB] hover:text-[#1D4ED8] text-xs font-bold flex items-center gap-1 mt-2 focus:outline-none bg-[#2563EB]/5 border border-[#2563EB]/10 rounded-[6px] py-2 px-3 hover:bg-[#2563EB]/10 transition-colors"
-            >
-              <Plus className="h-3.5 w-3.5" /> + Deploy New SMS Scenario
-            </button>
-          </div>
-        )}
-      </div>
+      </FeatureBlock>
     </div>
+  );
+}
+
+/* ---------------- Feature Block (toggleable card) ---------------- */
+
+interface FeatureBlockProps {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  enabled: boolean;
+  setEnabled: (v: boolean) => void;
+  countBadge?: string;
+  disabled?: boolean;
+  children: React.ReactNode;
+}
+
+function FeatureBlock({
+  icon: Icon,
+  title,
+  description,
+  enabled,
+  setEnabled,
+  countBadge,
+  disabled,
+  children,
+}: FeatureBlockProps): React.JSX.Element {
+  return (
+    <section
+      className={`bg-white border rounded-[8px] transition-colors ${
+        enabled ? "border-[#2563EB]/25" : "border-[#E5E5E5]"
+      }`}
+    >
+      <header className="p-5 flex items-start gap-3">
+        <div
+          className={`h-10 w-10 rounded-[8px] flex items-center justify-center shrink-0 transition-colors ${
+            enabled
+              ? "bg-[#2563EB] text-white"
+              : "bg-[#F7F7F7] text-[#666666] border border-[#E5E5E5]"
+          }`}
+        >
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-sm font-semibold text-[#111111]">{title}</h3>
+            {countBadge && (
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] px-2 py-0.5 rounded-full">
+                {countBadge}
+              </span>
+            )}
+          </div>
+          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">{description}</p>
+        </div>
+        <label className="relative inline-flex items-center cursor-pointer select-none shrink-0 mt-0.5">
+          <input
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+            disabled={disabled}
+            className="sr-only peer"
+          />
+          <span className="w-[36px] h-[20px] bg-[#E5E5E5] rounded-full peer-checked:bg-[#2563EB] transition-colors" />
+          <span
+            className={`absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-[#E5E5E5] rounded-full shadow-sm transition-transform ${
+              enabled ? "translate-x-4" : "translate-x-0"
+            }`}
+          />
+        </label>
+      </header>
+
+      {enabled && (
+        <div className="border-t border-[#E5E5E5] p-5 bg-[#FAFAFA]/40 rounded-b-[8px] animate-in fade-in duration-200">
+          {children}
+        </div>
+      )}
+    </section>
   );
 }

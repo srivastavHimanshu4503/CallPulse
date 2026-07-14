@@ -6,6 +6,7 @@ import { authRouter } from "./modules/auth/auth.router.js";
 import { agentsRouter } from "./modules/agents/agents.router.js";
 import { dashboardRouter } from "./modules/dashboard/dashboard.router.js";
 import { crmRouter } from "./modules/crm/crm.router.js";
+import { workflowsRouter } from "./modules/workflows/workflows.router.js";
 
 const app: Express = express();
 
@@ -19,6 +20,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/agents", agentsRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/crm", crmRouter);
+app.use("/api/v1/workflows", workflowsRouter);
 
 
 // Health Check Route - returns { success: true, version: "1.0.0" } as requested

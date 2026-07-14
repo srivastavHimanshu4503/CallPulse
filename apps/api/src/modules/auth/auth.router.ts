@@ -13,6 +13,7 @@ router.post("/refresh", (req, res) => controller.refresh(req, res));
 router.post("/logout", (req, res) => controller.logout(req, res));
 router.post("/forgot-password", (req, res) => controller.forgotPassword(req, res));
 router.post("/reset-password", (req, res) => controller.resetPassword(req, res));
+router.get("/voice-sample", (req, res) => controller.voiceSample(req, res));
 
 // Protected Routes (requires token validation and tenant checking)
 router.get("/me", authMiddleware, tenantMiddleware, (req, res) => controller.me(req, res));

@@ -138,6 +138,7 @@ export const config = {
   },
   tts: {
     sarvamApiKey: env.SARVAM_API_KEY,
+    openaiApiKey: env.OPENAI_API_KEY,
   },
   llm: {
     primary: primaryLLM,

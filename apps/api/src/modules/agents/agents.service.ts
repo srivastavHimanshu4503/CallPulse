@@ -471,5 +471,101 @@ export class AgentsService {
       },
     });
   }
+
+  async generateTestVoice(opts: {
+    provider: string;
+    voice: string;
+    language?: string;
+  }): Promise<Buffer> {
+    const { provider, voice, language } = opts;
+
+    // Normalize voice identifier
+    const cleanVoice = voice.split(":").pop() || voice;
+    const voiceKey = cleanVoice.toLowerCase().trim();
+
+    // Map legacy / unrecognized speaker IDs
+    let speaker = voiceKey;
+    if (speaker === "aravind") speaker = "soham";
+    if (speaker === "aditi") speaker = "ritu";
+    if (speaker === "deepika") speaker = "kavitha";
+
+    // Determine voice gender for correct Hindi/Hinglish grammatical endings
+    const femaleVoices = [
+      "priya", "aditi", "ritu", "deepika", "kavitha",
+      "alloy", "shimmer", "coral", "sage", "marin"
+    ];
+    const isFemale = femaleVoices.includes(voiceKey);
+
+    // Determine target language context
+    const agentLang = (language || "").toLowerCase().trim();
+    let testText = "";
+
+    if (agentLang.startsWith("en")) {
+      // English-only greeting
+      testText = "Hello! I am your AI voice assistant. I am ready to help you with your query.";
+    } else if (agentLang.startsWith("hin") && !agentLang.includes("glish")) {
+      // Pure Hindi greeting with correct gender endings (raha hoon / rahi hoon)
+      testText = isFemale
+        ? "Namaste! Main aapki sahayata karne ke liye taiyaar hoon. Main aapki madad kar rahi hoon."
+        : "Namaste! Main aapki sahayata karne ke liye taiyaar hoon. Main aapki madad kar raha hoon.";
+    } else {
+      // Hinglish / Auto / Default greeting
+      testText = isFemale
+        ? "Namaste! Main aapki help karne ke liye ready hoon. Main aapki call connect kar rahi hoon."
+        : "Namaste! Main aapki help karne ke liye ready hoon. Main aapki call connect kar raha hoon.";
+    }
+
+    if (provider === "openai") {
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (!apiKey) throw new Error("OPENAI_API_KEY is not configured on the API server");
+
+      const response = await fetch("https://api.openai.com/v1/audio/speech", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "tts-1",
+          input: testText,
+          voice: speaker, // use mapped voice identifier
+        }),
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`OpenAI TTS preview failed: ${err}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      return Buffer.from(arrayBuffer);
+    } else if (provider === "sarvam") {
+      const apiKey = process.env.SARVAM_API_KEY;
+      if (!apiKey) throw new Error("SARVAM_API_KEY is not configured on the API server");
+
+      const isEnglish = agentLang.startsWith("en");
+      const response = await fetch("https://api.sarvam.ai/text-to-speech", {
+        method: "POST",
+        headers: {
+          "api-subscription-key": apiKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: testText,
+          speaker: speaker, // use mapped speaker ID
+          target_language_code: isEnglish ? "en-IN" : "hi-IN",
+          model: "bulbul:v3",
+        }),
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Sarvam TTS preview failed: ${err}`);
+      }
+      const data = (await response.json()) as { audios?: string[] };
+      const base64 = data.audios?.[0];
+      if (!base64) throw new Error("No audio returned from Sarvam AI");
+      return Buffer.from(base64, "base64");
+    } else {
+      throw new Error(`Unsupported voice provider: ${provider}`);
+    }
+  }
 }
 

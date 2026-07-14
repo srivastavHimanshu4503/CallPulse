@@ -1,0 +1,581 @@
+import * as React from "react";
+import { toast } from "sonner";
+import { PageWrapper } from "../../components/layout/PageWrapper.js";
+import {
+  Card,
+  SectionHead,
+  PageHeader,
+  AppButton,
+  Toggle,
+  Field,
+  inputClass,
+} from "../../components/common/UI.tsx";
+import {
+  User,
+  Building2,
+  Users as UsersIcon,
+  CreditCard,
+  Shield,
+  Trash2,
+  Plus,
+  Sparkles,
+} from "lucide-react";
+import { useAuthStore } from "../../stores/auth.store.js";
+
+// ─────────────────────────────────────────────────────────────
+// Types & data
+// ─────────────────────────────────────────────────────────────
+type Section =
+  | "account"
+  | "organization"
+  | "team"
+  | "billing"
+  | "security";
+
+const NAV: { key: Section; label: string; icon: React.ComponentType<{ className?: string }>; hint: string }[] = [
+  { key: "account",      label: "Account",      icon: User,       hint: "Your profile & preferences" },
+  { key: "organization", label: "Organization", icon: Building2,  hint: "Workspace details" },
+  { key: "team",         label: "Team",         icon: UsersIcon,  hint: "Invite & manage members" },
+  { key: "billing",      label: "Billing",      icon: CreditCard, hint: "Plan, invoices, payments" },
+  { key: "security",     label: "Security",     icon: Shield,     hint: "Password & 2FA" },
+];
+
+interface TeamMember {
+  id: string;
+  name: string;
+  email: string;
+  role: "Owner" | "Admin" | "Manager" | "Viewer";
+  status: "Active" | "Invited";
+  hex: string;
+}
+const TEAM_INIT: TeamMember[] = [
+  { id: "t1", name: "Yogendra Yadav",  email: "yogendra@myaifrontdesk.com",  role: "Owner",   status: "Active",  hex: "#2563EB" },
+  { id: "t2", name: "Priya Deshmukh",  email: "priya@rajesh-distributors.in", role: "Admin",   status: "Active",  hex: "#8B5CF6" },
+  { id: "t3", name: "Kabir Sharma",    email: "kabir@rajesh-distributors.in", role: "Manager", status: "Active",  hex: "#10B981" },
+  { id: "t4", name: "Neha Iyer",       email: "neha@rajesh-distributors.in",  role: "Viewer",  status: "Invited", hex: "#F97316" },
+];
+const ROLE_STYLES: Record<TeamMember["role"], { bg: string; color: string }> = {
+  Owner:   { bg: "#EEF2FF", color: "#4F46E5" },
+  Admin:   { bg: "#F0FDF4", color: "#16A34A" },
+  Manager: { bg: "#FFFBEB", color: "#D97706" },
+  Viewer:  { bg: "#F1F5F9", color: "#64748B" },
+};
+
+// ─────────────────────────────────────────────────────────────
+// Sub-panels
+// ─────────────────────────────────────────────────────────────
+
+function AccountPanel(): React.JSX.Element {
+  const user = useAuthStore((s) => s.user);
+  const [name, setName] = React.useState(user?.name || "Yogendra Yadav");
+  const [email, setEmail] = React.useState(user?.email || "yogendra@myaifrontdesk.com");
+  const [phone, setPhone] = React.useState("+91 98765 43210");
+
+  const initial = name.trim().charAt(0).toUpperCase() || "Y";
+
+  return (
+    <div className="space-y-3">
+      <Card>
+        <SectionHead title="Profile" hint="How other members and AI logs identify you." />
+        <div className="flex items-center gap-4 mb-4">
+          <div
+            className="h-16 w-16 rounded-full flex items-center justify-center text-white font-bold text-[22px]"
+            style={{
+              background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 55%, #EC4899 100%)",
+              boxShadow: "0 8px 24px -8px rgba(139,92,246,0.6)",
+            }}
+          >
+            {initial}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[15px] font-semibold text-fg-primary leading-tight">{name}</div>
+            <div className="text-[11.5px] text-fg-secondary mt-0.5">{email}</div>
+            <div className="mt-2 flex items-center gap-2">
+              <AppButton size="sm" variant="secondary" onClick={() => toast.info("Photo upload coming soon.")}>
+                Change photo
+              </AppButton>
+              <AppButton size="sm" variant="ghost" onClick={() => toast.info("Photo removed.")}>
+                Remove
+              </AppButton>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Field label="Full name">
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
+          </Field>
+          <Field label="Email address">
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+          </Field>
+          <Field label="Mobile number">
+            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} />
+          </Field>
+          <Field label="Time zone">
+            <select className={`${inputClass} cursor-pointer`}>
+              <option>Asia / Kolkata (IST)</option>
+              <option>Asia / Dubai (GST)</option>
+              <option>Europe / London (BST)</option>
+              <option>America / New York (EST)</option>
+            </select>
+          </Field>
+        </div>
+      </Card>
+
+      <Card>
+        <SectionHead title="Preferences" />
+        <div className="space-y-3">
+          <Toggle checked={true} onChange={() => {}}
+            label="Play sound on new call"
+            hint="Short chime when a live call starts." />
+          <Toggle checked={false} onChange={() => {}}
+            label="Show Hindi transliteration in transcripts"
+            hint="Roman letters below Devanagari for quick scan." />
+          <Toggle checked={true} onChange={() => {}}
+            label="Weekly performance email"
+            hint="Monday morning digest with numbers that matter." />
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function OrganizationPanel(): React.JSX.Element {
+  const tenant = useAuthStore((s) => s.tenant);
+  const [orgName, setOrgName] = React.useState(tenant?.name || "Rajesh Distributors");
+  const [website, setWebsite] = React.useState((tenant as any)?.websiteUrl || "https://rajesh-distributors.in");
+
+  return (
+    <div className="space-y-3">
+      <Card>
+        <SectionHead title="Workspace" hint="Public-facing info about your business." />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Field label="Business name">
+            <input type="text" value={orgName} onChange={(e) => setOrgName(e.target.value)} className={inputClass} />
+          </Field>
+          <Field label="Industry">
+            <select className={`${inputClass} cursor-pointer`}>
+              <option>Salon & Beauty</option>
+              <option>Clinic & Healthcare</option>
+              <option>Real estate</option>
+              <option>Retail</option>
+              <option>Restaurant</option>
+              <option>Coaching / Tuition</option>
+            </select>
+          </Field>
+          <Field label="Website URL">
+            <input type="text" value={website} onChange={(e) => setWebsite(e.target.value)} className={inputClass} />
+          </Field>
+          <Field label="Team size">
+            <select className={`${inputClass} cursor-pointer`}>
+              <option>Solo</option>
+              <option>2 – 5</option>
+              <option>6 – 20</option>
+              <option>20+</option>
+            </select>
+          </Field>
+          <Field label="Primary language">
+            <select className={`${inputClass} cursor-pointer`}>
+              <option>Hindi (हिन्दी)</option>
+              <option>English</option>
+              <option>Marathi (मराठी)</option>
+              <option>Tamil (தமிழ்)</option>
+              <option>Bengali (বাংলা)</option>
+            </select>
+          </Field>
+          <Field label="Country">
+            <select className={`${inputClass} cursor-pointer`}>
+              <option>India</option>
+            </select>
+          </Field>
+        </div>
+      </Card>
+
+      <Card>
+        <SectionHead title="Business hours" hint="Widget hides & calls forward outside these hours." />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Field label="Open at">
+            <input type="time" defaultValue="09:00" className={inputClass} />
+          </Field>
+          <Field label="Close at">
+            <input type="time" defaultValue="20:00" className={inputClass} />
+          </Field>
+        </div>
+        <div className="mt-3">
+          <Toggle checked={true} onChange={() => {}}
+            label="24 × 7 always available"
+            hint="AI answers every call, even outside business hours." />
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function TeamPanel(): React.JSX.Element {
+  const [members, setMembers] = React.useState<TeamMember[]>(TEAM_INIT);
+  const [newEmail, setNewEmail] = React.useState("");
+
+  const invite = () => {
+    if (!newEmail.trim()) {
+      toast.error("Enter an email first.");
+      return;
+    }
+    setMembers((p) => [
+      ...p,
+      {
+        id: `t${Date.now()}`,
+        name: newEmail.split("@")[0] || "Invited user",
+        email: newEmail,
+        role: "Viewer",
+        status: "Invited",
+        hex: "#64748B",
+      },
+    ]);
+    setNewEmail("");
+    toast.success("Invite sent");
+  };
+
+  return (
+    <div className="space-y-3">
+      <Card>
+        <SectionHead
+          title="Invite a member"
+          hint="They'll get an email with a magic link to join this workspace."
+        />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2">
+          <div className="flex-1">
+            <Field label="Email address">
+              <input
+                type="email"
+                placeholder="colleague@company.com"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && invite()}
+                className={inputClass}
+              />
+            </Field>
+          </div>
+          <div className="w-full sm:w-40">
+            <Field label="Role">
+              <select className={`${inputClass} cursor-pointer`}>
+                <option>Viewer</option>
+                <option>Manager</option>
+                <option>Admin</option>
+              </select>
+            </Field>
+          </div>
+          <AppButton variant="primary" icon={<Plus className="h-3.5 w-3.5" />} onClick={invite}>
+            Send invite
+          </AppButton>
+        </div>
+      </Card>
+
+      <Card>
+        <SectionHead
+          title="Members"
+          hint={`${members.length} people have access to this workspace`}
+        />
+        <div className="overflow-x-auto -mx-1">
+          <table className="w-full text-[12.5px]">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold border-b border-line-subtle">
+                <th className="text-left font-semibold px-2 py-2">Member</th>
+                <th className="text-left font-semibold px-2 py-2">Role</th>
+                <th className="text-left font-semibold px-2 py-2">Status</th>
+                <th className="text-right font-semibold px-2 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {members.map((m) => {
+                const role = ROLE_STYLES[m.role];
+                return (
+                  <tr key={m.id} className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors">
+                    <td className="px-2 py-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className="h-8 w-8 rounded-full flex items-center justify-center text-white text-[12px] font-semibold"
+                          style={{ backgroundColor: m.hex }}
+                        >
+                          {m.name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">{m.name}</div>
+                          <div className="text-[10.5px] text-fg-muted">{m.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <span
+                        className="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold"
+                        style={{ backgroundColor: role.bg, color: role.color }}
+                      >
+                        {m.role}
+                      </span>
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <span
+                        className="inline-flex items-center gap-1 text-[10.5px] font-semibold px-2 py-0.5 rounded-full"
+                        style={
+                          m.status === "Active"
+                            ? { backgroundColor: "#F0FDF4", color: "#16A34A" }
+                            : { backgroundColor: "#FFFBEB", color: "#D97706" }
+                        }
+                      >
+                        <span
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ backgroundColor: m.status === "Active" ? "#16A34A" : "#D97706" }}
+                        />
+                        {m.status}
+                      </span>
+                    </td>
+                    <td className="text-right px-2 py-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setMembers((p) => p.filter((x) => x.id !== m.id))}
+                        className="text-fg-muted hover:text-negative-500 transition-colors p-1 rounded hover:bg-negative-50"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+
+function BillingPanel(): React.JSX.Element {
+  return (
+    <div className="space-y-3">
+      {/* Big gradient plan card */}
+      <div
+        className="relative rounded-xl p-5 overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #EEF2FF 0%, #FDF4FF 50%, #FFF1F2 100%)",
+          border: "1px solid rgba(139,92,246,0.2)",
+          boxShadow: "0 8px 30px -12px rgba(139,92,246,0.35)",
+        }}
+      >
+        <div className="absolute -top-8 -right-6 h-32 w-32 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(236,72,153,0.30)" }} />
+        <div className="absolute -bottom-10 -left-6 h-32 w-32 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(99,102,241,0.30)" }} />
+
+        <div className="relative">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div
+                className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider mb-2"
+                style={{ backgroundColor: "rgba(255,255,255,0.7)", color: "#4F46E5", boxShadow: "inset 0 0 0 1px rgba(99,102,241,0.35)" }}
+              >
+                <Sparkles className="h-3 w-3" />
+                Current plan
+              </div>
+              <div
+                className="text-[26px] font-bold tracking-tight bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(90deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)" }}
+              >
+                Business Pro
+              </div>
+              <p className="text-[12.5px] text-fg-secondary mt-1">
+                5,000 voice minutes · unlimited agents · 10+ languages
+              </p>
+            </div>
+            <div className="text-right shrink-0">
+              <div className="text-[22px] font-bold text-fg-primary tabular-nums">₹4,999<span className="text-[13px] text-fg-muted font-normal">/mo</span></div>
+              <div className="text-[11px] text-fg-muted">Renews 12 Dec</div>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="flex justify-between text-[11px] font-semibold mb-1.5">
+              <span className="text-fg-secondary">Voice quota</span>
+              <span className="text-fg-primary tabular-nums">4,850 / 5,000 min</span>
+            </div>
+            <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(15,23,42,0.06)" }}>
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: "97%",
+                  background: "linear-gradient(90deg, #6366F1 0%, #8B5CF6 45%, #EC4899 100%)",
+                  boxShadow: "0 0 12px rgba(139,92,246,0.55)",
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => toast.info("Top up coming soon.")}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-white text-[12.5px] font-bold transition-all hover:brightness-110"
+              style={{ background: "linear-gradient(135deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)", boxShadow: "0 2px 8px -2px rgba(139,92,246,0.55)" }}
+            >
+              <CreditCard className="h-3.5 w-3.5" />
+              Top up credits
+            </button>
+            <AppButton variant="secondary" onClick={() => toast.info("Upgrade coming soon.")}>
+              Change plan
+            </AppButton>
+            <AppButton variant="ghost" onClick={() => toast.info("Invoices coming soon.")}>
+              View invoices →
+            </AppButton>
+          </div>
+        </div>
+      </div>
+
+      <Card>
+        <SectionHead title="Payment method" />
+        <div className="flex items-center gap-3 rounded-lg border border-line-default bg-bg-subtle p-3">
+          <div className="h-8 w-12 rounded flex items-center justify-center bg-white border border-line-default text-[10.5px] font-bold text-fg-primary">
+            VISA
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[12.5px] font-semibold text-fg-primary">•••• 4242</div>
+            <div className="text-[10.5px] text-fg-muted">Expires 11 / 27 · Yogendra Yadav</div>
+          </div>
+          <AppButton size="sm" variant="secondary" onClick={() => toast.info("Update card coming soon.")}>
+            Update
+          </AppButton>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function SecurityPanel(): React.JSX.Element {
+  return (
+    <div className="space-y-3">
+      <Card>
+        <SectionHead title="Password" hint="Rotate every 90 days for best hygiene." />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Field label="Current password">
+            <input type="password" placeholder="••••••••" className={inputClass} />
+          </Field>
+          <span className="hidden md:block" />
+          <Field label="New password">
+            <input type="password" placeholder="At least 12 characters" className={inputClass} />
+          </Field>
+          <Field label="Confirm new password">
+            <input type="password" placeholder="Repeat" className={inputClass} />
+          </Field>
+        </div>
+        <div className="mt-3 flex justify-end">
+          <AppButton variant="primary" onClick={() => toast.success("Password updated")}>
+            Update password
+          </AppButton>
+        </div>
+      </Card>
+
+      <Card>
+        <SectionHead title="Two-factor authentication" hint="Require a code from your phone at login." />
+        <Toggle checked={false} onChange={(v) => toast.info(v ? "2FA setup coming soon." : "2FA disabled.")}
+          label="Enable 2FA (authenticator app)"
+          hint="Recommended for owners and admins." />
+      </Card>
+
+      <Card>
+        <SectionHead title="Danger zone" />
+        <div className="rounded-lg border border-negative-500/25 bg-negative-50 p-3 flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[13px] font-semibold text-negative-500">Delete workspace</div>
+            <div className="text-[11px] text-fg-secondary mt-0.5">
+              Permanently deletes all agents, calls, contacts, deals and templates. Cannot be undone.
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => toast.error("Deletion needs owner confirmation.")}
+            className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-white text-[12px] font-bold transition-all hover:brightness-110"
+            style={{ backgroundColor: "#DC2626", boxShadow: "0 2px 6px -2px rgba(220,38,38,0.5)" }}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Delete
+          </button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Page
+// ─────────────────────────────────────────────────────────────
+
+export function Settings(): React.JSX.Element {
+  const [section, setSection] = React.useState<Section>("account");
+
+  const active = NAV.find((n) => n.key === section)!;
+  const Content = React.useMemo(() => {
+    switch (section) {
+      case "account":      return <AccountPanel />;
+      case "organization": return <OrganizationPanel />;
+      case "team":         return <TeamPanel />;
+      case "billing":      return <BillingPanel />;
+      case "security":     return <SecurityPanel />;
+    }
+  }, [section]);
+
+  return (
+    <PageWrapper noScroll={true}>
+      <PageHeader
+        title="Settings"
+        subtitle={<span>Manage your account, workspace, team, integrations, and security.</span>}
+        actions={
+          <AppButton variant="primary" onClick={() => toast.success("Changes saved")}>
+            Save changes
+          </AppButton>
+        }
+      />
+
+      <div className="grid grid-cols-1 xl:grid-cols-[240px_minmax(0,1fr)] gap-3 flex-1 min-h-0">
+        {/* Left nav */}
+        <Card className="flex flex-col min-h-0 p-2">
+          <ul className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-0.5">
+            {NAV.map((n) => {
+              const isActive = section === n.key;
+              return (
+                <li key={n.key}>
+                  <button
+                    type="button"
+                    onClick={() => setSection(n.key)}
+                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all text-left"
+                    style={
+                      isActive
+                        ? { backgroundColor: "#2563EB", color: "#FFFFFF", boxShadow: "0 2px 4px rgba(37,99,235,0.35)" }
+                        : { backgroundColor: "transparent", color: "#0F172A" }
+                    }
+                  >
+                    <n.icon className="h-4 w-4 shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[12.5px] font-semibold leading-tight">{n.label}</div>
+                      <div
+                        className="text-[10px] truncate mt-0.5"
+                        style={isActive ? { color: "rgba(255,255,255,0.85)" } : { color: "#64748B" }}
+                      >
+                        {n.hint}
+                      </div>
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </Card>
+
+        {/* Right content */}
+        <div className="min-h-0 overflow-y-auto no-scrollbar -mr-1 pr-1">
+          <div className="mb-3">
+            <h2 className="text-[16px] font-semibold text-fg-primary tracking-tight">{active.label}</h2>
+            <p className="text-[11.5px] text-fg-muted mt-0.5">{active.hint}</p>
+          </div>
+          {Content}
+        </div>
+      </div>
+    </PageWrapper>
+  );
+}
+export default Settings;

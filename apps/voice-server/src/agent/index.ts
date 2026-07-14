@@ -237,8 +237,8 @@ export default defineAgent({
     });
 
     const ttsOptions: TTSBuildOptions = {
+      voice: persona.voice,
       language: langCodes.tts,
-      speaker: langCodes.speaker,
     };
 
     const pipelineLLM = createPipelineLLM({

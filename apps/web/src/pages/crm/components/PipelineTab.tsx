@@ -1,11 +1,12 @@
 import * as React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { api } from "../../../lib/axios.js";
-import { TrendingUp, Plus, ArrowLeft, ArrowRight, Layers, FolderKanban, Sparkles, Filter, Trash2, AlertTriangle, Search } from "lucide-react";
+import { TrendingUp, Plus, ArrowLeft, ArrowRight, Layers, FolderKanban, Sparkles, Filter, Trash2, AlertTriangle, Search, Settings } from "lucide-react";
 import { Button } from "@antigravity/ui";
 import { toast } from "sonner";
 import { FilterLogicalOperator, FilterOperator } from "@antigravity/types";
 import type { FilterCondition } from "@antigravity/types";
+import { PipelineSettingsModal } from "./PipelineSettingsModal.js";
 
 
 interface PipelineTabProps {
@@ -58,41 +59,8 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
     }
   }, [STAGES]);
 
-  // New Custom Pipeline form states
-  const [newPipelineName, setNewPipelineName] = React.useState("");
-  const [newStages, setNewStages] = React.useState<string[]>(["Contacted Us", "Prospect Contacted", "Negotiation"]);
-  
-  // Pipeline smart filter configuration states
-  const [useFilter, setUseFilter] = React.useState(false);
-  const [filterFieldId, setFilterFieldId] = React.useState("");
-  const [filterFieldValue, setFilterFieldValue] = React.useState("");
-
-  // Re-ordering stage helper for creation
-  const moveNewStage = (index: number, direction: "up" | "down") => {
-    const nextIdx = direction === "up" ? index - 1 : index + 1;
-    if (nextIdx >= 0 && nextIdx < newStages.length) {
-      const updated = [...newStages];
-      const temp = updated[index] as string;
-      updated[index] = updated[nextIdx] as string;
-      updated[nextIdx] = temp;
-      setNewStages(updated);
-    }
-  };
-
-  // Get active dropdown options when a filter custom field is selected
-  const activeFilterOptions = React.useMemo(() => {
-    if (!filterFieldId) return [];
-    const def = customFieldDefs.find((d) => d.id === filterFieldId);
-    return def?.options || [];
-  }, [filterFieldId, customFieldDefs]);
-
-  // Edit Pipeline states
+  // Pipeline create/edit modal open state — the modal owns its own form state
   const [isEditOpen, setIsEditOpen] = React.useState(false);
-  const [editPipelineName, setEditPipelineName] = React.useState("");
-  const [editStages, setEditStages] = React.useState<string[]>([]);
-  const [editUseFilter, setEditUseFilter] = React.useState(false);
-  const [editFilterFieldId, setEditFilterFieldId] = React.useState("");
-  const [editFilterFieldValue, setEditFilterFieldValue] = React.useState("");
 
   // Opportunity Record Edit Modal states
   const [isEditDealOpen, setIsEditDealOpen] = React.useState(false);
@@ -118,25 +86,6 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
   const [visibleLimits, setVisibleLimits] = React.useState<Record<string, number>>({});
 
 
-
-  // Re-ordering stage helper for editing
-  const moveEditStage = (index: number, direction: "up" | "down") => {
-    const nextIdx = direction === "up" ? index - 1 : index + 1;
-    if (nextIdx >= 0 && nextIdx < editStages.length) {
-      const updated = [...editStages];
-      const temp = updated[index] as string;
-      updated[index] = updated[nextIdx] as string;
-      updated[nextIdx] = temp;
-      setEditStages(updated);
-    }
-  };
-
-  // Get active edit dropdown options when an edit filter custom field is selected
-  const activeEditFilterOptions = React.useMemo(() => {
-    if (!editFilterFieldId) return [];
-    const def = customFieldDefs.find((d) => d.id === editFilterFieldId);
-    return def?.options || [];
-  }, [editFilterFieldId, customFieldDefs]);
 
   // 1. Fetch Deals
   const { data: deals = [], isLoading: isDealsLoading, refetch: refetchDeals } = useQuery({
@@ -448,73 +397,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
     moveDealMutation.mutate({ id: dealId, stage: targetStage });
   };
 
-  // 4. Create Pipeline Mutation
-  const createPipelineMutation = useMutation({
-    mutationFn: async (payload: { name: string; stages: string[]; filters?: any[] | null }) => {
-      const res = await api.post("/crm/pipelines", payload);
-      return res.data.data;
-    },
-    onSuccess: (data) => {
-      toast.success(`Successfully configured pipeline smart view: "${data.name}"`);
-      refetchPipelines();
-      setIsPipelineModalOpen(false);
-      setNewPipelineName("");
-      setNewStages(["Contacted Us", "Prospect Contacted", "Negotiation"]);
-      setUseFilter(false);
-      setFilterFieldId("");
-      setFilterFieldValue("");
-      setActivePipelineId(data.id);
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.error || "Failed to create pipeline smart view");
-    },
-  });
-
-  // 5. Update Pipeline Mutation
-  const updatePipelineMutation = useMutation({
-    mutationFn: async (payload: { id: string; name: string; stages: string[]; filters?: any[] | null }) => {
-      const res = await api.put(`/crm/pipelines/${payload.id}`, {
-        name: payload.name,
-        stages: payload.stages,
-        filters: payload.filters,
-      });
-      return res.data.data;
-    },
-    onSuccess: () => {
-      toast.success("Pipeline settings successfully updated!");
-      setIsEditOpen(false);
-      refetchPipelines();
-      refetchContacts();
-      refetchDeals();
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.error || "Failed to update pipeline settings");
-    },
-  });
-
-  // 6. Delete Pipeline Mutation
-  const deletePipelineMutation = useMutation({
-    mutationFn: async (id: string) => {
-      await api.delete(`/crm/pipelines/${id}`);
-    },
-    onSuccess: () => {
-      toast.success("Pipeline successfully deleted!");
-      setIsEditOpen(false);
-      refetchPipelines().then((res) => {
-        const list = res.data || [];
-        if (list.length > 0) {
-          setActivePipelineId(list[0].id);
-        } else {
-          setActivePipelineId("");
-        }
-      });
-      refetchContacts();
-      refetchDeals();
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.error || "Failed to delete pipeline");
-    },
-  });
+  // Pipeline create/update/delete mutations are now owned by PipelineSettingsModal.
 
   const handleCreateDealSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -529,25 +412,6 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       title: title.trim(),
       value: Number(value),
       stage,
-    });
-  };
-
-  const handleCreatePipelineSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanStages = newStages.map((s) => s.trim()).filter(Boolean);
-    if (!newPipelineName.trim() || cleanStages.length === 0) {
-      toast.error("Pipeline name and at least one stage are required");
-      return;
-    }
-
-    const filters = useFilter && filterFieldId && filterFieldValue
-      ? [{ fieldDefinitionId: filterFieldId, value: filterFieldValue }]
-      : null;
-
-    createPipelineMutation.mutate({
-      name: newPipelineName.trim(),
-      stages: cleanStages,
-      filters,
     });
   };
 
@@ -588,89 +452,56 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
     return sums;
   }, [dealsByStage, STAGES]);
 
-  const handleAddStageInput = () => {
-    setNewStages([...newStages, ""]);
-  };
-
-  const handleStageInputChange = (index: number, val: string) => {
-    const updated = [...newStages];
-    updated[index] = val;
-    setNewStages(updated);
-  };
-
-  const handleRemoveStageInput = (index: number) => {
-    if (newStages.length <= 1) return;
-    const updated = newStages.filter((_, idx) => idx !== index);
-    setNewStages(updated);
-  };
-
   const isLoading = isPipelinesLoading || isDealsLoading;
 
   return (
     <div className="flex flex-col h-full overflow-hidden font-sans">
       
-      {/* Header action panel */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-3 mb-4 select-none">
-        
-        {/* Pipeline Selector Switcher */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 border-r border-[#E5E5E5] pr-3 shrink-0">
-            <TrendingUp className="h-4 w-4 text-[#2563EB]" />
-            <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">
-              Workspace Pipelines
-            </span>
-          </div>
+      {/* Header — pipeline selector + settings + create actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-2 mb-2 select-none">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md bg-bg-subtle border border-line-default text-[11px] font-semibold text-fg-muted uppercase tracking-wider shrink-0">
+            <TrendingUp className="h-3.5 w-3.5 text-brand-500" />
+            Pipeline
+          </span>
 
-          <div className="flex items-center gap-2">
-            {pipelines.length > 0 && (
-              <>
-                <select
-                  value={activePipelineId}
-                  onChange={(e) => setActivePipelineId(e.target.value)}
-                  className="h-8 bg-white border border-[#E5E5E5] text-xs font-bold text-[#111111] rounded-[6px] px-3 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-                >
-                  {pipelines.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name} {p.filters && p.filters.length > 0 ? "⚙️ (Smart View)" : ""}
-                    </option>
-                  ))}
-                </select>
+          {pipelines.length > 0 && (
+            <>
+              <select
+                value={activePipelineId}
+                onChange={(e) => setActivePipelineId(e.target.value)}
+                className="h-9 bg-white border border-line-default text-[12.5px] font-semibold text-fg-primary rounded-md px-3 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 cursor-pointer shadow-card"
+              >
+                {pipelines.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                    {p.filters && p.filters.length > 0 ? "  ·  auto-filter" : ""}
+                  </option>
+                ))}
+              </select>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (activePipeline) {
-                      setEditPipelineName(activePipeline.name);
-                      setEditStages([...activePipeline.stages]);
-                      const hasFilter = activePipeline.filters && activePipeline.filters.length > 0;
-                      setEditUseFilter(hasFilter);
-                      if (hasFilter) {
-                        setEditFilterFieldId(activePipeline.filters[0].fieldDefinitionId);
-                        setEditFilterFieldValue(activePipeline.filters[0].value);
-                      } else {
-                        setEditFilterFieldId("");
-                        setEditFilterFieldValue("");
-                      }
-                      setIsEditOpen(true);
-                    }
-                  }}
-                  className="h-8 w-8 rounded-[6px] border border-[#E5E5E5] bg-white text-[#666666] hover:text-[#2563EB] hover:border-[#2563EB] flex items-center justify-center focus:outline-none transition-colors"
-                  title="Configure dynamic pipeline stages or Smart Filters"
-                >
-                  ⚙️
-                </button>
-              </>
-            )}
+              <button
+                type="button"
+                onClick={() => {
+                  if (activePipeline) setIsEditOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted text-[12px] font-semibold transition-colors"
+                title="Pipeline settings"
+              >
+                <Settings className="h-3.5 w-3.5" />
+                Settings
+              </button>
+            </>
+          )}
 
-            <button
-              type="button"
-              onClick={() => setIsPipelineModalOpen(true)}
-              className="h-8 px-2.5 rounded-[6px] border border-[#E5E5E5] bg-white text-[#666666] hover:text-[#111111] text-[11px] font-semibold flex items-center gap-1 focus:outline-none transition-colors"
-              title="Create custom pipelines"
-            >
-              <Plus className="h-3.5 w-3.5" /> New Pipeline
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsPipelineModalOpen(true)}
+            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-brand-500/30 bg-brand-50 text-brand-700 hover:bg-brand-100 text-[12px] font-semibold transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New pipeline
+          </button>
         </div>
 
         <Button
@@ -679,9 +510,9 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
             if (STAGES.length > 0) setStage(STAGES[0]);
             setIsAddOpen(true);
           }}
-          className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs h-9 px-3.5 rounded-[6px] flex items-center gap-1.5 border-none shadow-none"
+          className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold bg-brand-500 hover:bg-brand-600 text-white shadow-card border-none"
         >
-          <Plus className="h-4 w-4" /> Create Record
+          <Plus className="h-3.5 w-3.5" /> Add deal
         </Button>
       </div>
 
@@ -1245,480 +1076,41 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
         </div>
       )}
 
-      {/* DECLARE CUSTOM PIPELINE STAGES MODAL WITH AUTOMATED SMART FILTERS & SIDEBAR GUIDE */}
+      {/* Create pipeline */}
       {isPipelineModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-          <div className="bg-white border border-[#E5E5E5] rounded-[6px] shadow-2xl max-w-2xl w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
-            <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-[#FAFAFA]">
-              <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
-                <FolderKanban className="h-4.5 w-4.5 text-[#2563EB]" /> Declare Pipeline Workflow
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsPipelineModalOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none text-sm"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E5E5E5] min-h-[400px]">
-              {/* Column 1: Config Form */}
-              <form 
-                onSubmit={handleCreatePipelineSubmit} 
-                className="p-6 space-y-4 flex flex-col justify-between font-sans"
-              >
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Pipeline Label *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Student Visa Admissions"
-                      value={newPipelineName}
-                      onChange={(e) => setNewPipelineName(e.target.value)}
-                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5 flex justify-between items-center">
-                      <span>Custom Steps (Stages) *</span>
-                      <button
-                        type="button"
-                        onClick={handleAddStageInput}
-                        className="text-[#2563EB] hover:text-[#1D4ED8] text-[10px] font-bold uppercase tracking-wider focus:outline-none"
-                      >
-                        + Add Step
-                      </button>
-                    </label>
-                    <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                      {newStages.map((stageVal, index) => (
-                        <div key={index} className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-bold text-[#999999] w-4 text-center">{index + 1}</span>
-                          <input
-                            type="text"
-                            required
-                            placeholder={`Stage e.g. Step ${index + 1}`}
-                            value={stageVal}
-                            onChange={(e) => handleStageInputChange(index, e.target.value)}
-                            className="flex-1 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-8 px-2 focus:outline-none"
-                          />
-                          
-                          {/* Re-ordering up/down stage buttons */}
-                          <div className="flex items-center gap-0.5 shrink-0">
-                            <button
-                              type="button"
-                              onClick={() => moveNewStage(index, "up")}
-                              disabled={index === 0}
-                              className="text-[#666666] hover:bg-[#F7F7F7] border border-[#E5E5E5] rounded-[4px] px-1 py-0.5 text-[9px] disabled:opacity-30 disabled:hover:bg-transparent"
-                              title="Move stage up"
-                            >
-                              ↑
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => moveNewStage(index, "down")}
-                              disabled={index === newStages.length - 1}
-                              className="text-[#666666] hover:bg-[#F7F7F7] border border-[#E5E5E5] rounded-[4px] px-1 py-0.5 text-[9px] disabled:opacity-30 disabled:hover:bg-transparent"
-                              title="Move stage down"
-                            >
-                              ↓
-                            </button>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveStageInput(index)}
-                            disabled={newStages.length <= 1}
-                            className="text-[#DC2626] hover:bg-[#DC2626]/5 disabled:opacity-30 p-1 rounded-[4px] focus:outline-none text-xs shrink-0"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Automated Smart Filters Configuration */}
-                  <div className="pt-3 border-t border-[#E5E5E5] space-y-3">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="smart-filter-toggle"
-                        checked={useFilter}
-                        onChange={(e) => setUseFilter(e.target.checked)}
-                        className="rounded text-[#2563EB] focus:ring-[#2563EB] cursor-pointer"
-                      />
-                      <label htmlFor="smart-filter-toggle" className="text-[11px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1 cursor-pointer select-none">
-                        <Filter className="h-3.5 w-3.5 text-[#2563EB]" /> Automated Smart Filter
-                      </label>
-                    </div>
-
-                    {useFilter && (
-                      <div className="space-y-3 animate-in fade-in slide-in-from-top-1 duration-150">
-                        <div>
-                          <label className="block text-[10px] font-bold text-[#666666] mb-1">Filter Custom Parameter Field</label>
-                          <select
-                            value={filterFieldId}
-                            onChange={(e) => {
-                              setFilterFieldId(e.target.value);
-                              setFilterFieldValue("");
-                            }}
-                            className="w-full h-8 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-2 focus:outline-none"
-                            required={useFilter}
-                          >
-                            <option value="">Select custom field...</option>
-                            {customFieldDefs
-                              .filter((d) => d.type === "DROPDOWN")
-                              .map((d) => (
-                                <option key={d.id} value={d.id}>
-                                  {d.name}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-
-                        {filterFieldId && activeFilterOptions.length > 0 && (
-                          <div>
-                            <label className="block text-[10px] font-bold text-[#666666] mb-1">Require Field Option Value</label>
-                            <select
-                              value={filterFieldValue}
-                              onChange={(e) => setFilterFieldValue(e.target.value)}
-                              className="w-full h-8 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-2 focus:outline-none"
-                              required={useFilter}
-                            >
-                              <option value="">Select value...</option>
-                              {activeFilterOptions.map((opt: string) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
-                  <Button
-                    variant="secondary"
-                    onClick={() => setIsPipelineModalOpen(false)}
-                    type="button"
-                    className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px]"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    disabled={createPipelineMutation.isPending}
-                    className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
-                  >
-                    {createPipelineMutation.isPending ? "Creating..." : "Establish Pipeline"}
-                  </Button>
-                </div>
-              </form>
-
-              {/* Column 2: 💡 Smart CRM Intake Guidelines */}
-              <div className="p-6 bg-[#FAFAFA] flex flex-col justify-between select-none">
-                <div className="space-y-4">
-                  <h4 className="text-[11px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5 border-b border-[#E5E5E5] pb-2">
-                    <Sparkles className="h-4 w-4 text-[#2563EB]" /> Smart Filters & Automation
-                  </h4>
-
-                  <div className="space-y-3.5 text-xs text-[#666666] leading-relaxed font-sans">
-                    <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">🔗 What is a Pipeline?</span>
-                      <p className="mt-1">
-                        A Pipeline acts as a visual Kanban board workflow representational map for custom operational layers (e.g. Sales stages, Visa applications steps, Flat rental coordinates).
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">⚙️ How do Smart Filters work?</span>
-                      <p className="mt-1">
-                        When enabled, Smart Filters automatically link contact records to this pipeline! Any contact matching the parameter (e.g. Custom Field dropdown *"Course"* is *"MBA"*) is mapped instantly onto this board dynamically.
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">⚡ Re-order Stages Flexibility</span>
-                      <p className="mt-1">
-                        Use the **↑ (Up)** and **↓ (Down)** arrows to custom order stages. Stage orders dictate the left-to-right columns sequence on your workspace board so that operational value flows sequentially!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 border-t border-[#E5E5E5] pt-3 text-[10px] text-[#999999] leading-snug font-medium">
-                  💡 Tip: AI Voice intake workers dynamically parse voice call transcript outcomes to map customer records cleanly onto matching pipeline stages!
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+        <PipelineSettingsModal
+          customFieldDefs={customFieldDefs}
+          onClose={() => setIsPipelineModalOpen(false)}
+          onSaved={(p) => {
+            setIsPipelineModalOpen(false);
+            refetchPipelines();
+            setActivePipelineId(p.id);
+          }}
+        />
       )}
 
-      {/* EDIT DYNAMIC PIPELINE MODAL WITH SOFT-DELETION & STAGES RE-ORDERING */}
+      {/* Edit pipeline */}
       {isEditOpen && activePipeline && (
-        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-          <div className="bg-white border border-[#E5E5E5] rounded-[6px] shadow-2xl max-w-2xl w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
-            <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-[#FAFAFA]">
-              <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
-                <FolderKanban className="h-4.5 w-4.5 text-[#2563EB]" /> Configure Pipeline: {activePipeline.name}
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsEditOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none text-sm"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E5E5E5] min-h-[400px]">
-              {/* Left Column: Edit Form */}
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!editPipelineName.trim() || editStages.length === 0) {
-                    toast.error("Pipeline name and at least one stage are required");
-                    return;
-                  }
-                  const filters = editUseFilter && editFilterFieldId && editFilterFieldValue
-                    ? [{ fieldDefinitionId: editFilterFieldId, value: editFilterFieldValue }]
-                    : null;
-                  updatePipelineMutation.mutate({
-                    id: activePipeline.id,
-                    name: editPipelineName.trim(),
-                    stages: editStages.filter(Boolean),
-                    filters,
-                  });
-                }}
-                className="p-6 space-y-4 flex flex-col justify-between font-sans"
-              >
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Pipeline Label *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Sales Pipeline"
-                      value={editPipelineName}
-                      onChange={(e) => setEditPipelineName(e.target.value)}
-                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5 flex justify-between items-center">
-                      <span>Custom Steps (Stages) *</span>
-                      <button
-                        type="button"
-                        onClick={() => setEditStages([...editStages, `Step ${editStages.length + 1}`])}
-                        className="text-[#2563EB] hover:text-[#1D4ED8] text-[10px] font-bold uppercase tracking-wider focus:outline-none"
-                      >
-                        + Add Step
-                      </button>
-                    </label>
-                    <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                      {editStages.map((stageVal, index) => (
-                        <div key={index} className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-bold text-[#999999] w-4 text-center">{index + 1}</span>
-                          <input
-                            type="text"
-                            required
-                            placeholder={`Stage Name`}
-                            value={stageVal}
-                            onChange={(e) => {
-                              const updated = [...editStages];
-                              updated[index] = e.target.value;
-                              setEditStages(updated);
-                            }}
-                            className="flex-1 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-8 px-2.5 focus:outline-none"
-                          />
-                          
-                          {/* Re-ordering arrows */}
-                          <div className="flex items-center gap-0.5 shrink-0">
-                            <button
-                              type="button"
-                              onClick={() => moveEditStage(index, "up")}
-                              disabled={index === 0}
-                              className="text-[#666666] hover:bg-[#F7F7F7] border border-[#E5E5E5] rounded-[4px] px-1 py-0.5 text-[9px] disabled:opacity-30 disabled:hover:bg-transparent animate-in fade-in-50"
-                              title="Move stage up"
-                            >
-                              ↑
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => moveEditStage(index, "down")}
-                              disabled={index === editStages.length - 1}
-                              className="text-[#666666] hover:bg-[#F7F7F7] border border-[#E5E5E5] rounded-[4px] px-1 py-0.5 text-[9px] disabled:opacity-30 disabled:hover:bg-transparent animate-in fade-in-50"
-                              title="Move stage down"
-                            >
-                              ↓
-                            </button>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updated = editStages.filter((_, idx) => idx !== index);
-                              setEditStages(updated);
-                            }}
-                            disabled={editStages.length <= 1}
-                            className="text-[#DC2626] hover:bg-[#DC2626]/5 disabled:opacity-30 p-1 rounded-[4px] focus:outline-none text-xs shrink-0"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Smart Filters Configuration */}
-                  <div className="pt-3 border-t border-[#E5E5E5] space-y-3">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="edit-smart-filter-toggle"
-                        checked={editUseFilter}
-                        onChange={(e) => setEditUseFilter(e.target.checked)}
-                        className="rounded text-[#2563EB] focus:ring-[#2563EB] cursor-pointer"
-                      />
-                      <label htmlFor="edit-smart-filter-toggle" className="text-[11px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1 cursor-pointer select-none">
-                        <Filter className="h-3.5 w-3.5 text-[#2563EB]" /> Automated Smart Filter
-                      </label>
-                    </div>
-
-                    {editUseFilter && (
-                      <div className="space-y-3 animate-in fade-in slide-in-from-top-1 duration-150">
-                        <div>
-                          <label className="block text-[10px] font-bold text-[#666666] mb-1">Filter Custom Parameter Field</label>
-                          <select
-                            value={editFilterFieldId}
-                            onChange={(e) => {
-                              setEditFilterFieldId(e.target.value);
-                              setEditFilterFieldValue("");
-                            }}
-                            className="w-full h-8 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-2 focus:outline-none"
-                            required={editUseFilter}
-                          >
-                            <option value="">Select custom field...</option>
-                            {customFieldDefs
-                              .filter((d) => d.type === "DROPDOWN")
-                              .map((d) => (
-                                <option key={d.id} value={d.id}>
-                                  {d.name}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-
-                        {editFilterFieldId && activeEditFilterOptions.length > 0 && (
-                          <div>
-                            <label className="block text-[10px] font-bold text-[#666666] mb-1">Require Field Option Value</label>
-                            <select
-                              value={editFilterFieldValue}
-                              onChange={(e) => setEditFilterFieldValue(e.target.value)}
-                              className="w-full h-8 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-2 focus:outline-none"
-                              required={editUseFilter}
-                            >
-                              <option value="">Select value...</option>
-                              {activeEditFilterOptions.map((opt: string) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                 {/* Submissions Action Buttons + Delete Pipeline Trigger */}
-                <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-between gap-3 font-sans">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDeleteConfirmType("pipeline");
-                      setDeleteConfirmId(activePipeline.id);
-                      setDeleteConfirmTitle(activePipeline.name);
-                      setDeleteConfirmOpen(true);
-                      setIsEditOpen(false);
-                    }}
-                    disabled={deletePipelineMutation.isPending}
-                    className="text-xs font-bold text-[#DC2626] hover:bg-[#DC2626]/10 px-3 h-9 rounded-[6px] border border-transparent transition-colors focus:outline-none disabled:opacity-30"
-                  >
-                    Delete Pipeline
-                  </button>
-
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="secondary"
-                      onClick={() => setIsEditOpen(false)}
-                      type="button"
-                      className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px]"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      disabled={updatePipelineMutation.isPending}
-                      className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
-                    >
-                      {updatePipelineMutation.isPending ? "Updating..." : "Save Settings"}
-                    </Button>
-                  </div>
-                </div>
-              </form>
-
-              {/* Right Column: Guidance Panel */}
-              <div className="p-6 bg-[#FAFAFA] flex flex-col justify-between select-none">
-                <div className="space-y-4">
-                  <h4 className="text-[11px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5 border-b border-[#E5E5E5] pb-2">
-                    <Sparkles className="h-4 w-4 text-[#2563EB]" /> Smart Pipeline Settings
-                  </h4>
-
-                  <div className="space-y-3.5 text-xs text-[#666666] leading-relaxed font-sans">
-                    <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">🔁 Re-order and Re-sequence</span>
-                      <p className="mt-1">
-                        Click the **↑ (Up)** and **↓ (Down)** arrows to custom re-sequence stages. This dictates the columns structure dynamically without breaking legacy active deal maps.
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">💡 Smart Filters Concept</span>
-                      <p className="mt-1">
-                        Dynamically maps incoming contact records matching custom parameters (e.g. dropdown properties). AI receptionist outcomes push deals dynamically to these stages as classifications occur!
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">🛡️ Safe Deletion Mappings</span>
-                      <p className="mt-1">
-                        Deleting this pipeline automatically maps legacy deals back to baseline default stages. Zero database orphans or lost revenue opportunities!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 border-t border-[#E5E5E5] pt-3 text-[10px] text-[#999999] leading-snug font-medium">
-                  💡 Tip: Maintain structured steps in your stages mapping so voice receptionists classify calls with 100% intent precision.
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+        <PipelineSettingsModal
+          pipeline={activePipeline}
+          customFieldDefs={customFieldDefs}
+          onClose={() => setIsEditOpen(false)}
+          onSaved={() => {
+            setIsEditOpen(false);
+            refetchPipelines();
+            refetchContacts();
+            refetchDeals();
+          }}
+          onDeleted={() => {
+            setIsEditOpen(false);
+            refetchPipelines().then((res) => {
+              const list = (res.data as any[]) || [];
+              setActivePipelineId(list.length > 0 ? list[0].id : "");
+            });
+            refetchContacts();
+            refetchDeals();
+          }}
+        />
       )}
 
       {/* EDIT OPPORTUNITY RECORD POPUP DIALOG */}
@@ -1904,10 +1296,10 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                 <button
                   type="button"
                   onClick={() => {
+                    // Pipeline delete now lives inside PipelineSettingsModal, so this
+                    // confirmation only handles deal deletion.
                     if (deleteConfirmType === "deal") {
                       deleteDealMutation.mutate(deleteConfirmId);
-                    } else {
-                      deletePipelineMutation.mutate(deleteConfirmId);
                     }
                     setDeleteConfirmOpen(false);
                   }}
