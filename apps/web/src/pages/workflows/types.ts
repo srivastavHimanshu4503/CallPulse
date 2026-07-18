@@ -51,6 +51,9 @@ export interface BlockNode {
     then: BlockNode[];
     else: BlockNode[];
   };
+  /** Canvas position override — set once the user drags the node. Purely
+   *  presentational; the executor ignores it. */
+  ui?: { x: number; y: number };
 }
 
 // ─────────────────────────── Whole workflow ───────────────────────────

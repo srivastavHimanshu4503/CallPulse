@@ -18,9 +18,17 @@ import {
   Shield,
   Trash2,
   Plus,
+  Crown,
+  Zap,
   Sparkles,
 } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../../lib/axios.js";
+import { useEntitlements } from "../../hooks/useEntitlements.js";
+import { useRazorpayCheckout } from "../../hooks/useRazorpayCheckout.js";
+import { PLAN_CREDITS, PLAN_PRICE_INR, CREDIT_PACKS, CREDIT_COSTS } from "@antigravity/types";
+import { formatTimeAgo } from "@antigravity/utils";
 
 // ─────────────────────────────────────────────────────────────
 // Types & data
@@ -33,11 +41,11 @@ type Section =
   | "security";
 
 const NAV: { key: Section; label: string; icon: React.ComponentType<{ className?: string }>; hint: string }[] = [
-  { key: "account",      label: "Account",      icon: User,       hint: "Your profile & preferences" },
-  { key: "organization", label: "Organization", icon: Building2,  hint: "Workspace details" },
-  { key: "team",         label: "Team",         icon: UsersIcon,  hint: "Invite & manage members" },
-  { key: "billing",      label: "Billing",      icon: CreditCard, hint: "Plan, invoices, payments" },
-  { key: "security",     label: "Security",     icon: Shield,     hint: "Password & 2FA" },
+  { key: "account", label: "Account", icon: User, hint: "Your profile & preferences" },
+  { key: "organization", label: "Organization", icon: Building2, hint: "Workspace details" },
+  { key: "team", label: "Team", icon: UsersIcon, hint: "Invite & manage members" },
+  { key: "billing", label: "Billing", icon: CreditCard, hint: "Plan, invoices, payments" },
+  { key: "security", label: "Security", icon: Shield, hint: "Password & 2FA" },
 ];
 
 interface TeamMember {
@@ -49,16 +57,16 @@ interface TeamMember {
   hex: string;
 }
 const TEAM_INIT: TeamMember[] = [
-  { id: "t1", name: "Yogendra Yadav",  email: "yogendra@myaifrontdesk.com",  role: "Owner",   status: "Active",  hex: "#2563EB" },
-  { id: "t2", name: "Priya Deshmukh",  email: "priya@rajesh-distributors.in", role: "Admin",   status: "Active",  hex: "#8B5CF6" },
-  { id: "t3", name: "Kabir Sharma",    email: "kabir@rajesh-distributors.in", role: "Manager", status: "Active",  hex: "#10B981" },
-  { id: "t4", name: "Neha Iyer",       email: "neha@rajesh-distributors.in",  role: "Viewer",  status: "Invited", hex: "#F97316" },
+  { id: "t1", name: "Yogendra Yadav", email: "yogendra@myaifrontdesk.com", role: "Owner", status: "Active", hex: "#2563EB" },
+  { id: "t2", name: "Priya Deshmukh", email: "priya@rajesh-distributors.in", role: "Admin", status: "Active", hex: "#8B5CF6" },
+  { id: "t3", name: "Kabir Sharma", email: "kabir@rajesh-distributors.in", role: "Manager", status: "Active", hex: "#10B981" },
+  { id: "t4", name: "Neha Iyer", email: "neha@rajesh-distributors.in", role: "Viewer", status: "Invited", hex: "#F97316" },
 ];
 const ROLE_STYLES: Record<TeamMember["role"], { bg: string; color: string }> = {
-  Owner:   { bg: "#EEF2FF", color: "#4F46E5" },
-  Admin:   { bg: "#F0FDF4", color: "#16A34A" },
+  Owner: { bg: "#EEF2FF", color: "#4F46E5" },
+  Admin: { bg: "#F0FDF4", color: "#16A34A" },
   Manager: { bg: "#FFFBEB", color: "#D97706" },
-  Viewer:  { bg: "#F1F5F9", color: "#64748B" },
+  Viewer: { bg: "#F1F5F9", color: "#64748B" },
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -125,13 +133,13 @@ function AccountPanel(): React.JSX.Element {
       <Card>
         <SectionHead title="Preferences" />
         <div className="space-y-3">
-          <Toggle checked={true} onChange={() => {}}
+          <Toggle checked={true} onChange={() => { }}
             label="Play sound on new call"
             hint="Short chime when a live call starts." />
-          <Toggle checked={false} onChange={() => {}}
+          <Toggle checked={false} onChange={() => { }}
             label="Show Hindi transliteration in transcripts"
             hint="Roman letters below Devanagari for quick scan." />
-          <Toggle checked={true} onChange={() => {}}
+          <Toggle checked={true} onChange={() => { }}
             label="Weekly performance email"
             hint="Monday morning digest with numbers that matter." />
         </div>
@@ -202,7 +210,7 @@ function OrganizationPanel(): React.JSX.Element {
           </Field>
         </div>
         <div className="mt-3">
-          <Toggle checked={true} onChange={() => {}}
+          <Toggle checked={true} onChange={() => { }}
             label="24 × 7 always available"
             hint="AI answers every call, even outside business hours." />
         </div>
@@ -350,76 +358,207 @@ function TeamPanel(): React.JSX.Element {
 
 
 function BillingPanel(): React.JSX.Element {
+  const ent = useEntitlements();
+  const { checkout, isPaying } = useRazorpayCheckout();
+  const isPro = ent.plan !== "FREE";
+  const [showPacks, setShowPacks] = React.useState(false);
+
+  const { data: ledger = [] } = useQuery({
+    queryKey: ["credit-ledger"],
+    queryFn: async () => (await api.get("/billing/credits")).data.data as any[],
+  });
+
+  const { data: payments = [] } = useQuery({
+    queryKey: ["billing-payments"],
+    queryFn: async () => (await api.get("/billing/payments")).data.data as any[],
+  });
+
+  // Plan allotment drives the usage bar; top-ups can push balance above it.
+  const allotment = PLAN_CREDITS[ent.plan] ?? PLAN_CREDITS.FREE;
+  const pct = Math.max(0, Math.min(100, Math.round((ent.creditBalance / allotment) * 100)));
+  const periodEnd = (ent as any).periodEnd
+    ? new Date((ent as any).periodEnd).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })
+    : null;
+
+  const reasonLabel: Record<string, string> = {
+    SIGNUP_GRANT: "Welcome credits",
+    PLAN_GRANT: "Pro plan credits",
+    TOPUP_PURCHASE: "Credit top-up",
+    CALL_DEDUCTION: "Call",
+    ADJUSTMENT: "Adjustment",
+  };
+
   return (
     <div className="space-y-3">
-      {/* Minimal plan card */}
+      {/* Plan card — clean: free users see FREE + credits, nothing else */}
       <Card>
         <div className="flex items-start justify-between gap-4 border-b border-line-subtle pb-4 mb-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider mb-2 bg-primary/10 text-primary">
-              <Sparkles className="h-3 w-3" />
+            <div
+              className={[
+                "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider mb-2",
+                isPro ? "bg-amber-50 text-amber-600 border border-amber-500/30" : "bg-bg-muted text-fg-secondary border border-line-default",
+              ].join(" ")}
+            >
+              {isPro ? <Crown className="h-3 w-3" /> : <Sparkles className="h-3 w-3" />}
               Current plan
             </div>
             <div className="text-[20px] font-bold tracking-tight text-fg-primary">
-              Business Pro
+              {isPro ? "Pro" : "Free plan"}
             </div>
             <p className="text-[12.5px] text-fg-secondary mt-1">
-              5,000 credits · unlimited agents · 10+ languages
+              {isPro
+                ? `${PLAN_CREDITS.PRO} credits per 30 days · all features unlocked`
+                : `${PLAN_CREDITS.FREE} welcome credits · upgrade to unlock everything`}
             </p>
           </div>
           <div className="text-right shrink-0">
-            <div className="text-[22px] font-bold text-fg-primary tabular-nums">₹4,999<span className="text-[13px] text-fg-muted font-normal">/mo</span></div>
-            <div className="text-[11px] text-fg-muted">Renews 12 Dec</div>
+            <div className="text-[22px] font-bold text-fg-primary tabular-nums">
+              {isPro ? `₹${(PLAN_PRICE_INR.PRO ?? 0).toLocaleString("en-IN")}` : "₹0"}
+              {isPro && <span className="text-[13px] text-fg-muted font-normal"> / 30 days</span>}
+            </div>
+            {isPro && periodEnd && (
+              <div className="text-[11px] font-semibold text-amber-600">Pro until {periodEnd}</div>
+            )}
           </div>
         </div>
 
         <div>
-          <div className="flex justify-between text-[12.5px] font-semibold mb-1.5">
-            <span className="text-fg-secondary">Credits</span>
-            <span className="text-fg-primary tabular-nums">4,850 / 5,000</span>
+          <div className="flex justify-between text-[12.5px] font-semibold mb-1.5 items-center">
+            <span className="text-fg-secondary flex items-center gap-1.5">
+              <Zap className="h-3.5 w-3.5 text-amber-500" />
+              Remaining credits
+            </span>
+            <span className="text-fg-primary tabular-nums text-[13px]">
+              {ent.creditBalance}
+            </span>
           </div>
           <div className="h-2 rounded-full overflow-hidden bg-line-subtle">
             <div
-              className="h-full rounded-full bg-primary"
-              style={{ width: "97%" }}
+              className={`h-full rounded-full ${pct <= 15 ? "bg-negative-500" : "bg-primary"}`}
+              style={{ width: `${pct}%` }}
             />
           </div>
           <div className="mt-3 flex gap-4 text-[11px] text-fg-muted">
-            <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle"><span className="font-semibold text-fg-secondary">Voice call:</span> 10 credits / min</div>
-            <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle"><span className="font-semibold text-fg-secondary">SMS:</span> 2 credits / msg</div>
+            <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
+              <span className="font-semibold text-fg-secondary">Voice call:</span> {CREDIT_COSTS.VOICE_PER_MINUTE} credits / min
+            </div>
+            <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
+              <span className="font-semibold text-fg-secondary">SMS:</span> {CREDIT_COSTS.SMS} credits / msg
+            </div>
           </div>
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-2">
-          <AppButton variant="primary" onClick={() => toast.info("Top up coming soon.")}>
+          {!isPro ? (
+            <AppButton variant="primary" onClick={() => checkout({ product: "pro" }, `Pro — 30 days, ${PLAN_CREDITS.PRO} credits`)}>
+              <span className="flex items-center gap-1.5">
+                <Crown className="h-3.5 w-3.5" />
+                {isPaying ? "Opening checkout…" : "Upgrade to Pro"}
+              </span>
+            </AppButton>
+          ) : (
+            <AppButton variant="secondary" onClick={() => checkout({ product: "pro" }, `Pro — 30 more days, ${PLAN_CREDITS.PRO} credits`)}>
+              Extend Pro by 30 days
+            </AppButton>
+          )}
+          <AppButton variant={isPro ? "primary" : "secondary"} onClick={() => setShowPacks((v) => !v)}>
             <span className="flex items-center gap-1.5">
               <CreditCard className="h-3.5 w-3.5" />
               Top up credits
             </span>
           </AppButton>
-          <AppButton variant="secondary" onClick={() => toast.info("Upgrade coming soon.")}>
-            Change plan
-          </AppButton>
-          <AppButton variant="ghost" onClick={() => toast.info("Invoices coming soon.")}>
-            View invoices →
-          </AppButton>
         </div>
+
+        {/* Credit packs — for when plan credits run out mid-cycle */}
+        {showPacks && (
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 animate-in fade-in slide-in-from-top-1 duration-150">
+            {CREDIT_PACKS.map((pack) => (
+              <button
+                key={pack.id}
+                type="button"
+                disabled={isPaying}
+                onClick={() => checkout({ product: "credits", packId: pack.id }, `${pack.credits} credits top-up`)}
+                className="rounded-lg border border-line-default bg-bg-subtle hover:border-brand-500/50 hover:bg-brand-50/40 p-3 text-left transition-colors disabled:opacity-50"
+              >
+                <div className="text-[16px] font-bold text-fg-primary tabular-nums">
+                  {pack.credits} <span className="text-[11px] font-semibold text-fg-muted">credits</span>
+                </div>
+                <div className="text-[12px] font-semibold text-brand-600 mt-0.5">
+                  ₹{pack.priceInr.toLocaleString("en-IN")}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </Card>
 
+      {/* Credit history */}
       <Card>
-        <SectionHead title="Payment method" />
-        <div className="flex items-center gap-3 rounded-lg border border-line-default bg-bg-subtle p-3">
-          <div className="h-8 w-12 rounded flex items-center justify-center bg-white border border-line-default text-[10.5px] font-bold text-fg-primary">
-            VISA
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] font-semibold text-fg-primary">•••• 4242</div>
-            <div className="text-[10.5px] text-fg-muted">Expires 11 / 27 · Yogendra Yadav</div>
-          </div>
-          <AppButton size="sm" variant="secondary" onClick={() => toast.info("Update card coming soon.")}>
-            Update
-          </AppButton>
-        </div>
+        <SectionHead title="Credit history" hint="Every credit added or used, newest first." />
+        {ledger.length === 0 ? (
+          <div className="py-6 text-center text-[11.5px] text-fg-muted">No credit activity yet.</div>
+        ) : (
+          <ul className="divide-y divide-line-subtle -mx-1">
+            {ledger.map((row: any) => (
+              <li key={row.id} className="px-1 py-2 flex items-center justify-between text-[12px]">
+                <div>
+                  <span className="font-semibold text-fg-primary">
+                    {reasonLabel[row.reason] ?? row.reason}
+                  </span>
+                  {row.note && <span className="text-fg-muted ml-2">{row.note}</span>}
+                </div>
+                <div className="flex items-center gap-4">
+                  <span
+                    className={`font-bold tabular-nums ${row.delta >= 0 ? "text-positive-600" : "text-negative-500"}`}
+                  >
+                    {row.delta >= 0 ? "+" : ""}
+                    {row.delta}
+                  </span>
+                  <span className="text-[10.5px] text-fg-muted w-20 text-right">
+                    {formatTimeAgo(row.createdAt)}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+
+      {/* Payments & invoices — the money audit trail */}
+      <Card>
+        <SectionHead
+          title="Payments & invoices"
+          hint="Every payment with its reference ID — use it for support or reconciliation."
+        />
+        {payments.length === 0 ? (
+          <div className="py-6 text-center text-[11.5px] text-fg-muted">No payments yet.</div>
+        ) : (
+          <ul className="divide-y divide-line-subtle -mx-1">
+            {payments.map((p: any) => (
+              <li key={p.id} className="px-1 py-2.5 flex items-center justify-between gap-3 text-[12px]">
+                <div className="min-w-0">
+                  <div className="font-semibold text-fg-primary">{p.description || p.product}</div>
+                  <div className="text-[10.5px] text-fg-muted font-mono truncate" title={p.paymentId}>
+                    {p.paymentId}
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="font-bold text-fg-primary tabular-nums">
+                    ₹{(p.amountPaise / 100).toLocaleString("en-IN")}
+                  </div>
+                  <div className="text-[10.5px] text-fg-muted">
+                    {new Date(p.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
     </div>
   );
@@ -485,16 +624,25 @@ function SecurityPanel(): React.JSX.Element {
 // ─────────────────────────────────────────────────────────────
 
 export function Settings(): React.JSX.Element {
-  const [section, setSection] = React.useState<Section>("account");
+  // Deep-linkable: /settings?tab=billing lands directly on that section
+  // (upgrade CTAs all over the app point here).
+  const [section, setSection] = React.useState<Section>(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    return (["account", "organization", "team", "billing", "security"] as Section[]).includes(
+      tab as Section,
+    )
+      ? (tab as Section)
+      : "account";
+  });
 
   const active = NAV.find((n) => n.key === section)!;
   const Content = React.useMemo(() => {
     switch (section) {
-      case "account":      return <AccountPanel />;
+      case "account": return <AccountPanel />;
       case "organization": return <OrganizationPanel />;
-      case "team":         return <TeamPanel />;
-      case "billing":      return <BillingPanel />;
-      case "security":     return <SecurityPanel />;
+      case "team": return <TeamPanel />;
+      case "billing": return <BillingPanel />;
+      case "security": return <SecurityPanel />;
     }
   }, [section]);
 

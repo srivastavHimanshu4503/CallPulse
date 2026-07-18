@@ -1,3 +1,9 @@
+export interface AgentBusinessHours {
+  is24x7?: boolean;
+  startTime?: string;
+  endTime?: string;
+}
+
 export interface SerializedAgent {
   id: string;
   name: string;
@@ -24,6 +30,10 @@ export interface SerializedAgent {
   smsTriggerCondition: string | null;
   smsTemplate: string | null;
   smsAgentReply: string | null;
+  whatsappEnabled: boolean;
+  whatsappPrompt: string | null;
+  timeZone: string;
+  businessHours: AgentBusinessHours | null;
   callsToday: number;
   avgDuration: number;
   createdAt: string;

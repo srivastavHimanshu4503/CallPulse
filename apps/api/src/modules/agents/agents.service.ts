@@ -3,8 +3,33 @@ import type { CreateAgentInput, UpdateAgentInput } from "@antigravity/validators
 import type { SerializedAgent } from "@antigravity/types";
 import type { LogFilters } from "./agents.types.js";
 import { createTestCallCredentials, type TestCallCredentials } from "../../config/livekit.js";
+import { PLAN_AGENT_LIMITS } from "@antigravity/types";
+import { ensureWhatsAppSender } from "../whatsapp/whatsapp-sender.service.js";
 
 type AIAgent = NonNullable<Awaited<ReturnType<typeof db.aIAgent.findFirst>>>;
+
+/**
+ * WhatsApp works like the SIP trunk: enabling it must actually provision the
+ * channel, not just flip a flag. Fire-and-forget — Meta review is async and
+ * a registration hiccup must never fail the agent save. The UI reads live
+ * sender status separately.
+ */
+const registerWhatsAppSenderInBackground = (agent: AIAgent, tenantId: string): void => {
+  if (!agent.whatsappEnabled || !agent.phoneNumberId) return;
+  void (async () => {
+    const [phone, tenant] = await Promise.all([
+      db.phoneNumber.findUnique({
+        where: { id: agent.phoneNumberId! },
+        select: { phoneNumber: true },
+      }),
+      db.tenant.findUnique({ where: { id: tenantId }, select: { name: true } }),
+    ]);
+    if (!phone) return;
+    await ensureWhatsAppSender(phone.phoneNumber, tenant?.name || agent.name);
+  })().catch(() => {
+    /* logged inside ensureWhatsAppSender */
+  });
+};
 
 export class AgentsService {
   /**
@@ -84,6 +109,10 @@ export class AgentsService {
       smsTriggerCondition: agent.smsTriggerCondition,
       smsTemplate: agent.smsTemplate,
       smsAgentReply: agent.smsAgentReply,
+      whatsappEnabled: agent.whatsappEnabled,
+      whatsappPrompt: agent.whatsappPrompt,
+      timeZone: agent.timeZone,
+      businessHours: (agent.businessHours as SerializedAgent["businessHours"]) ?? null,
       callsToday: callsTodayCount,
       avgDuration,
       createdAt: agent.createdAt.toISOString(),
@@ -107,6 +136,21 @@ export class AgentsService {
   }
 
   async createAgent(tenantId: string, data: CreateAgentInput): Promise<SerializedAgent> {
+    // Plan limits: FREE = 1 agent, PRO = 10 (PLAN_AGENT_LIMITS). The credit
+    // pool stays tenant-wide regardless of how many agents share it.
+    const [tenant, agentCount] = await Promise.all([
+      db.tenant.findFirst({ where: { id: tenantId }, select: { plan: true } }),
+      db.aIAgent.count({ where: { tenantId, deletedAt: null } }),
+    ]);
+    const limit = PLAN_AGENT_LIMITS[(tenant?.plan as keyof typeof PLAN_AGENT_LIMITS) ?? "FREE"] ?? 1;
+    if (agentCount >= limit) {
+      throw new Error(
+        tenant?.plan === "PRO"
+          ? `Agent limit reached (${limit} on Pro)`
+          : `Free plan includes ${limit} agent — upgrade to Pro to create up to ${PLAN_AGENT_LIMITS.PRO}`,
+      );
+    }
+
     const {
       name,
       role,
@@ -131,6 +175,10 @@ export class AgentsService {
       smsTriggerCondition,
       smsTemplate,
       smsAgentReply,
+      whatsappEnabled,
+      whatsappPrompt,
+      timeZone,
+      businessHours,
     } = data;
 
     // Create Agent within transaction to link KnowledgeBase if websiteUrl exists
@@ -161,6 +209,10 @@ export class AgentsService {
           smsTriggerCondition: smsTriggerCondition || null,
           smsTemplate: smsTemplate || null,
           smsAgentReply: smsAgentReply || null,
+          whatsappEnabled: whatsappEnabled ?? false,
+          whatsappPrompt: whatsappPrompt || null,
+          timeZone: timeZone ?? "Asia/Kolkata",
+          businessHours: businessHours ?? undefined,
           systemPrompt: `You are a helpful ${tone} AI assistant named ${name} specializing in a ${role} role. Greeting: ${greetingMessage}`,
           modelName: "gemini-2.5-flash",
         },
@@ -181,6 +233,7 @@ export class AgentsService {
       return newAgent;
     });
 
+    registerWhatsAppSenderInBackground(agent, tenantId);
     return this.serializeAgent(agent, tenantId);
   }
 
@@ -259,6 +312,29 @@ export class AgentsService {
       throw new Error("Agent not found or unauthorized");
     }
 
+    // Only AGENT_LINE numbers may be attached — the business contact number
+    // can never become an agent line.
+    if (data.phoneNumberId) {
+      const num = await db.phoneNumber.findFirst({
+        where: { id: data.phoneNumberId, tenantId },
+        select: { kind: true },
+      });
+      if (!num) throw new Error("Phone number not found");
+      if (num.kind !== "AGENT_LINE") {
+        throw new Error("Your business contact number can't be used as an agent line");
+      }
+    }
+
+    // A purchased number is permanently bound to its agent — reassigning or
+    // detaching it is not allowed.
+    if (
+      existing.phoneNumberId &&
+      data.phoneNumberId !== undefined &&
+      data.phoneNumberId !== existing.phoneNumberId
+    ) {
+      throw new Error("This agent's phone number is permanent and cannot be changed");
+    }
+
     const {
       name,
       role,
@@ -283,6 +359,10 @@ export class AgentsService {
       smsTriggerCondition,
       smsTemplate,
       smsAgentReply,
+      whatsappEnabled,
+      whatsappPrompt,
+      timeZone,
+      businessHours,
     } = data;
 
     const updated = await db.$transaction(async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
@@ -314,6 +394,10 @@ export class AgentsService {
           smsTriggerCondition: smsTriggerCondition !== undefined ? smsTriggerCondition : undefined,
           smsTemplate: smsTemplate !== undefined ? smsTemplate : undefined,
           smsAgentReply: smsAgentReply !== undefined ? smsAgentReply : undefined,
+          whatsappEnabled: whatsappEnabled !== undefined ? whatsappEnabled : undefined,
+          whatsappPrompt: whatsappPrompt !== undefined ? whatsappPrompt : undefined,
+          timeZone: timeZone !== undefined ? timeZone : undefined,
+          businessHours: businessHours !== undefined ? businessHours : undefined,
           systemPrompt: `You are a helpful ${tone || existing.tone} AI assistant named ${name || existing.name} specializing in a ${role || existing.role} role. Greeting: ${greetingMessage || existing.greetingMessage}`,
         },
       });
@@ -340,6 +424,7 @@ export class AgentsService {
       return updatedAgent;
     });
 
+    registerWhatsAppSenderInBackground(updated, tenantId);
     return this.serializeAgent(updated, tenantId);
   }
 
@@ -444,9 +529,12 @@ export class AgentsService {
   }
 
   async getTelephonyNumbers(tenantId: string) {
+    // Only real agent lines — the owner's BUSINESS contact number from
+    // signup is reachability info, not a line an AI can answer.
     return db.phoneNumber.findMany({
       where: {
         tenantId,
+        kind: "AGENT_LINE",
       },
       orderBy: {
         createdAt: "desc",

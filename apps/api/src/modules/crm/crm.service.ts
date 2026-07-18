@@ -29,37 +29,41 @@ interface EnrichmentSignals {
   channelsUsed: string[];
 }
 
+/**
+ * Contact lead score, 0-100. The dominant signal is the AI's per-call lead
+ * score (`sentimentScore`, 0-100 — how interested the caller actually
+ * sounded), blended with behavioral bonuses. The old version was a fixed
+ * checklist that saturated at 78 for every active caller; anchoring on the
+ * AI score makes it vary with real conversation quality.
+ */
 function computeScore(args: {
   createdAt: Date;
   deals: Array<{ deletedAt: Date | null; value: number | null }>;
   signals: EnrichmentSignals;
   bookings: number;
 }): number {
-  let s = 20;
+  const aiScore =
+    typeof args.signals.latestSentiment === "number" ? args.signals.latestSentiment : null;
+
+  // AI conversation quality carries 70% of the weight. With no calls yet,
+  // start from a low base — a contact nobody has spoken to isn't "warm".
+  let s = aiScore !== null ? aiScore * 0.7 : 15;
+
   const openDeals = args.deals.filter((d) => !d.deletedAt);
   if (openDeals.length > 0) {
-    s += 25;
+    s += 10;
     const totalValue = openDeals.reduce((acc, d) => acc + (d.value || 0), 0);
-    if (totalValue > 100_000) s += 10;
+    if (totalValue > 100_000) s += 5;
   }
 
   const lastCallDays = args.signals.lastCallAt
     ? (Date.now() - new Date(args.signals.lastCallAt).getTime()) / 86_400_000
     : Infinity;
-  if (lastCallDays <= 2) s += 20;
-  else if (lastCallDays <= 7) s += 12;
-  else if (lastCallDays <= 30) s += 4;
-  else if (lastCallDays !== Infinity) s -= 5;
+  if (lastCallDays <= 2) s += 10;
+  else if (lastCallDays <= 7) s += 5;
+  else if (lastCallDays > 30 && lastCallDays !== Infinity) s -= 10; // gone cold
 
-  if (typeof args.signals.latestSentiment === "number") {
-    if (args.signals.latestSentiment > 0.3) s += 8;
-    else if (args.signals.latestSentiment < -0.3) s -= 6;
-  }
-
-  if (args.bookings > 0) s += 12;
-
-  const ageDays = (Date.now() - args.createdAt.getTime()) / 86_400_000;
-  if (ageDays <= 3) s += 5;
+  if (args.bookings > 0) s += 8;
 
   return Math.max(0, Math.min(100, Math.round(s)));
 }
@@ -254,23 +258,44 @@ export class CrmService {
    * Soft-delete a contact (and its open deals). Used by both single delete
    * and bulk delete.
    */
-  async softDeleteContact(tenantId: string, id: string): Promise<void> {
+  /**
+   * Delete a contact. Its activity timeline always goes with it (an orphaned
+   * timeline is meaningless); deals are the user's choice — `deleteDeals`
+   * false keeps them on the pipeline board, still linked to the (soft-
+   * deleted) contact for display.
+   */
+  async softDeleteContact(
+    tenantId: string,
+    id: string,
+    opts: { deleteDeals?: boolean } = {},
+  ): Promise<void> {
     await db.$transaction(async (tx: any) => {
       const existing = await tx.contact.findFirst({ where: { id, tenantId, deletedAt: null } });
       if (!existing) throw new Error("Contact not found");
       await tx.contact.update({ where: { id }, data: { deletedAt: new Date() } });
-      await tx.deal.updateMany({
-        where: { contactId: id, tenantId, deletedAt: null },
-        data: { deletedAt: new Date() },
-      });
+
+      // The timeline dies with the contact.
+      await tx.activity.deleteMany({ where: { contactId: id, tenantId } });
+      await tx.note.deleteMany({ where: { contactId: id, tenantId } });
+
+      if (opts.deleteDeals) {
+        await tx.deal.updateMany({
+          where: { contactId: id, tenantId, deletedAt: null },
+          data: { deletedAt: new Date() },
+        });
+      }
     });
   }
 
-  async bulkDeleteContacts(tenantId: string, ids: string[]): Promise<{ deleted: number }> {
+  async bulkDeleteContacts(
+    tenantId: string,
+    ids: string[],
+    opts: { deleteDeals?: boolean } = {},
+  ): Promise<{ deleted: number }> {
     let deleted = 0;
     for (const id of ids) {
       try {
-        await this.softDeleteContact(tenantId, id);
+        await this.softDeleteContact(tenantId, id, opts);
         deleted += 1;
       } catch {
         // continue; we don't want a single bad id to fail the whole batch

@@ -7,7 +7,8 @@ import { formatTimeAgo, formatINR, formatActivitySummary } from "@antigravity/ut
 import { ACTIVITY_CHANNEL_BY_TYPE } from "@antigravity/types";
 import { toast } from "sonner";
 import { CreateCustomFieldModal } from "./components/CreateCustomFieldModal.js";
-import { ConfirmModal } from "../../components/common/ConfirmModal.js";
+import { DeleteContactModal } from "./components/DeleteContactModal.js";
+import { RecordingPlayer } from "../../components/common/RecordingPlayer.js";
 import { Button } from "@antigravity/ui";
 import {
   ArrowLeft,
@@ -85,8 +86,8 @@ export function ContactRecord(): React.JSX.Element {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async () => {
-      await api.delete(`/crm/contacts/${id}`);
+    mutationFn: async ({ deleteDeals }: { deleteDeals: boolean }) => {
+      await api.delete(`/crm/contacts/${id}?deleteDeals=${deleteDeals}`);
     },
     onSuccess: () => {
       toast.success("Contact deleted");
@@ -94,19 +95,6 @@ export function ContactRecord(): React.JSX.Element {
       navigate("/crm");
     },
     onError: (err: any) => toast.error(err.response?.data?.error || "Failed to delete"),
-  });
-
-  const runRulesMutation = useMutation({
-    mutationFn: async (extractedFields: Record<string, any>) => {
-      const res = await api.post("/crm/post-call-hook", { contactId: id, extractedFields });
-      return res.data.data;
-    },
-    onSuccess: (data: any) => {
-      if (data?.dealId) toast.success("Auto-created a deal from AI signals");
-      else toast.message(`No new deal (${data?.skipped || "no signals"})`);
-      refetch();
-    },
-    onError: (err: any) => toast.error(err.response?.data?.error || "Failed to run rules"),
   });
 
   if (isLoading || !contact) {
@@ -134,12 +122,6 @@ export function ContactRecord(): React.JSX.Element {
     if (activeTab === "all") return true;
     return ACTIVITY_CHANNEL_MAP[a.type] === activeTab;
   });
-
-  // Extract AI signals from the most recent call with extractedFields
-  const latestCallWithExtract = activities.find(
-    (a: any) => a.commLog?.extractedFields && Object.keys(a.commLog.extractedFields).length > 0,
-  );
-  const extracted = latestCallWithExtract?.commLog?.extractedFields || contact.extractedSummary || {};
 
   const tabDefs = [
     { id: "all" as const, label: "All activity", count: activities.length },
@@ -304,33 +286,23 @@ export function ContactRecord(): React.JSX.Element {
             latestSentiment={contact.latestSentiment}
             callCount={contact.callCount}
             lastCallAt={contact.lastCallAt}
-            extracted={extracted}
             openDealsCount={openDeals.length}
             openDealValue={openDealValue}
-            onRunRules={
-              Object.keys(extracted).length > 0
-                ? () => runRulesMutation.mutate(extracted)
-                : undefined
-            }
-            isRunningRules={runRulesMutation.isPending}
           />
           <DealsCard contact={contact} pipelines={pipelines} onCreated={refetch} />
         </div>
       </div>
 
-      <ConfirmModal
-        isOpen={showDeleteConfirm}
-        title="Delete contact"
-        message={
-          <>
-            Delete this contact? Their history stays available in call logs.
-            This action cannot be undone.
-          </>
-        }
-        confirmText="Delete contact"
-        onConfirm={() => deleteMutation.mutate()}
-        onClose={() => setShowDeleteConfirm(false)}
-      />
+      {showDeleteConfirm && (
+        <DeleteContactModal
+          contactCount={1}
+          contactName={`${contact.firstName} ${contact.lastName}`}
+          dealCount={openDeals.length}
+          isDeleting={deleteMutation.isPending}
+          onConfirm={(opts) => deleteMutation.mutate(opts)}
+          onClose={() => setShowDeleteConfirm(false)}
+        />
+      )}
     </PageWrapper>
   );
 }
@@ -741,23 +713,16 @@ function AIInsightsCard({
   latestSentiment,
   callCount,
   lastCallAt,
-  extracted,
   openDealsCount,
   openDealValue,
-  onRunRules,
-  isRunningRules,
 }: {
   score: any;
   latestSentiment: number | null;
   callCount: number;
   lastCallAt: string | null;
-  extracted: Record<string, any>;
   openDealsCount: number;
   openDealValue: number;
-  onRunRules?: () => void;
-  isRunningRules?: boolean;
 }): React.JSX.Element {
-  const extractedEntries = Object.entries(extracted || {}).slice(0, 6);
   return (
     <Card padded>
       <SectionHead
@@ -1081,8 +1046,8 @@ function ActivityRow({ activity: a }: { activity: any }): React.JSX.Element {
             </div>
           )}
 
-          {a.commLog.recordingUrl && (
-            <audio src={a.commLog.recordingUrl} controls className="w-full h-8" />
+          {a.commLog.recordingUrl && a.commLogId && (
+            <RecordingPlayer logId={a.commLogId} fallbackDuration={a.commLog.duration} />
           )}
 
           <div className="flex items-center gap-4">

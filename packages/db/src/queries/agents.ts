@@ -88,6 +88,8 @@ export const getAgentById = async (agentId: string): Promise<AgentContext | null
       tenantId: agent.tenantId,
       phoneNumber: "test-call",
       label: "In-app test call",
+      kind: "AGENT_LINE" as const,
+      twilioSid: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

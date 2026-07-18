@@ -15,34 +15,11 @@ import {
   Clock,
   MessageSquare,
   Workflow,
-  MessageCircle,
+  Gift,
+  Sparkles,
+  X,
 } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
-
-// ─────────────────────────────────────────────────────────────
-// Demo data — replace with real endpoints as they land.
-// Chosen to reflect a real Indian SMB (salon / clinic / real-estate)
-// so numbers, names and languages feel authentic in review.
-// ─────────────────────────────────────────────────────────────
-
-const RECENT_CALLS = [
-  { id: "c1", name: "Amit Sharma",     phone: "+91 98765 43210", agent: "Priya", lang: "Hindi",     duration: "3m 42s", outcome: "Booked",     time: "2m ago",  sentiment: "positive", color: "bg-blue-500" },
-  { id: "c2", name: "Meera Iyer",      phone: "+91 90000 12345", agent: "Priya", lang: "Tamil",     duration: "1m 58s", outcome: "Hot lead",   time: "12m ago", sentiment: "positive", color: "bg-emerald-500" },
-  { id: "c3", name: "Ravi Patel",      phone: "+91 99000 54321", agent: "Kabir", lang: "Gujarati",  duration: "4m 12s", outcome: "Booked",     time: "24m ago", sentiment: "positive", color: "bg-orange-500" },
-  { id: "c4", name: "Sneha Deshmukh",  phone: "+91 98111 22222", agent: "Priya", lang: "Marathi",   duration: "2m 30s", outcome: "Follow-up",  time: "48m ago", sentiment: "neutral" , color: "bg-violet-500" },
-  { id: "c5", name: "Rohit Verma",     phone: "+91 91234 56789", agent: "Kabir", lang: "Hindi",     duration: "5m 08s", outcome: "Booked",     time: "1h ago",  sentiment: "positive", color: "bg-rose-500" },
-  { id: "c6", name: "Anjali Gupta",    phone: "+91 98888 77777", agent: "Neha",  lang: "English",   duration: "1m 15s", outcome: "Hot lead",   time: "1h 15m ago", sentiment: "positive", color: "bg-blue-500" },
-  { id: "c7", name: "Vikram Singh",    phone: "+91 99999 88888", agent: "Kabir", lang: "Hindi",     duration: "4m 20s", outcome: "Follow-up",  time: "2h ago", sentiment: "neutral" , color: "bg-emerald-500" },
-  { id: "c8", name: "Pooja Reddy",     phone: "+91 97777 66666", agent: "Priya", lang: "Telugu",    duration: "2m 45s", outcome: "Booked",     time: "2h 30m ago", sentiment: "positive", color: "bg-orange-500" },
-] as const;
-
-const TOP_AGENTS = [
-  { name: "Priya",  role: "Front desk", calls: 128, minutes: 342, rating: 4.9, color: "bg-blue-600" },
-  { name: "Kabir",  role: "Bookings",   calls: 87,  minutes: 268, rating: 4.7, color: "bg-indigo-500" },
-  { name: "Neha",   role: "Support",    calls: 42,  minutes: 118, rating: 4.6, color: "bg-emerald-500" },
-];
-
-const WEEK_CALLS = [42, 58, 71, 63, 89, 34, 27];
 
 // ─────────────────────────────────────────────────────────────
 // Local primitives
@@ -70,7 +47,7 @@ const KPI_TONES: Record<KpiProps["tone"], { icon: string; deltaUp: string }> = {
   accent:    { icon: "bg-accent-100 text-accent-700 ring-accent-500/20",      deltaUp: "text-accent-700" },
 };
 
-const Kpi: React.FC<KpiProps> = ({ label, value, delta, hint, icon: Icon, tone, onClick }) => {
+const Kpi: React.FC<KpiProps> = ({ label, value, delta, hint, icon: Icon, tone = "brand", onClick }) => {
   const t = KPI_TONES[tone];
   return (
     <button
@@ -80,9 +57,9 @@ const Kpi: React.FC<KpiProps> = ({ label, value, delta, hint, icon: Icon, tone, 
     >
       <div className="flex items-start justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">{label}</span>
-        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1 ${t.icon}`}>
+        {Icon && <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1 ${t.icon}`}>
           <Icon className="h-3.5 w-3.5" />
-        </span>
+        </span>}
       </div>
       <div className="mt-3 flex items-baseline gap-2">
         <span className="text-[22px] font-semibold text-fg-primary tracking-tight leading-none">{value}</span>
@@ -142,9 +119,14 @@ const Avatar: React.FC<{ name: string; colorClass?: string; size?: number }> = (
 
 function WeekBars({ data }: { data: number[] }): React.JSX.Element {
   const max = Math.max(...data, 1);
-  const labels = ["M", "T", "W", "T", "F", "S", "S"];
+  // Rolling last-7-days window ending today — label each bar by its real day.
+  const labels = data.map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (data.length - 1 - i));
+    return d.toLocaleDateString("en-US", { weekday: "narrow" });
+  });
   return (
-    <div className="flex items-end gap-2 h-28">
+    <div className="flex items-end gap-2 h-full min-h-[10rem]">
       {data.map((v, i) => {
         const h = Math.max(8, (v / max) * 100);
         const isPeak = v === max;
@@ -183,55 +165,89 @@ export function Dashboard(): React.JSX.Element {
   const user = useAuthStore((s) => s.user);
   const tenant = useAuthStore((s) => s.tenant);
 
-  const { data: stats } = useQuery({
-    queryKey: ["dashboard-stats"],
-    queryFn: async () => (await api.get("/dashboard/stats")).data.data,
+  // Restore API Queries
+  const { data: statsData } = useQuery({ 
+    queryKey: ["dashboard", "stats"], 
+    queryFn: () => api.get("/dashboard/stats").then(r => r.data.data) 
+  });
+  const { data: recentCallsData } = useQuery({ 
+    queryKey: ["dashboard", "recent-calls"], 
+    queryFn: () => api.get("/dashboard/recent-calls").then(r => r.data.data) 
+  });
+  const { data: topAgentsData } = useQuery({ 
+    queryKey: ["dashboard", "top-agents"], 
+    queryFn: () => api.get("/dashboard/top-agents").then(r => r.data.data) 
+  });
+  const { data: weekCallsData } = useQuery({ 
+    queryKey: ["dashboard", "week-calls"], 
+    queryFn: () => api.get("/dashboard/week-calls").then(r => r.data.data) 
+  });
+  const { data: activeWorkflowsData } = useQuery({ 
+    queryKey: ["dashboard", "active-workflows"], 
+    queryFn: () => api.get("/dashboard/active-workflows").then(r => r.data.data) 
+  });
+  const { data: agentsData } = useQuery({ 
+    queryKey: ["agents"], 
+    queryFn: () => api.get("/agents").then(r => r.data.data) 
   });
 
-  const { data: agents = [] } = useQuery({
-    queryKey: ["dashboard-agents"],
-    queryFn: async () => (await api.get("/agents")).data.data as any[],
-  });
+  const stats = statsData || {
+    callsHandledToday: 0,
+    totalContacts: 0,
+    openDeals: 0,
+    dealsPipelineValue: 0,
+  };
+  const recentCalls = recentCallsData || [];
+  const topAgents = topAgentsData || [];
+  const weekCalls = weekCallsData || [0, 0, 0, 0, 0, 0, 0];
+  const activeWorkflows = activeWorkflowsData || [];
+  const agents = agentsData || [];
 
   const firstName = (user?.name || "there").split(" ")[0];
-  const activeAgentCount = agents.filter((a: any) => a.isActive).length || TOP_AGENTS.length;
+  const activeAgentCount = agents.filter((a: any) => a.isActive).length || 0;
 
-  const kpis: KpiProps[] = [
+  // Peak day + average call length, derived from live data.
+  const peakIdx = weekCalls.indexOf(Math.max(...weekCalls));
+  const peakDate = new Date();
+  peakDate.setDate(peakDate.getDate() - (weekCalls.length - 1 - Math.max(0, peakIdx)));
+  const peakDay =
+    Math.max(...weekCalls) > 0
+      ? `${peakDate.toLocaleDateString("en-US", { weekday: "short" })} · ${Math.max(...weekCalls)}`
+      : "—";
+  const avgSec = stats?.avgCallDurationSec || 0;
+  const avgCall = avgSec > 0 ? `${Math.floor(avgSec / 60)}:${String(avgSec % 60).padStart(2, "0")}` : "—";
+
+  const kpis = [
     {
       label: "Calls today",
-      value: stats?.callsHandledToday ?? 47,
-      delta: { pct: 18, direction: "up" },
-      hint: "AI answered · 0 missed",
+      value: String(stats?.callsHandledToday || 0),
+      delta: stats?.callsHandledTodayDelta,
+      hint: "vs yesterday",
       icon: PhoneCall,
-      tone: "positive",
-      onClick: () => navigate("/analytics"),
+      tone: "positive" as const,
     },
     {
-      label: "Leads captured",
-      value: stats?.totalContacts ?? 214,
-      delta: { pct: 12, direction: "up" },
-      hint: "8 hot this week",
+      label: "Active leads",
+      value: String(stats?.openDeals || 0),
+      delta: stats?.dealsPipelineValueDelta,
+      hint: `${formatINR(stats?.dealsPipelineValue || 0)} in pipeline`,
       icon: Users,
-      tone: "brand",
-      onClick: () => navigate("/crm"),
+      tone: "brand" as const,
     },
     {
-      label: "SMS Sent",
-      value: "1,250",
-      delta: { pct: 24, direction: "up" },
-      hint: "Automated via AI",
+      label: "Appointments",
+      value: String(stats?.appointments || 0),
+      delta: stats?.appointmentsDelta,
+      hint: "booked this week",
       icon: MessageSquare,
-      tone: "attention",
-      onClick: () => navigate("/crm"),
+      tone: "attention" as const,
     },
     {
-      label: "Pipeline value",
-      value: stats ? formatINR(stats.dealsPipelineValue || 425000) : formatINR(425000),
-      delta: { pct: 9, direction: "up" },
-      hint: `${stats?.openDeals ?? 12} open deals`,
+      label: "Avg. Success",
+      value: `${stats?.successRate || 0}%`,
+      hint: "calls handled well by AI",
       icon: TrendingUp,
-      tone: "accent",
-      onClick: () => navigate("/crm"),
+      tone: "accent" as const,
     },
   ];
 
@@ -286,8 +302,8 @@ export function Dashboard(): React.JSX.Element {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 flex-1 min-h-0">
         {/* ── LEFT COL: chart + recent calls ── */}
         <div className="lg:col-span-2 flex flex-col gap-3 min-h-0">
-          {/* Weekly volume */}
-          <Card>
+          {/* Weekly volume — absorbs all spare column height */}
+          <Card className="flex-1 min-h-0 flex flex-col">
             <SectionHead
               title="This week"
               hint="Calls answered by your AI receptionists"
@@ -301,29 +317,29 @@ export function Dashboard(): React.JSX.Element {
                 </button>
               }
             />
-            <div className="grid grid-cols-[1fr_auto] gap-6 items-end">
-              <WeekBars data={WEEK_CALLS} />
+            <div className="grid grid-cols-[1fr_auto] gap-6 items-end flex-1 min-h-0">
+              <WeekBars data={weekCalls} />
               <div className="grid grid-cols-3 gap-4 min-w-[260px]">
                 <div>
                   <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Total</div>
                   <div className="text-[18px] font-semibold text-fg-primary mt-0.5">
-                    {WEEK_CALLS.reduce((a, b) => a + b, 0)}
+                    {weekCalls.reduce((a: number, b: number) => a + b, 0)}
                   </div>
                 </div>
                 <div>
                   <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Peak day</div>
-                  <div className="text-[18px] font-semibold text-brand-600 mt-0.5">Fri · 89</div>
+                  <div className="text-[18px] font-semibold text-brand-600 mt-0.5">{peakDay}</div>
                 </div>
                 <div>
                   <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Avg call</div>
-                  <div className="text-[18px] font-semibold text-fg-primary mt-0.5">2:14</div>
+                  <div className="text-[18px] font-semibold text-fg-primary mt-0.5">{avgCall}</div>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Recent conversations table */}
-          <Card className="flex-1 min-h-[400px] flex flex-col">
+          {/* Recent conversations table — natural height, no bottom gap */}
+          <Card className="shrink-0 flex flex-col">
             <SectionHead
               title="Recent conversations"
               hint="Live · updates every 30 seconds"
@@ -337,7 +353,7 @@ export function Dashboard(): React.JSX.Element {
                 </button>
               }
             />
-            <div className="flex-1 min-h-0 overflow-y-auto -mx-1">
+            <div className="flex-1 min-h-0 overflow-hidden -mx-1">
               <table className="w-full text-[12px]">
                 <thead>
                   <tr className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold border-b border-line-subtle">
@@ -349,7 +365,14 @@ export function Dashboard(): React.JSX.Element {
                   </tr>
                 </thead>
                 <tbody>
-                  {RECENT_CALLS.map((c) => (
+                  {recentCalls.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-2 py-8 text-center text-fg-muted text-[11px]">
+                        No recent conversations found.
+                      </td>
+                    </tr>
+                  ) : (
+                    recentCalls.slice(0, 5).map((c: any) => (
                     <tr key={c.id} className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors">
                       <td className="px-2 py-2.5">
                         <div className="flex items-center gap-2.5 min-w-0">
@@ -358,7 +381,15 @@ export function Dashboard(): React.JSX.Element {
                             <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">
                               {c.name}
                             </div>
-                            <div className="text-[10.5px] text-fg-muted truncate">{c.phone} · {c.time}</div>
+                            <div className="text-[10.5px] text-fg-muted truncate">
+                              {c.phone} · {new Intl.DateTimeFormat('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              }).format(new Date(c.time))}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -387,31 +418,24 @@ export function Dashboard(): React.JSX.Element {
                         </span>
                       </td>
                     </tr>
-                  ))}
+                    ))
+                  )}
                 </tbody>
               </table>
-            </div>
-            <div className="border-t border-line-subtle pt-3 pb-1 mt-auto shrink-0 flex justify-center">
-              <button
-                type="button"
-                className="text-[11.5px] font-semibold text-fg-secondary hover:text-fg-primary transition-colors py-1.5 px-4 rounded-md hover:bg-bg-muted"
-              >
-                Load more calls...
-              </button>
             </div>
           </Card>
         </div>
 
         {/* ── RIGHT COL: Workflows, Chat Widget, AI Banner ── */}
-        <div className="flex flex-col gap-3 min-h-0 h-full pb-4">
+        <div className="flex flex-col gap-3 min-h-0 h-full">
           {/* Active Agents */}
-          <Card>
+          <Card className="flex-[3] min-h-0 flex flex-col overflow-hidden">
             <SectionHead
               title="Active agents"
               action={
                 <button
                   type="button"
-                  onClick={() => navigate("/agents")}
+                  onClick={() => navigate(agents.length > 0 ? `/agents/${agents[0].id}/logs` : "/crm")}
                   className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1"
                 >
                   Manage <ArrowRight className="h-3 w-3" />
@@ -419,7 +443,10 @@ export function Dashboard(): React.JSX.Element {
               }
             />
             <ul className="space-y-2.5">
-              {TOP_AGENTS.map((a, i) => (
+              {topAgents.length === 0 ? (
+                <div className="text-[11px] text-fg-muted py-2">No agent data yet.</div>
+              ) : (
+                topAgents.slice(0, 2).map((a: any, i: number) => (
                 <li key={a.name} className="flex items-center gap-3">
                   <div className="relative">
                     <Avatar name={a.name} colorClass={a.color} size={34} />
@@ -439,7 +466,7 @@ export function Dashboard(): React.JSX.Element {
                       <div className="flex-1 h-1.5 bg-bg-muted rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full ${a.color}`}
-                          style={{ width: `${(a.calls / TOP_AGENTS[0]!.calls) * 100}%` }}
+                          style={{ width: `${(a.calls / Math.max(1, topAgents[0]?.calls || 1)) * 100}%` }}
                         />
                       </div>
                       <span className="text-[10px] font-semibold text-fg-secondary tabular-nums shrink-0">
@@ -451,12 +478,13 @@ export function Dashboard(): React.JSX.Element {
                     </div>
                   </div>
                 </li>
-              ))}
+                ))
+              )}
             </ul>
           </Card>
 
           {/* Active Workflows */}
-          <Card>
+          <Card className="flex-[3] min-h-0 flex flex-col overflow-hidden">
             <SectionHead
               title="Active Workflows"
               hint="Automations running"
@@ -471,54 +499,158 @@ export function Dashboard(): React.JSX.Element {
               }
             />
             <ul className="space-y-4 mt-2">
-              <li className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                    <Workflow className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <div className="text-[12.5px] font-semibold text-fg-primary">Missed Call Follow-up</div>
-                    <div className="text-[10.5px] text-fg-muted mt-0.5">342 triggered this week</div>
-                  </div>
-                </div>
-                <span className="inline-flex h-2 w-2 rounded-full bg-positive-500"></span>
-              </li>
-              <li className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="h-8 w-8 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center shrink-0">
-                    <MessageCircle className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <div className="text-[12.5px] font-semibold text-fg-primary">WhatsApp Outreach</div>
-                    <div className="text-[10.5px] text-fg-muted mt-0.5">128 active campaigns</div>
-                  </div>
-                </div>
-                <span className="inline-flex h-2 w-2 rounded-full bg-positive-500"></span>
-              </li>
+              {activeWorkflows.length === 0 ? (
+                <div className="text-[11px] text-fg-muted py-2">No active workflows yet.</div>
+              ) : (
+                activeWorkflows.slice(0, 2).map((w: any) => (
+                  <li key={w.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <Workflow className="h-4 w-4" />
+                      </span>
+                      <div>
+                        <div className="text-[12.5px] font-semibold text-fg-primary">{w.name}</div>
+                        <div className="text-[10.5px] text-fg-muted mt-0.5">{w.runsThisWeek} triggered this week</div>
+                      </div>
+                    </div>
+                    <span className="inline-flex h-2 w-2 rounded-full bg-positive-500"></span>
+                  </li>
+                ))
+              )}
             </ul>
           </Card>
 
-          {/* Chat Widget feature */}
-          <Card>
-            <SectionHead title="Chat Widget" hint="Website integration" />
-            <div className="mt-1 flex items-center gap-3">
-              <div className="flex-1">
-                <div className="text-[12px] font-semibold text-fg-primary">Capture leads 24/7</div>
-                <div className="text-[11px] text-fg-muted mt-1 leading-relaxed">
-                  Embed our AI assistant on your website to instantly chat with visitors.
-                </div>
+          {/* Chat Widget */}
+          <Card className="!p-3 flex-[2] min-h-0 flex flex-col justify-center overflow-hidden">
+            <div className="flex items-center gap-2.5">
+              <span className="h-8 w-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                <MessageSquare className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">Chat Widget</div>
+                <div className="text-[10.5px] text-fg-muted leading-tight">Your AI, on your website</div>
               </div>
               <button
                 type="button"
-                className="h-8 px-3 text-[11px] font-semibold rounded-md bg-bg-muted hover:bg-line-default text-fg-primary transition-colors"
+                onClick={() => navigate("/widget")}
+                className="h-7 px-3 text-[11px] font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors shrink-0"
               >
                 Setup
               </button>
             </div>
+            <ul className="mt-2 space-y-1 border-t border-line-subtle pt-2">
+              <li className="flex items-start gap-1.5 text-[10.5px] text-fg-secondary leading-snug">
+                <span className="mt-[5px] h-1 w-1 rounded-full bg-indigo-400 shrink-0" />
+                Visitors chat with the same AI that answers your calls
+              </li>
+              <li className="flex items-start gap-1.5 text-[10.5px] text-fg-secondary leading-snug">
+                <span className="mt-[5px] h-1 w-1 rounded-full bg-indigo-400 shrink-0" />
+                Every conversation lands in your CRM as a lead — automatically
+              </li>
+            </ul>
+          </Card>
+
+          {/* WhatsApp Agent */}
+          <Card className="!p-3 flex-[2] min-h-0 flex flex-col justify-center overflow-hidden border-emerald-500/25 bg-emerald-50/40">
+            <div className="flex items-center gap-2.5">
+              <span className="h-8 w-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                <MessageSquare className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">WhatsApp Agent</div>
+                <div className="text-[10.5px] text-fg-muted leading-tight">Same AI brain, on WhatsApp</div>
+              </div>
+              <span className="rounded-full bg-emerald-100 border border-emerald-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-700 shrink-0">
+                Coming soon
+              </span>
+            </div>
+            <ul className="mt-2 space-y-1 border-t border-emerald-500/15 pt-2">
+              <li className="flex items-start gap-1.5 text-[10.5px] text-fg-secondary leading-snug">
+                <span className="mt-[5px] h-1 w-1 rounded-full bg-emerald-500 shrink-0" />
+                Connect your WhatsApp Business number in one click
+              </li>
+              <li className="flex items-start gap-1.5 text-[10.5px] text-fg-secondary leading-snug">
+                <span className="mt-[5px] h-1 w-1 rounded-full bg-emerald-500 shrink-0" />
+                Capture leads and reply to customers 24×7
+              </li>
+            </ul>
           </Card>
         </div>
       </div>
+      <OfferPopup navigate={navigate} />
     </PageWrapper>
+  );
+}
+
+/**
+ * Bottom-right offer popup — slides in when the dashboard loads, once per
+ * browser session (sessionStorage), dismissible with the close icon.
+ */
+function OfferPopup({ navigate }: { navigate: (to: string) => void }): React.JSX.Element | null {
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    if (sessionStorage.getItem("offer-popup-dismissed")) return;
+    const t = setTimeout(() => setVisible(true), 1200); // let the page settle first
+    return () => clearTimeout(t);
+  }, []);
+
+  const dismiss = () => {
+    sessionStorage.setItem("offer-popup-dismissed", "1");
+    setVisible(false);
+  };
+
+  if (!visible) return null;
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 w-[400px] animate-in slide-in-from-bottom-4 fade-in duration-300">
+      <div className="relative overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-brand-500 via-brand-600 to-brand-800 p-5 text-white shadow-[0_16px_48px_-12px_rgba(37,99,235,0.55)] border border-brand-400/30">
+        <div className="absolute top-0 right-0 p-2 opacity-15 pointer-events-none">
+          <Gift className="h-32 w-32 transform rotate-12" />
+        </div>
+
+        <button
+          type="button"
+          onClick={dismiss}
+          aria-label="Dismiss offer"
+          className="absolute top-2.5 right-2.5 z-20 h-6 w-6 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center transition-colors"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+
+        <div className="relative z-10 flex flex-col gap-2.5">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider backdrop-blur-md border border-white/10 mb-1.5">
+              <Sparkles className="h-2.5 w-2.5 text-amber-300" />
+              Limited Time Offer
+            </div>
+            <h3 className="text-[20px] font-extrabold leading-tight text-white drop-shadow-sm">
+              Get 30% Off Pro
+            </h3>
+            <p className="text-[12px] text-white/75 mt-1.5 leading-relaxed">
+              Unlock analytics, workflows, contact timelines and dedicated numbers.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[11px] text-white/60 line-through">₹2,999</span>
+              <span className="text-[18px] font-bold text-amber-300">₹2,099/mo</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                dismiss();
+                navigate("/settings?tab=billing");
+              }}
+              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg bg-white text-brand-700 text-[12.5px] font-bold transition-all hover:bg-brand-50 hover:scale-[1.02] shadow-sm"
+            >
+              Claim discount
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

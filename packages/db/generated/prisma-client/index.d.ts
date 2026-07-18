@@ -19,6 +19,21 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Tenant = $Result.DefaultSelection<Prisma.$TenantPayload>
 /**
+ * Model CreditLedger
+ * 
+ */
+export type CreditLedger = $Result.DefaultSelection<Prisma.$CreditLedgerPayload>
+/**
+ * Model PaymentRecord
+ * 
+ */
+export type PaymentRecord = $Result.DefaultSelection<Prisma.$PaymentRecordPayload>
+/**
+ * Model BillingSubscription
+ * 
+ */
+export type BillingSubscription = $Result.DefaultSelection<Prisma.$BillingSubscriptionPayload>
+/**
  * Model User
  * 
  */
@@ -104,6 +119,11 @@ export type KnowledgeBase = $Result.DefaultSelection<Prisma.$KnowledgeBasePayloa
  */
 export type CommunicationLog = $Result.DefaultSelection<Prisma.$CommunicationLogPayload>
 /**
+ * Model ChatSession
+ * 
+ */
+export type ChatSession = $Result.DefaultSelection<Prisma.$ChatSessionPayload>
+/**
  * Model Activity
  * 
  */
@@ -135,6 +155,26 @@ export const TeamSize: {
 };
 
 export type TeamSize = (typeof TeamSize)[keyof typeof TeamSize]
+
+
+export const CreditReason: {
+  SIGNUP_GRANT: 'SIGNUP_GRANT',
+  PLAN_GRANT: 'PLAN_GRANT',
+  TOPUP_PURCHASE: 'TOPUP_PURCHASE',
+  CALL_DEDUCTION: 'CALL_DEDUCTION',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
+export type CreditReason = (typeof CreditReason)[keyof typeof CreditReason]
+
+
+export const SubscriptionStatus: {
+  ACTIVE: 'ACTIVE',
+  PAST_DUE: 'PAST_DUE',
+  CANCELED: 'CANCELED'
+};
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
 
 
 export const CustomFieldType: {
@@ -193,6 +233,14 @@ export const DealHealth: {
 export type DealHealth = (typeof DealHealth)[keyof typeof DealHealth]
 
 
+export const PhoneNumberKind: {
+  BUSINESS: 'BUSINESS',
+  AGENT_LINE: 'AGENT_LINE'
+};
+
+export type PhoneNumberKind = (typeof PhoneNumberKind)[keyof typeof PhoneNumberKind]
+
+
 export const CommType: {
   CALL: 'CALL',
   SMS: 'SMS',
@@ -237,6 +285,14 @@ export const ExtractionStatus: {
 export type ExtractionStatus = (typeof ExtractionStatus)[keyof typeof ExtractionStatus]
 
 
+export const ChatSessionStatus: {
+  OPEN: 'OPEN',
+  PROCESSED: 'PROCESSED'
+};
+
+export type ChatSessionStatus = (typeof ChatSessionStatus)[keyof typeof ChatSessionStatus]
+
+
 export const ActivityType: {
   CALL_INBOUND: 'CALL_INBOUND',
   CALL_OUTBOUND: 'CALL_OUTBOUND',
@@ -265,6 +321,14 @@ export type TeamSize = $Enums.TeamSize
 
 export const TeamSize: typeof $Enums.TeamSize
 
+export type CreditReason = $Enums.CreditReason
+
+export const CreditReason: typeof $Enums.CreditReason
+
+export type SubscriptionStatus = $Enums.SubscriptionStatus
+
+export const SubscriptionStatus: typeof $Enums.SubscriptionStatus
+
 export type CustomFieldType = $Enums.CustomFieldType
 
 export const CustomFieldType: typeof $Enums.CustomFieldType
@@ -289,6 +353,10 @@ export type DealHealth = $Enums.DealHealth
 
 export const DealHealth: typeof $Enums.DealHealth
 
+export type PhoneNumberKind = $Enums.PhoneNumberKind
+
+export const PhoneNumberKind: typeof $Enums.PhoneNumberKind
+
 export type CommType = $Enums.CommType
 
 export const CommType: typeof $Enums.CommType
@@ -304,6 +372,10 @@ export const CommStatus: typeof $Enums.CommStatus
 export type ExtractionStatus = $Enums.ExtractionStatus
 
 export const ExtractionStatus: typeof $Enums.ExtractionStatus
+
+export type ChatSessionStatus = $Enums.ChatSessionStatus
+
+export const ChatSessionStatus: typeof $Enums.ChatSessionStatus
 
 export type ActivityType = $Enums.ActivityType
 
@@ -441,6 +513,36 @@ export class PrismaClient<
     * ```
     */
   get tenant(): Prisma.TenantDelegate<ExtArgs>;
+
+  /**
+   * `prisma.creditLedger`: Exposes CRUD operations for the **CreditLedger** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CreditLedgers
+    * const creditLedgers = await prisma.creditLedger.findMany()
+    * ```
+    */
+  get creditLedger(): Prisma.CreditLedgerDelegate<ExtArgs>;
+
+  /**
+   * `prisma.paymentRecord`: Exposes CRUD operations for the **PaymentRecord** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentRecords
+    * const paymentRecords = await prisma.paymentRecord.findMany()
+    * ```
+    */
+  get paymentRecord(): Prisma.PaymentRecordDelegate<ExtArgs>;
+
+  /**
+   * `prisma.billingSubscription`: Exposes CRUD operations for the **BillingSubscription** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BillingSubscriptions
+    * const billingSubscriptions = await prisma.billingSubscription.findMany()
+    * ```
+    */
+  get billingSubscription(): Prisma.BillingSubscriptionDelegate<ExtArgs>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -611,6 +713,16 @@ export class PrismaClient<
     * ```
     */
   get communicationLog(): Prisma.CommunicationLogDelegate<ExtArgs>;
+
+  /**
+   * `prisma.chatSession`: Exposes CRUD operations for the **ChatSession** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChatSessions
+    * const chatSessions = await prisma.chatSession.findMany()
+    * ```
+    */
+  get chatSession(): Prisma.ChatSessionDelegate<ExtArgs>;
 
   /**
    * `prisma.activity`: Exposes CRUD operations for the **Activity** model.
@@ -1073,6 +1185,9 @@ export namespace Prisma {
 
   export const ModelName: {
     Tenant: 'Tenant',
+    CreditLedger: 'CreditLedger',
+    PaymentRecord: 'PaymentRecord',
+    BillingSubscription: 'BillingSubscription',
     User: 'User',
     Contact: 'Contact',
     CustomFieldDefinition: 'CustomFieldDefinition',
@@ -1090,6 +1205,7 @@ export namespace Prisma {
     PhoneNumber: 'PhoneNumber',
     KnowledgeBase: 'KnowledgeBase',
     CommunicationLog: 'CommunicationLog',
+    ChatSession: 'ChatSession',
     Activity: 'Activity',
     PasswordResetOtp: 'PasswordResetOtp'
   };
@@ -1107,7 +1223,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "tenant" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "activity" | "passwordResetOtp"
+      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1178,6 +1294,216 @@ export namespace Prisma {
           count: {
             args: Prisma.TenantCountArgs<ExtArgs>
             result: $Utils.Optional<TenantCountAggregateOutputType> | number
+          }
+        }
+      }
+      CreditLedger: {
+        payload: Prisma.$CreditLedgerPayload<ExtArgs>
+        fields: Prisma.CreditLedgerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CreditLedgerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CreditLedgerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>
+          }
+          findFirst: {
+            args: Prisma.CreditLedgerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CreditLedgerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>
+          }
+          findMany: {
+            args: Prisma.CreditLedgerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>[]
+          }
+          create: {
+            args: Prisma.CreditLedgerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>
+          }
+          createMany: {
+            args: Prisma.CreditLedgerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CreditLedgerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>[]
+          }
+          delete: {
+            args: Prisma.CreditLedgerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>
+          }
+          update: {
+            args: Prisma.CreditLedgerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>
+          }
+          deleteMany: {
+            args: Prisma.CreditLedgerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CreditLedgerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CreditLedgerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CreditLedgerPayload>
+          }
+          aggregate: {
+            args: Prisma.CreditLedgerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCreditLedger>
+          }
+          groupBy: {
+            args: Prisma.CreditLedgerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CreditLedgerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CreditLedgerCountArgs<ExtArgs>
+            result: $Utils.Optional<CreditLedgerCountAggregateOutputType> | number
+          }
+        }
+      }
+      PaymentRecord: {
+        payload: Prisma.$PaymentRecordPayload<ExtArgs>
+        fields: Prisma.PaymentRecordFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentRecordFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentRecordFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentRecordFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentRecordFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentRecordFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentRecordCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentRecordCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentRecordCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentRecordDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          update: {
+            args: Prisma.PaymentRecordUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentRecordDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentRecordUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.PaymentRecordUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentRecordAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentRecord>
+          }
+          groupBy: {
+            args: Prisma.PaymentRecordGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentRecordGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentRecordCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentRecordCountAggregateOutputType> | number
+          }
+        }
+      }
+      BillingSubscription: {
+        payload: Prisma.$BillingSubscriptionPayload<ExtArgs>
+        fields: Prisma.BillingSubscriptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BillingSubscriptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BillingSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>
+          }
+          findFirst: {
+            args: Prisma.BillingSubscriptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BillingSubscriptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>
+          }
+          findMany: {
+            args: Prisma.BillingSubscriptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>[]
+          }
+          create: {
+            args: Prisma.BillingSubscriptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>
+          }
+          createMany: {
+            args: Prisma.BillingSubscriptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BillingSubscriptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>[]
+          }
+          delete: {
+            args: Prisma.BillingSubscriptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>
+          }
+          update: {
+            args: Prisma.BillingSubscriptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.BillingSubscriptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BillingSubscriptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BillingSubscriptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BillingSubscriptionPayload>
+          }
+          aggregate: {
+            args: Prisma.BillingSubscriptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBillingSubscription>
+          }
+          groupBy: {
+            args: Prisma.BillingSubscriptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BillingSubscriptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BillingSubscriptionCountArgs<ExtArgs>
+            result: $Utils.Optional<BillingSubscriptionCountAggregateOutputType> | number
           }
         }
       }
@@ -2371,6 +2697,76 @@ export namespace Prisma {
           }
         }
       }
+      ChatSession: {
+        payload: Prisma.$ChatSessionPayload<ExtArgs>
+        fields: Prisma.ChatSessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChatSessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChatSessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+          }
+          findFirst: {
+            args: Prisma.ChatSessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChatSessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+          }
+          findMany: {
+            args: Prisma.ChatSessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>[]
+          }
+          create: {
+            args: Prisma.ChatSessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+          }
+          createMany: {
+            args: Prisma.ChatSessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChatSessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>[]
+          }
+          delete: {
+            args: Prisma.ChatSessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+          }
+          update: {
+            args: Prisma.ChatSessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChatSessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChatSessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ChatSessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChatSessionPayload>
+          }
+          aggregate: {
+            args: Prisma.ChatSessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChatSession>
+          }
+          groupBy: {
+            args: Prisma.ChatSessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChatSessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChatSessionCountArgs<ExtArgs>
+            result: $Utils.Optional<ChatSessionCountAggregateOutputType> | number
+          }
+        }
+      }
       Activity: {
         payload: Prisma.$ActivityPayload<ExtArgs>
         fields: Prisma.ActivityFieldRefs
@@ -2685,10 +3081,13 @@ export namespace Prisma {
     aiAgents: number
     phoneNumbers: number
     communicationLogs: number
+    chatSessions: number
     activities: number
     notes: number
     bookings: number
     knowledgeBase: number
+    creditLedger: number
+    paymentRecords: number
   }
 
   export type TenantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2705,10 +3104,13 @@ export namespace Prisma {
     aiAgents?: boolean | TenantCountOutputTypeCountAiAgentsArgs
     phoneNumbers?: boolean | TenantCountOutputTypeCountPhoneNumbersArgs
     communicationLogs?: boolean | TenantCountOutputTypeCountCommunicationLogsArgs
+    chatSessions?: boolean | TenantCountOutputTypeCountChatSessionsArgs
     activities?: boolean | TenantCountOutputTypeCountActivitiesArgs
     notes?: boolean | TenantCountOutputTypeCountNotesArgs
     bookings?: boolean | TenantCountOutputTypeCountBookingsArgs
     knowledgeBase?: boolean | TenantCountOutputTypeCountKnowledgeBaseArgs
+    creditLedger?: boolean | TenantCountOutputTypeCountCreditLedgerArgs
+    paymentRecords?: boolean | TenantCountOutputTypeCountPaymentRecordsArgs
   }
 
   // Custom InputTypes
@@ -2816,6 +3218,13 @@ export namespace Prisma {
   /**
    * TenantCountOutputType without action
    */
+  export type TenantCountOutputTypeCountChatSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChatSessionWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
   export type TenantCountOutputTypeCountActivitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ActivityWhereInput
   }
@@ -2839,6 +3248,20 @@ export namespace Prisma {
    */
   export type TenantCountOutputTypeCountKnowledgeBaseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: KnowledgeBaseWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountCreditLedgerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CreditLedgerWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountPaymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
   }
 
 
@@ -2884,6 +3307,7 @@ export namespace Prisma {
     notes: number
     activities: number
     communicationLogs: number
+    chatSessions: number
   }
 
   export type ContactCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2893,6 +3317,7 @@ export namespace Prisma {
     notes?: boolean | ContactCountOutputTypeCountNotesArgs
     activities?: boolean | ContactCountOutputTypeCountActivitiesArgs
     communicationLogs?: boolean | ContactCountOutputTypeCountCommunicationLogsArgs
+    chatSessions?: boolean | ContactCountOutputTypeCountChatSessionsArgs
   }
 
   // Custom InputTypes
@@ -2946,6 +3371,13 @@ export namespace Prisma {
    */
   export type ContactCountOutputTypeCountCommunicationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CommunicationLogWhereInput
+  }
+
+  /**
+   * ContactCountOutputType without action
+   */
+  export type ContactCountOutputTypeCountChatSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChatSessionWhereInput
   }
 
 
@@ -3271,11 +3703,13 @@ export namespace Prisma {
   export type AIAgentCountOutputType = {
     communicationLogs: number
     knowledgeBases: number
+    chatSessions: number
   }
 
   export type AIAgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     communicationLogs?: boolean | AIAgentCountOutputTypeCountCommunicationLogsArgs
     knowledgeBases?: boolean | AIAgentCountOutputTypeCountKnowledgeBasesArgs
+    chatSessions?: boolean | AIAgentCountOutputTypeCountChatSessionsArgs
   }
 
   // Custom InputTypes
@@ -3301,6 +3735,13 @@ export namespace Prisma {
    */
   export type AIAgentCountOutputTypeCountKnowledgeBasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: KnowledgeBaseWhereInput
+  }
+
+  /**
+   * AIAgentCountOutputType without action
+   */
+  export type AIAgentCountOutputTypeCountChatSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChatSessionWhereInput
   }
 
 
@@ -3336,6 +3777,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ChatSessionCountOutputType
+   */
+
+  export type ChatSessionCountOutputType = {
+    messages: number
+  }
+
+  export type ChatSessionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | ChatSessionCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ChatSessionCountOutputType without action
+   */
+  export type ChatSessionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSessionCountOutputType
+     */
+    select?: ChatSessionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ChatSessionCountOutputType without action
+   */
+  export type ChatSessionCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommunicationLogWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -3353,10 +3825,12 @@ export namespace Prisma {
 
   export type TenantAvgAggregateOutputType = {
     onboardingStep: number | null
+    creditBalance: number | null
   }
 
   export type TenantSumAggregateOutputType = {
     onboardingStep: number | null
+    creditBalance: number | null
   }
 
   export type TenantMinAggregateOutputType = {
@@ -3371,6 +3845,7 @@ export namespace Prisma {
     monthlyRevenue: string | null
     onboardingStep: number | null
     onboardingDone: boolean | null
+    creditBalance: number | null
     deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3388,6 +3863,7 @@ export namespace Prisma {
     monthlyRevenue: string | null
     onboardingStep: number | null
     onboardingDone: boolean | null
+    creditBalance: number | null
     deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3405,6 +3881,7 @@ export namespace Prisma {
     monthlyRevenue: number
     onboardingStep: number
     onboardingDone: number
+    creditBalance: number
     deletedAt: number
     createdAt: number
     updatedAt: number
@@ -3414,10 +3891,12 @@ export namespace Prisma {
 
   export type TenantAvgAggregateInputType = {
     onboardingStep?: true
+    creditBalance?: true
   }
 
   export type TenantSumAggregateInputType = {
     onboardingStep?: true
+    creditBalance?: true
   }
 
   export type TenantMinAggregateInputType = {
@@ -3432,6 +3911,7 @@ export namespace Prisma {
     monthlyRevenue?: true
     onboardingStep?: true
     onboardingDone?: true
+    creditBalance?: true
     deletedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -3449,6 +3929,7 @@ export namespace Prisma {
     monthlyRevenue?: true
     onboardingStep?: true
     onboardingDone?: true
+    creditBalance?: true
     deletedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -3466,6 +3947,7 @@ export namespace Prisma {
     monthlyRevenue?: true
     onboardingStep?: true
     onboardingDone?: true
+    creditBalance?: true
     deletedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -3570,6 +4052,7 @@ export namespace Prisma {
     monthlyRevenue: string | null
     onboardingStep: number
     onboardingDone: boolean
+    creditBalance: number
     deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -3606,6 +4089,7 @@ export namespace Prisma {
     monthlyRevenue?: boolean
     onboardingStep?: boolean
     onboardingDone?: boolean
+    creditBalance?: boolean
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3622,10 +4106,14 @@ export namespace Prisma {
     aiAgents?: boolean | Tenant$aiAgentsArgs<ExtArgs>
     phoneNumbers?: boolean | Tenant$phoneNumbersArgs<ExtArgs>
     communicationLogs?: boolean | Tenant$communicationLogsArgs<ExtArgs>
+    chatSessions?: boolean | Tenant$chatSessionsArgs<ExtArgs>
     activities?: boolean | Tenant$activitiesArgs<ExtArgs>
     notes?: boolean | Tenant$notesArgs<ExtArgs>
     bookings?: boolean | Tenant$bookingsArgs<ExtArgs>
     knowledgeBase?: boolean | Tenant$knowledgeBaseArgs<ExtArgs>
+    creditLedger?: boolean | Tenant$creditLedgerArgs<ExtArgs>
+    billingSubscription?: boolean | Tenant$billingSubscriptionArgs<ExtArgs>
+    paymentRecords?: boolean | Tenant$paymentRecordsArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -3641,6 +4129,7 @@ export namespace Prisma {
     monthlyRevenue?: boolean
     onboardingStep?: boolean
     onboardingDone?: boolean
+    creditBalance?: boolean
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3658,6 +4147,7 @@ export namespace Prisma {
     monthlyRevenue?: boolean
     onboardingStep?: boolean
     onboardingDone?: boolean
+    creditBalance?: boolean
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3677,10 +4167,14 @@ export namespace Prisma {
     aiAgents?: boolean | Tenant$aiAgentsArgs<ExtArgs>
     phoneNumbers?: boolean | Tenant$phoneNumbersArgs<ExtArgs>
     communicationLogs?: boolean | Tenant$communicationLogsArgs<ExtArgs>
+    chatSessions?: boolean | Tenant$chatSessionsArgs<ExtArgs>
     activities?: boolean | Tenant$activitiesArgs<ExtArgs>
     notes?: boolean | Tenant$notesArgs<ExtArgs>
     bookings?: boolean | Tenant$bookingsArgs<ExtArgs>
     knowledgeBase?: boolean | Tenant$knowledgeBaseArgs<ExtArgs>
+    creditLedger?: boolean | Tenant$creditLedgerArgs<ExtArgs>
+    billingSubscription?: boolean | Tenant$billingSubscriptionArgs<ExtArgs>
+    paymentRecords?: boolean | Tenant$paymentRecordsArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3701,10 +4195,14 @@ export namespace Prisma {
       aiAgents: Prisma.$AIAgentPayload<ExtArgs>[]
       phoneNumbers: Prisma.$PhoneNumberPayload<ExtArgs>[]
       communicationLogs: Prisma.$CommunicationLogPayload<ExtArgs>[]
+      chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
       activities: Prisma.$ActivityPayload<ExtArgs>[]
       notes: Prisma.$NotePayload<ExtArgs>[]
       bookings: Prisma.$BookingPayload<ExtArgs>[]
       knowledgeBase: Prisma.$KnowledgeBasePayload<ExtArgs>[]
+      creditLedger: Prisma.$CreditLedgerPayload<ExtArgs>[]
+      billingSubscription: Prisma.$BillingSubscriptionPayload<ExtArgs> | null
+      paymentRecords: Prisma.$PaymentRecordPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3718,6 +4216,7 @@ export namespace Prisma {
       monthlyRevenue: string | null
       onboardingStep: number
       onboardingDone: boolean
+      creditBalance: number
       deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -4098,10 +4597,14 @@ export namespace Prisma {
     aiAgents<T extends Tenant$aiAgentsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$aiAgentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AIAgentPayload<ExtArgs>, T, "findMany"> | Null>
     phoneNumbers<T extends Tenant$phoneNumbersArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$phoneNumbersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneNumberPayload<ExtArgs>, T, "findMany"> | Null>
     communicationLogs<T extends Tenant$communicationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$communicationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunicationLogPayload<ExtArgs>, T, "findMany"> | Null>
+    chatSessions<T extends Tenant$chatSessionsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany"> | Null>
     activities<T extends Tenant$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany"> | Null>
     notes<T extends Tenant$notesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany"> | Null>
     bookings<T extends Tenant$bookingsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany"> | Null>
     knowledgeBase<T extends Tenant$knowledgeBaseArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$knowledgeBaseArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeBasePayload<ExtArgs>, T, "findMany"> | Null>
+    creditLedger<T extends Tenant$creditLedgerArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$creditLedgerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "findMany"> | Null>
+    billingSubscription<T extends Tenant$billingSubscriptionArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$billingSubscriptionArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    paymentRecords<T extends Tenant$paymentRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$paymentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4142,6 +4645,7 @@ export namespace Prisma {
     readonly monthlyRevenue: FieldRef<"Tenant", 'String'>
     readonly onboardingStep: FieldRef<"Tenant", 'Int'>
     readonly onboardingDone: FieldRef<"Tenant", 'Boolean'>
+    readonly creditBalance: FieldRef<"Tenant", 'Int'>
     readonly deletedAt: FieldRef<"Tenant", 'DateTime'>
     readonly createdAt: FieldRef<"Tenant", 'DateTime'>
     readonly updatedAt: FieldRef<"Tenant", 'DateTime'>
@@ -4719,6 +5223,26 @@ export namespace Prisma {
   }
 
   /**
+   * Tenant.chatSessions
+   */
+  export type Tenant$chatSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    where?: ChatSessionWhereInput
+    orderBy?: ChatSessionOrderByWithRelationInput | ChatSessionOrderByWithRelationInput[]
+    cursor?: ChatSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChatSessionScalarFieldEnum | ChatSessionScalarFieldEnum[]
+  }
+
+  /**
    * Tenant.activities
    */
   export type Tenant$activitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4799,6 +5323,61 @@ export namespace Prisma {
   }
 
   /**
+   * Tenant.creditLedger
+   */
+  export type Tenant$creditLedgerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    where?: CreditLedgerWhereInput
+    orderBy?: CreditLedgerOrderByWithRelationInput | CreditLedgerOrderByWithRelationInput[]
+    cursor?: CreditLedgerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CreditLedgerScalarFieldEnum | CreditLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.billingSubscription
+   */
+  export type Tenant$billingSubscriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    where?: BillingSubscriptionWhereInput
+  }
+
+  /**
+   * Tenant.paymentRecords
+   */
+  export type Tenant$paymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    cursor?: PaymentRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
    * Tenant without action
    */
   export type TenantDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4810,6 +5389,3017 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TenantInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CreditLedger
+   */
+
+  export type AggregateCreditLedger = {
+    _count: CreditLedgerCountAggregateOutputType | null
+    _avg: CreditLedgerAvgAggregateOutputType | null
+    _sum: CreditLedgerSumAggregateOutputType | null
+    _min: CreditLedgerMinAggregateOutputType | null
+    _max: CreditLedgerMaxAggregateOutputType | null
+  }
+
+  export type CreditLedgerAvgAggregateOutputType = {
+    delta: number | null
+  }
+
+  export type CreditLedgerSumAggregateOutputType = {
+    delta: number | null
+  }
+
+  export type CreditLedgerMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    delta: number | null
+    reason: $Enums.CreditReason | null
+    refId: string | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type CreditLedgerMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    delta: number | null
+    reason: $Enums.CreditReason | null
+    refId: string | null
+    note: string | null
+    createdAt: Date | null
+  }
+
+  export type CreditLedgerCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    delta: number
+    reason: number
+    refId: number
+    note: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CreditLedgerAvgAggregateInputType = {
+    delta?: true
+  }
+
+  export type CreditLedgerSumAggregateInputType = {
+    delta?: true
+  }
+
+  export type CreditLedgerMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    delta?: true
+    reason?: true
+    refId?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type CreditLedgerMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    delta?: true
+    reason?: true
+    refId?: true
+    note?: true
+    createdAt?: true
+  }
+
+  export type CreditLedgerCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    delta?: true
+    reason?: true
+    refId?: true
+    note?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CreditLedgerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CreditLedger to aggregate.
+     */
+    where?: CreditLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CreditLedgers to fetch.
+     */
+    orderBy?: CreditLedgerOrderByWithRelationInput | CreditLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CreditLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CreditLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CreditLedgers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CreditLedgers
+    **/
+    _count?: true | CreditLedgerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CreditLedgerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CreditLedgerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CreditLedgerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CreditLedgerMaxAggregateInputType
+  }
+
+  export type GetCreditLedgerAggregateType<T extends CreditLedgerAggregateArgs> = {
+        [P in keyof T & keyof AggregateCreditLedger]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCreditLedger[P]>
+      : GetScalarType<T[P], AggregateCreditLedger[P]>
+  }
+
+
+
+
+  export type CreditLedgerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CreditLedgerWhereInput
+    orderBy?: CreditLedgerOrderByWithAggregationInput | CreditLedgerOrderByWithAggregationInput[]
+    by: CreditLedgerScalarFieldEnum[] | CreditLedgerScalarFieldEnum
+    having?: CreditLedgerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CreditLedgerCountAggregateInputType | true
+    _avg?: CreditLedgerAvgAggregateInputType
+    _sum?: CreditLedgerSumAggregateInputType
+    _min?: CreditLedgerMinAggregateInputType
+    _max?: CreditLedgerMaxAggregateInputType
+  }
+
+  export type CreditLedgerGroupByOutputType = {
+    id: string
+    tenantId: string
+    delta: number
+    reason: $Enums.CreditReason
+    refId: string | null
+    note: string | null
+    createdAt: Date
+    _count: CreditLedgerCountAggregateOutputType | null
+    _avg: CreditLedgerAvgAggregateOutputType | null
+    _sum: CreditLedgerSumAggregateOutputType | null
+    _min: CreditLedgerMinAggregateOutputType | null
+    _max: CreditLedgerMaxAggregateOutputType | null
+  }
+
+  type GetCreditLedgerGroupByPayload<T extends CreditLedgerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CreditLedgerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CreditLedgerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CreditLedgerGroupByOutputType[P]>
+            : GetScalarType<T[P], CreditLedgerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CreditLedgerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    delta?: boolean
+    reason?: boolean
+    refId?: boolean
+    note?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["creditLedger"]>
+
+  export type CreditLedgerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    delta?: boolean
+    reason?: boolean
+    refId?: boolean
+    note?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["creditLedger"]>
+
+  export type CreditLedgerSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    delta?: boolean
+    reason?: boolean
+    refId?: boolean
+    note?: boolean
+    createdAt?: boolean
+  }
+
+  export type CreditLedgerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type CreditLedgerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+
+  export type $CreditLedgerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CreditLedger"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      delta: number
+      reason: $Enums.CreditReason
+      refId: string | null
+      note: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["creditLedger"]>
+    composites: {}
+  }
+
+  type CreditLedgerGetPayload<S extends boolean | null | undefined | CreditLedgerDefaultArgs> = $Result.GetResult<Prisma.$CreditLedgerPayload, S>
+
+  type CreditLedgerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CreditLedgerFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CreditLedgerCountAggregateInputType | true
+    }
+
+  export interface CreditLedgerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CreditLedger'], meta: { name: 'CreditLedger' } }
+    /**
+     * Find zero or one CreditLedger that matches the filter.
+     * @param {CreditLedgerFindUniqueArgs} args - Arguments to find a CreditLedger
+     * @example
+     * // Get one CreditLedger
+     * const creditLedger = await prisma.creditLedger.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CreditLedgerFindUniqueArgs>(args: SelectSubset<T, CreditLedgerFindUniqueArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CreditLedger that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CreditLedgerFindUniqueOrThrowArgs} args - Arguments to find a CreditLedger
+     * @example
+     * // Get one CreditLedger
+     * const creditLedger = await prisma.creditLedger.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CreditLedgerFindUniqueOrThrowArgs>(args: SelectSubset<T, CreditLedgerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CreditLedger that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CreditLedgerFindFirstArgs} args - Arguments to find a CreditLedger
+     * @example
+     * // Get one CreditLedger
+     * const creditLedger = await prisma.creditLedger.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CreditLedgerFindFirstArgs>(args?: SelectSubset<T, CreditLedgerFindFirstArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CreditLedger that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CreditLedgerFindFirstOrThrowArgs} args - Arguments to find a CreditLedger
+     * @example
+     * // Get one CreditLedger
+     * const creditLedger = await prisma.creditLedger.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CreditLedgerFindFirstOrThrowArgs>(args?: SelectSubset<T, CreditLedgerFindFirstOrThrowArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CreditLedgers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CreditLedgerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CreditLedgers
+     * const creditLedgers = await prisma.creditLedger.findMany()
+     * 
+     * // Get first 10 CreditLedgers
+     * const creditLedgers = await prisma.creditLedger.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const creditLedgerWithIdOnly = await prisma.creditLedger.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CreditLedgerFindManyArgs>(args?: SelectSubset<T, CreditLedgerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CreditLedger.
+     * @param {CreditLedgerCreateArgs} args - Arguments to create a CreditLedger.
+     * @example
+     * // Create one CreditLedger
+     * const CreditLedger = await prisma.creditLedger.create({
+     *   data: {
+     *     // ... data to create a CreditLedger
+     *   }
+     * })
+     * 
+     */
+    create<T extends CreditLedgerCreateArgs>(args: SelectSubset<T, CreditLedgerCreateArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CreditLedgers.
+     * @param {CreditLedgerCreateManyArgs} args - Arguments to create many CreditLedgers.
+     * @example
+     * // Create many CreditLedgers
+     * const creditLedger = await prisma.creditLedger.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CreditLedgerCreateManyArgs>(args?: SelectSubset<T, CreditLedgerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CreditLedgers and returns the data saved in the database.
+     * @param {CreditLedgerCreateManyAndReturnArgs} args - Arguments to create many CreditLedgers.
+     * @example
+     * // Create many CreditLedgers
+     * const creditLedger = await prisma.creditLedger.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CreditLedgers and only return the `id`
+     * const creditLedgerWithIdOnly = await prisma.creditLedger.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CreditLedgerCreateManyAndReturnArgs>(args?: SelectSubset<T, CreditLedgerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CreditLedger.
+     * @param {CreditLedgerDeleteArgs} args - Arguments to delete one CreditLedger.
+     * @example
+     * // Delete one CreditLedger
+     * const CreditLedger = await prisma.creditLedger.delete({
+     *   where: {
+     *     // ... filter to delete one CreditLedger
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CreditLedgerDeleteArgs>(args: SelectSubset<T, CreditLedgerDeleteArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CreditLedger.
+     * @param {CreditLedgerUpdateArgs} args - Arguments to update one CreditLedger.
+     * @example
+     * // Update one CreditLedger
+     * const creditLedger = await prisma.creditLedger.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CreditLedgerUpdateArgs>(args: SelectSubset<T, CreditLedgerUpdateArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CreditLedgers.
+     * @param {CreditLedgerDeleteManyArgs} args - Arguments to filter CreditLedgers to delete.
+     * @example
+     * // Delete a few CreditLedgers
+     * const { count } = await prisma.creditLedger.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CreditLedgerDeleteManyArgs>(args?: SelectSubset<T, CreditLedgerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CreditLedgers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CreditLedgerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CreditLedgers
+     * const creditLedger = await prisma.creditLedger.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CreditLedgerUpdateManyArgs>(args: SelectSubset<T, CreditLedgerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CreditLedger.
+     * @param {CreditLedgerUpsertArgs} args - Arguments to update or create a CreditLedger.
+     * @example
+     * // Update or create a CreditLedger
+     * const creditLedger = await prisma.creditLedger.upsert({
+     *   create: {
+     *     // ... data to create a CreditLedger
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CreditLedger we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CreditLedgerUpsertArgs>(args: SelectSubset<T, CreditLedgerUpsertArgs<ExtArgs>>): Prisma__CreditLedgerClient<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CreditLedgers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CreditLedgerCountArgs} args - Arguments to filter CreditLedgers to count.
+     * @example
+     * // Count the number of CreditLedgers
+     * const count = await prisma.creditLedger.count({
+     *   where: {
+     *     // ... the filter for the CreditLedgers we want to count
+     *   }
+     * })
+    **/
+    count<T extends CreditLedgerCountArgs>(
+      args?: Subset<T, CreditLedgerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CreditLedgerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CreditLedger.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CreditLedgerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CreditLedgerAggregateArgs>(args: Subset<T, CreditLedgerAggregateArgs>): Prisma.PrismaPromise<GetCreditLedgerAggregateType<T>>
+
+    /**
+     * Group by CreditLedger.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CreditLedgerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CreditLedgerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CreditLedgerGroupByArgs['orderBy'] }
+        : { orderBy?: CreditLedgerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CreditLedgerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCreditLedgerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CreditLedger model
+   */
+  readonly fields: CreditLedgerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CreditLedger.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CreditLedgerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CreditLedger model
+   */ 
+  interface CreditLedgerFieldRefs {
+    readonly id: FieldRef<"CreditLedger", 'String'>
+    readonly tenantId: FieldRef<"CreditLedger", 'String'>
+    readonly delta: FieldRef<"CreditLedger", 'Int'>
+    readonly reason: FieldRef<"CreditLedger", 'CreditReason'>
+    readonly refId: FieldRef<"CreditLedger", 'String'>
+    readonly note: FieldRef<"CreditLedger", 'String'>
+    readonly createdAt: FieldRef<"CreditLedger", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CreditLedger findUnique
+   */
+  export type CreditLedgerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which CreditLedger to fetch.
+     */
+    where: CreditLedgerWhereUniqueInput
+  }
+
+  /**
+   * CreditLedger findUniqueOrThrow
+   */
+  export type CreditLedgerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which CreditLedger to fetch.
+     */
+    where: CreditLedgerWhereUniqueInput
+  }
+
+  /**
+   * CreditLedger findFirst
+   */
+  export type CreditLedgerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which CreditLedger to fetch.
+     */
+    where?: CreditLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CreditLedgers to fetch.
+     */
+    orderBy?: CreditLedgerOrderByWithRelationInput | CreditLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CreditLedgers.
+     */
+    cursor?: CreditLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CreditLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CreditLedgers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CreditLedgers.
+     */
+    distinct?: CreditLedgerScalarFieldEnum | CreditLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * CreditLedger findFirstOrThrow
+   */
+  export type CreditLedgerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which CreditLedger to fetch.
+     */
+    where?: CreditLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CreditLedgers to fetch.
+     */
+    orderBy?: CreditLedgerOrderByWithRelationInput | CreditLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CreditLedgers.
+     */
+    cursor?: CreditLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CreditLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CreditLedgers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CreditLedgers.
+     */
+    distinct?: CreditLedgerScalarFieldEnum | CreditLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * CreditLedger findMany
+   */
+  export type CreditLedgerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * Filter, which CreditLedgers to fetch.
+     */
+    where?: CreditLedgerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CreditLedgers to fetch.
+     */
+    orderBy?: CreditLedgerOrderByWithRelationInput | CreditLedgerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CreditLedgers.
+     */
+    cursor?: CreditLedgerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CreditLedgers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CreditLedgers.
+     */
+    skip?: number
+    distinct?: CreditLedgerScalarFieldEnum | CreditLedgerScalarFieldEnum[]
+  }
+
+  /**
+   * CreditLedger create
+   */
+  export type CreditLedgerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CreditLedger.
+     */
+    data: XOR<CreditLedgerCreateInput, CreditLedgerUncheckedCreateInput>
+  }
+
+  /**
+   * CreditLedger createMany
+   */
+  export type CreditLedgerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CreditLedgers.
+     */
+    data: CreditLedgerCreateManyInput | CreditLedgerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CreditLedger createManyAndReturn
+   */
+  export type CreditLedgerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CreditLedgers.
+     */
+    data: CreditLedgerCreateManyInput | CreditLedgerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CreditLedger update
+   */
+  export type CreditLedgerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CreditLedger.
+     */
+    data: XOR<CreditLedgerUpdateInput, CreditLedgerUncheckedUpdateInput>
+    /**
+     * Choose, which CreditLedger to update.
+     */
+    where: CreditLedgerWhereUniqueInput
+  }
+
+  /**
+   * CreditLedger updateMany
+   */
+  export type CreditLedgerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CreditLedgers.
+     */
+    data: XOR<CreditLedgerUpdateManyMutationInput, CreditLedgerUncheckedUpdateManyInput>
+    /**
+     * Filter which CreditLedgers to update
+     */
+    where?: CreditLedgerWhereInput
+  }
+
+  /**
+   * CreditLedger upsert
+   */
+  export type CreditLedgerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CreditLedger to update in case it exists.
+     */
+    where: CreditLedgerWhereUniqueInput
+    /**
+     * In case the CreditLedger found by the `where` argument doesn't exist, create a new CreditLedger with this data.
+     */
+    create: XOR<CreditLedgerCreateInput, CreditLedgerUncheckedCreateInput>
+    /**
+     * In case the CreditLedger was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CreditLedgerUpdateInput, CreditLedgerUncheckedUpdateInput>
+  }
+
+  /**
+   * CreditLedger delete
+   */
+  export type CreditLedgerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+    /**
+     * Filter which CreditLedger to delete.
+     */
+    where: CreditLedgerWhereUniqueInput
+  }
+
+  /**
+   * CreditLedger deleteMany
+   */
+  export type CreditLedgerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CreditLedgers to delete
+     */
+    where?: CreditLedgerWhereInput
+  }
+
+  /**
+   * CreditLedger without action
+   */
+  export type CreditLedgerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CreditLedger
+     */
+    select?: CreditLedgerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CreditLedgerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PaymentRecord
+   */
+
+  export type AggregatePaymentRecord = {
+    _count: PaymentRecordCountAggregateOutputType | null
+    _avg: PaymentRecordAvgAggregateOutputType | null
+    _sum: PaymentRecordSumAggregateOutputType | null
+    _min: PaymentRecordMinAggregateOutputType | null
+    _max: PaymentRecordMaxAggregateOutputType | null
+  }
+
+  export type PaymentRecordAvgAggregateOutputType = {
+    amountPaise: number | null
+  }
+
+  export type PaymentRecordSumAggregateOutputType = {
+    amountPaise: number | null
+  }
+
+  export type PaymentRecordMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    provider: string | null
+    paymentId: string | null
+    orderId: string | null
+    product: string | null
+    amountPaise: number | null
+    currency: string | null
+    status: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type PaymentRecordMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    provider: string | null
+    paymentId: string | null
+    orderId: string | null
+    product: string | null
+    amountPaise: number | null
+    currency: string | null
+    status: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type PaymentRecordCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    provider: number
+    paymentId: number
+    orderId: number
+    product: number
+    amountPaise: number
+    currency: number
+    status: number
+    description: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PaymentRecordAvgAggregateInputType = {
+    amountPaise?: true
+  }
+
+  export type PaymentRecordSumAggregateInputType = {
+    amountPaise?: true
+  }
+
+  export type PaymentRecordMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    paymentId?: true
+    orderId?: true
+    product?: true
+    amountPaise?: true
+    currency?: true
+    status?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type PaymentRecordMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    paymentId?: true
+    orderId?: true
+    product?: true
+    amountPaise?: true
+    currency?: true
+    status?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type PaymentRecordCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    paymentId?: true
+    orderId?: true
+    product?: true
+    amountPaise?: true
+    currency?: true
+    status?: true
+    description?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PaymentRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentRecord to aggregate.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentRecords
+    **/
+    _count?: true | PaymentRecordCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentRecordAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentRecordSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentRecordMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentRecordMaxAggregateInputType
+  }
+
+  export type GetPaymentRecordAggregateType<T extends PaymentRecordAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentRecord]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentRecord[P]>
+      : GetScalarType<T[P], AggregatePaymentRecord[P]>
+  }
+
+
+
+
+  export type PaymentRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithAggregationInput | PaymentRecordOrderByWithAggregationInput[]
+    by: PaymentRecordScalarFieldEnum[] | PaymentRecordScalarFieldEnum
+    having?: PaymentRecordScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentRecordCountAggregateInputType | true
+    _avg?: PaymentRecordAvgAggregateInputType
+    _sum?: PaymentRecordSumAggregateInputType
+    _min?: PaymentRecordMinAggregateInputType
+    _max?: PaymentRecordMaxAggregateInputType
+  }
+
+  export type PaymentRecordGroupByOutputType = {
+    id: string
+    tenantId: string
+    provider: string
+    paymentId: string
+    orderId: string
+    product: string
+    amountPaise: number
+    currency: string
+    status: string
+    description: string | null
+    createdAt: Date
+    _count: PaymentRecordCountAggregateOutputType | null
+    _avg: PaymentRecordAvgAggregateOutputType | null
+    _sum: PaymentRecordSumAggregateOutputType | null
+    _min: PaymentRecordMinAggregateOutputType | null
+    _max: PaymentRecordMaxAggregateOutputType | null
+  }
+
+  type GetPaymentRecordGroupByPayload<T extends PaymentRecordGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentRecordGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentRecordGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentRecordGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentRecordGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    paymentId?: boolean
+    orderId?: boolean
+    product?: boolean
+    amountPaise?: boolean
+    currency?: boolean
+    status?: boolean
+    description?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentRecord"]>
+
+  export type PaymentRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    paymentId?: boolean
+    orderId?: boolean
+    product?: boolean
+    amountPaise?: boolean
+    currency?: boolean
+    status?: boolean
+    description?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentRecord"]>
+
+  export type PaymentRecordSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    paymentId?: boolean
+    orderId?: boolean
+    product?: boolean
+    amountPaise?: boolean
+    currency?: boolean
+    status?: boolean
+    description?: boolean
+    createdAt?: boolean
+  }
+
+  export type PaymentRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type PaymentRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+
+  export type $PaymentRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentRecord"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      provider: string
+      paymentId: string
+      orderId: string
+      product: string
+      amountPaise: number
+      currency: string
+      status: string
+      description: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["paymentRecord"]>
+    composites: {}
+  }
+
+  type PaymentRecordGetPayload<S extends boolean | null | undefined | PaymentRecordDefaultArgs> = $Result.GetResult<Prisma.$PaymentRecordPayload, S>
+
+  type PaymentRecordCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<PaymentRecordFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: PaymentRecordCountAggregateInputType | true
+    }
+
+  export interface PaymentRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentRecord'], meta: { name: 'PaymentRecord' } }
+    /**
+     * Find zero or one PaymentRecord that matches the filter.
+     * @param {PaymentRecordFindUniqueArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentRecordFindUniqueArgs>(args: SelectSubset<T, PaymentRecordFindUniqueArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one PaymentRecord that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {PaymentRecordFindUniqueOrThrowArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first PaymentRecord that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordFindFirstArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentRecordFindFirstArgs>(args?: SelectSubset<T, PaymentRecordFindFirstArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first PaymentRecord that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordFindFirstOrThrowArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more PaymentRecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentRecords
+     * const paymentRecords = await prisma.paymentRecord.findMany()
+     * 
+     * // Get first 10 PaymentRecords
+     * const paymentRecords = await prisma.paymentRecord.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentRecordWithIdOnly = await prisma.paymentRecord.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentRecordFindManyArgs>(args?: SelectSubset<T, PaymentRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a PaymentRecord.
+     * @param {PaymentRecordCreateArgs} args - Arguments to create a PaymentRecord.
+     * @example
+     * // Create one PaymentRecord
+     * const PaymentRecord = await prisma.paymentRecord.create({
+     *   data: {
+     *     // ... data to create a PaymentRecord
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentRecordCreateArgs>(args: SelectSubset<T, PaymentRecordCreateArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many PaymentRecords.
+     * @param {PaymentRecordCreateManyArgs} args - Arguments to create many PaymentRecords.
+     * @example
+     * // Create many PaymentRecords
+     * const paymentRecord = await prisma.paymentRecord.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentRecordCreateManyArgs>(args?: SelectSubset<T, PaymentRecordCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentRecords and returns the data saved in the database.
+     * @param {PaymentRecordCreateManyAndReturnArgs} args - Arguments to create many PaymentRecords.
+     * @example
+     * // Create many PaymentRecords
+     * const paymentRecord = await prisma.paymentRecord.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentRecords and only return the `id`
+     * const paymentRecordWithIdOnly = await prisma.paymentRecord.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a PaymentRecord.
+     * @param {PaymentRecordDeleteArgs} args - Arguments to delete one PaymentRecord.
+     * @example
+     * // Delete one PaymentRecord
+     * const PaymentRecord = await prisma.paymentRecord.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentRecord
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentRecordDeleteArgs>(args: SelectSubset<T, PaymentRecordDeleteArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one PaymentRecord.
+     * @param {PaymentRecordUpdateArgs} args - Arguments to update one PaymentRecord.
+     * @example
+     * // Update one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentRecordUpdateArgs>(args: SelectSubset<T, PaymentRecordUpdateArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more PaymentRecords.
+     * @param {PaymentRecordDeleteManyArgs} args - Arguments to filter PaymentRecords to delete.
+     * @example
+     * // Delete a few PaymentRecords
+     * const { count } = await prisma.paymentRecord.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentRecordDeleteManyArgs>(args?: SelectSubset<T, PaymentRecordDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentRecords
+     * const paymentRecord = await prisma.paymentRecord.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentRecordUpdateManyArgs>(args: SelectSubset<T, PaymentRecordUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one PaymentRecord.
+     * @param {PaymentRecordUpsertArgs} args - Arguments to update or create a PaymentRecord.
+     * @example
+     * // Update or create a PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.upsert({
+     *   create: {
+     *     // ... data to create a PaymentRecord
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentRecord we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentRecordUpsertArgs>(args: SelectSubset<T, PaymentRecordUpsertArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of PaymentRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordCountArgs} args - Arguments to filter PaymentRecords to count.
+     * @example
+     * // Count the number of PaymentRecords
+     * const count = await prisma.paymentRecord.count({
+     *   where: {
+     *     // ... the filter for the PaymentRecords we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentRecordCountArgs>(
+      args?: Subset<T, PaymentRecordCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentRecordCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentRecordAggregateArgs>(args: Subset<T, PaymentRecordAggregateArgs>): Prisma.PrismaPromise<GetPaymentRecordAggregateType<T>>
+
+    /**
+     * Group by PaymentRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentRecordGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentRecordGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentRecordGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentRecordGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentRecordGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentRecord model
+   */
+  readonly fields: PaymentRecordFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentRecord.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentRecord model
+   */ 
+  interface PaymentRecordFieldRefs {
+    readonly id: FieldRef<"PaymentRecord", 'String'>
+    readonly tenantId: FieldRef<"PaymentRecord", 'String'>
+    readonly provider: FieldRef<"PaymentRecord", 'String'>
+    readonly paymentId: FieldRef<"PaymentRecord", 'String'>
+    readonly orderId: FieldRef<"PaymentRecord", 'String'>
+    readonly product: FieldRef<"PaymentRecord", 'String'>
+    readonly amountPaise: FieldRef<"PaymentRecord", 'Int'>
+    readonly currency: FieldRef<"PaymentRecord", 'String'>
+    readonly status: FieldRef<"PaymentRecord", 'String'>
+    readonly description: FieldRef<"PaymentRecord", 'String'>
+    readonly createdAt: FieldRef<"PaymentRecord", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentRecord findUnique
+   */
+  export type PaymentRecordFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord findUniqueOrThrow
+   */
+  export type PaymentRecordFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord findFirst
+   */
+  export type PaymentRecordFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentRecords.
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentRecords.
+     */
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentRecord findFirstOrThrow
+   */
+  export type PaymentRecordFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentRecords.
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentRecords.
+     */
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentRecord findMany
+   */
+  export type PaymentRecordFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecords to fetch.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentRecords.
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentRecord create
+   */
+  export type PaymentRecordCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentRecord.
+     */
+    data: XOR<PaymentRecordCreateInput, PaymentRecordUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentRecord createMany
+   */
+  export type PaymentRecordCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentRecords.
+     */
+    data: PaymentRecordCreateManyInput | PaymentRecordCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentRecord createManyAndReturn
+   */
+  export type PaymentRecordCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many PaymentRecords.
+     */
+    data: PaymentRecordCreateManyInput | PaymentRecordCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentRecord update
+   */
+  export type PaymentRecordUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentRecord.
+     */
+    data: XOR<PaymentRecordUpdateInput, PaymentRecordUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentRecord to update.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord updateMany
+   */
+  export type PaymentRecordUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentRecords.
+     */
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentRecords to update
+     */
+    where?: PaymentRecordWhereInput
+  }
+
+  /**
+   * PaymentRecord upsert
+   */
+  export type PaymentRecordUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentRecord to update in case it exists.
+     */
+    where: PaymentRecordWhereUniqueInput
+    /**
+     * In case the PaymentRecord found by the `where` argument doesn't exist, create a new PaymentRecord with this data.
+     */
+    create: XOR<PaymentRecordCreateInput, PaymentRecordUncheckedCreateInput>
+    /**
+     * In case the PaymentRecord was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentRecordUpdateInput, PaymentRecordUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentRecord delete
+   */
+  export type PaymentRecordDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter which PaymentRecord to delete.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord deleteMany
+   */
+  export type PaymentRecordDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentRecords to delete
+     */
+    where?: PaymentRecordWhereInput
+  }
+
+  /**
+   * PaymentRecord without action
+   */
+  export type PaymentRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BillingSubscription
+   */
+
+  export type AggregateBillingSubscription = {
+    _count: BillingSubscriptionCountAggregateOutputType | null
+    _min: BillingSubscriptionMinAggregateOutputType | null
+    _max: BillingSubscriptionMaxAggregateOutputType | null
+  }
+
+  export type BillingSubscriptionMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    provider: string | null
+    providerSubId: string | null
+    plan: $Enums.Plan | null
+    status: $Enums.SubscriptionStatus | null
+    currentPeriodEnd: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BillingSubscriptionMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    provider: string | null
+    providerSubId: string | null
+    plan: $Enums.Plan | null
+    status: $Enums.SubscriptionStatus | null
+    currentPeriodEnd: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BillingSubscriptionCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    provider: number
+    providerSubId: number
+    plan: number
+    status: number
+    currentPeriodEnd: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BillingSubscriptionMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    providerSubId?: true
+    plan?: true
+    status?: true
+    currentPeriodEnd?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BillingSubscriptionMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    providerSubId?: true
+    plan?: true
+    status?: true
+    currentPeriodEnd?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BillingSubscriptionCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    providerSubId?: true
+    plan?: true
+    status?: true
+    currentPeriodEnd?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BillingSubscriptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BillingSubscription to aggregate.
+     */
+    where?: BillingSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BillingSubscriptions to fetch.
+     */
+    orderBy?: BillingSubscriptionOrderByWithRelationInput | BillingSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BillingSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BillingSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BillingSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BillingSubscriptions
+    **/
+    _count?: true | BillingSubscriptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BillingSubscriptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BillingSubscriptionMaxAggregateInputType
+  }
+
+  export type GetBillingSubscriptionAggregateType<T extends BillingSubscriptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateBillingSubscription]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBillingSubscription[P]>
+      : GetScalarType<T[P], AggregateBillingSubscription[P]>
+  }
+
+
+
+
+  export type BillingSubscriptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BillingSubscriptionWhereInput
+    orderBy?: BillingSubscriptionOrderByWithAggregationInput | BillingSubscriptionOrderByWithAggregationInput[]
+    by: BillingSubscriptionScalarFieldEnum[] | BillingSubscriptionScalarFieldEnum
+    having?: BillingSubscriptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BillingSubscriptionCountAggregateInputType | true
+    _min?: BillingSubscriptionMinAggregateInputType
+    _max?: BillingSubscriptionMaxAggregateInputType
+  }
+
+  export type BillingSubscriptionGroupByOutputType = {
+    id: string
+    tenantId: string
+    provider: string
+    providerSubId: string | null
+    plan: $Enums.Plan
+    status: $Enums.SubscriptionStatus
+    currentPeriodEnd: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BillingSubscriptionCountAggregateOutputType | null
+    _min: BillingSubscriptionMinAggregateOutputType | null
+    _max: BillingSubscriptionMaxAggregateOutputType | null
+  }
+
+  type GetBillingSubscriptionGroupByPayload<T extends BillingSubscriptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BillingSubscriptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BillingSubscriptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BillingSubscriptionGroupByOutputType[P]>
+            : GetScalarType<T[P], BillingSubscriptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BillingSubscriptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    providerSubId?: boolean
+    plan?: boolean
+    status?: boolean
+    currentPeriodEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["billingSubscription"]>
+
+  export type BillingSubscriptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    providerSubId?: boolean
+    plan?: boolean
+    status?: boolean
+    currentPeriodEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["billingSubscription"]>
+
+  export type BillingSubscriptionSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    providerSubId?: boolean
+    plan?: boolean
+    status?: boolean
+    currentPeriodEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BillingSubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type BillingSubscriptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+
+  export type $BillingSubscriptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BillingSubscription"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      provider: string
+      providerSubId: string | null
+      plan: $Enums.Plan
+      status: $Enums.SubscriptionStatus
+      currentPeriodEnd: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["billingSubscription"]>
+    composites: {}
+  }
+
+  type BillingSubscriptionGetPayload<S extends boolean | null | undefined | BillingSubscriptionDefaultArgs> = $Result.GetResult<Prisma.$BillingSubscriptionPayload, S>
+
+  type BillingSubscriptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BillingSubscriptionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BillingSubscriptionCountAggregateInputType | true
+    }
+
+  export interface BillingSubscriptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BillingSubscription'], meta: { name: 'BillingSubscription' } }
+    /**
+     * Find zero or one BillingSubscription that matches the filter.
+     * @param {BillingSubscriptionFindUniqueArgs} args - Arguments to find a BillingSubscription
+     * @example
+     * // Get one BillingSubscription
+     * const billingSubscription = await prisma.billingSubscription.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BillingSubscriptionFindUniqueArgs>(args: SelectSubset<T, BillingSubscriptionFindUniqueArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one BillingSubscription that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BillingSubscriptionFindUniqueOrThrowArgs} args - Arguments to find a BillingSubscription
+     * @example
+     * // Get one BillingSubscription
+     * const billingSubscription = await prisma.billingSubscription.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BillingSubscriptionFindUniqueOrThrowArgs>(args: SelectSubset<T, BillingSubscriptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first BillingSubscription that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BillingSubscriptionFindFirstArgs} args - Arguments to find a BillingSubscription
+     * @example
+     * // Get one BillingSubscription
+     * const billingSubscription = await prisma.billingSubscription.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BillingSubscriptionFindFirstArgs>(args?: SelectSubset<T, BillingSubscriptionFindFirstArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first BillingSubscription that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BillingSubscriptionFindFirstOrThrowArgs} args - Arguments to find a BillingSubscription
+     * @example
+     * // Get one BillingSubscription
+     * const billingSubscription = await prisma.billingSubscription.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BillingSubscriptionFindFirstOrThrowArgs>(args?: SelectSubset<T, BillingSubscriptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more BillingSubscriptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BillingSubscriptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BillingSubscriptions
+     * const billingSubscriptions = await prisma.billingSubscription.findMany()
+     * 
+     * // Get first 10 BillingSubscriptions
+     * const billingSubscriptions = await prisma.billingSubscription.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const billingSubscriptionWithIdOnly = await prisma.billingSubscription.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BillingSubscriptionFindManyArgs>(args?: SelectSubset<T, BillingSubscriptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a BillingSubscription.
+     * @param {BillingSubscriptionCreateArgs} args - Arguments to create a BillingSubscription.
+     * @example
+     * // Create one BillingSubscription
+     * const BillingSubscription = await prisma.billingSubscription.create({
+     *   data: {
+     *     // ... data to create a BillingSubscription
+     *   }
+     * })
+     * 
+     */
+    create<T extends BillingSubscriptionCreateArgs>(args: SelectSubset<T, BillingSubscriptionCreateArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many BillingSubscriptions.
+     * @param {BillingSubscriptionCreateManyArgs} args - Arguments to create many BillingSubscriptions.
+     * @example
+     * // Create many BillingSubscriptions
+     * const billingSubscription = await prisma.billingSubscription.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BillingSubscriptionCreateManyArgs>(args?: SelectSubset<T, BillingSubscriptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BillingSubscriptions and returns the data saved in the database.
+     * @param {BillingSubscriptionCreateManyAndReturnArgs} args - Arguments to create many BillingSubscriptions.
+     * @example
+     * // Create many BillingSubscriptions
+     * const billingSubscription = await prisma.billingSubscription.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BillingSubscriptions and only return the `id`
+     * const billingSubscriptionWithIdOnly = await prisma.billingSubscription.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BillingSubscriptionCreateManyAndReturnArgs>(args?: SelectSubset<T, BillingSubscriptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a BillingSubscription.
+     * @param {BillingSubscriptionDeleteArgs} args - Arguments to delete one BillingSubscription.
+     * @example
+     * // Delete one BillingSubscription
+     * const BillingSubscription = await prisma.billingSubscription.delete({
+     *   where: {
+     *     // ... filter to delete one BillingSubscription
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BillingSubscriptionDeleteArgs>(args: SelectSubset<T, BillingSubscriptionDeleteArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one BillingSubscription.
+     * @param {BillingSubscriptionUpdateArgs} args - Arguments to update one BillingSubscription.
+     * @example
+     * // Update one BillingSubscription
+     * const billingSubscription = await prisma.billingSubscription.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BillingSubscriptionUpdateArgs>(args: SelectSubset<T, BillingSubscriptionUpdateArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more BillingSubscriptions.
+     * @param {BillingSubscriptionDeleteManyArgs} args - Arguments to filter BillingSubscriptions to delete.
+     * @example
+     * // Delete a few BillingSubscriptions
+     * const { count } = await prisma.billingSubscription.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BillingSubscriptionDeleteManyArgs>(args?: SelectSubset<T, BillingSubscriptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BillingSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BillingSubscriptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BillingSubscriptions
+     * const billingSubscription = await prisma.billingSubscription.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BillingSubscriptionUpdateManyArgs>(args: SelectSubset<T, BillingSubscriptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BillingSubscription.
+     * @param {BillingSubscriptionUpsertArgs} args - Arguments to update or create a BillingSubscription.
+     * @example
+     * // Update or create a BillingSubscription
+     * const billingSubscription = await prisma.billingSubscription.upsert({
+     *   create: {
+     *     // ... data to create a BillingSubscription
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BillingSubscription we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BillingSubscriptionUpsertArgs>(args: SelectSubset<T, BillingSubscriptionUpsertArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of BillingSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BillingSubscriptionCountArgs} args - Arguments to filter BillingSubscriptions to count.
+     * @example
+     * // Count the number of BillingSubscriptions
+     * const count = await prisma.billingSubscription.count({
+     *   where: {
+     *     // ... the filter for the BillingSubscriptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends BillingSubscriptionCountArgs>(
+      args?: Subset<T, BillingSubscriptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BillingSubscriptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BillingSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BillingSubscriptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BillingSubscriptionAggregateArgs>(args: Subset<T, BillingSubscriptionAggregateArgs>): Prisma.PrismaPromise<GetBillingSubscriptionAggregateType<T>>
+
+    /**
+     * Group by BillingSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BillingSubscriptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BillingSubscriptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BillingSubscriptionGroupByArgs['orderBy'] }
+        : { orderBy?: BillingSubscriptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BillingSubscriptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBillingSubscriptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BillingSubscription model
+   */
+  readonly fields: BillingSubscriptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BillingSubscription.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BillingSubscriptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BillingSubscription model
+   */ 
+  interface BillingSubscriptionFieldRefs {
+    readonly id: FieldRef<"BillingSubscription", 'String'>
+    readonly tenantId: FieldRef<"BillingSubscription", 'String'>
+    readonly provider: FieldRef<"BillingSubscription", 'String'>
+    readonly providerSubId: FieldRef<"BillingSubscription", 'String'>
+    readonly plan: FieldRef<"BillingSubscription", 'Plan'>
+    readonly status: FieldRef<"BillingSubscription", 'SubscriptionStatus'>
+    readonly currentPeriodEnd: FieldRef<"BillingSubscription", 'DateTime'>
+    readonly createdAt: FieldRef<"BillingSubscription", 'DateTime'>
+    readonly updatedAt: FieldRef<"BillingSubscription", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BillingSubscription findUnique
+   */
+  export type BillingSubscriptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BillingSubscription to fetch.
+     */
+    where: BillingSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * BillingSubscription findUniqueOrThrow
+   */
+  export type BillingSubscriptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BillingSubscription to fetch.
+     */
+    where: BillingSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * BillingSubscription findFirst
+   */
+  export type BillingSubscriptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BillingSubscription to fetch.
+     */
+    where?: BillingSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BillingSubscriptions to fetch.
+     */
+    orderBy?: BillingSubscriptionOrderByWithRelationInput | BillingSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BillingSubscriptions.
+     */
+    cursor?: BillingSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BillingSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BillingSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BillingSubscriptions.
+     */
+    distinct?: BillingSubscriptionScalarFieldEnum | BillingSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * BillingSubscription findFirstOrThrow
+   */
+  export type BillingSubscriptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BillingSubscription to fetch.
+     */
+    where?: BillingSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BillingSubscriptions to fetch.
+     */
+    orderBy?: BillingSubscriptionOrderByWithRelationInput | BillingSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BillingSubscriptions.
+     */
+    cursor?: BillingSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BillingSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BillingSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BillingSubscriptions.
+     */
+    distinct?: BillingSubscriptionScalarFieldEnum | BillingSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * BillingSubscription findMany
+   */
+  export type BillingSubscriptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which BillingSubscriptions to fetch.
+     */
+    where?: BillingSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BillingSubscriptions to fetch.
+     */
+    orderBy?: BillingSubscriptionOrderByWithRelationInput | BillingSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BillingSubscriptions.
+     */
+    cursor?: BillingSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BillingSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BillingSubscriptions.
+     */
+    skip?: number
+    distinct?: BillingSubscriptionScalarFieldEnum | BillingSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * BillingSubscription create
+   */
+  export type BillingSubscriptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BillingSubscription.
+     */
+    data: XOR<BillingSubscriptionCreateInput, BillingSubscriptionUncheckedCreateInput>
+  }
+
+  /**
+   * BillingSubscription createMany
+   */
+  export type BillingSubscriptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BillingSubscriptions.
+     */
+    data: BillingSubscriptionCreateManyInput | BillingSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BillingSubscription createManyAndReturn
+   */
+  export type BillingSubscriptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many BillingSubscriptions.
+     */
+    data: BillingSubscriptionCreateManyInput | BillingSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BillingSubscription update
+   */
+  export type BillingSubscriptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BillingSubscription.
+     */
+    data: XOR<BillingSubscriptionUpdateInput, BillingSubscriptionUncheckedUpdateInput>
+    /**
+     * Choose, which BillingSubscription to update.
+     */
+    where: BillingSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * BillingSubscription updateMany
+   */
+  export type BillingSubscriptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BillingSubscriptions.
+     */
+    data: XOR<BillingSubscriptionUpdateManyMutationInput, BillingSubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which BillingSubscriptions to update
+     */
+    where?: BillingSubscriptionWhereInput
+  }
+
+  /**
+   * BillingSubscription upsert
+   */
+  export type BillingSubscriptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BillingSubscription to update in case it exists.
+     */
+    where: BillingSubscriptionWhereUniqueInput
+    /**
+     * In case the BillingSubscription found by the `where` argument doesn't exist, create a new BillingSubscription with this data.
+     */
+    create: XOR<BillingSubscriptionCreateInput, BillingSubscriptionUncheckedCreateInput>
+    /**
+     * In case the BillingSubscription was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BillingSubscriptionUpdateInput, BillingSubscriptionUncheckedUpdateInput>
+  }
+
+  /**
+   * BillingSubscription delete
+   */
+  export type BillingSubscriptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter which BillingSubscription to delete.
+     */
+    where: BillingSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * BillingSubscription deleteMany
+   */
+  export type BillingSubscriptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BillingSubscriptions to delete
+     */
+    where?: BillingSubscriptionWhereInput
+  }
+
+  /**
+   * BillingSubscription without action
+   */
+  export type BillingSubscriptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BillingSubscription
+     */
+    select?: BillingSubscriptionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BillingSubscriptionInclude<ExtArgs> | null
   }
 
 
@@ -6015,6 +9605,7 @@ export namespace Prisma {
     notes?: boolean | Contact$notesArgs<ExtArgs>
     activities?: boolean | Contact$activitiesArgs<ExtArgs>
     communicationLogs?: boolean | Contact$communicationLogsArgs<ExtArgs>
+    chatSessions?: boolean | Contact$chatSessionsArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contact"]>
 
@@ -6051,6 +9642,7 @@ export namespace Prisma {
     notes?: boolean | Contact$notesArgs<ExtArgs>
     activities?: boolean | Contact$activitiesArgs<ExtArgs>
     communicationLogs?: boolean | Contact$communicationLogsArgs<ExtArgs>
+    chatSessions?: boolean | Contact$chatSessionsArgs<ExtArgs>
     _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ContactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6067,6 +9659,7 @@ export namespace Prisma {
       notes: Prisma.$NotePayload<ExtArgs>[]
       activities: Prisma.$ActivityPayload<ExtArgs>[]
       communicationLogs: Prisma.$CommunicationLogPayload<ExtArgs>[]
+      chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6449,6 +10042,7 @@ export namespace Prisma {
     notes<T extends Contact$notesArgs<ExtArgs> = {}>(args?: Subset<T, Contact$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany"> | Null>
     activities<T extends Contact$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, Contact$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany"> | Null>
     communicationLogs<T extends Contact$communicationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$communicationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunicationLogPayload<ExtArgs>, T, "findMany"> | Null>
+    chatSessions<T extends Contact$chatSessionsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6922,6 +10516,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CommunicationLogScalarFieldEnum | CommunicationLogScalarFieldEnum[]
+  }
+
+  /**
+   * Contact.chatSessions
+   */
+  export type Contact$chatSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    where?: ChatSessionWhereInput
+    orderBy?: ChatSessionOrderByWithRelationInput | ChatSessionOrderByWithRelationInput[]
+    cursor?: ChatSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChatSessionScalarFieldEnum | ChatSessionScalarFieldEnum[]
   }
 
   /**
@@ -18512,6 +22126,8 @@ export namespace Prisma {
     smsTriggerCondition: string | null
     smsTemplate: string | null
     smsAgentReply: string | null
+    whatsappEnabled: boolean | null
+    whatsappPrompt: string | null
     timeZone: string | null
     deletedAt: Date | null
     createdAt: Date | null
@@ -18545,6 +22161,8 @@ export namespace Prisma {
     smsTriggerCondition: string | null
     smsTemplate: string | null
     smsAgentReply: string | null
+    whatsappEnabled: boolean | null
+    whatsappPrompt: string | null
     timeZone: string | null
     deletedAt: Date | null
     createdAt: Date | null
@@ -18579,6 +22197,8 @@ export namespace Prisma {
     smsTriggerCondition: number
     smsTemplate: number
     smsAgentReply: number
+    whatsappEnabled: number
+    whatsappPrompt: number
     businessHours: number
     timeZone: number
     deletedAt: number
@@ -18623,6 +22243,8 @@ export namespace Prisma {
     smsTriggerCondition?: true
     smsTemplate?: true
     smsAgentReply?: true
+    whatsappEnabled?: true
+    whatsappPrompt?: true
     timeZone?: true
     deletedAt?: true
     createdAt?: true
@@ -18656,6 +22278,8 @@ export namespace Prisma {
     smsTriggerCondition?: true
     smsTemplate?: true
     smsAgentReply?: true
+    whatsappEnabled?: true
+    whatsappPrompt?: true
     timeZone?: true
     deletedAt?: true
     createdAt?: true
@@ -18690,6 +22314,8 @@ export namespace Prisma {
     smsTriggerCondition?: true
     smsTemplate?: true
     smsAgentReply?: true
+    whatsappEnabled?: true
+    whatsappPrompt?: true
     businessHours?: true
     timeZone?: true
     deletedAt?: true
@@ -18812,6 +22438,8 @@ export namespace Prisma {
     smsTriggerCondition: string | null
     smsTemplate: string | null
     smsAgentReply: string | null
+    whatsappEnabled: boolean
+    whatsappPrompt: string | null
     businessHours: JsonValue | null
     timeZone: string
     deletedAt: Date | null
@@ -18866,6 +22494,8 @@ export namespace Prisma {
     smsTriggerCondition?: boolean
     smsTemplate?: boolean
     smsAgentReply?: boolean
+    whatsappEnabled?: boolean
+    whatsappPrompt?: boolean
     businessHours?: boolean
     timeZone?: boolean
     deletedAt?: boolean
@@ -18874,6 +22504,7 @@ export namespace Prisma {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     communicationLogs?: boolean | AIAgent$communicationLogsArgs<ExtArgs>
     knowledgeBases?: boolean | AIAgent$knowledgeBasesArgs<ExtArgs>
+    chatSessions?: boolean | AIAgent$chatSessionsArgs<ExtArgs>
     _count?: boolean | AIAgentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["aIAgent"]>
 
@@ -18905,6 +22536,8 @@ export namespace Prisma {
     smsTriggerCondition?: boolean
     smsTemplate?: boolean
     smsAgentReply?: boolean
+    whatsappEnabled?: boolean
+    whatsappPrompt?: boolean
     businessHours?: boolean
     timeZone?: boolean
     deletedAt?: boolean
@@ -18941,6 +22574,8 @@ export namespace Prisma {
     smsTriggerCondition?: boolean
     smsTemplate?: boolean
     smsAgentReply?: boolean
+    whatsappEnabled?: boolean
+    whatsappPrompt?: boolean
     businessHours?: boolean
     timeZone?: boolean
     deletedAt?: boolean
@@ -18952,6 +22587,7 @@ export namespace Prisma {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     communicationLogs?: boolean | AIAgent$communicationLogsArgs<ExtArgs>
     knowledgeBases?: boolean | AIAgent$knowledgeBasesArgs<ExtArgs>
+    chatSessions?: boolean | AIAgent$chatSessionsArgs<ExtArgs>
     _count?: boolean | AIAgentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AIAgentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18964,6 +22600,7 @@ export namespace Prisma {
       tenant: Prisma.$TenantPayload<ExtArgs>
       communicationLogs: Prisma.$CommunicationLogPayload<ExtArgs>[]
       knowledgeBases: Prisma.$KnowledgeBasePayload<ExtArgs>[]
+      chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18993,6 +22630,8 @@ export namespace Prisma {
       smsTriggerCondition: string | null
       smsTemplate: string | null
       smsAgentReply: string | null
+      whatsappEnabled: boolean
+      whatsappPrompt: string | null
       businessHours: Prisma.JsonValue | null
       timeZone: string
       deletedAt: Date | null
@@ -19365,6 +23004,7 @@ export namespace Prisma {
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     communicationLogs<T extends AIAgent$communicationLogsArgs<ExtArgs> = {}>(args?: Subset<T, AIAgent$communicationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunicationLogPayload<ExtArgs>, T, "findMany"> | Null>
     knowledgeBases<T extends AIAgent$knowledgeBasesArgs<ExtArgs> = {}>(args?: Subset<T, AIAgent$knowledgeBasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeBasePayload<ExtArgs>, T, "findMany"> | Null>
+    chatSessions<T extends AIAgent$chatSessionsArgs<ExtArgs> = {}>(args?: Subset<T, AIAgent$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19421,6 +23061,8 @@ export namespace Prisma {
     readonly smsTriggerCondition: FieldRef<"AIAgent", 'String'>
     readonly smsTemplate: FieldRef<"AIAgent", 'String'>
     readonly smsAgentReply: FieldRef<"AIAgent", 'String'>
+    readonly whatsappEnabled: FieldRef<"AIAgent", 'Boolean'>
+    readonly whatsappPrompt: FieldRef<"AIAgent", 'String'>
     readonly businessHours: FieldRef<"AIAgent", 'Json'>
     readonly timeZone: FieldRef<"AIAgent", 'String'>
     readonly deletedAt: FieldRef<"AIAgent", 'DateTime'>
@@ -19784,6 +23426,26 @@ export namespace Prisma {
   }
 
   /**
+   * AIAgent.chatSessions
+   */
+  export type AIAgent$chatSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    where?: ChatSessionWhereInput
+    orderBy?: ChatSessionOrderByWithRelationInput | ChatSessionOrderByWithRelationInput[]
+    cursor?: ChatSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChatSessionScalarFieldEnum | ChatSessionScalarFieldEnum[]
+  }
+
+  /**
    * AIAgent without action
    */
   export type AIAgentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19813,6 +23475,8 @@ export namespace Prisma {
     tenantId: string | null
     phoneNumber: string | null
     label: string | null
+    kind: $Enums.PhoneNumberKind | null
+    twilioSid: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19822,6 +23486,8 @@ export namespace Prisma {
     tenantId: string | null
     phoneNumber: string | null
     label: string | null
+    kind: $Enums.PhoneNumberKind | null
+    twilioSid: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19831,6 +23497,8 @@ export namespace Prisma {
     tenantId: number
     phoneNumber: number
     label: number
+    kind: number
+    twilioSid: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -19842,6 +23510,8 @@ export namespace Prisma {
     tenantId?: true
     phoneNumber?: true
     label?: true
+    kind?: true
+    twilioSid?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19851,6 +23521,8 @@ export namespace Prisma {
     tenantId?: true
     phoneNumber?: true
     label?: true
+    kind?: true
+    twilioSid?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19860,6 +23532,8 @@ export namespace Prisma {
     tenantId?: true
     phoneNumber?: true
     label?: true
+    kind?: true
+    twilioSid?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -19942,6 +23616,8 @@ export namespace Prisma {
     tenantId: string
     phoneNumber: string
     label: string | null
+    kind: $Enums.PhoneNumberKind
+    twilioSid: string | null
     createdAt: Date
     updatedAt: Date
     _count: PhoneNumberCountAggregateOutputType | null
@@ -19968,6 +23644,8 @@ export namespace Prisma {
     tenantId?: boolean
     phoneNumber?: boolean
     label?: boolean
+    kind?: boolean
+    twilioSid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -19978,6 +23656,8 @@ export namespace Prisma {
     tenantId?: boolean
     phoneNumber?: boolean
     label?: boolean
+    kind?: boolean
+    twilioSid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -19988,6 +23668,8 @@ export namespace Prisma {
     tenantId?: boolean
     phoneNumber?: boolean
     label?: boolean
+    kind?: boolean
+    twilioSid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -20009,6 +23691,8 @@ export namespace Prisma {
       tenantId: string
       phoneNumber: string
       label: string | null
+      kind: $Enums.PhoneNumberKind
+      twilioSid: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["phoneNumber"]>
@@ -20409,6 +24093,8 @@ export namespace Prisma {
     readonly tenantId: FieldRef<"PhoneNumber", 'String'>
     readonly phoneNumber: FieldRef<"PhoneNumber", 'String'>
     readonly label: FieldRef<"PhoneNumber", 'String'>
+    readonly kind: FieldRef<"PhoneNumber", 'PhoneNumberKind'>
+    readonly twilioSid: FieldRef<"PhoneNumber", 'String'>
     readonly createdAt: FieldRef<"PhoneNumber", 'DateTime'>
     readonly updatedAt: FieldRef<"PhoneNumber", 'DateTime'>
   }
@@ -21749,6 +25435,7 @@ export namespace Prisma {
     deliveredAt: Date | null
     provider: string | null
     providerRef: string | null
+    sessionId: string | null
     occurredAt: Date | null
     createdAt: Date | null
   }
@@ -21774,6 +25461,7 @@ export namespace Prisma {
     deliveredAt: Date | null
     provider: string | null
     providerRef: string | null
+    sessionId: string | null
     occurredAt: Date | null
     createdAt: Date | null
   }
@@ -21802,6 +25490,7 @@ export namespace Prisma {
     provider: number
     providerRef: number
     metadata: number
+    sessionId: number
     occurredAt: number
     createdAt: number
     _all: number
@@ -21839,6 +25528,7 @@ export namespace Prisma {
     deliveredAt?: true
     provider?: true
     providerRef?: true
+    sessionId?: true
     occurredAt?: true
     createdAt?: true
   }
@@ -21864,6 +25554,7 @@ export namespace Prisma {
     deliveredAt?: true
     provider?: true
     providerRef?: true
+    sessionId?: true
     occurredAt?: true
     createdAt?: true
   }
@@ -21892,6 +25583,7 @@ export namespace Prisma {
     provider?: true
     providerRef?: true
     metadata?: true
+    sessionId?: true
     occurredAt?: true
     createdAt?: true
     _all?: true
@@ -22007,6 +25699,7 @@ export namespace Prisma {
     provider: string | null
     providerRef: string | null
     metadata: JsonValue | null
+    sessionId: string | null
     occurredAt: Date
     createdAt: Date
     _count: CommunicationLogCountAggregateOutputType | null
@@ -22054,12 +25747,14 @@ export namespace Prisma {
     provider?: boolean
     providerRef?: boolean
     metadata?: boolean
+    sessionId?: boolean
     occurredAt?: boolean
     createdAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     agent?: boolean | AIAgentDefaultArgs<ExtArgs>
     workflowRun?: boolean | CommunicationLog$workflowRunArgs<ExtArgs>
+    session?: boolean | CommunicationLog$sessionArgs<ExtArgs>
     activities?: boolean | CommunicationLog$activitiesArgs<ExtArgs>
     _count?: boolean | CommunicationLogCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["communicationLog"]>
@@ -22088,12 +25783,14 @@ export namespace Prisma {
     provider?: boolean
     providerRef?: boolean
     metadata?: boolean
+    sessionId?: boolean
     occurredAt?: boolean
     createdAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     agent?: boolean | AIAgentDefaultArgs<ExtArgs>
     workflowRun?: boolean | CommunicationLog$workflowRunArgs<ExtArgs>
+    session?: boolean | CommunicationLog$sessionArgs<ExtArgs>
   }, ExtArgs["result"]["communicationLog"]>
 
   export type CommunicationLogSelectScalar = {
@@ -22120,6 +25817,7 @@ export namespace Prisma {
     provider?: boolean
     providerRef?: boolean
     metadata?: boolean
+    sessionId?: boolean
     occurredAt?: boolean
     createdAt?: boolean
   }
@@ -22129,6 +25827,7 @@ export namespace Prisma {
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     agent?: boolean | AIAgentDefaultArgs<ExtArgs>
     workflowRun?: boolean | CommunicationLog$workflowRunArgs<ExtArgs>
+    session?: boolean | CommunicationLog$sessionArgs<ExtArgs>
     activities?: boolean | CommunicationLog$activitiesArgs<ExtArgs>
     _count?: boolean | CommunicationLogCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -22137,6 +25836,7 @@ export namespace Prisma {
     contact?: boolean | ContactDefaultArgs<ExtArgs>
     agent?: boolean | AIAgentDefaultArgs<ExtArgs>
     workflowRun?: boolean | CommunicationLog$workflowRunArgs<ExtArgs>
+    session?: boolean | CommunicationLog$sessionArgs<ExtArgs>
   }
 
   export type $CommunicationLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22146,6 +25846,7 @@ export namespace Prisma {
       contact: Prisma.$ContactPayload<ExtArgs>
       agent: Prisma.$AIAgentPayload<ExtArgs>
       workflowRun: Prisma.$WorkflowRunPayload<ExtArgs> | null
+      session: Prisma.$ChatSessionPayload<ExtArgs> | null
       activities: Prisma.$ActivityPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -22172,6 +25873,7 @@ export namespace Prisma {
       provider: string | null
       providerRef: string | null
       metadata: Prisma.JsonValue | null
+      sessionId: string | null
       occurredAt: Date
       createdAt: Date
     }, ExtArgs["result"]["communicationLog"]>
@@ -22542,6 +26244,7 @@ export namespace Prisma {
     contact<T extends ContactDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContactDefaultArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     agent<T extends AIAgentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AIAgentDefaultArgs<ExtArgs>>): Prisma__AIAgentClient<$Result.GetResult<Prisma.$AIAgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     workflowRun<T extends CommunicationLog$workflowRunArgs<ExtArgs> = {}>(args?: Subset<T, CommunicationLog$workflowRunArgs<ExtArgs>>): Prisma__WorkflowRunClient<$Result.GetResult<Prisma.$WorkflowRunPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    session<T extends CommunicationLog$sessionArgs<ExtArgs> = {}>(args?: Subset<T, CommunicationLog$sessionArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     activities<T extends CommunicationLog$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, CommunicationLog$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -22595,6 +26298,7 @@ export namespace Prisma {
     readonly provider: FieldRef<"CommunicationLog", 'String'>
     readonly providerRef: FieldRef<"CommunicationLog", 'String'>
     readonly metadata: FieldRef<"CommunicationLog", 'Json'>
+    readonly sessionId: FieldRef<"CommunicationLog", 'String'>
     readonly occurredAt: FieldRef<"CommunicationLog", 'DateTime'>
     readonly createdAt: FieldRef<"CommunicationLog", 'DateTime'>
   }
@@ -22930,6 +26634,21 @@ export namespace Prisma {
   }
 
   /**
+   * CommunicationLog.session
+   */
+  export type CommunicationLog$sessionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    where?: ChatSessionWhereInput
+  }
+
+  /**
    * CommunicationLog.activities
    */
   export type CommunicationLog$activitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22961,6 +26680,1073 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CommunicationLogInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChatSession
+   */
+
+  export type AggregateChatSession = {
+    _count: ChatSessionCountAggregateOutputType | null
+    _min: ChatSessionMinAggregateOutputType | null
+    _max: ChatSessionMaxAggregateOutputType | null
+  }
+
+  export type ChatSessionMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    contactId: string | null
+    agentId: string | null
+    channel: $Enums.CommType | null
+    status: $Enums.ChatSessionStatus | null
+    commLogId: string | null
+    humanTakeover: boolean | null
+    startedAt: Date | null
+    lastMessageAt: Date | null
+    processedAt: Date | null
+    dealId: string | null
+    createdAt: Date | null
+  }
+
+  export type ChatSessionMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    contactId: string | null
+    agentId: string | null
+    channel: $Enums.CommType | null
+    status: $Enums.ChatSessionStatus | null
+    commLogId: string | null
+    humanTakeover: boolean | null
+    startedAt: Date | null
+    lastMessageAt: Date | null
+    processedAt: Date | null
+    dealId: string | null
+    createdAt: Date | null
+  }
+
+  export type ChatSessionCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    contactId: number
+    agentId: number
+    channel: number
+    status: number
+    commLogId: number
+    humanTakeover: number
+    startedAt: number
+    lastMessageAt: number
+    processedAt: number
+    dealId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ChatSessionMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    contactId?: true
+    agentId?: true
+    channel?: true
+    status?: true
+    commLogId?: true
+    humanTakeover?: true
+    startedAt?: true
+    lastMessageAt?: true
+    processedAt?: true
+    dealId?: true
+    createdAt?: true
+  }
+
+  export type ChatSessionMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    contactId?: true
+    agentId?: true
+    channel?: true
+    status?: true
+    commLogId?: true
+    humanTakeover?: true
+    startedAt?: true
+    lastMessageAt?: true
+    processedAt?: true
+    dealId?: true
+    createdAt?: true
+  }
+
+  export type ChatSessionCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    contactId?: true
+    agentId?: true
+    channel?: true
+    status?: true
+    commLogId?: true
+    humanTakeover?: true
+    startedAt?: true
+    lastMessageAt?: true
+    processedAt?: true
+    dealId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ChatSessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChatSession to aggregate.
+     */
+    where?: ChatSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatSessions to fetch.
+     */
+    orderBy?: ChatSessionOrderByWithRelationInput | ChatSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ChatSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ChatSessions
+    **/
+    _count?: true | ChatSessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChatSessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChatSessionMaxAggregateInputType
+  }
+
+  export type GetChatSessionAggregateType<T extends ChatSessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateChatSession]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChatSession[P]>
+      : GetScalarType<T[P], AggregateChatSession[P]>
+  }
+
+
+
+
+  export type ChatSessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChatSessionWhereInput
+    orderBy?: ChatSessionOrderByWithAggregationInput | ChatSessionOrderByWithAggregationInput[]
+    by: ChatSessionScalarFieldEnum[] | ChatSessionScalarFieldEnum
+    having?: ChatSessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChatSessionCountAggregateInputType | true
+    _min?: ChatSessionMinAggregateInputType
+    _max?: ChatSessionMaxAggregateInputType
+  }
+
+  export type ChatSessionGroupByOutputType = {
+    id: string
+    tenantId: string
+    contactId: string
+    agentId: string
+    channel: $Enums.CommType
+    status: $Enums.ChatSessionStatus
+    commLogId: string | null
+    humanTakeover: boolean
+    startedAt: Date
+    lastMessageAt: Date
+    processedAt: Date | null
+    dealId: string | null
+    createdAt: Date
+    _count: ChatSessionCountAggregateOutputType | null
+    _min: ChatSessionMinAggregateOutputType | null
+    _max: ChatSessionMaxAggregateOutputType | null
+  }
+
+  type GetChatSessionGroupByPayload<T extends ChatSessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChatSessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChatSessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChatSessionGroupByOutputType[P]>
+            : GetScalarType<T[P], ChatSessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChatSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    contactId?: boolean
+    agentId?: boolean
+    channel?: boolean
+    status?: boolean
+    commLogId?: boolean
+    humanTakeover?: boolean
+    startedAt?: boolean
+    lastMessageAt?: boolean
+    processedAt?: boolean
+    dealId?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | AIAgentDefaultArgs<ExtArgs>
+    messages?: boolean | ChatSession$messagesArgs<ExtArgs>
+    _count?: boolean | ChatSessionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["chatSession"]>
+
+  export type ChatSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    contactId?: boolean
+    agentId?: boolean
+    channel?: boolean
+    status?: boolean
+    commLogId?: boolean
+    humanTakeover?: boolean
+    startedAt?: boolean
+    lastMessageAt?: boolean
+    processedAt?: boolean
+    dealId?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | AIAgentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["chatSession"]>
+
+  export type ChatSessionSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    contactId?: boolean
+    agentId?: boolean
+    channel?: boolean
+    status?: boolean
+    commLogId?: boolean
+    humanTakeover?: boolean
+    startedAt?: boolean
+    lastMessageAt?: boolean
+    processedAt?: boolean
+    dealId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ChatSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | AIAgentDefaultArgs<ExtArgs>
+    messages?: boolean | ChatSession$messagesArgs<ExtArgs>
+    _count?: boolean | ChatSessionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ChatSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | AIAgentDefaultArgs<ExtArgs>
+  }
+
+  export type $ChatSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChatSession"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+      contact: Prisma.$ContactPayload<ExtArgs>
+      agent: Prisma.$AIAgentPayload<ExtArgs>
+      messages: Prisma.$CommunicationLogPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      contactId: string
+      agentId: string
+      channel: $Enums.CommType
+      status: $Enums.ChatSessionStatus
+      commLogId: string | null
+      humanTakeover: boolean
+      startedAt: Date
+      lastMessageAt: Date
+      processedAt: Date | null
+      dealId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["chatSession"]>
+    composites: {}
+  }
+
+  type ChatSessionGetPayload<S extends boolean | null | undefined | ChatSessionDefaultArgs> = $Result.GetResult<Prisma.$ChatSessionPayload, S>
+
+  type ChatSessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ChatSessionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ChatSessionCountAggregateInputType | true
+    }
+
+  export interface ChatSessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChatSession'], meta: { name: 'ChatSession' } }
+    /**
+     * Find zero or one ChatSession that matches the filter.
+     * @param {ChatSessionFindUniqueArgs} args - Arguments to find a ChatSession
+     * @example
+     * // Get one ChatSession
+     * const chatSession = await prisma.chatSession.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChatSessionFindUniqueArgs>(args: SelectSubset<T, ChatSessionFindUniqueArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ChatSession that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ChatSessionFindUniqueOrThrowArgs} args - Arguments to find a ChatSession
+     * @example
+     * // Get one ChatSession
+     * const chatSession = await prisma.chatSession.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChatSessionFindUniqueOrThrowArgs>(args: SelectSubset<T, ChatSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ChatSession that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatSessionFindFirstArgs} args - Arguments to find a ChatSession
+     * @example
+     * // Get one ChatSession
+     * const chatSession = await prisma.chatSession.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChatSessionFindFirstArgs>(args?: SelectSubset<T, ChatSessionFindFirstArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ChatSession that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatSessionFindFirstOrThrowArgs} args - Arguments to find a ChatSession
+     * @example
+     * // Get one ChatSession
+     * const chatSession = await prisma.chatSession.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChatSessionFindFirstOrThrowArgs>(args?: SelectSubset<T, ChatSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ChatSessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatSessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChatSessions
+     * const chatSessions = await prisma.chatSession.findMany()
+     * 
+     * // Get first 10 ChatSessions
+     * const chatSessions = await prisma.chatSession.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const chatSessionWithIdOnly = await prisma.chatSession.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ChatSessionFindManyArgs>(args?: SelectSubset<T, ChatSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ChatSession.
+     * @param {ChatSessionCreateArgs} args - Arguments to create a ChatSession.
+     * @example
+     * // Create one ChatSession
+     * const ChatSession = await prisma.chatSession.create({
+     *   data: {
+     *     // ... data to create a ChatSession
+     *   }
+     * })
+     * 
+     */
+    create<T extends ChatSessionCreateArgs>(args: SelectSubset<T, ChatSessionCreateArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ChatSessions.
+     * @param {ChatSessionCreateManyArgs} args - Arguments to create many ChatSessions.
+     * @example
+     * // Create many ChatSessions
+     * const chatSession = await prisma.chatSession.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ChatSessionCreateManyArgs>(args?: SelectSubset<T, ChatSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChatSessions and returns the data saved in the database.
+     * @param {ChatSessionCreateManyAndReturnArgs} args - Arguments to create many ChatSessions.
+     * @example
+     * // Create many ChatSessions
+     * const chatSession = await prisma.chatSession.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ChatSessions and only return the `id`
+     * const chatSessionWithIdOnly = await prisma.chatSession.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ChatSessionCreateManyAndReturnArgs>(args?: SelectSubset<T, ChatSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ChatSession.
+     * @param {ChatSessionDeleteArgs} args - Arguments to delete one ChatSession.
+     * @example
+     * // Delete one ChatSession
+     * const ChatSession = await prisma.chatSession.delete({
+     *   where: {
+     *     // ... filter to delete one ChatSession
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ChatSessionDeleteArgs>(args: SelectSubset<T, ChatSessionDeleteArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ChatSession.
+     * @param {ChatSessionUpdateArgs} args - Arguments to update one ChatSession.
+     * @example
+     * // Update one ChatSession
+     * const chatSession = await prisma.chatSession.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ChatSessionUpdateArgs>(args: SelectSubset<T, ChatSessionUpdateArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ChatSessions.
+     * @param {ChatSessionDeleteManyArgs} args - Arguments to filter ChatSessions to delete.
+     * @example
+     * // Delete a few ChatSessions
+     * const { count } = await prisma.chatSession.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ChatSessionDeleteManyArgs>(args?: SelectSubset<T, ChatSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChatSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatSessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChatSessions
+     * const chatSession = await prisma.chatSession.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ChatSessionUpdateManyArgs>(args: SelectSubset<T, ChatSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ChatSession.
+     * @param {ChatSessionUpsertArgs} args - Arguments to update or create a ChatSession.
+     * @example
+     * // Update or create a ChatSession
+     * const chatSession = await prisma.chatSession.upsert({
+     *   create: {
+     *     // ... data to create a ChatSession
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChatSession we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChatSessionUpsertArgs>(args: SelectSubset<T, ChatSessionUpsertArgs<ExtArgs>>): Prisma__ChatSessionClient<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ChatSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatSessionCountArgs} args - Arguments to filter ChatSessions to count.
+     * @example
+     * // Count the number of ChatSessions
+     * const count = await prisma.chatSession.count({
+     *   where: {
+     *     // ... the filter for the ChatSessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChatSessionCountArgs>(
+      args?: Subset<T, ChatSessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChatSessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChatSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChatSessionAggregateArgs>(args: Subset<T, ChatSessionAggregateArgs>): Prisma.PrismaPromise<GetChatSessionAggregateType<T>>
+
+    /**
+     * Group by ChatSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChatSessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ChatSessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChatSessionGroupByArgs['orderBy'] }
+        : { orderBy?: ChatSessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChatSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChatSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChatSession model
+   */
+  readonly fields: ChatSessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChatSession.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChatSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    contact<T extends ContactDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContactDefaultArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    agent<T extends AIAgentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AIAgentDefaultArgs<ExtArgs>>): Prisma__AIAgentClient<$Result.GetResult<Prisma.$AIAgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    messages<T extends ChatSession$messagesArgs<ExtArgs> = {}>(args?: Subset<T, ChatSession$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunicationLogPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChatSession model
+   */ 
+  interface ChatSessionFieldRefs {
+    readonly id: FieldRef<"ChatSession", 'String'>
+    readonly tenantId: FieldRef<"ChatSession", 'String'>
+    readonly contactId: FieldRef<"ChatSession", 'String'>
+    readonly agentId: FieldRef<"ChatSession", 'String'>
+    readonly channel: FieldRef<"ChatSession", 'CommType'>
+    readonly status: FieldRef<"ChatSession", 'ChatSessionStatus'>
+    readonly commLogId: FieldRef<"ChatSession", 'String'>
+    readonly humanTakeover: FieldRef<"ChatSession", 'Boolean'>
+    readonly startedAt: FieldRef<"ChatSession", 'DateTime'>
+    readonly lastMessageAt: FieldRef<"ChatSession", 'DateTime'>
+    readonly processedAt: FieldRef<"ChatSession", 'DateTime'>
+    readonly dealId: FieldRef<"ChatSession", 'String'>
+    readonly createdAt: FieldRef<"ChatSession", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ChatSession findUnique
+   */
+  export type ChatSessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatSession to fetch.
+     */
+    where: ChatSessionWhereUniqueInput
+  }
+
+  /**
+   * ChatSession findUniqueOrThrow
+   */
+  export type ChatSessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatSession to fetch.
+     */
+    where: ChatSessionWhereUniqueInput
+  }
+
+  /**
+   * ChatSession findFirst
+   */
+  export type ChatSessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatSession to fetch.
+     */
+    where?: ChatSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatSessions to fetch.
+     */
+    orderBy?: ChatSessionOrderByWithRelationInput | ChatSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChatSessions.
+     */
+    cursor?: ChatSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChatSessions.
+     */
+    distinct?: ChatSessionScalarFieldEnum | ChatSessionScalarFieldEnum[]
+  }
+
+  /**
+   * ChatSession findFirstOrThrow
+   */
+  export type ChatSessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatSession to fetch.
+     */
+    where?: ChatSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatSessions to fetch.
+     */
+    orderBy?: ChatSessionOrderByWithRelationInput | ChatSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChatSessions.
+     */
+    cursor?: ChatSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChatSessions.
+     */
+    distinct?: ChatSessionScalarFieldEnum | ChatSessionScalarFieldEnum[]
+  }
+
+  /**
+   * ChatSession findMany
+   */
+  export type ChatSessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChatSessions to fetch.
+     */
+    where?: ChatSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChatSessions to fetch.
+     */
+    orderBy?: ChatSessionOrderByWithRelationInput | ChatSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ChatSessions.
+     */
+    cursor?: ChatSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChatSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChatSessions.
+     */
+    skip?: number
+    distinct?: ChatSessionScalarFieldEnum | ChatSessionScalarFieldEnum[]
+  }
+
+  /**
+   * ChatSession create
+   */
+  export type ChatSessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChatSession.
+     */
+    data: XOR<ChatSessionCreateInput, ChatSessionUncheckedCreateInput>
+  }
+
+  /**
+   * ChatSession createMany
+   */
+  export type ChatSessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChatSessions.
+     */
+    data: ChatSessionCreateManyInput | ChatSessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChatSession createManyAndReturn
+   */
+  export type ChatSessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ChatSessions.
+     */
+    data: ChatSessionCreateManyInput | ChatSessionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChatSession update
+   */
+  export type ChatSessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChatSession.
+     */
+    data: XOR<ChatSessionUpdateInput, ChatSessionUncheckedUpdateInput>
+    /**
+     * Choose, which ChatSession to update.
+     */
+    where: ChatSessionWhereUniqueInput
+  }
+
+  /**
+   * ChatSession updateMany
+   */
+  export type ChatSessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChatSessions.
+     */
+    data: XOR<ChatSessionUpdateManyMutationInput, ChatSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which ChatSessions to update
+     */
+    where?: ChatSessionWhereInput
+  }
+
+  /**
+   * ChatSession upsert
+   */
+  export type ChatSessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChatSession to update in case it exists.
+     */
+    where: ChatSessionWhereUniqueInput
+    /**
+     * In case the ChatSession found by the `where` argument doesn't exist, create a new ChatSession with this data.
+     */
+    create: XOR<ChatSessionCreateInput, ChatSessionUncheckedCreateInput>
+    /**
+     * In case the ChatSession was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChatSessionUpdateInput, ChatSessionUncheckedUpdateInput>
+  }
+
+  /**
+   * ChatSession delete
+   */
+  export type ChatSessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
+    /**
+     * Filter which ChatSession to delete.
+     */
+    where: ChatSessionWhereUniqueInput
+  }
+
+  /**
+   * ChatSession deleteMany
+   */
+  export type ChatSessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChatSessions to delete
+     */
+    where?: ChatSessionWhereInput
+  }
+
+  /**
+   * ChatSession.messages
+   */
+  export type ChatSession$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CommunicationLog
+     */
+    select?: CommunicationLogSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommunicationLogInclude<ExtArgs> | null
+    where?: CommunicationLogWhereInput
+    orderBy?: CommunicationLogOrderByWithRelationInput | CommunicationLogOrderByWithRelationInput[]
+    cursor?: CommunicationLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CommunicationLogScalarFieldEnum | CommunicationLogScalarFieldEnum[]
+  }
+
+  /**
+   * ChatSession without action
+   */
+  export type ChatSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatSession
+     */
+    select?: ChatSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatSessionInclude<ExtArgs> | null
   }
 
 
@@ -25028,12 +29814,58 @@ export namespace Prisma {
     monthlyRevenue: 'monthlyRevenue',
     onboardingStep: 'onboardingStep',
     onboardingDone: 'onboardingDone',
+    creditBalance: 'creditBalance',
     deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
+  export const CreditLedgerScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    delta: 'delta',
+    reason: 'reason',
+    refId: 'refId',
+    note: 'note',
+    createdAt: 'createdAt'
+  };
+
+  export type CreditLedgerScalarFieldEnum = (typeof CreditLedgerScalarFieldEnum)[keyof typeof CreditLedgerScalarFieldEnum]
+
+
+  export const PaymentRecordScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    provider: 'provider',
+    paymentId: 'paymentId',
+    orderId: 'orderId',
+    product: 'product',
+    amountPaise: 'amountPaise',
+    currency: 'currency',
+    status: 'status',
+    description: 'description',
+    createdAt: 'createdAt'
+  };
+
+  export type PaymentRecordScalarFieldEnum = (typeof PaymentRecordScalarFieldEnum)[keyof typeof PaymentRecordScalarFieldEnum]
+
+
+  export const BillingSubscriptionScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    provider: 'provider',
+    providerSubId: 'providerSubId',
+    plan: 'plan',
+    status: 'status',
+    currentPeriodEnd: 'currentPeriodEnd',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BillingSubscriptionScalarFieldEnum = (typeof BillingSubscriptionScalarFieldEnum)[keyof typeof BillingSubscriptionScalarFieldEnum]
 
 
   export const UserScalarFieldEnum: {
@@ -25272,6 +30104,8 @@ export namespace Prisma {
     smsTriggerCondition: 'smsTriggerCondition',
     smsTemplate: 'smsTemplate',
     smsAgentReply: 'smsAgentReply',
+    whatsappEnabled: 'whatsappEnabled',
+    whatsappPrompt: 'whatsappPrompt',
     businessHours: 'businessHours',
     timeZone: 'timeZone',
     deletedAt: 'deletedAt',
@@ -25287,6 +30121,8 @@ export namespace Prisma {
     tenantId: 'tenantId',
     phoneNumber: 'phoneNumber',
     label: 'label',
+    kind: 'kind',
+    twilioSid: 'twilioSid',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -25331,11 +30167,31 @@ export namespace Prisma {
     provider: 'provider',
     providerRef: 'providerRef',
     metadata: 'metadata',
+    sessionId: 'sessionId',
     occurredAt: 'occurredAt',
     createdAt: 'createdAt'
   };
 
   export type CommunicationLogScalarFieldEnum = (typeof CommunicationLogScalarFieldEnum)[keyof typeof CommunicationLogScalarFieldEnum]
+
+
+  export const ChatSessionScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    contactId: 'contactId',
+    agentId: 'agentId',
+    channel: 'channel',
+    status: 'status',
+    commLogId: 'commLogId',
+    humanTakeover: 'humanTakeover',
+    startedAt: 'startedAt',
+    lastMessageAt: 'lastMessageAt',
+    processedAt: 'processedAt',
+    dealId: 'dealId',
+    createdAt: 'createdAt'
+  };
+
+  export type ChatSessionScalarFieldEnum = (typeof ChatSessionScalarFieldEnum)[keyof typeof ChatSessionScalarFieldEnum]
 
 
   export const ActivityScalarFieldEnum: {
@@ -25501,6 +30357,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'CreditReason'
+   */
+  export type EnumCreditReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreditReason'>
+    
+
+
+  /**
+   * Reference to a field of type 'CreditReason[]'
+   */
+  export type ListEnumCreditReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreditReason[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionStatus'
+   */
+  export type EnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionStatus[]'
+   */
+  export type ListEnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'CustomFieldType'
    */
   export type EnumCustomFieldTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomFieldType'>
@@ -25606,6 +30490,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'PhoneNumberKind'
+   */
+  export type EnumPhoneNumberKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhoneNumberKind'>
+    
+
+
+  /**
+   * Reference to a field of type 'PhoneNumberKind[]'
+   */
+  export type ListEnumPhoneNumberKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhoneNumberKind[]'>
+    
+
+
+  /**
    * Reference to a field of type 'CommType'
    */
   export type EnumCommTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommType'>
@@ -25662,6 +30560,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ChatSessionStatus'
+   */
+  export type EnumChatSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatSessionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ChatSessionStatus[]'
+   */
+  export type ListEnumChatSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatSessionStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ActivityType'
    */
   export type EnumActivityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActivityType'>
@@ -25693,6 +30605,7 @@ export namespace Prisma {
     monthlyRevenue?: StringNullableFilter<"Tenant"> | string | null
     onboardingStep?: IntFilter<"Tenant"> | number
     onboardingDone?: BoolFilter<"Tenant"> | boolean
+    creditBalance?: IntFilter<"Tenant"> | number
     deletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     createdAt?: DateTimeFilter<"Tenant"> | Date | string
     updatedAt?: DateTimeFilter<"Tenant"> | Date | string
@@ -25709,10 +30622,14 @@ export namespace Prisma {
     aiAgents?: AIAgentListRelationFilter
     phoneNumbers?: PhoneNumberListRelationFilter
     communicationLogs?: CommunicationLogListRelationFilter
+    chatSessions?: ChatSessionListRelationFilter
     activities?: ActivityListRelationFilter
     notes?: NoteListRelationFilter
     bookings?: BookingListRelationFilter
     knowledgeBase?: KnowledgeBaseListRelationFilter
+    creditLedger?: CreditLedgerListRelationFilter
+    billingSubscription?: XOR<BillingSubscriptionNullableRelationFilter, BillingSubscriptionWhereInput> | null
+    paymentRecords?: PaymentRecordListRelationFilter
   }
 
   export type TenantOrderByWithRelationInput = {
@@ -25727,6 +30644,7 @@ export namespace Prisma {
     monthlyRevenue?: SortOrderInput | SortOrder
     onboardingStep?: SortOrder
     onboardingDone?: SortOrder
+    creditBalance?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25743,10 +30661,14 @@ export namespace Prisma {
     aiAgents?: AIAgentOrderByRelationAggregateInput
     phoneNumbers?: PhoneNumberOrderByRelationAggregateInput
     communicationLogs?: CommunicationLogOrderByRelationAggregateInput
+    chatSessions?: ChatSessionOrderByRelationAggregateInput
     activities?: ActivityOrderByRelationAggregateInput
     notes?: NoteOrderByRelationAggregateInput
     bookings?: BookingOrderByRelationAggregateInput
     knowledgeBase?: KnowledgeBaseOrderByRelationAggregateInput
+    creditLedger?: CreditLedgerOrderByRelationAggregateInput
+    billingSubscription?: BillingSubscriptionOrderByWithRelationInput
+    paymentRecords?: PaymentRecordOrderByRelationAggregateInput
   }
 
   export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -25764,6 +30686,7 @@ export namespace Prisma {
     monthlyRevenue?: StringNullableFilter<"Tenant"> | string | null
     onboardingStep?: IntFilter<"Tenant"> | number
     onboardingDone?: BoolFilter<"Tenant"> | boolean
+    creditBalance?: IntFilter<"Tenant"> | number
     deletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     createdAt?: DateTimeFilter<"Tenant"> | Date | string
     updatedAt?: DateTimeFilter<"Tenant"> | Date | string
@@ -25780,10 +30703,14 @@ export namespace Prisma {
     aiAgents?: AIAgentListRelationFilter
     phoneNumbers?: PhoneNumberListRelationFilter
     communicationLogs?: CommunicationLogListRelationFilter
+    chatSessions?: ChatSessionListRelationFilter
     activities?: ActivityListRelationFilter
     notes?: NoteListRelationFilter
     bookings?: BookingListRelationFilter
     knowledgeBase?: KnowledgeBaseListRelationFilter
+    creditLedger?: CreditLedgerListRelationFilter
+    billingSubscription?: XOR<BillingSubscriptionNullableRelationFilter, BillingSubscriptionWhereInput> | null
+    paymentRecords?: PaymentRecordListRelationFilter
   }, "id" | "slug">
 
   export type TenantOrderByWithAggregationInput = {
@@ -25798,6 +30725,7 @@ export namespace Prisma {
     monthlyRevenue?: SortOrderInput | SortOrder
     onboardingStep?: SortOrder
     onboardingDone?: SortOrder
+    creditBalance?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25823,9 +30751,239 @@ export namespace Prisma {
     monthlyRevenue?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     onboardingStep?: IntWithAggregatesFilter<"Tenant"> | number
     onboardingDone?: BoolWithAggregatesFilter<"Tenant"> | boolean
+    creditBalance?: IntWithAggregatesFilter<"Tenant"> | number
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tenant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Tenant"> | Date | string
+  }
+
+  export type CreditLedgerWhereInput = {
+    AND?: CreditLedgerWhereInput | CreditLedgerWhereInput[]
+    OR?: CreditLedgerWhereInput[]
+    NOT?: CreditLedgerWhereInput | CreditLedgerWhereInput[]
+    id?: StringFilter<"CreditLedger"> | string
+    tenantId?: StringFilter<"CreditLedger"> | string
+    delta?: IntFilter<"CreditLedger"> | number
+    reason?: EnumCreditReasonFilter<"CreditLedger"> | $Enums.CreditReason
+    refId?: StringNullableFilter<"CreditLedger"> | string | null
+    note?: StringNullableFilter<"CreditLedger"> | string | null
+    createdAt?: DateTimeFilter<"CreditLedger"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+  }
+
+  export type CreditLedgerOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    delta?: SortOrder
+    reason?: SortOrder
+    refId?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+  }
+
+  export type CreditLedgerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CreditLedgerWhereInput | CreditLedgerWhereInput[]
+    OR?: CreditLedgerWhereInput[]
+    NOT?: CreditLedgerWhereInput | CreditLedgerWhereInput[]
+    tenantId?: StringFilter<"CreditLedger"> | string
+    delta?: IntFilter<"CreditLedger"> | number
+    reason?: EnumCreditReasonFilter<"CreditLedger"> | $Enums.CreditReason
+    refId?: StringNullableFilter<"CreditLedger"> | string | null
+    note?: StringNullableFilter<"CreditLedger"> | string | null
+    createdAt?: DateTimeFilter<"CreditLedger"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+  }, "id">
+
+  export type CreditLedgerOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    delta?: SortOrder
+    reason?: SortOrder
+    refId?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: CreditLedgerCountOrderByAggregateInput
+    _avg?: CreditLedgerAvgOrderByAggregateInput
+    _max?: CreditLedgerMaxOrderByAggregateInput
+    _min?: CreditLedgerMinOrderByAggregateInput
+    _sum?: CreditLedgerSumOrderByAggregateInput
+  }
+
+  export type CreditLedgerScalarWhereWithAggregatesInput = {
+    AND?: CreditLedgerScalarWhereWithAggregatesInput | CreditLedgerScalarWhereWithAggregatesInput[]
+    OR?: CreditLedgerScalarWhereWithAggregatesInput[]
+    NOT?: CreditLedgerScalarWhereWithAggregatesInput | CreditLedgerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CreditLedger"> | string
+    tenantId?: StringWithAggregatesFilter<"CreditLedger"> | string
+    delta?: IntWithAggregatesFilter<"CreditLedger"> | number
+    reason?: EnumCreditReasonWithAggregatesFilter<"CreditLedger"> | $Enums.CreditReason
+    refId?: StringNullableWithAggregatesFilter<"CreditLedger"> | string | null
+    note?: StringNullableWithAggregatesFilter<"CreditLedger"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CreditLedger"> | Date | string
+  }
+
+  export type PaymentRecordWhereInput = {
+    AND?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    OR?: PaymentRecordWhereInput[]
+    NOT?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    id?: StringFilter<"PaymentRecord"> | string
+    tenantId?: StringFilter<"PaymentRecord"> | string
+    provider?: StringFilter<"PaymentRecord"> | string
+    paymentId?: StringFilter<"PaymentRecord"> | string
+    orderId?: StringFilter<"PaymentRecord"> | string
+    product?: StringFilter<"PaymentRecord"> | string
+    amountPaise?: IntFilter<"PaymentRecord"> | number
+    currency?: StringFilter<"PaymentRecord"> | string
+    status?: StringFilter<"PaymentRecord"> | string
+    description?: StringNullableFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+  }
+
+  export type PaymentRecordOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    paymentId?: SortOrder
+    orderId?: SortOrder
+    product?: SortOrder
+    amountPaise?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+  }
+
+  export type PaymentRecordWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    paymentId?: string
+    AND?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    OR?: PaymentRecordWhereInput[]
+    NOT?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    tenantId?: StringFilter<"PaymentRecord"> | string
+    provider?: StringFilter<"PaymentRecord"> | string
+    orderId?: StringFilter<"PaymentRecord"> | string
+    product?: StringFilter<"PaymentRecord"> | string
+    amountPaise?: IntFilter<"PaymentRecord"> | number
+    currency?: StringFilter<"PaymentRecord"> | string
+    status?: StringFilter<"PaymentRecord"> | string
+    description?: StringNullableFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+  }, "id" | "paymentId">
+
+  export type PaymentRecordOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    paymentId?: SortOrder
+    orderId?: SortOrder
+    product?: SortOrder
+    amountPaise?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PaymentRecordCountOrderByAggregateInput
+    _avg?: PaymentRecordAvgOrderByAggregateInput
+    _max?: PaymentRecordMaxOrderByAggregateInput
+    _min?: PaymentRecordMinOrderByAggregateInput
+    _sum?: PaymentRecordSumOrderByAggregateInput
+  }
+
+  export type PaymentRecordScalarWhereWithAggregatesInput = {
+    AND?: PaymentRecordScalarWhereWithAggregatesInput | PaymentRecordScalarWhereWithAggregatesInput[]
+    OR?: PaymentRecordScalarWhereWithAggregatesInput[]
+    NOT?: PaymentRecordScalarWhereWithAggregatesInput | PaymentRecordScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    tenantId?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    provider?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    paymentId?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    orderId?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    product?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    amountPaise?: IntWithAggregatesFilter<"PaymentRecord"> | number
+    currency?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    status?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    description?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PaymentRecord"> | Date | string
+  }
+
+  export type BillingSubscriptionWhereInput = {
+    AND?: BillingSubscriptionWhereInput | BillingSubscriptionWhereInput[]
+    OR?: BillingSubscriptionWhereInput[]
+    NOT?: BillingSubscriptionWhereInput | BillingSubscriptionWhereInput[]
+    id?: StringFilter<"BillingSubscription"> | string
+    tenantId?: StringFilter<"BillingSubscription"> | string
+    provider?: StringFilter<"BillingSubscription"> | string
+    providerSubId?: StringNullableFilter<"BillingSubscription"> | string | null
+    plan?: EnumPlanFilter<"BillingSubscription"> | $Enums.Plan
+    status?: EnumSubscriptionStatusFilter<"BillingSubscription"> | $Enums.SubscriptionStatus
+    currentPeriodEnd?: DateTimeNullableFilter<"BillingSubscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"BillingSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"BillingSubscription"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+  }
+
+  export type BillingSubscriptionOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    providerSubId?: SortOrderInput | SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    currentPeriodEnd?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+  }
+
+  export type BillingSubscriptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tenantId?: string
+    AND?: BillingSubscriptionWhereInput | BillingSubscriptionWhereInput[]
+    OR?: BillingSubscriptionWhereInput[]
+    NOT?: BillingSubscriptionWhereInput | BillingSubscriptionWhereInput[]
+    provider?: StringFilter<"BillingSubscription"> | string
+    providerSubId?: StringNullableFilter<"BillingSubscription"> | string | null
+    plan?: EnumPlanFilter<"BillingSubscription"> | $Enums.Plan
+    status?: EnumSubscriptionStatusFilter<"BillingSubscription"> | $Enums.SubscriptionStatus
+    currentPeriodEnd?: DateTimeNullableFilter<"BillingSubscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"BillingSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"BillingSubscription"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+  }, "id" | "tenantId">
+
+  export type BillingSubscriptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    providerSubId?: SortOrderInput | SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    currentPeriodEnd?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BillingSubscriptionCountOrderByAggregateInput
+    _max?: BillingSubscriptionMaxOrderByAggregateInput
+    _min?: BillingSubscriptionMinOrderByAggregateInput
+  }
+
+  export type BillingSubscriptionScalarWhereWithAggregatesInput = {
+    AND?: BillingSubscriptionScalarWhereWithAggregatesInput | BillingSubscriptionScalarWhereWithAggregatesInput[]
+    OR?: BillingSubscriptionScalarWhereWithAggregatesInput[]
+    NOT?: BillingSubscriptionScalarWhereWithAggregatesInput | BillingSubscriptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BillingSubscription"> | string
+    tenantId?: StringWithAggregatesFilter<"BillingSubscription"> | string
+    provider?: StringWithAggregatesFilter<"BillingSubscription"> | string
+    providerSubId?: StringNullableWithAggregatesFilter<"BillingSubscription"> | string | null
+    plan?: EnumPlanWithAggregatesFilter<"BillingSubscription"> | $Enums.Plan
+    status?: EnumSubscriptionStatusWithAggregatesFilter<"BillingSubscription"> | $Enums.SubscriptionStatus
+    currentPeriodEnd?: DateTimeNullableWithAggregatesFilter<"BillingSubscription"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BillingSubscription"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BillingSubscription"> | Date | string
   }
 
   export type UserWhereInput = {
@@ -25927,6 +31085,7 @@ export namespace Prisma {
     notes?: NoteListRelationFilter
     activities?: ActivityListRelationFilter
     communicationLogs?: CommunicationLogListRelationFilter
+    chatSessions?: ChatSessionListRelationFilter
   }
 
   export type ContactOrderByWithRelationInput = {
@@ -25946,6 +31105,7 @@ export namespace Prisma {
     notes?: NoteOrderByRelationAggregateInput
     activities?: ActivityOrderByRelationAggregateInput
     communicationLogs?: CommunicationLogOrderByRelationAggregateInput
+    chatSessions?: ChatSessionOrderByRelationAggregateInput
   }
 
   export type ContactWhereUniqueInput = Prisma.AtLeast<{
@@ -25968,6 +31128,7 @@ export namespace Prisma {
     notes?: NoteListRelationFilter
     activities?: ActivityListRelationFilter
     communicationLogs?: CommunicationLogListRelationFilter
+    chatSessions?: ChatSessionListRelationFilter
   }, "id">
 
   export type ContactOrderByWithAggregationInput = {
@@ -27002,6 +32163,8 @@ export namespace Prisma {
     smsTriggerCondition?: StringNullableFilter<"AIAgent"> | string | null
     smsTemplate?: StringNullableFilter<"AIAgent"> | string | null
     smsAgentReply?: StringNullableFilter<"AIAgent"> | string | null
+    whatsappEnabled?: BoolFilter<"AIAgent"> | boolean
+    whatsappPrompt?: StringNullableFilter<"AIAgent"> | string | null
     businessHours?: JsonNullableFilter<"AIAgent">
     timeZone?: StringFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableFilter<"AIAgent"> | Date | string | null
@@ -27010,6 +32173,7 @@ export namespace Prisma {
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     communicationLogs?: CommunicationLogListRelationFilter
     knowledgeBases?: KnowledgeBaseListRelationFilter
+    chatSessions?: ChatSessionListRelationFilter
   }
 
   export type AIAgentOrderByWithRelationInput = {
@@ -27040,6 +32204,8 @@ export namespace Prisma {
     smsTriggerCondition?: SortOrderInput | SortOrder
     smsTemplate?: SortOrderInput | SortOrder
     smsAgentReply?: SortOrderInput | SortOrder
+    whatsappEnabled?: SortOrder
+    whatsappPrompt?: SortOrderInput | SortOrder
     businessHours?: SortOrderInput | SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -27048,6 +32214,7 @@ export namespace Prisma {
     tenant?: TenantOrderByWithRelationInput
     communicationLogs?: CommunicationLogOrderByRelationAggregateInput
     knowledgeBases?: KnowledgeBaseOrderByRelationAggregateInput
+    chatSessions?: ChatSessionOrderByRelationAggregateInput
   }
 
   export type AIAgentWhereUniqueInput = Prisma.AtLeast<{
@@ -27081,6 +32248,8 @@ export namespace Prisma {
     smsTriggerCondition?: StringNullableFilter<"AIAgent"> | string | null
     smsTemplate?: StringNullableFilter<"AIAgent"> | string | null
     smsAgentReply?: StringNullableFilter<"AIAgent"> | string | null
+    whatsappEnabled?: BoolFilter<"AIAgent"> | boolean
+    whatsappPrompt?: StringNullableFilter<"AIAgent"> | string | null
     businessHours?: JsonNullableFilter<"AIAgent">
     timeZone?: StringFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableFilter<"AIAgent"> | Date | string | null
@@ -27089,6 +32258,7 @@ export namespace Prisma {
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     communicationLogs?: CommunicationLogListRelationFilter
     knowledgeBases?: KnowledgeBaseListRelationFilter
+    chatSessions?: ChatSessionListRelationFilter
   }, "id">
 
   export type AIAgentOrderByWithAggregationInput = {
@@ -27119,6 +32289,8 @@ export namespace Prisma {
     smsTriggerCondition?: SortOrderInput | SortOrder
     smsTemplate?: SortOrderInput | SortOrder
     smsAgentReply?: SortOrderInput | SortOrder
+    whatsappEnabled?: SortOrder
+    whatsappPrompt?: SortOrderInput | SortOrder
     businessHours?: SortOrderInput | SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -27162,6 +32334,8 @@ export namespace Prisma {
     smsTriggerCondition?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     smsTemplate?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     smsAgentReply?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    whatsappEnabled?: BoolWithAggregatesFilter<"AIAgent"> | boolean
+    whatsappPrompt?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     businessHours?: JsonNullableWithAggregatesFilter<"AIAgent">
     timeZone?: StringWithAggregatesFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"AIAgent"> | Date | string | null
@@ -27177,6 +32351,8 @@ export namespace Prisma {
     tenantId?: StringFilter<"PhoneNumber"> | string
     phoneNumber?: StringFilter<"PhoneNumber"> | string
     label?: StringNullableFilter<"PhoneNumber"> | string | null
+    kind?: EnumPhoneNumberKindFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    twilioSid?: StringNullableFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -27187,6 +32363,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     phoneNumber?: SortOrder
     label?: SortOrderInput | SortOrder
+    kind?: SortOrder
+    twilioSid?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tenant?: TenantOrderByWithRelationInput
@@ -27200,6 +32378,8 @@ export namespace Prisma {
     NOT?: PhoneNumberWhereInput | PhoneNumberWhereInput[]
     tenantId?: StringFilter<"PhoneNumber"> | string
     label?: StringNullableFilter<"PhoneNumber"> | string | null
+    kind?: EnumPhoneNumberKindFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    twilioSid?: StringNullableFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -27210,6 +32390,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     phoneNumber?: SortOrder
     label?: SortOrderInput | SortOrder
+    kind?: SortOrder
+    twilioSid?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: PhoneNumberCountOrderByAggregateInput
@@ -27225,6 +32407,8 @@ export namespace Prisma {
     tenantId?: StringWithAggregatesFilter<"PhoneNumber"> | string
     phoneNumber?: StringWithAggregatesFilter<"PhoneNumber"> | string
     label?: StringNullableWithAggregatesFilter<"PhoneNumber"> | string | null
+    kind?: EnumPhoneNumberKindWithAggregatesFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    twilioSid?: StringNullableWithAggregatesFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"PhoneNumber"> | Date | string
   }
@@ -27324,12 +32508,14 @@ export namespace Prisma {
     provider?: StringNullableFilter<"CommunicationLog"> | string | null
     providerRef?: StringNullableFilter<"CommunicationLog"> | string | null
     metadata?: JsonNullableFilter<"CommunicationLog">
+    sessionId?: StringNullableFilter<"CommunicationLog"> | string | null
     occurredAt?: DateTimeFilter<"CommunicationLog"> | Date | string
     createdAt?: DateTimeFilter<"CommunicationLog"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     agent?: XOR<AIAgentRelationFilter, AIAgentWhereInput>
     workflowRun?: XOR<WorkflowRunNullableRelationFilter, WorkflowRunWhereInput> | null
+    session?: XOR<ChatSessionNullableRelationFilter, ChatSessionWhereInput> | null
     activities?: ActivityListRelationFilter
   }
 
@@ -27357,12 +32543,14 @@ export namespace Prisma {
     provider?: SortOrderInput | SortOrder
     providerRef?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
+    sessionId?: SortOrderInput | SortOrder
     occurredAt?: SortOrder
     createdAt?: SortOrder
     tenant?: TenantOrderByWithRelationInput
     contact?: ContactOrderByWithRelationInput
     agent?: AIAgentOrderByWithRelationInput
     workflowRun?: WorkflowRunOrderByWithRelationInput
+    session?: ChatSessionOrderByWithRelationInput
     activities?: ActivityOrderByRelationAggregateInput
   }
 
@@ -27393,12 +32581,14 @@ export namespace Prisma {
     provider?: StringNullableFilter<"CommunicationLog"> | string | null
     providerRef?: StringNullableFilter<"CommunicationLog"> | string | null
     metadata?: JsonNullableFilter<"CommunicationLog">
+    sessionId?: StringNullableFilter<"CommunicationLog"> | string | null
     occurredAt?: DateTimeFilter<"CommunicationLog"> | Date | string
     createdAt?: DateTimeFilter<"CommunicationLog"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
     agent?: XOR<AIAgentRelationFilter, AIAgentWhereInput>
     workflowRun?: XOR<WorkflowRunNullableRelationFilter, WorkflowRunWhereInput> | null
+    session?: XOR<ChatSessionNullableRelationFilter, ChatSessionWhereInput> | null
     activities?: ActivityListRelationFilter
   }, "id">
 
@@ -27426,6 +32616,7 @@ export namespace Prisma {
     provider?: SortOrderInput | SortOrder
     providerRef?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
+    sessionId?: SortOrderInput | SortOrder
     occurredAt?: SortOrder
     createdAt?: SortOrder
     _count?: CommunicationLogCountOrderByAggregateInput
@@ -27462,8 +32653,113 @@ export namespace Prisma {
     provider?: StringNullableWithAggregatesFilter<"CommunicationLog"> | string | null
     providerRef?: StringNullableWithAggregatesFilter<"CommunicationLog"> | string | null
     metadata?: JsonNullableWithAggregatesFilter<"CommunicationLog">
+    sessionId?: StringNullableWithAggregatesFilter<"CommunicationLog"> | string | null
     occurredAt?: DateTimeWithAggregatesFilter<"CommunicationLog"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"CommunicationLog"> | Date | string
+  }
+
+  export type ChatSessionWhereInput = {
+    AND?: ChatSessionWhereInput | ChatSessionWhereInput[]
+    OR?: ChatSessionWhereInput[]
+    NOT?: ChatSessionWhereInput | ChatSessionWhereInput[]
+    id?: StringFilter<"ChatSession"> | string
+    tenantId?: StringFilter<"ChatSession"> | string
+    contactId?: StringFilter<"ChatSession"> | string
+    agentId?: StringFilter<"ChatSession"> | string
+    channel?: EnumCommTypeFilter<"ChatSession"> | $Enums.CommType
+    status?: EnumChatSessionStatusFilter<"ChatSession"> | $Enums.ChatSessionStatus
+    commLogId?: StringNullableFilter<"ChatSession"> | string | null
+    humanTakeover?: BoolFilter<"ChatSession"> | boolean
+    startedAt?: DateTimeFilter<"ChatSession"> | Date | string
+    lastMessageAt?: DateTimeFilter<"ChatSession"> | Date | string
+    processedAt?: DateTimeNullableFilter<"ChatSession"> | Date | string | null
+    dealId?: StringNullableFilter<"ChatSession"> | string | null
+    createdAt?: DateTimeFilter<"ChatSession"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+    contact?: XOR<ContactRelationFilter, ContactWhereInput>
+    agent?: XOR<AIAgentRelationFilter, AIAgentWhereInput>
+    messages?: CommunicationLogListRelationFilter
+  }
+
+  export type ChatSessionOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    contactId?: SortOrder
+    agentId?: SortOrder
+    channel?: SortOrder
+    status?: SortOrder
+    commLogId?: SortOrderInput | SortOrder
+    humanTakeover?: SortOrder
+    startedAt?: SortOrder
+    lastMessageAt?: SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    dealId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+    contact?: ContactOrderByWithRelationInput
+    agent?: AIAgentOrderByWithRelationInput
+    messages?: CommunicationLogOrderByRelationAggregateInput
+  }
+
+  export type ChatSessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    commLogId?: string
+    AND?: ChatSessionWhereInput | ChatSessionWhereInput[]
+    OR?: ChatSessionWhereInput[]
+    NOT?: ChatSessionWhereInput | ChatSessionWhereInput[]
+    tenantId?: StringFilter<"ChatSession"> | string
+    contactId?: StringFilter<"ChatSession"> | string
+    agentId?: StringFilter<"ChatSession"> | string
+    channel?: EnumCommTypeFilter<"ChatSession"> | $Enums.CommType
+    status?: EnumChatSessionStatusFilter<"ChatSession"> | $Enums.ChatSessionStatus
+    humanTakeover?: BoolFilter<"ChatSession"> | boolean
+    startedAt?: DateTimeFilter<"ChatSession"> | Date | string
+    lastMessageAt?: DateTimeFilter<"ChatSession"> | Date | string
+    processedAt?: DateTimeNullableFilter<"ChatSession"> | Date | string | null
+    dealId?: StringNullableFilter<"ChatSession"> | string | null
+    createdAt?: DateTimeFilter<"ChatSession"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+    contact?: XOR<ContactRelationFilter, ContactWhereInput>
+    agent?: XOR<AIAgentRelationFilter, AIAgentWhereInput>
+    messages?: CommunicationLogListRelationFilter
+  }, "id" | "commLogId">
+
+  export type ChatSessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    contactId?: SortOrder
+    agentId?: SortOrder
+    channel?: SortOrder
+    status?: SortOrder
+    commLogId?: SortOrderInput | SortOrder
+    humanTakeover?: SortOrder
+    startedAt?: SortOrder
+    lastMessageAt?: SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    dealId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ChatSessionCountOrderByAggregateInput
+    _max?: ChatSessionMaxOrderByAggregateInput
+    _min?: ChatSessionMinOrderByAggregateInput
+  }
+
+  export type ChatSessionScalarWhereWithAggregatesInput = {
+    AND?: ChatSessionScalarWhereWithAggregatesInput | ChatSessionScalarWhereWithAggregatesInput[]
+    OR?: ChatSessionScalarWhereWithAggregatesInput[]
+    NOT?: ChatSessionScalarWhereWithAggregatesInput | ChatSessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChatSession"> | string
+    tenantId?: StringWithAggregatesFilter<"ChatSession"> | string
+    contactId?: StringWithAggregatesFilter<"ChatSession"> | string
+    agentId?: StringWithAggregatesFilter<"ChatSession"> | string
+    channel?: EnumCommTypeWithAggregatesFilter<"ChatSession"> | $Enums.CommType
+    status?: EnumChatSessionStatusWithAggregatesFilter<"ChatSession"> | $Enums.ChatSessionStatus
+    commLogId?: StringNullableWithAggregatesFilter<"ChatSession"> | string | null
+    humanTakeover?: BoolWithAggregatesFilter<"ChatSession"> | boolean
+    startedAt?: DateTimeWithAggregatesFilter<"ChatSession"> | Date | string
+    lastMessageAt?: DateTimeWithAggregatesFilter<"ChatSession"> | Date | string
+    processedAt?: DateTimeNullableWithAggregatesFilter<"ChatSession"> | Date | string | null
+    dealId?: StringNullableWithAggregatesFilter<"ChatSession"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ChatSession"> | Date | string
   }
 
   export type ActivityWhereInput = {
@@ -27653,6 +32949,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27669,10 +32966,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateInput = {
@@ -27687,6 +32988,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27703,10 +33005,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUpdateInput = {
@@ -27721,6 +33027,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27737,10 +33044,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateInput = {
@@ -27755,6 +33066,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27771,10 +33083,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantCreateManyInput = {
@@ -27789,6 +33105,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27806,6 +33123,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27823,7 +33141,257 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CreditLedgerCreateInput = {
+    id?: string
+    delta: number
+    reason: $Enums.CreditReason
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutCreditLedgerInput
+  }
+
+  export type CreditLedgerUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    delta: number
+    reason: $Enums.CreditReason
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CreditLedgerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    delta?: IntFieldUpdateOperationsInput | number
+    reason?: EnumCreditReasonFieldUpdateOperationsInput | $Enums.CreditReason
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutCreditLedgerNestedInput
+  }
+
+  export type CreditLedgerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    delta?: IntFieldUpdateOperationsInput | number
+    reason?: EnumCreditReasonFieldUpdateOperationsInput | $Enums.CreditReason
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CreditLedgerCreateManyInput = {
+    id?: string
+    tenantId: string
+    delta: number
+    reason: $Enums.CreditReason
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CreditLedgerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    delta?: IntFieldUpdateOperationsInput | number
+    reason?: EnumCreditReasonFieldUpdateOperationsInput | $Enums.CreditReason
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CreditLedgerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    delta?: IntFieldUpdateOperationsInput | number
+    reason?: EnumCreditReasonFieldUpdateOperationsInput | $Enums.CreditReason
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordCreateInput = {
+    id?: string
+    provider?: string
+    paymentId: string
+    orderId: string
+    product: string
+    amountPaise: number
+    currency?: string
+    status?: string
+    description?: string | null
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutPaymentRecordsInput
+  }
+
+  export type PaymentRecordUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    provider?: string
+    paymentId: string
+    orderId: string
+    product: string
+    amountPaise: number
+    currency?: string
+    status?: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PaymentRecordUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    paymentId?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    product?: StringFieldUpdateOperationsInput | string
+    amountPaise?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutPaymentRecordsNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    paymentId?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    product?: StringFieldUpdateOperationsInput | string
+    amountPaise?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordCreateManyInput = {
+    id?: string
+    tenantId: string
+    provider?: string
+    paymentId: string
+    orderId: string
+    product: string
+    amountPaise: number
+    currency?: string
+    status?: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PaymentRecordUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    paymentId?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    product?: StringFieldUpdateOperationsInput | string
+    amountPaise?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    paymentId?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    product?: StringFieldUpdateOperationsInput | string
+    amountPaise?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BillingSubscriptionCreateInput = {
+    id?: string
+    provider?: string
+    providerSubId?: string | null
+    plan: $Enums.Plan
+    status?: $Enums.SubscriptionStatus
+    currentPeriodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutBillingSubscriptionInput
+  }
+
+  export type BillingSubscriptionUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    provider?: string
+    providerSubId?: string | null
+    plan: $Enums.Plan
+    status?: $Enums.SubscriptionStatus
+    currentPeriodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BillingSubscriptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutBillingSubscriptionNestedInput
+  }
+
+  export type BillingSubscriptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BillingSubscriptionCreateManyInput = {
+    id?: string
+    tenantId: string
+    provider?: string
+    providerSubId?: string | null
+    plan: $Enums.Plan
+    status?: $Enums.SubscriptionStatus
+    currentPeriodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BillingSubscriptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BillingSubscriptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27931,6 +33499,7 @@ export namespace Prisma {
     notes?: NoteCreateNestedManyWithoutContactInput
     activities?: ActivityCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateInput = {
@@ -27949,6 +33518,7 @@ export namespace Prisma {
     notes?: NoteUncheckedCreateNestedManyWithoutContactInput
     activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactUpdateInput = {
@@ -27967,6 +33537,7 @@ export namespace Prisma {
     notes?: NoteUpdateManyWithoutContactNestedInput
     activities?: ActivityUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateInput = {
@@ -27985,6 +33556,7 @@ export namespace Prisma {
     notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type ContactCreateManyInput = {
@@ -29093,6 +34665,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -29101,6 +34675,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutAiAgentsInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateInput = {
@@ -29131,6 +34706,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -29138,6 +34715,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUpdateInput = {
@@ -29167,6 +34745,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29175,6 +34755,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateInput = {
@@ -29205,6 +34786,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29212,6 +34795,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentCreateManyInput = {
@@ -29242,6 +34826,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -29276,6 +34862,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29311,6 +34899,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29322,6 +34912,8 @@ export namespace Prisma {
     id?: string
     phoneNumber: string
     label?: string | null
+    kind?: $Enums.PhoneNumberKind
+    twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutPhoneNumbersInput
@@ -29332,6 +34924,8 @@ export namespace Prisma {
     tenantId: string
     phoneNumber: string
     label?: string | null
+    kind?: $Enums.PhoneNumberKind
+    twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29340,6 +34934,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutPhoneNumbersNestedInput
@@ -29350,6 +34946,8 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29359,6 +34957,8 @@ export namespace Prisma {
     tenantId: string
     phoneNumber: string
     label?: string | null
+    kind?: $Enums.PhoneNumberKind
+    twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29367,6 +34967,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29376,6 +34978,8 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29474,6 +35078,7 @@ export namespace Prisma {
     contact: ContactCreateNestedOneWithoutCommunicationLogsInput
     agent: AIAgentCreateNestedOneWithoutCommunicationLogsInput
     workflowRun?: WorkflowRunCreateNestedOneWithoutCommunicationLogsInput
+    session?: ChatSessionCreateNestedOneWithoutMessagesInput
     activities?: ActivityCreateNestedManyWithoutCommLogInput
   }
 
@@ -29501,6 +35106,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutCommLogInput
@@ -29532,6 +35138,7 @@ export namespace Prisma {
     contact?: ContactUpdateOneRequiredWithoutCommunicationLogsNestedInput
     agent?: AIAgentUpdateOneRequiredWithoutCommunicationLogsNestedInput
     workflowRun?: WorkflowRunUpdateOneWithoutCommunicationLogsNestedInput
+    session?: ChatSessionUpdateOneWithoutMessagesNestedInput
     activities?: ActivityUpdateManyWithoutCommLogNestedInput
   }
 
@@ -29559,6 +35166,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutCommLogNestedInput
@@ -29588,6 +35196,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
   }
@@ -29640,7 +35249,121 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatSessionCreateInput = {
+    id?: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutChatSessionsInput
+    contact: ContactCreateNestedOneWithoutChatSessionsInput
+    agent: AIAgentCreateNestedOneWithoutChatSessionsInput
+    messages?: CommunicationLogCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    agentId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    messages?: CommunicationLogUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutChatSessionsNestedInput
+    contact?: ContactUpdateOneRequiredWithoutChatSessionsNestedInput
+    agent?: AIAgentUpdateOneRequiredWithoutChatSessionsNestedInput
+    messages?: CommunicationLogUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: CommunicationLogUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionCreateManyInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    agentId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ChatSessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatSessionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29979,6 +35702,12 @@ export namespace Prisma {
     none?: CommunicationLogWhereInput
   }
 
+  export type ChatSessionListRelationFilter = {
+    every?: ChatSessionWhereInput
+    some?: ChatSessionWhereInput
+    none?: ChatSessionWhereInput
+  }
+
   export type ActivityListRelationFilter = {
     every?: ActivityWhereInput
     some?: ActivityWhereInput
@@ -30001,6 +35730,23 @@ export namespace Prisma {
     every?: KnowledgeBaseWhereInput
     some?: KnowledgeBaseWhereInput
     none?: KnowledgeBaseWhereInput
+  }
+
+  export type CreditLedgerListRelationFilter = {
+    every?: CreditLedgerWhereInput
+    some?: CreditLedgerWhereInput
+    none?: CreditLedgerWhereInput
+  }
+
+  export type BillingSubscriptionNullableRelationFilter = {
+    is?: BillingSubscriptionWhereInput | null
+    isNot?: BillingSubscriptionWhereInput | null
+  }
+
+  export type PaymentRecordListRelationFilter = {
+    every?: PaymentRecordWhereInput
+    some?: PaymentRecordWhereInput
+    none?: PaymentRecordWhereInput
   }
 
   export type SortOrderInput = {
@@ -30060,6 +35806,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ChatSessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ActivityOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -30076,6 +35826,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type CreditLedgerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PaymentRecordOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type TenantCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -30088,6 +35846,7 @@ export namespace Prisma {
     monthlyRevenue?: SortOrder
     onboardingStep?: SortOrder
     onboardingDone?: SortOrder
+    creditBalance?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30095,6 +35854,7 @@ export namespace Prisma {
 
   export type TenantAvgOrderByAggregateInput = {
     onboardingStep?: SortOrder
+    creditBalance?: SortOrder
   }
 
   export type TenantMaxOrderByAggregateInput = {
@@ -30109,6 +35869,7 @@ export namespace Prisma {
     monthlyRevenue?: SortOrder
     onboardingStep?: SortOrder
     onboardingDone?: SortOrder
+    creditBalance?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30126,6 +35887,7 @@ export namespace Prisma {
     monthlyRevenue?: SortOrder
     onboardingStep?: SortOrder
     onboardingDone?: SortOrder
+    creditBalance?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30133,6 +35895,7 @@ export namespace Prisma {
 
   export type TenantSumOrderByAggregateInput = {
     onboardingStep?: SortOrder
+    creditBalance?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -30243,9 +36006,167 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type EnumCreditReasonFilter<$PrismaModel = never> = {
+    equals?: $Enums.CreditReason | EnumCreditReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumCreditReasonFilter<$PrismaModel> | $Enums.CreditReason
+  }
+
   export type TenantRelationFilter = {
     is?: TenantWhereInput
     isNot?: TenantWhereInput
+  }
+
+  export type CreditLedgerCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    delta?: SortOrder
+    reason?: SortOrder
+    refId?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CreditLedgerAvgOrderByAggregateInput = {
+    delta?: SortOrder
+  }
+
+  export type CreditLedgerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    delta?: SortOrder
+    reason?: SortOrder
+    refId?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CreditLedgerMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    delta?: SortOrder
+    reason?: SortOrder
+    refId?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CreditLedgerSumOrderByAggregateInput = {
+    delta?: SortOrder
+  }
+
+  export type EnumCreditReasonWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CreditReason | EnumCreditReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumCreditReasonWithAggregatesFilter<$PrismaModel> | $Enums.CreditReason
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCreditReasonFilter<$PrismaModel>
+    _max?: NestedEnumCreditReasonFilter<$PrismaModel>
+  }
+
+  export type PaymentRecordCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    paymentId?: SortOrder
+    orderId?: SortOrder
+    product?: SortOrder
+    amountPaise?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PaymentRecordAvgOrderByAggregateInput = {
+    amountPaise?: SortOrder
+  }
+
+  export type PaymentRecordMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    paymentId?: SortOrder
+    orderId?: SortOrder
+    product?: SortOrder
+    amountPaise?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PaymentRecordMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    paymentId?: SortOrder
+    orderId?: SortOrder
+    product?: SortOrder
+    amountPaise?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PaymentRecordSumOrderByAggregateInput = {
+    amountPaise?: SortOrder
+  }
+
+  export type EnumSubscriptionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
+  }
+
+  export type BillingSubscriptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    providerSubId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    currentPeriodEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BillingSubscriptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    providerSubId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    currentPeriodEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BillingSubscriptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    providerSubId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    currentPeriodEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
   }
 
   export type UserTenantIdEmailCompoundUniqueInput = {
@@ -31161,6 +37082,8 @@ export namespace Prisma {
     smsTriggerCondition?: SortOrder
     smsTemplate?: SortOrder
     smsAgentReply?: SortOrder
+    whatsappEnabled?: SortOrder
+    whatsappPrompt?: SortOrder
     businessHours?: SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrder
@@ -31199,6 +37122,8 @@ export namespace Prisma {
     smsTriggerCondition?: SortOrder
     smsTemplate?: SortOrder
     smsAgentReply?: SortOrder
+    whatsappEnabled?: SortOrder
+    whatsappPrompt?: SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
@@ -31232,6 +37157,8 @@ export namespace Prisma {
     smsTriggerCondition?: SortOrder
     smsTemplate?: SortOrder
     smsAgentReply?: SortOrder
+    whatsappEnabled?: SortOrder
+    whatsappPrompt?: SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
@@ -31242,11 +37169,20 @@ export namespace Prisma {
     maxDuration?: SortOrder
   }
 
+  export type EnumPhoneNumberKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberKind | EnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberKindFilter<$PrismaModel> | $Enums.PhoneNumberKind
+  }
+
   export type PhoneNumberCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
     phoneNumber?: SortOrder
     label?: SortOrder
+    kind?: SortOrder
+    twilioSid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -31256,6 +37192,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     phoneNumber?: SortOrder
     label?: SortOrder
+    kind?: SortOrder
+    twilioSid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -31265,8 +37203,20 @@ export namespace Prisma {
     tenantId?: SortOrder
     phoneNumber?: SortOrder
     label?: SortOrder
+    kind?: SortOrder
+    twilioSid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumPhoneNumberKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberKind | EnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberKindWithAggregatesFilter<$PrismaModel> | $Enums.PhoneNumberKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
+    _max?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
   }
 
   export type AIAgentRelationFilter = {
@@ -31337,6 +37287,11 @@ export namespace Prisma {
     isNot?: WorkflowRunWhereInput | null
   }
 
+  export type ChatSessionNullableRelationFilter = {
+    is?: ChatSessionWhereInput | null
+    isNot?: ChatSessionWhereInput | null
+  }
+
   export type CommunicationLogCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
@@ -31361,6 +37316,7 @@ export namespace Prisma {
     provider?: SortOrder
     providerRef?: SortOrder
     metadata?: SortOrder
+    sessionId?: SortOrder
     occurredAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -31391,6 +37347,7 @@ export namespace Prisma {
     deliveredAt?: SortOrder
     provider?: SortOrder
     providerRef?: SortOrder
+    sessionId?: SortOrder
     occurredAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -31416,6 +37373,7 @@ export namespace Prisma {
     deliveredAt?: SortOrder
     provider?: SortOrder
     providerRef?: SortOrder
+    sessionId?: SortOrder
     occurredAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -31463,6 +37421,71 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumExtractionStatusFilter<$PrismaModel>
     _max?: NestedEnumExtractionStatusFilter<$PrismaModel>
+  }
+
+  export type EnumChatSessionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChatSessionStatus | EnumChatSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChatSessionStatusFilter<$PrismaModel> | $Enums.ChatSessionStatus
+  }
+
+  export type ChatSessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    contactId?: SortOrder
+    agentId?: SortOrder
+    channel?: SortOrder
+    status?: SortOrder
+    commLogId?: SortOrder
+    humanTakeover?: SortOrder
+    startedAt?: SortOrder
+    lastMessageAt?: SortOrder
+    processedAt?: SortOrder
+    dealId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChatSessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    contactId?: SortOrder
+    agentId?: SortOrder
+    channel?: SortOrder
+    status?: SortOrder
+    commLogId?: SortOrder
+    humanTakeover?: SortOrder
+    startedAt?: SortOrder
+    lastMessageAt?: SortOrder
+    processedAt?: SortOrder
+    dealId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChatSessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    contactId?: SortOrder
+    agentId?: SortOrder
+    channel?: SortOrder
+    status?: SortOrder
+    commLogId?: SortOrder
+    humanTakeover?: SortOrder
+    startedAt?: SortOrder
+    lastMessageAt?: SortOrder
+    processedAt?: SortOrder
+    dealId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumChatSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChatSessionStatus | EnumChatSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChatSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChatSessionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChatSessionStatusFilter<$PrismaModel>
+    _max?: NestedEnumChatSessionStatusFilter<$PrismaModel>
   }
 
   export type EnumActivityTypeFilter<$PrismaModel = never> = {
@@ -31686,6 +37709,13 @@ export namespace Prisma {
     connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
   }
 
+  export type ChatSessionCreateNestedManyWithoutTenantInput = {
+    create?: XOR<ChatSessionCreateWithoutTenantInput, ChatSessionUncheckedCreateWithoutTenantInput> | ChatSessionCreateWithoutTenantInput[] | ChatSessionUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutTenantInput | ChatSessionCreateOrConnectWithoutTenantInput[]
+    createMany?: ChatSessionCreateManyTenantInputEnvelope
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+  }
+
   export type ActivityCreateNestedManyWithoutTenantInput = {
     create?: XOR<ActivityCreateWithoutTenantInput, ActivityUncheckedCreateWithoutTenantInput> | ActivityCreateWithoutTenantInput[] | ActivityUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: ActivityCreateOrConnectWithoutTenantInput | ActivityCreateOrConnectWithoutTenantInput[]
@@ -31712,6 +37742,26 @@ export namespace Prisma {
     connectOrCreate?: KnowledgeBaseCreateOrConnectWithoutTenantInput | KnowledgeBaseCreateOrConnectWithoutTenantInput[]
     createMany?: KnowledgeBaseCreateManyTenantInputEnvelope
     connect?: KnowledgeBaseWhereUniqueInput | KnowledgeBaseWhereUniqueInput[]
+  }
+
+  export type CreditLedgerCreateNestedManyWithoutTenantInput = {
+    create?: XOR<CreditLedgerCreateWithoutTenantInput, CreditLedgerUncheckedCreateWithoutTenantInput> | CreditLedgerCreateWithoutTenantInput[] | CreditLedgerUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: CreditLedgerCreateOrConnectWithoutTenantInput | CreditLedgerCreateOrConnectWithoutTenantInput[]
+    createMany?: CreditLedgerCreateManyTenantInputEnvelope
+    connect?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+  }
+
+  export type BillingSubscriptionCreateNestedOneWithoutTenantInput = {
+    create?: XOR<BillingSubscriptionCreateWithoutTenantInput, BillingSubscriptionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: BillingSubscriptionCreateOrConnectWithoutTenantInput
+    connect?: BillingSubscriptionWhereUniqueInput
+  }
+
+  export type PaymentRecordCreateNestedManyWithoutTenantInput = {
+    create?: XOR<PaymentRecordCreateWithoutTenantInput, PaymentRecordUncheckedCreateWithoutTenantInput> | PaymentRecordCreateWithoutTenantInput[] | PaymentRecordUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutTenantInput | PaymentRecordCreateOrConnectWithoutTenantInput[]
+    createMany?: PaymentRecordCreateManyTenantInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
   export type UserUncheckedCreateNestedManyWithoutTenantInput = {
@@ -31805,6 +37855,13 @@ export namespace Prisma {
     connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
   }
 
+  export type ChatSessionUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<ChatSessionCreateWithoutTenantInput, ChatSessionUncheckedCreateWithoutTenantInput> | ChatSessionCreateWithoutTenantInput[] | ChatSessionUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutTenantInput | ChatSessionCreateOrConnectWithoutTenantInput[]
+    createMany?: ChatSessionCreateManyTenantInputEnvelope
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+  }
+
   export type ActivityUncheckedCreateNestedManyWithoutTenantInput = {
     create?: XOR<ActivityCreateWithoutTenantInput, ActivityUncheckedCreateWithoutTenantInput> | ActivityCreateWithoutTenantInput[] | ActivityUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: ActivityCreateOrConnectWithoutTenantInput | ActivityCreateOrConnectWithoutTenantInput[]
@@ -31831,6 +37888,26 @@ export namespace Prisma {
     connectOrCreate?: KnowledgeBaseCreateOrConnectWithoutTenantInput | KnowledgeBaseCreateOrConnectWithoutTenantInput[]
     createMany?: KnowledgeBaseCreateManyTenantInputEnvelope
     connect?: KnowledgeBaseWhereUniqueInput | KnowledgeBaseWhereUniqueInput[]
+  }
+
+  export type CreditLedgerUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<CreditLedgerCreateWithoutTenantInput, CreditLedgerUncheckedCreateWithoutTenantInput> | CreditLedgerCreateWithoutTenantInput[] | CreditLedgerUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: CreditLedgerCreateOrConnectWithoutTenantInput | CreditLedgerCreateOrConnectWithoutTenantInput[]
+    createMany?: CreditLedgerCreateManyTenantInputEnvelope
+    connect?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+  }
+
+  export type BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput = {
+    create?: XOR<BillingSubscriptionCreateWithoutTenantInput, BillingSubscriptionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: BillingSubscriptionCreateOrConnectWithoutTenantInput
+    connect?: BillingSubscriptionWhereUniqueInput
+  }
+
+  export type PaymentRecordUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<PaymentRecordCreateWithoutTenantInput, PaymentRecordUncheckedCreateWithoutTenantInput> | PaymentRecordCreateWithoutTenantInput[] | PaymentRecordUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutTenantInput | PaymentRecordCreateOrConnectWithoutTenantInput[]
+    createMany?: PaymentRecordCreateManyTenantInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -32051,6 +38128,20 @@ export namespace Prisma {
     deleteMany?: CommunicationLogScalarWhereInput | CommunicationLogScalarWhereInput[]
   }
 
+  export type ChatSessionUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<ChatSessionCreateWithoutTenantInput, ChatSessionUncheckedCreateWithoutTenantInput> | ChatSessionCreateWithoutTenantInput[] | ChatSessionUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutTenantInput | ChatSessionCreateOrConnectWithoutTenantInput[]
+    upsert?: ChatSessionUpsertWithWhereUniqueWithoutTenantInput | ChatSessionUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: ChatSessionCreateManyTenantInputEnvelope
+    set?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    disconnect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    delete?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    update?: ChatSessionUpdateWithWhereUniqueWithoutTenantInput | ChatSessionUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: ChatSessionUpdateManyWithWhereWithoutTenantInput | ChatSessionUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+  }
+
   export type ActivityUpdateManyWithoutTenantNestedInput = {
     create?: XOR<ActivityCreateWithoutTenantInput, ActivityUncheckedCreateWithoutTenantInput> | ActivityCreateWithoutTenantInput[] | ActivityUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: ActivityCreateOrConnectWithoutTenantInput | ActivityCreateOrConnectWithoutTenantInput[]
@@ -32105,6 +38196,44 @@ export namespace Prisma {
     update?: KnowledgeBaseUpdateWithWhereUniqueWithoutTenantInput | KnowledgeBaseUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: KnowledgeBaseUpdateManyWithWhereWithoutTenantInput | KnowledgeBaseUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: KnowledgeBaseScalarWhereInput | KnowledgeBaseScalarWhereInput[]
+  }
+
+  export type CreditLedgerUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<CreditLedgerCreateWithoutTenantInput, CreditLedgerUncheckedCreateWithoutTenantInput> | CreditLedgerCreateWithoutTenantInput[] | CreditLedgerUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: CreditLedgerCreateOrConnectWithoutTenantInput | CreditLedgerCreateOrConnectWithoutTenantInput[]
+    upsert?: CreditLedgerUpsertWithWhereUniqueWithoutTenantInput | CreditLedgerUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: CreditLedgerCreateManyTenantInputEnvelope
+    set?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    disconnect?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    delete?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    connect?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    update?: CreditLedgerUpdateWithWhereUniqueWithoutTenantInput | CreditLedgerUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: CreditLedgerUpdateManyWithWhereWithoutTenantInput | CreditLedgerUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: CreditLedgerScalarWhereInput | CreditLedgerScalarWhereInput[]
+  }
+
+  export type BillingSubscriptionUpdateOneWithoutTenantNestedInput = {
+    create?: XOR<BillingSubscriptionCreateWithoutTenantInput, BillingSubscriptionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: BillingSubscriptionCreateOrConnectWithoutTenantInput
+    upsert?: BillingSubscriptionUpsertWithoutTenantInput
+    disconnect?: BillingSubscriptionWhereInput | boolean
+    delete?: BillingSubscriptionWhereInput | boolean
+    connect?: BillingSubscriptionWhereUniqueInput
+    update?: XOR<XOR<BillingSubscriptionUpdateToOneWithWhereWithoutTenantInput, BillingSubscriptionUpdateWithoutTenantInput>, BillingSubscriptionUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type PaymentRecordUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutTenantInput, PaymentRecordUncheckedCreateWithoutTenantInput> | PaymentRecordCreateWithoutTenantInput[] | PaymentRecordUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutTenantInput | PaymentRecordCreateOrConnectWithoutTenantInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutTenantInput | PaymentRecordUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: PaymentRecordCreateManyTenantInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutTenantInput | PaymentRecordUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutTenantInput | PaymentRecordUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
   export type UserUncheckedUpdateManyWithoutTenantNestedInput = {
@@ -32289,6 +38418,20 @@ export namespace Prisma {
     deleteMany?: CommunicationLogScalarWhereInput | CommunicationLogScalarWhereInput[]
   }
 
+  export type ChatSessionUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<ChatSessionCreateWithoutTenantInput, ChatSessionUncheckedCreateWithoutTenantInput> | ChatSessionCreateWithoutTenantInput[] | ChatSessionUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutTenantInput | ChatSessionCreateOrConnectWithoutTenantInput[]
+    upsert?: ChatSessionUpsertWithWhereUniqueWithoutTenantInput | ChatSessionUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: ChatSessionCreateManyTenantInputEnvelope
+    set?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    disconnect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    delete?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    update?: ChatSessionUpdateWithWhereUniqueWithoutTenantInput | ChatSessionUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: ChatSessionUpdateManyWithWhereWithoutTenantInput | ChatSessionUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+  }
+
   export type ActivityUncheckedUpdateManyWithoutTenantNestedInput = {
     create?: XOR<ActivityCreateWithoutTenantInput, ActivityUncheckedCreateWithoutTenantInput> | ActivityCreateWithoutTenantInput[] | ActivityUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: ActivityCreateOrConnectWithoutTenantInput | ActivityCreateOrConnectWithoutTenantInput[]
@@ -32343,6 +38486,94 @@ export namespace Prisma {
     update?: KnowledgeBaseUpdateWithWhereUniqueWithoutTenantInput | KnowledgeBaseUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: KnowledgeBaseUpdateManyWithWhereWithoutTenantInput | KnowledgeBaseUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: KnowledgeBaseScalarWhereInput | KnowledgeBaseScalarWhereInput[]
+  }
+
+  export type CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<CreditLedgerCreateWithoutTenantInput, CreditLedgerUncheckedCreateWithoutTenantInput> | CreditLedgerCreateWithoutTenantInput[] | CreditLedgerUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: CreditLedgerCreateOrConnectWithoutTenantInput | CreditLedgerCreateOrConnectWithoutTenantInput[]
+    upsert?: CreditLedgerUpsertWithWhereUniqueWithoutTenantInput | CreditLedgerUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: CreditLedgerCreateManyTenantInputEnvelope
+    set?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    disconnect?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    delete?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    connect?: CreditLedgerWhereUniqueInput | CreditLedgerWhereUniqueInput[]
+    update?: CreditLedgerUpdateWithWhereUniqueWithoutTenantInput | CreditLedgerUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: CreditLedgerUpdateManyWithWhereWithoutTenantInput | CreditLedgerUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: CreditLedgerScalarWhereInput | CreditLedgerScalarWhereInput[]
+  }
+
+  export type BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput = {
+    create?: XOR<BillingSubscriptionCreateWithoutTenantInput, BillingSubscriptionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: BillingSubscriptionCreateOrConnectWithoutTenantInput
+    upsert?: BillingSubscriptionUpsertWithoutTenantInput
+    disconnect?: BillingSubscriptionWhereInput | boolean
+    delete?: BillingSubscriptionWhereInput | boolean
+    connect?: BillingSubscriptionWhereUniqueInput
+    update?: XOR<XOR<BillingSubscriptionUpdateToOneWithWhereWithoutTenantInput, BillingSubscriptionUpdateWithoutTenantInput>, BillingSubscriptionUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutTenantInput, PaymentRecordUncheckedCreateWithoutTenantInput> | PaymentRecordCreateWithoutTenantInput[] | PaymentRecordUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutTenantInput | PaymentRecordCreateOrConnectWithoutTenantInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutTenantInput | PaymentRecordUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: PaymentRecordCreateManyTenantInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutTenantInput | PaymentRecordUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutTenantInput | PaymentRecordUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
+  export type TenantCreateNestedOneWithoutCreditLedgerInput = {
+    create?: XOR<TenantCreateWithoutCreditLedgerInput, TenantUncheckedCreateWithoutCreditLedgerInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutCreditLedgerInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type EnumCreditReasonFieldUpdateOperationsInput = {
+    set?: $Enums.CreditReason
+  }
+
+  export type TenantUpdateOneRequiredWithoutCreditLedgerNestedInput = {
+    create?: XOR<TenantCreateWithoutCreditLedgerInput, TenantUncheckedCreateWithoutCreditLedgerInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutCreditLedgerInput
+    upsert?: TenantUpsertWithoutCreditLedgerInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutCreditLedgerInput, TenantUpdateWithoutCreditLedgerInput>, TenantUncheckedUpdateWithoutCreditLedgerInput>
+  }
+
+  export type TenantCreateNestedOneWithoutPaymentRecordsInput = {
+    create?: XOR<TenantCreateWithoutPaymentRecordsInput, TenantUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutPaymentRecordsInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type TenantUpdateOneRequiredWithoutPaymentRecordsNestedInput = {
+    create?: XOR<TenantCreateWithoutPaymentRecordsInput, TenantUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutPaymentRecordsInput
+    upsert?: TenantUpsertWithoutPaymentRecordsInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutPaymentRecordsInput, TenantUpdateWithoutPaymentRecordsInput>, TenantUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type TenantCreateNestedOneWithoutBillingSubscriptionInput = {
+    create?: XOR<TenantCreateWithoutBillingSubscriptionInput, TenantUncheckedCreateWithoutBillingSubscriptionInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutBillingSubscriptionInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type EnumSubscriptionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SubscriptionStatus
+  }
+
+  export type TenantUpdateOneRequiredWithoutBillingSubscriptionNestedInput = {
+    create?: XOR<TenantCreateWithoutBillingSubscriptionInput, TenantUncheckedCreateWithoutBillingSubscriptionInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutBillingSubscriptionInput
+    upsert?: TenantUpsertWithoutBillingSubscriptionInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutBillingSubscriptionInput, TenantUpdateWithoutBillingSubscriptionInput>, TenantUncheckedUpdateWithoutBillingSubscriptionInput>
   }
 
   export type TenantCreateNestedOneWithoutUsersInput = {
@@ -32457,6 +38688,13 @@ export namespace Prisma {
     connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
   }
 
+  export type ChatSessionCreateNestedManyWithoutContactInput = {
+    create?: XOR<ChatSessionCreateWithoutContactInput, ChatSessionUncheckedCreateWithoutContactInput> | ChatSessionCreateWithoutContactInput[] | ChatSessionUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutContactInput | ChatSessionCreateOrConnectWithoutContactInput[]
+    createMany?: ChatSessionCreateManyContactInputEnvelope
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+  }
+
   export type CustomFieldValueUncheckedCreateNestedManyWithoutContactInput = {
     create?: XOR<CustomFieldValueCreateWithoutContactInput, CustomFieldValueUncheckedCreateWithoutContactInput> | CustomFieldValueCreateWithoutContactInput[] | CustomFieldValueUncheckedCreateWithoutContactInput[]
     connectOrCreate?: CustomFieldValueCreateOrConnectWithoutContactInput | CustomFieldValueCreateOrConnectWithoutContactInput[]
@@ -32497,6 +38735,13 @@ export namespace Prisma {
     connectOrCreate?: CommunicationLogCreateOrConnectWithoutContactInput | CommunicationLogCreateOrConnectWithoutContactInput[]
     createMany?: CommunicationLogCreateManyContactInputEnvelope
     connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+  }
+
+  export type ChatSessionUncheckedCreateNestedManyWithoutContactInput = {
+    create?: XOR<ChatSessionCreateWithoutContactInput, ChatSessionUncheckedCreateWithoutContactInput> | ChatSessionCreateWithoutContactInput[] | ChatSessionUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutContactInput | ChatSessionCreateOrConnectWithoutContactInput[]
+    createMany?: ChatSessionCreateManyContactInputEnvelope
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
   }
 
   export type ContactUpdateemailsInput = {
@@ -32601,6 +38846,20 @@ export namespace Prisma {
     deleteMany?: CommunicationLogScalarWhereInput | CommunicationLogScalarWhereInput[]
   }
 
+  export type ChatSessionUpdateManyWithoutContactNestedInput = {
+    create?: XOR<ChatSessionCreateWithoutContactInput, ChatSessionUncheckedCreateWithoutContactInput> | ChatSessionCreateWithoutContactInput[] | ChatSessionUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutContactInput | ChatSessionCreateOrConnectWithoutContactInput[]
+    upsert?: ChatSessionUpsertWithWhereUniqueWithoutContactInput | ChatSessionUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: ChatSessionCreateManyContactInputEnvelope
+    set?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    disconnect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    delete?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    update?: ChatSessionUpdateWithWhereUniqueWithoutContactInput | ChatSessionUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: ChatSessionUpdateManyWithWhereWithoutContactInput | ChatSessionUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+  }
+
   export type CustomFieldValueUncheckedUpdateManyWithoutContactNestedInput = {
     create?: XOR<CustomFieldValueCreateWithoutContactInput, CustomFieldValueUncheckedCreateWithoutContactInput> | CustomFieldValueCreateWithoutContactInput[] | CustomFieldValueUncheckedCreateWithoutContactInput[]
     connectOrCreate?: CustomFieldValueCreateOrConnectWithoutContactInput | CustomFieldValueCreateOrConnectWithoutContactInput[]
@@ -32683,6 +38942,20 @@ export namespace Prisma {
     update?: CommunicationLogUpdateWithWhereUniqueWithoutContactInput | CommunicationLogUpdateWithWhereUniqueWithoutContactInput[]
     updateMany?: CommunicationLogUpdateManyWithWhereWithoutContactInput | CommunicationLogUpdateManyWithWhereWithoutContactInput[]
     deleteMany?: CommunicationLogScalarWhereInput | CommunicationLogScalarWhereInput[]
+  }
+
+  export type ChatSessionUncheckedUpdateManyWithoutContactNestedInput = {
+    create?: XOR<ChatSessionCreateWithoutContactInput, ChatSessionUncheckedCreateWithoutContactInput> | ChatSessionCreateWithoutContactInput[] | ChatSessionUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutContactInput | ChatSessionCreateOrConnectWithoutContactInput[]
+    upsert?: ChatSessionUpsertWithWhereUniqueWithoutContactInput | ChatSessionUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: ChatSessionCreateManyContactInputEnvelope
+    set?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    disconnect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    delete?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    update?: ChatSessionUpdateWithWhereUniqueWithoutContactInput | ChatSessionUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: ChatSessionUpdateManyWithWhereWithoutContactInput | ChatSessionUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
   }
 
   export type CustomFieldDefinitionCreateoptionsInput = {
@@ -33666,6 +39939,13 @@ export namespace Prisma {
     connect?: KnowledgeBaseWhereUniqueInput | KnowledgeBaseWhereUniqueInput[]
   }
 
+  export type ChatSessionCreateNestedManyWithoutAgentInput = {
+    create?: XOR<ChatSessionCreateWithoutAgentInput, ChatSessionUncheckedCreateWithoutAgentInput> | ChatSessionCreateWithoutAgentInput[] | ChatSessionUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutAgentInput | ChatSessionCreateOrConnectWithoutAgentInput[]
+    createMany?: ChatSessionCreateManyAgentInputEnvelope
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+  }
+
   export type CommunicationLogUncheckedCreateNestedManyWithoutAgentInput = {
     create?: XOR<CommunicationLogCreateWithoutAgentInput, CommunicationLogUncheckedCreateWithoutAgentInput> | CommunicationLogCreateWithoutAgentInput[] | CommunicationLogUncheckedCreateWithoutAgentInput[]
     connectOrCreate?: CommunicationLogCreateOrConnectWithoutAgentInput | CommunicationLogCreateOrConnectWithoutAgentInput[]
@@ -33678,6 +39958,13 @@ export namespace Prisma {
     connectOrCreate?: KnowledgeBaseCreateOrConnectWithoutAgentInput | KnowledgeBaseCreateOrConnectWithoutAgentInput[]
     createMany?: KnowledgeBaseCreateManyAgentInputEnvelope
     connect?: KnowledgeBaseWhereUniqueInput | KnowledgeBaseWhereUniqueInput[]
+  }
+
+  export type ChatSessionUncheckedCreateNestedManyWithoutAgentInput = {
+    create?: XOR<ChatSessionCreateWithoutAgentInput, ChatSessionUncheckedCreateWithoutAgentInput> | ChatSessionCreateWithoutAgentInput[] | ChatSessionUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutAgentInput | ChatSessionCreateOrConnectWithoutAgentInput[]
+    createMany?: ChatSessionCreateManyAgentInputEnvelope
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
   }
 
   export type AIAgentUpdateintakeFieldsInput = {
@@ -33721,6 +40008,20 @@ export namespace Prisma {
     deleteMany?: KnowledgeBaseScalarWhereInput | KnowledgeBaseScalarWhereInput[]
   }
 
+  export type ChatSessionUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<ChatSessionCreateWithoutAgentInput, ChatSessionUncheckedCreateWithoutAgentInput> | ChatSessionCreateWithoutAgentInput[] | ChatSessionUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutAgentInput | ChatSessionCreateOrConnectWithoutAgentInput[]
+    upsert?: ChatSessionUpsertWithWhereUniqueWithoutAgentInput | ChatSessionUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: ChatSessionCreateManyAgentInputEnvelope
+    set?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    disconnect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    delete?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    update?: ChatSessionUpdateWithWhereUniqueWithoutAgentInput | ChatSessionUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: ChatSessionUpdateManyWithWhereWithoutAgentInput | ChatSessionUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+  }
+
   export type CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput = {
     create?: XOR<CommunicationLogCreateWithoutAgentInput, CommunicationLogUncheckedCreateWithoutAgentInput> | CommunicationLogCreateWithoutAgentInput[] | CommunicationLogUncheckedCreateWithoutAgentInput[]
     connectOrCreate?: CommunicationLogCreateOrConnectWithoutAgentInput | CommunicationLogCreateOrConnectWithoutAgentInput[]
@@ -33749,10 +40050,28 @@ export namespace Prisma {
     deleteMany?: KnowledgeBaseScalarWhereInput | KnowledgeBaseScalarWhereInput[]
   }
 
+  export type ChatSessionUncheckedUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<ChatSessionCreateWithoutAgentInput, ChatSessionUncheckedCreateWithoutAgentInput> | ChatSessionCreateWithoutAgentInput[] | ChatSessionUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutAgentInput | ChatSessionCreateOrConnectWithoutAgentInput[]
+    upsert?: ChatSessionUpsertWithWhereUniqueWithoutAgentInput | ChatSessionUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: ChatSessionCreateManyAgentInputEnvelope
+    set?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    disconnect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    delete?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+    update?: ChatSessionUpdateWithWhereUniqueWithoutAgentInput | ChatSessionUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: ChatSessionUpdateManyWithWhereWithoutAgentInput | ChatSessionUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+  }
+
   export type TenantCreateNestedOneWithoutPhoneNumbersInput = {
     create?: XOR<TenantCreateWithoutPhoneNumbersInput, TenantUncheckedCreateWithoutPhoneNumbersInput>
     connectOrCreate?: TenantCreateOrConnectWithoutPhoneNumbersInput
     connect?: TenantWhereUniqueInput
+  }
+
+  export type EnumPhoneNumberKindFieldUpdateOperationsInput = {
+    set?: $Enums.PhoneNumberKind
   }
 
   export type TenantUpdateOneRequiredWithoutPhoneNumbersNestedInput = {
@@ -33813,6 +40132,12 @@ export namespace Prisma {
     create?: XOR<WorkflowRunCreateWithoutCommunicationLogsInput, WorkflowRunUncheckedCreateWithoutCommunicationLogsInput>
     connectOrCreate?: WorkflowRunCreateOrConnectWithoutCommunicationLogsInput
     connect?: WorkflowRunWhereUniqueInput
+  }
+
+  export type ChatSessionCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<ChatSessionCreateWithoutMessagesInput, ChatSessionUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutMessagesInput
+    connect?: ChatSessionWhereUniqueInput
   }
 
   export type ActivityCreateNestedManyWithoutCommLogInput = {
@@ -33879,6 +40204,16 @@ export namespace Prisma {
     update?: XOR<XOR<WorkflowRunUpdateToOneWithWhereWithoutCommunicationLogsInput, WorkflowRunUpdateWithoutCommunicationLogsInput>, WorkflowRunUncheckedUpdateWithoutCommunicationLogsInput>
   }
 
+  export type ChatSessionUpdateOneWithoutMessagesNestedInput = {
+    create?: XOR<ChatSessionCreateWithoutMessagesInput, ChatSessionUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ChatSessionCreateOrConnectWithoutMessagesInput
+    upsert?: ChatSessionUpsertWithoutMessagesInput
+    disconnect?: ChatSessionWhereInput | boolean
+    delete?: ChatSessionWhereInput | boolean
+    connect?: ChatSessionWhereUniqueInput
+    update?: XOR<XOR<ChatSessionUpdateToOneWithWhereWithoutMessagesInput, ChatSessionUpdateWithoutMessagesInput>, ChatSessionUncheckedUpdateWithoutMessagesInput>
+  }
+
   export type ActivityUpdateManyWithoutCommLogNestedInput = {
     create?: XOR<ActivityCreateWithoutCommLogInput, ActivityUncheckedCreateWithoutCommLogInput> | ActivityCreateWithoutCommLogInput[] | ActivityUncheckedCreateWithoutCommLogInput[]
     connectOrCreate?: ActivityCreateOrConnectWithoutCommLogInput | ActivityCreateOrConnectWithoutCommLogInput[]
@@ -33905,6 +40240,94 @@ export namespace Prisma {
     update?: ActivityUpdateWithWhereUniqueWithoutCommLogInput | ActivityUpdateWithWhereUniqueWithoutCommLogInput[]
     updateMany?: ActivityUpdateManyWithWhereWithoutCommLogInput | ActivityUpdateManyWithWhereWithoutCommLogInput[]
     deleteMany?: ActivityScalarWhereInput | ActivityScalarWhereInput[]
+  }
+
+  export type TenantCreateNestedOneWithoutChatSessionsInput = {
+    create?: XOR<TenantCreateWithoutChatSessionsInput, TenantUncheckedCreateWithoutChatSessionsInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutChatSessionsInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type ContactCreateNestedOneWithoutChatSessionsInput = {
+    create?: XOR<ContactCreateWithoutChatSessionsInput, ContactUncheckedCreateWithoutChatSessionsInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutChatSessionsInput
+    connect?: ContactWhereUniqueInput
+  }
+
+  export type AIAgentCreateNestedOneWithoutChatSessionsInput = {
+    create?: XOR<AIAgentCreateWithoutChatSessionsInput, AIAgentUncheckedCreateWithoutChatSessionsInput>
+    connectOrCreate?: AIAgentCreateOrConnectWithoutChatSessionsInput
+    connect?: AIAgentWhereUniqueInput
+  }
+
+  export type CommunicationLogCreateNestedManyWithoutSessionInput = {
+    create?: XOR<CommunicationLogCreateWithoutSessionInput, CommunicationLogUncheckedCreateWithoutSessionInput> | CommunicationLogCreateWithoutSessionInput[] | CommunicationLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CommunicationLogCreateOrConnectWithoutSessionInput | CommunicationLogCreateOrConnectWithoutSessionInput[]
+    createMany?: CommunicationLogCreateManySessionInputEnvelope
+    connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+  }
+
+  export type CommunicationLogUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<CommunicationLogCreateWithoutSessionInput, CommunicationLogUncheckedCreateWithoutSessionInput> | CommunicationLogCreateWithoutSessionInput[] | CommunicationLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CommunicationLogCreateOrConnectWithoutSessionInput | CommunicationLogCreateOrConnectWithoutSessionInput[]
+    createMany?: CommunicationLogCreateManySessionInputEnvelope
+    connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+  }
+
+  export type EnumChatSessionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ChatSessionStatus
+  }
+
+  export type TenantUpdateOneRequiredWithoutChatSessionsNestedInput = {
+    create?: XOR<TenantCreateWithoutChatSessionsInput, TenantUncheckedCreateWithoutChatSessionsInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutChatSessionsInput
+    upsert?: TenantUpsertWithoutChatSessionsInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutChatSessionsInput, TenantUpdateWithoutChatSessionsInput>, TenantUncheckedUpdateWithoutChatSessionsInput>
+  }
+
+  export type ContactUpdateOneRequiredWithoutChatSessionsNestedInput = {
+    create?: XOR<ContactCreateWithoutChatSessionsInput, ContactUncheckedCreateWithoutChatSessionsInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutChatSessionsInput
+    upsert?: ContactUpsertWithoutChatSessionsInput
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutChatSessionsInput, ContactUpdateWithoutChatSessionsInput>, ContactUncheckedUpdateWithoutChatSessionsInput>
+  }
+
+  export type AIAgentUpdateOneRequiredWithoutChatSessionsNestedInput = {
+    create?: XOR<AIAgentCreateWithoutChatSessionsInput, AIAgentUncheckedCreateWithoutChatSessionsInput>
+    connectOrCreate?: AIAgentCreateOrConnectWithoutChatSessionsInput
+    upsert?: AIAgentUpsertWithoutChatSessionsInput
+    connect?: AIAgentWhereUniqueInput
+    update?: XOR<XOR<AIAgentUpdateToOneWithWhereWithoutChatSessionsInput, AIAgentUpdateWithoutChatSessionsInput>, AIAgentUncheckedUpdateWithoutChatSessionsInput>
+  }
+
+  export type CommunicationLogUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<CommunicationLogCreateWithoutSessionInput, CommunicationLogUncheckedCreateWithoutSessionInput> | CommunicationLogCreateWithoutSessionInput[] | CommunicationLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CommunicationLogCreateOrConnectWithoutSessionInput | CommunicationLogCreateOrConnectWithoutSessionInput[]
+    upsert?: CommunicationLogUpsertWithWhereUniqueWithoutSessionInput | CommunicationLogUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: CommunicationLogCreateManySessionInputEnvelope
+    set?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    disconnect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    delete?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    update?: CommunicationLogUpdateWithWhereUniqueWithoutSessionInput | CommunicationLogUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: CommunicationLogUpdateManyWithWhereWithoutSessionInput | CommunicationLogUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: CommunicationLogScalarWhereInput | CommunicationLogScalarWhereInput[]
+  }
+
+  export type CommunicationLogUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<CommunicationLogCreateWithoutSessionInput, CommunicationLogUncheckedCreateWithoutSessionInput> | CommunicationLogCreateWithoutSessionInput[] | CommunicationLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CommunicationLogCreateOrConnectWithoutSessionInput | CommunicationLogCreateOrConnectWithoutSessionInput[]
+    upsert?: CommunicationLogUpsertWithWhereUniqueWithoutSessionInput | CommunicationLogUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: CommunicationLogCreateManySessionInputEnvelope
+    set?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    disconnect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    delete?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    connect?: CommunicationLogWhereUniqueInput | CommunicationLogWhereUniqueInput[]
+    update?: CommunicationLogUpdateWithWhereUniqueWithoutSessionInput | CommunicationLogUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: CommunicationLogUpdateManyWithWhereWithoutSessionInput | CommunicationLogUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: CommunicationLogScalarWhereInput | CommunicationLogScalarWhereInput[]
   }
 
   export type TenantCreateNestedOneWithoutActivitiesInput = {
@@ -34231,6 +40654,40 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumCreditReasonFilter<$PrismaModel = never> = {
+    equals?: $Enums.CreditReason | EnumCreditReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumCreditReasonFilter<$PrismaModel> | $Enums.CreditReason
+  }
+
+  export type NestedEnumCreditReasonWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CreditReason | EnumCreditReasonFieldRefInput<$PrismaModel>
+    in?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CreditReason[] | ListEnumCreditReasonFieldRefInput<$PrismaModel>
+    not?: NestedEnumCreditReasonWithAggregatesFilter<$PrismaModel> | $Enums.CreditReason
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCreditReasonFilter<$PrismaModel>
+    _max?: NestedEnumCreditReasonFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSubscriptionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
+  }
+
+  export type NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumCustomFieldTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.CustomFieldType | EnumCustomFieldTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CustomFieldType[] | ListEnumCustomFieldTypeFieldRefInput<$PrismaModel>
@@ -34449,6 +40906,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumPhoneNumberKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberKind | EnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberKindFilter<$PrismaModel> | $Enums.PhoneNumberKind
+  }
+
+  export type NestedEnumPhoneNumberKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberKind | EnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberKindWithAggregatesFilter<$PrismaModel> | $Enums.PhoneNumberKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
+    _max?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
+  }
+
   export type NestedEnumCommTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.CommType | EnumCommTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CommType[] | ListEnumCommTypeFieldRefInput<$PrismaModel>
@@ -34515,6 +40989,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumExtractionStatusFilter<$PrismaModel>
     _max?: NestedEnumExtractionStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumChatSessionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChatSessionStatus | EnumChatSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChatSessionStatusFilter<$PrismaModel> | $Enums.ChatSessionStatus
+  }
+
+  export type NestedEnumChatSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChatSessionStatus | EnumChatSessionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChatSessionStatus[] | ListEnumChatSessionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChatSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChatSessionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChatSessionStatusFilter<$PrismaModel>
+    _max?: NestedEnumChatSessionStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumActivityTypeFilter<$PrismaModel = never> = {
@@ -34600,6 +41091,7 @@ export namespace Prisma {
     notes?: NoteCreateNestedManyWithoutContactInput
     activities?: ActivityCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateWithoutTenantInput = {
@@ -34617,6 +41109,7 @@ export namespace Prisma {
     notes?: NoteUncheckedCreateNestedManyWithoutContactInput
     activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactCreateOrConnectWithoutTenantInput = {
@@ -34962,6 +41455,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -34969,6 +41464,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateWithoutTenantInput = {
@@ -34998,6 +41494,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -35005,6 +41503,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentCreateOrConnectWithoutTenantInput = {
@@ -35021,6 +41520,8 @@ export namespace Prisma {
     id?: string
     phoneNumber: string
     label?: string | null
+    kind?: $Enums.PhoneNumberKind
+    twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -35029,6 +41530,8 @@ export namespace Prisma {
     id?: string
     phoneNumber: string
     label?: string | null
+    kind?: $Enums.PhoneNumberKind
+    twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -35068,6 +41571,7 @@ export namespace Prisma {
     contact: ContactCreateNestedOneWithoutCommunicationLogsInput
     agent: AIAgentCreateNestedOneWithoutCommunicationLogsInput
     workflowRun?: WorkflowRunCreateNestedOneWithoutCommunicationLogsInput
+    session?: ChatSessionCreateNestedOneWithoutMessagesInput
     activities?: ActivityCreateNestedManyWithoutCommLogInput
   }
 
@@ -35094,6 +41598,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutCommLogInput
@@ -35106,6 +41611,48 @@ export namespace Prisma {
 
   export type CommunicationLogCreateManyTenantInputEnvelope = {
     data: CommunicationLogCreateManyTenantInput | CommunicationLogCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChatSessionCreateWithoutTenantInput = {
+    id?: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    contact: ContactCreateNestedOneWithoutChatSessionsInput
+    agent: AIAgentCreateNestedOneWithoutChatSessionsInput
+    messages?: CommunicationLogCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionUncheckedCreateWithoutTenantInput = {
+    id?: string
+    contactId: string
+    agentId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    messages?: CommunicationLogUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionCreateOrConnectWithoutTenantInput = {
+    where: ChatSessionWhereUniqueInput
+    create: XOR<ChatSessionCreateWithoutTenantInput, ChatSessionUncheckedCreateWithoutTenantInput>
+  }
+
+  export type ChatSessionCreateManyTenantInputEnvelope = {
+    data: ChatSessionCreateManyTenantInput | ChatSessionCreateManyTenantInput[]
     skipDuplicates?: boolean
   }
 
@@ -35238,6 +41785,97 @@ export namespace Prisma {
 
   export type KnowledgeBaseCreateManyTenantInputEnvelope = {
     data: KnowledgeBaseCreateManyTenantInput | KnowledgeBaseCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CreditLedgerCreateWithoutTenantInput = {
+    id?: string
+    delta: number
+    reason: $Enums.CreditReason
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CreditLedgerUncheckedCreateWithoutTenantInput = {
+    id?: string
+    delta: number
+    reason: $Enums.CreditReason
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CreditLedgerCreateOrConnectWithoutTenantInput = {
+    where: CreditLedgerWhereUniqueInput
+    create: XOR<CreditLedgerCreateWithoutTenantInput, CreditLedgerUncheckedCreateWithoutTenantInput>
+  }
+
+  export type CreditLedgerCreateManyTenantInputEnvelope = {
+    data: CreditLedgerCreateManyTenantInput | CreditLedgerCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BillingSubscriptionCreateWithoutTenantInput = {
+    id?: string
+    provider?: string
+    providerSubId?: string | null
+    plan: $Enums.Plan
+    status?: $Enums.SubscriptionStatus
+    currentPeriodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BillingSubscriptionUncheckedCreateWithoutTenantInput = {
+    id?: string
+    provider?: string
+    providerSubId?: string | null
+    plan: $Enums.Plan
+    status?: $Enums.SubscriptionStatus
+    currentPeriodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BillingSubscriptionCreateOrConnectWithoutTenantInput = {
+    where: BillingSubscriptionWhereUniqueInput
+    create: XOR<BillingSubscriptionCreateWithoutTenantInput, BillingSubscriptionUncheckedCreateWithoutTenantInput>
+  }
+
+  export type PaymentRecordCreateWithoutTenantInput = {
+    id?: string
+    provider?: string
+    paymentId: string
+    orderId: string
+    product: string
+    amountPaise: number
+    currency?: string
+    status?: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PaymentRecordUncheckedCreateWithoutTenantInput = {
+    id?: string
+    provider?: string
+    paymentId: string
+    orderId: string
+    product: string
+    amountPaise: number
+    currency?: string
+    status?: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PaymentRecordCreateOrConnectWithoutTenantInput = {
+    where: PaymentRecordWhereUniqueInput
+    create: XOR<PaymentRecordCreateWithoutTenantInput, PaymentRecordUncheckedCreateWithoutTenantInput>
+  }
+
+  export type PaymentRecordCreateManyTenantInputEnvelope = {
+    data: PaymentRecordCreateManyTenantInput | PaymentRecordCreateManyTenantInput[]
     skipDuplicates?: boolean
   }
 
@@ -35612,6 +42250,8 @@ export namespace Prisma {
     smsTriggerCondition?: StringNullableFilter<"AIAgent"> | string | null
     smsTemplate?: StringNullableFilter<"AIAgent"> | string | null
     smsAgentReply?: StringNullableFilter<"AIAgent"> | string | null
+    whatsappEnabled?: BoolFilter<"AIAgent"> | boolean
+    whatsappPrompt?: StringNullableFilter<"AIAgent"> | string | null
     businessHours?: JsonNullableFilter<"AIAgent">
     timeZone?: StringFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableFilter<"AIAgent"> | Date | string | null
@@ -35643,6 +42283,8 @@ export namespace Prisma {
     tenantId?: StringFilter<"PhoneNumber"> | string
     phoneNumber?: StringFilter<"PhoneNumber"> | string
     label?: StringNullableFilter<"PhoneNumber"> | string | null
+    kind?: EnumPhoneNumberKindFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    twilioSid?: StringNullableFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeFilter<"PhoneNumber"> | Date | string
   }
@@ -35690,8 +42332,44 @@ export namespace Prisma {
     provider?: StringNullableFilter<"CommunicationLog"> | string | null
     providerRef?: StringNullableFilter<"CommunicationLog"> | string | null
     metadata?: JsonNullableFilter<"CommunicationLog">
+    sessionId?: StringNullableFilter<"CommunicationLog"> | string | null
     occurredAt?: DateTimeFilter<"CommunicationLog"> | Date | string
     createdAt?: DateTimeFilter<"CommunicationLog"> | Date | string
+  }
+
+  export type ChatSessionUpsertWithWhereUniqueWithoutTenantInput = {
+    where: ChatSessionWhereUniqueInput
+    update: XOR<ChatSessionUpdateWithoutTenantInput, ChatSessionUncheckedUpdateWithoutTenantInput>
+    create: XOR<ChatSessionCreateWithoutTenantInput, ChatSessionUncheckedCreateWithoutTenantInput>
+  }
+
+  export type ChatSessionUpdateWithWhereUniqueWithoutTenantInput = {
+    where: ChatSessionWhereUniqueInput
+    data: XOR<ChatSessionUpdateWithoutTenantInput, ChatSessionUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type ChatSessionUpdateManyWithWhereWithoutTenantInput = {
+    where: ChatSessionScalarWhereInput
+    data: XOR<ChatSessionUpdateManyMutationInput, ChatSessionUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type ChatSessionScalarWhereInput = {
+    AND?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+    OR?: ChatSessionScalarWhereInput[]
+    NOT?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+    id?: StringFilter<"ChatSession"> | string
+    tenantId?: StringFilter<"ChatSession"> | string
+    contactId?: StringFilter<"ChatSession"> | string
+    agentId?: StringFilter<"ChatSession"> | string
+    channel?: EnumCommTypeFilter<"ChatSession"> | $Enums.CommType
+    status?: EnumChatSessionStatusFilter<"ChatSession"> | $Enums.ChatSessionStatus
+    commLogId?: StringNullableFilter<"ChatSession"> | string | null
+    humanTakeover?: BoolFilter<"ChatSession"> | boolean
+    startedAt?: DateTimeFilter<"ChatSession"> | Date | string
+    lastMessageAt?: DateTimeFilter<"ChatSession"> | Date | string
+    processedAt?: DateTimeNullableFilter<"ChatSession"> | Date | string | null
+    dealId?: StringNullableFilter<"ChatSession"> | string | null
+    createdAt?: DateTimeFilter<"ChatSession"> | Date | string
   }
 
   export type ActivityUpsertWithWhereUniqueWithoutTenantInput = {
@@ -35818,6 +42496,605 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"KnowledgeBase"> | Date | string
   }
 
+  export type CreditLedgerUpsertWithWhereUniqueWithoutTenantInput = {
+    where: CreditLedgerWhereUniqueInput
+    update: XOR<CreditLedgerUpdateWithoutTenantInput, CreditLedgerUncheckedUpdateWithoutTenantInput>
+    create: XOR<CreditLedgerCreateWithoutTenantInput, CreditLedgerUncheckedCreateWithoutTenantInput>
+  }
+
+  export type CreditLedgerUpdateWithWhereUniqueWithoutTenantInput = {
+    where: CreditLedgerWhereUniqueInput
+    data: XOR<CreditLedgerUpdateWithoutTenantInput, CreditLedgerUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type CreditLedgerUpdateManyWithWhereWithoutTenantInput = {
+    where: CreditLedgerScalarWhereInput
+    data: XOR<CreditLedgerUpdateManyMutationInput, CreditLedgerUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type CreditLedgerScalarWhereInput = {
+    AND?: CreditLedgerScalarWhereInput | CreditLedgerScalarWhereInput[]
+    OR?: CreditLedgerScalarWhereInput[]
+    NOT?: CreditLedgerScalarWhereInput | CreditLedgerScalarWhereInput[]
+    id?: StringFilter<"CreditLedger"> | string
+    tenantId?: StringFilter<"CreditLedger"> | string
+    delta?: IntFilter<"CreditLedger"> | number
+    reason?: EnumCreditReasonFilter<"CreditLedger"> | $Enums.CreditReason
+    refId?: StringNullableFilter<"CreditLedger"> | string | null
+    note?: StringNullableFilter<"CreditLedger"> | string | null
+    createdAt?: DateTimeFilter<"CreditLedger"> | Date | string
+  }
+
+  export type BillingSubscriptionUpsertWithoutTenantInput = {
+    update: XOR<BillingSubscriptionUpdateWithoutTenantInput, BillingSubscriptionUncheckedUpdateWithoutTenantInput>
+    create: XOR<BillingSubscriptionCreateWithoutTenantInput, BillingSubscriptionUncheckedCreateWithoutTenantInput>
+    where?: BillingSubscriptionWhereInput
+  }
+
+  export type BillingSubscriptionUpdateToOneWithWhereWithoutTenantInput = {
+    where?: BillingSubscriptionWhereInput
+    data: XOR<BillingSubscriptionUpdateWithoutTenantInput, BillingSubscriptionUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type BillingSubscriptionUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BillingSubscriptionUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    providerSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUpsertWithWhereUniqueWithoutTenantInput = {
+    where: PaymentRecordWhereUniqueInput
+    update: XOR<PaymentRecordUpdateWithoutTenantInput, PaymentRecordUncheckedUpdateWithoutTenantInput>
+    create: XOR<PaymentRecordCreateWithoutTenantInput, PaymentRecordUncheckedCreateWithoutTenantInput>
+  }
+
+  export type PaymentRecordUpdateWithWhereUniqueWithoutTenantInput = {
+    where: PaymentRecordWhereUniqueInput
+    data: XOR<PaymentRecordUpdateWithoutTenantInput, PaymentRecordUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type PaymentRecordUpdateManyWithWhereWithoutTenantInput = {
+    where: PaymentRecordScalarWhereInput
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type PaymentRecordScalarWhereInput = {
+    AND?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+    OR?: PaymentRecordScalarWhereInput[]
+    NOT?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+    id?: StringFilter<"PaymentRecord"> | string
+    tenantId?: StringFilter<"PaymentRecord"> | string
+    provider?: StringFilter<"PaymentRecord"> | string
+    paymentId?: StringFilter<"PaymentRecord"> | string
+    orderId?: StringFilter<"PaymentRecord"> | string
+    product?: StringFilter<"PaymentRecord"> | string
+    amountPaise?: IntFilter<"PaymentRecord"> | number
+    currency?: StringFilter<"PaymentRecord"> | string
+    status?: StringFilter<"PaymentRecord"> | string
+    description?: StringNullableFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
+  }
+
+  export type TenantCreateWithoutCreditLedgerInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    contacts?: ContactCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionCreateNestedManyWithoutTenantInput
+    deals?: DealCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
+    activities?: ActivityCreateNestedManyWithoutTenantInput
+    notes?: NoteCreateNestedManyWithoutTenantInput
+    bookings?: BookingCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutCreditLedgerInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    deals?: DealUncheckedCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageUncheckedCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderUncheckedCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
+    notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutCreditLedgerInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutCreditLedgerInput, TenantUncheckedCreateWithoutCreditLedgerInput>
+  }
+
+  export type TenantUpsertWithoutCreditLedgerInput = {
+    update: XOR<TenantUpdateWithoutCreditLedgerInput, TenantUncheckedUpdateWithoutCreditLedgerInput>
+    create: XOR<TenantCreateWithoutCreditLedgerInput, TenantUncheckedCreateWithoutCreditLedgerInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutCreditLedgerInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutCreditLedgerInput, TenantUncheckedUpdateWithoutCreditLedgerInput>
+  }
+
+  export type TenantUpdateWithoutCreditLedgerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUpdateManyWithoutTenantNestedInput
+    deals?: DealUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUpdateManyWithoutTenantNestedInput
+    notes?: NoteUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutCreditLedgerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    deals?: DealUncheckedUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUncheckedUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUncheckedUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantCreateWithoutPaymentRecordsInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    contacts?: ContactCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionCreateNestedManyWithoutTenantInput
+    deals?: DealCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
+    activities?: ActivityCreateNestedManyWithoutTenantInput
+    notes?: NoteCreateNestedManyWithoutTenantInput
+    bookings?: BookingCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutPaymentRecordsInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    deals?: DealUncheckedCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageUncheckedCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderUncheckedCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
+    notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutPaymentRecordsInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutPaymentRecordsInput, TenantUncheckedCreateWithoutPaymentRecordsInput>
+  }
+
+  export type TenantUpsertWithoutPaymentRecordsInput = {
+    update: XOR<TenantUpdateWithoutPaymentRecordsInput, TenantUncheckedUpdateWithoutPaymentRecordsInput>
+    create: XOR<TenantCreateWithoutPaymentRecordsInput, TenantUncheckedCreateWithoutPaymentRecordsInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutPaymentRecordsInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutPaymentRecordsInput, TenantUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type TenantUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUpdateManyWithoutTenantNestedInput
+    deals?: DealUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUpdateManyWithoutTenantNestedInput
+    notes?: NoteUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    deals?: DealUncheckedUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUncheckedUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUncheckedUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+  }
+
+  export type TenantCreateWithoutBillingSubscriptionInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    contacts?: ContactCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionCreateNestedManyWithoutTenantInput
+    deals?: DealCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
+    activities?: ActivityCreateNestedManyWithoutTenantInput
+    notes?: NoteCreateNestedManyWithoutTenantInput
+    bookings?: BookingCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutBillingSubscriptionInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    deals?: DealUncheckedCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageUncheckedCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderUncheckedCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
+    notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutBillingSubscriptionInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutBillingSubscriptionInput, TenantUncheckedCreateWithoutBillingSubscriptionInput>
+  }
+
+  export type TenantUpsertWithoutBillingSubscriptionInput = {
+    update: XOR<TenantUpdateWithoutBillingSubscriptionInput, TenantUncheckedUpdateWithoutBillingSubscriptionInput>
+    create: XOR<TenantCreateWithoutBillingSubscriptionInput, TenantUncheckedCreateWithoutBillingSubscriptionInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutBillingSubscriptionInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutBillingSubscriptionInput, TenantUncheckedUpdateWithoutBillingSubscriptionInput>
+  }
+
+  export type TenantUpdateWithoutBillingSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUpdateManyWithoutTenantNestedInput
+    deals?: DealUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUpdateManyWithoutTenantNestedInput
+    notes?: NoteUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutBillingSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    deals?: DealUncheckedUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUncheckedUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUncheckedUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
   export type TenantCreateWithoutUsersInput = {
     id?: string
     name: string
@@ -35830,6 +43107,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -35845,10 +43123,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutUsersInput = {
@@ -35863,6 +43145,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -35878,10 +43161,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutUsersInput = {
@@ -35988,6 +43275,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36003,10 +43291,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutUsersInput = {
@@ -36021,6 +43313,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36036,10 +43329,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type DealUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -36070,6 +43367,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36085,10 +43383,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutContactsInput = {
@@ -36103,6 +43405,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36118,10 +43421,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutContactsInput = {
@@ -36370,6 +43677,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutCommunicationLogsInput
     agent: AIAgentCreateNestedOneWithoutCommunicationLogsInput
     workflowRun?: WorkflowRunCreateNestedOneWithoutCommunicationLogsInput
+    session?: ChatSessionCreateNestedOneWithoutMessagesInput
     activities?: ActivityCreateNestedManyWithoutCommLogInput
   }
 
@@ -36396,6 +43704,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutCommLogInput
@@ -36408,6 +43717,48 @@ export namespace Prisma {
 
   export type CommunicationLogCreateManyContactInputEnvelope = {
     data: CommunicationLogCreateManyContactInput | CommunicationLogCreateManyContactInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChatSessionCreateWithoutContactInput = {
+    id?: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutChatSessionsInput
+    agent: AIAgentCreateNestedOneWithoutChatSessionsInput
+    messages?: CommunicationLogCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionUncheckedCreateWithoutContactInput = {
+    id?: string
+    tenantId: string
+    agentId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    messages?: CommunicationLogUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionCreateOrConnectWithoutContactInput = {
+    where: ChatSessionWhereUniqueInput
+    create: XOR<ChatSessionCreateWithoutContactInput, ChatSessionUncheckedCreateWithoutContactInput>
+  }
+
+  export type ChatSessionCreateManyContactInputEnvelope = {
+    data: ChatSessionCreateManyContactInput | ChatSessionCreateManyContactInput[]
     skipDuplicates?: boolean
   }
 
@@ -36434,6 +43785,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36449,10 +43801,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutContactsInput = {
@@ -36467,6 +43823,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36482,10 +43839,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type CustomFieldValueUpsertWithWhereUniqueWithoutContactInput = {
@@ -36601,6 +43962,22 @@ export namespace Prisma {
     data: XOR<CommunicationLogUpdateManyMutationInput, CommunicationLogUncheckedUpdateManyWithoutContactInput>
   }
 
+  export type ChatSessionUpsertWithWhereUniqueWithoutContactInput = {
+    where: ChatSessionWhereUniqueInput
+    update: XOR<ChatSessionUpdateWithoutContactInput, ChatSessionUncheckedUpdateWithoutContactInput>
+    create: XOR<ChatSessionCreateWithoutContactInput, ChatSessionUncheckedCreateWithoutContactInput>
+  }
+
+  export type ChatSessionUpdateWithWhereUniqueWithoutContactInput = {
+    where: ChatSessionWhereUniqueInput
+    data: XOR<ChatSessionUpdateWithoutContactInput, ChatSessionUncheckedUpdateWithoutContactInput>
+  }
+
+  export type ChatSessionUpdateManyWithWhereWithoutContactInput = {
+    where: ChatSessionScalarWhereInput
+    data: XOR<ChatSessionUpdateManyMutationInput, ChatSessionUncheckedUpdateManyWithoutContactInput>
+  }
+
   export type TenantCreateWithoutCustomFieldDefsInput = {
     id?: string
     name: string
@@ -36613,6 +43990,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36628,10 +44006,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutCustomFieldDefsInput = {
@@ -36646,6 +44028,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36661,10 +44044,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutCustomFieldDefsInput = {
@@ -36731,6 +44118,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36746,10 +44134,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutCustomFieldDefsInput = {
@@ -36764,6 +44156,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36779,10 +44172,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type CustomFieldValueUpsertWithWhereUniqueWithoutFieldDefinitionInput = {
@@ -36816,6 +44213,7 @@ export namespace Prisma {
     notes?: NoteCreateNestedManyWithoutContactInput
     activities?: ActivityCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateWithoutCustomFieldsInput = {
@@ -36833,6 +44231,7 @@ export namespace Prisma {
     notes?: NoteUncheckedCreateNestedManyWithoutContactInput
     activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactCreateOrConnectWithoutCustomFieldsInput = {
@@ -36893,6 +44292,7 @@ export namespace Prisma {
     notes?: NoteUpdateManyWithoutContactNestedInput
     activities?: ActivityUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutCustomFieldsInput = {
@@ -36910,6 +44310,7 @@ export namespace Prisma {
     notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type CustomFieldDefinitionUpsertWithoutValuesInput = {
@@ -36957,6 +44358,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36972,10 +44374,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutDealsInput = {
@@ -36990,6 +44396,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37005,10 +44412,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutDealsInput = {
@@ -37031,6 +44442,7 @@ export namespace Prisma {
     notes?: NoteCreateNestedManyWithoutContactInput
     activities?: ActivityCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateWithoutDealsInput = {
@@ -37048,6 +44460,7 @@ export namespace Prisma {
     notes?: NoteUncheckedCreateNestedManyWithoutContactInput
     activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactCreateOrConnectWithoutDealsInput = {
@@ -37241,6 +44654,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37256,10 +44670,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutDealsInput = {
@@ -37274,6 +44692,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37289,10 +44708,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutDealsInput = {
@@ -37321,6 +44744,7 @@ export namespace Prisma {
     notes?: NoteUpdateManyWithoutContactNestedInput
     activities?: ActivityUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutDealsInput = {
@@ -37338,6 +44762,7 @@ export namespace Prisma {
     notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type PipelineUpsertWithoutDealsInput = {
@@ -37493,6 +44918,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37508,10 +44934,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPipelinesInput = {
@@ -37526,6 +44956,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37541,10 +44972,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPipelinesInput = {
@@ -37691,6 +45126,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37706,10 +45142,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPipelinesInput = {
@@ -37724,6 +45164,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37739,10 +45180,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type DealUpsertWithWhereUniqueWithoutPipelineInput = {
@@ -37789,6 +45234,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37804,10 +45250,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPipelineStagesInput = {
@@ -37822,6 +45272,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37837,10 +45288,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPipelineStagesInput = {
@@ -37974,6 +45429,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37989,10 +45445,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPipelineStagesInput = {
@@ -38007,6 +45467,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38022,10 +45483,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type PipelineUpsertWithoutStageConfigsInput = {
@@ -38089,6 +45554,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38104,10 +45570,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutDealStageHistoryInput = {
@@ -38122,6 +45592,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38137,10 +45608,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutDealStageHistoryInput = {
@@ -38242,6 +45717,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38257,10 +45733,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutDealStageHistoryInput = {
@@ -38275,6 +45755,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38290,10 +45771,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type DealUpsertWithoutStageHistoryInput = {
@@ -38385,6 +45870,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38401,9 +45887,13 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutBookingsInput = {
@@ -38418,6 +45908,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38434,9 +45925,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutBookingsInput = {
@@ -38459,6 +45954,7 @@ export namespace Prisma {
     notes?: NoteCreateNestedManyWithoutContactInput
     activities?: ActivityCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateWithoutBookingsInput = {
@@ -38476,6 +45972,7 @@ export namespace Prisma {
     notes?: NoteUncheckedCreateNestedManyWithoutContactInput
     activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactCreateOrConnectWithoutBookingsInput = {
@@ -38548,6 +46045,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38564,9 +46062,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutBookingsInput = {
@@ -38581,6 +46083,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38597,9 +46100,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutBookingsInput = {
@@ -38628,6 +46135,7 @@ export namespace Prisma {
     notes?: NoteUpdateManyWithoutContactNestedInput
     activities?: ActivityUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutBookingsInput = {
@@ -38645,6 +46153,7 @@ export namespace Prisma {
     notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type ActivityUpsertWithWhereUniqueWithoutBookingInput = {
@@ -38675,6 +46184,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38691,9 +46201,13 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutNotesInput = {
@@ -38708,6 +46222,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38724,9 +46239,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutNotesInput = {
@@ -38749,6 +46268,7 @@ export namespace Prisma {
     bookings?: BookingCreateNestedManyWithoutContactInput
     activities?: ActivityCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateWithoutNotesInput = {
@@ -38766,6 +46286,7 @@ export namespace Prisma {
     bookings?: BookingUncheckedCreateNestedManyWithoutContactInput
     activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactCreateOrConnectWithoutNotesInput = {
@@ -38838,6 +46359,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38854,9 +46376,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutNotesInput = {
@@ -38871,6 +46397,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38887,9 +46414,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutNotesInput = {
@@ -38918,6 +46449,7 @@ export namespace Prisma {
     bookings?: BookingUpdateManyWithoutContactNestedInput
     activities?: ActivityUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutNotesInput = {
@@ -38935,6 +46467,7 @@ export namespace Prisma {
     bookings?: BookingUncheckedUpdateManyWithoutContactNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type ActivityUpsertWithWhereUniqueWithoutNoteInput = {
@@ -38965,6 +46498,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38980,10 +46514,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutWorkflowsInput = {
@@ -38998,6 +46536,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39013,10 +46552,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutWorkflowsInput = {
@@ -39106,6 +46649,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39121,10 +46665,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutWorkflowsInput = {
@@ -39139,6 +46687,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39154,10 +46703,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type WorkflowFolderUpsertWithoutWorkflowsInput = {
@@ -39219,6 +46772,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39234,10 +46788,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutWorkflowFoldersInput = {
@@ -39252,6 +46810,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39267,10 +46826,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutWorkflowFoldersInput = {
@@ -39388,6 +46951,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39403,10 +46967,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutWorkflowFoldersInput = {
@@ -39421,6 +46989,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39436,10 +47005,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type WorkflowFolderUpsertWithoutChildrenInput = {
@@ -39517,6 +47090,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39532,10 +47106,14 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutWorkflowRunsInput = {
@@ -39550,6 +47128,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39565,10 +47144,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutWorkflowRunsInput = {
@@ -39670,6 +47253,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutCommunicationLogsInput
     contact: ContactCreateNestedOneWithoutCommunicationLogsInput
     agent: AIAgentCreateNestedOneWithoutCommunicationLogsInput
+    session?: ChatSessionCreateNestedOneWithoutMessagesInput
     activities?: ActivityCreateNestedManyWithoutCommLogInput
   }
 
@@ -39696,6 +47280,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutCommLogInput
@@ -39734,6 +47319,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39749,10 +47335,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutWorkflowRunsInput = {
@@ -39767,6 +47357,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39782,10 +47373,14 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type WorkflowDefinitionUpsertWithoutRunsInput = {
@@ -39865,6 +47460,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39880,10 +47476,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutAiAgentsInput = {
@@ -39898,6 +47498,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39913,10 +47514,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutAiAgentsInput = {
@@ -39949,6 +47554,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutCommunicationLogsInput
     contact: ContactCreateNestedOneWithoutCommunicationLogsInput
     workflowRun?: WorkflowRunCreateNestedOneWithoutCommunicationLogsInput
+    session?: ChatSessionCreateNestedOneWithoutMessagesInput
     activities?: ActivityCreateNestedManyWithoutCommLogInput
   }
 
@@ -39975,6 +47581,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutCommLogInput
@@ -40018,6 +47625,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ChatSessionCreateWithoutAgentInput = {
+    id?: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutChatSessionsInput
+    contact: ContactCreateNestedOneWithoutChatSessionsInput
+    messages?: CommunicationLogCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionUncheckedCreateWithoutAgentInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    messages?: CommunicationLogUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type ChatSessionCreateOrConnectWithoutAgentInput = {
+    where: ChatSessionWhereUniqueInput
+    create: XOR<ChatSessionCreateWithoutAgentInput, ChatSessionUncheckedCreateWithoutAgentInput>
+  }
+
+  export type ChatSessionCreateManyAgentInputEnvelope = {
+    data: ChatSessionCreateManyAgentInput | ChatSessionCreateManyAgentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TenantUpsertWithoutAiAgentsInput = {
     update: XOR<TenantUpdateWithoutAiAgentsInput, TenantUncheckedUpdateWithoutAiAgentsInput>
     create: XOR<TenantCreateWithoutAiAgentsInput, TenantUncheckedCreateWithoutAiAgentsInput>
@@ -40041,6 +47690,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40056,10 +47706,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutAiAgentsInput = {
@@ -40074,6 +47728,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40089,10 +47744,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type CommunicationLogUpsertWithWhereUniqueWithoutAgentInput = {
@@ -40127,6 +47786,22 @@ export namespace Prisma {
     data: XOR<KnowledgeBaseUpdateManyMutationInput, KnowledgeBaseUncheckedUpdateManyWithoutAgentInput>
   }
 
+  export type ChatSessionUpsertWithWhereUniqueWithoutAgentInput = {
+    where: ChatSessionWhereUniqueInput
+    update: XOR<ChatSessionUpdateWithoutAgentInput, ChatSessionUncheckedUpdateWithoutAgentInput>
+    create: XOR<ChatSessionCreateWithoutAgentInput, ChatSessionUncheckedCreateWithoutAgentInput>
+  }
+
+  export type ChatSessionUpdateWithWhereUniqueWithoutAgentInput = {
+    where: ChatSessionWhereUniqueInput
+    data: XOR<ChatSessionUpdateWithoutAgentInput, ChatSessionUncheckedUpdateWithoutAgentInput>
+  }
+
+  export type ChatSessionUpdateManyWithWhereWithoutAgentInput = {
+    where: ChatSessionScalarWhereInput
+    data: XOR<ChatSessionUpdateManyMutationInput, ChatSessionUncheckedUpdateManyWithoutAgentInput>
+  }
+
   export type TenantCreateWithoutPhoneNumbersInput = {
     id?: string
     name: string
@@ -40139,6 +47814,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40154,10 +47830,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPhoneNumbersInput = {
@@ -40172,6 +47852,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40187,10 +47868,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPhoneNumbersInput = {
@@ -40221,6 +47906,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40236,10 +47922,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPhoneNumbersInput = {
@@ -40254,6 +47944,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40269,10 +47960,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutKnowledgeBaseInput = {
@@ -40287,6 +47982,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40303,9 +47999,13 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutKnowledgeBaseInput = {
@@ -40320,6 +48020,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40336,9 +48037,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutKnowledgeBaseInput = {
@@ -40373,6 +48078,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -40380,6 +48087,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutAiAgentsInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateWithoutKnowledgeBasesInput = {
@@ -40410,12 +48118,15 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentCreateOrConnectWithoutKnowledgeBasesInput = {
@@ -40446,6 +48157,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40462,9 +48174,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutKnowledgeBaseInput = {
@@ -40479,6 +48195,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40495,9 +48212,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type AIAgentUpsertWithoutKnowledgeBasesInput = {
@@ -40538,6 +48259,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40545,6 +48268,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateWithoutKnowledgeBasesInput = {
@@ -40575,12 +48299,15 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type TenantCreateWithoutCommunicationLogsInput = {
@@ -40595,6 +48322,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40610,10 +48338,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
     activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutCommunicationLogsInput = {
@@ -40628,6 +48360,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40643,10 +48376,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
     activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutCommunicationLogsInput = {
@@ -40669,6 +48406,7 @@ export namespace Prisma {
     bookings?: BookingCreateNestedManyWithoutContactInput
     notes?: NoteCreateNestedManyWithoutContactInput
     activities?: ActivityCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateWithoutCommunicationLogsInput = {
@@ -40686,6 +48424,7 @@ export namespace Prisma {
     bookings?: BookingUncheckedCreateNestedManyWithoutContactInput
     notes?: NoteUncheckedCreateNestedManyWithoutContactInput
     activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactCreateOrConnectWithoutCommunicationLogsInput = {
@@ -40720,6 +48459,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -40727,6 +48468,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutAiAgentsInput
     knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateWithoutCommunicationLogsInput = {
@@ -40757,12 +48499,15 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentCreateOrConnectWithoutCommunicationLogsInput = {
@@ -40797,6 +48542,43 @@ export namespace Prisma {
   export type WorkflowRunCreateOrConnectWithoutCommunicationLogsInput = {
     where: WorkflowRunWhereUniqueInput
     create: XOR<WorkflowRunCreateWithoutCommunicationLogsInput, WorkflowRunUncheckedCreateWithoutCommunicationLogsInput>
+  }
+
+  export type ChatSessionCreateWithoutMessagesInput = {
+    id?: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutChatSessionsInput
+    contact: ContactCreateNestedOneWithoutChatSessionsInput
+    agent: AIAgentCreateNestedOneWithoutChatSessionsInput
+  }
+
+  export type ChatSessionUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    agentId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ChatSessionCreateOrConnectWithoutMessagesInput = {
+    where: ChatSessionWhereUniqueInput
+    create: XOR<ChatSessionCreateWithoutMessagesInput, ChatSessionUncheckedCreateWithoutMessagesInput>
   }
 
   export type ActivityCreateWithoutCommLogInput = {
@@ -40864,6 +48646,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40879,10 +48662,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     activities?: ActivityUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -40897,6 +48684,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40912,10 +48700,14 @@ export namespace Prisma {
     workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutCommunicationLogsInput = {
@@ -40944,6 +48736,7 @@ export namespace Prisma {
     bookings?: BookingUpdateManyWithoutContactNestedInput
     notes?: NoteUpdateManyWithoutContactNestedInput
     activities?: ActivityUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -40961,6 +48754,7 @@ export namespace Prisma {
     bookings?: BookingUncheckedUpdateManyWithoutContactNestedInput
     notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type AIAgentUpsertWithoutCommunicationLogsInput = {
@@ -41001,6 +48795,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41008,6 +48804,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
     knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -41038,12 +48835,15 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type WorkflowRunUpsertWithoutCommunicationLogsInput = {
@@ -41081,6 +48881,49 @@ export namespace Prisma {
     activities?: ActivityUncheckedUpdateManyWithoutWorkflowRunNestedInput
   }
 
+  export type ChatSessionUpsertWithoutMessagesInput = {
+    update: XOR<ChatSessionUpdateWithoutMessagesInput, ChatSessionUncheckedUpdateWithoutMessagesInput>
+    create: XOR<ChatSessionCreateWithoutMessagesInput, ChatSessionUncheckedCreateWithoutMessagesInput>
+    where?: ChatSessionWhereInput
+  }
+
+  export type ChatSessionUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: ChatSessionWhereInput
+    data: XOR<ChatSessionUpdateWithoutMessagesInput, ChatSessionUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type ChatSessionUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutChatSessionsNestedInput
+    contact?: ContactUpdateOneRequiredWithoutChatSessionsNestedInput
+    agent?: AIAgentUpdateOneRequiredWithoutChatSessionsNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ActivityUpsertWithWhereUniqueWithoutCommLogInput = {
     where: ActivityWhereUniqueInput
     update: XOR<ActivityUpdateWithoutCommLogInput, ActivityUncheckedUpdateWithoutCommLogInput>
@@ -41097,7 +48940,7 @@ export namespace Prisma {
     data: XOR<ActivityUpdateManyMutationInput, ActivityUncheckedUpdateManyWithoutCommLogInput>
   }
 
-  export type TenantCreateWithoutActivitiesInput = {
+  export type TenantCreateWithoutChatSessionsInput = {
     id?: string
     name: string
     slug: string
@@ -41109,6 +48952,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41125,12 +48969,16 @@ export namespace Prisma {
     aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    activities?: ActivityCreateNestedManyWithoutTenantInput
     notes?: NoteCreateNestedManyWithoutTenantInput
     bookings?: BookingCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
   }
 
-  export type TenantUncheckedCreateWithoutActivitiesInput = {
+  export type TenantUncheckedCreateWithoutChatSessionsInput = {
     id?: string
     name: string
     slug: string
@@ -41142,6 +48990,7 @@ export namespace Prisma {
     monthlyRevenue?: string | null
     onboardingStep?: number
     onboardingDone?: boolean
+    creditBalance?: number
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41158,9 +49007,525 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
     phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
     notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
     bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutChatSessionsInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutChatSessionsInput, TenantUncheckedCreateWithoutChatSessionsInput>
+  }
+
+  export type ContactCreateWithoutChatSessionsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    emails?: ContactCreateemailsInput | string[]
+    phones?: ContactCreatephonesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    tenant: TenantCreateNestedOneWithoutContactsInput
+    customFields?: CustomFieldValueCreateNestedManyWithoutContactInput
+    deals?: DealCreateNestedManyWithoutContactInput
+    bookings?: BookingCreateNestedManyWithoutContactInput
+    notes?: NoteCreateNestedManyWithoutContactInput
+    activities?: ActivityCreateNestedManyWithoutContactInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactUncheckedCreateWithoutChatSessionsInput = {
+    id?: string
+    tenantId: string
+    firstName: string
+    lastName: string
+    emails?: ContactCreateemailsInput | string[]
+    phones?: ContactCreatephonesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    customFields?: CustomFieldValueUncheckedCreateNestedManyWithoutContactInput
+    deals?: DealUncheckedCreateNestedManyWithoutContactInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutContactInput
+    notes?: NoteUncheckedCreateNestedManyWithoutContactInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutContactInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutChatSessionsInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutChatSessionsInput, ContactUncheckedCreateWithoutChatSessionsInput>
+  }
+
+  export type AIAgentCreateWithoutChatSessionsInput = {
+    id?: string
+    name: string
+    role?: string
+    language?: string
+    greetingMessage?: string
+    tone?: string
+    fallbackMessage?: string
+    businessInfo?: string | null
+    websiteUrl?: string | null
+    maxDuration?: number
+    dndCompliance?: boolean
+    recordingConsent?: boolean
+    isActive?: boolean
+    systemPrompt: string
+    modelName: string
+    voice?: string
+    intakeWorkflowId?: string | null
+    smsWorkflowId?: string | null
+    phoneNumberId?: string | null
+    intakeEnabled?: boolean
+    intakeFields?: AIAgentCreateintakeFieldsInput | string[]
+    intakePrompt?: string | null
+    smsEnabled?: boolean
+    smsTriggerCondition?: string | null
+    smsTemplate?: string | null
+    smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: string
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutAiAgentsInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
+    knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
+  }
+
+  export type AIAgentUncheckedCreateWithoutChatSessionsInput = {
+    id?: string
+    tenantId: string
+    name: string
+    role?: string
+    language?: string
+    greetingMessage?: string
+    tone?: string
+    fallbackMessage?: string
+    businessInfo?: string | null
+    websiteUrl?: string | null
+    maxDuration?: number
+    dndCompliance?: boolean
+    recordingConsent?: boolean
+    isActive?: boolean
+    systemPrompt: string
+    modelName: string
+    voice?: string
+    intakeWorkflowId?: string | null
+    smsWorkflowId?: string | null
+    phoneNumberId?: string | null
+    intakeEnabled?: boolean
+    intakeFields?: AIAgentCreateintakeFieldsInput | string[]
+    intakePrompt?: string | null
+    smsEnabled?: boolean
+    smsTriggerCondition?: string | null
+    smsTemplate?: string | null
+    smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: string
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
+    knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
+  }
+
+  export type AIAgentCreateOrConnectWithoutChatSessionsInput = {
+    where: AIAgentWhereUniqueInput
+    create: XOR<AIAgentCreateWithoutChatSessionsInput, AIAgentUncheckedCreateWithoutChatSessionsInput>
+  }
+
+  export type CommunicationLogCreateWithoutSessionInput = {
+    id?: string
+    phoneNumberId?: string | null
+    type: $Enums.CommType
+    direction: $Enums.Direction
+    status: $Enums.CommStatus
+    duration?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    transcriptJson?: NullableJsonNullValueInput | InputJsonValue
+    sentimentScore?: number | null
+    extractionStatus?: $Enums.ExtractionStatus
+    extractedFields?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    mediaUrl?: string | null
+    subject?: string | null
+    deliveredAt?: Date | string | null
+    provider?: string | null
+    providerRef?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    occurredAt: Date | string
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutCommunicationLogsInput
+    contact: ContactCreateNestedOneWithoutCommunicationLogsInput
+    agent: AIAgentCreateNestedOneWithoutCommunicationLogsInput
+    workflowRun?: WorkflowRunCreateNestedOneWithoutCommunicationLogsInput
+    activities?: ActivityCreateNestedManyWithoutCommLogInput
+  }
+
+  export type CommunicationLogUncheckedCreateWithoutSessionInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    agentId: string
+    workflowRunId?: string | null
+    phoneNumberId?: string | null
+    type: $Enums.CommType
+    direction: $Enums.Direction
+    status: $Enums.CommStatus
+    duration?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    transcriptJson?: NullableJsonNullValueInput | InputJsonValue
+    sentimentScore?: number | null
+    extractionStatus?: $Enums.ExtractionStatus
+    extractedFields?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    mediaUrl?: string | null
+    subject?: string | null
+    deliveredAt?: Date | string | null
+    provider?: string | null
+    providerRef?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    occurredAt: Date | string
+    createdAt?: Date | string
+    activities?: ActivityUncheckedCreateNestedManyWithoutCommLogInput
+  }
+
+  export type CommunicationLogCreateOrConnectWithoutSessionInput = {
+    where: CommunicationLogWhereUniqueInput
+    create: XOR<CommunicationLogCreateWithoutSessionInput, CommunicationLogUncheckedCreateWithoutSessionInput>
+  }
+
+  export type CommunicationLogCreateManySessionInputEnvelope = {
+    data: CommunicationLogCreateManySessionInput | CommunicationLogCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TenantUpsertWithoutChatSessionsInput = {
+    update: XOR<TenantUpdateWithoutChatSessionsInput, TenantUncheckedUpdateWithoutChatSessionsInput>
+    create: XOR<TenantCreateWithoutChatSessionsInput, TenantUncheckedCreateWithoutChatSessionsInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutChatSessionsInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutChatSessionsInput, TenantUncheckedUpdateWithoutChatSessionsInput>
+  }
+
+  export type TenantUpdateWithoutChatSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUpdateManyWithoutTenantNestedInput
+    deals?: DealUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUpdateManyWithoutTenantNestedInput
+    notes?: NoteUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutChatSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    deals?: DealUncheckedUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUncheckedUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUncheckedUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type ContactUpsertWithoutChatSessionsInput = {
+    update: XOR<ContactUpdateWithoutChatSessionsInput, ContactUncheckedUpdateWithoutChatSessionsInput>
+    create: XOR<ContactCreateWithoutChatSessionsInput, ContactUncheckedCreateWithoutChatSessionsInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutChatSessionsInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutChatSessionsInput, ContactUncheckedUpdateWithoutChatSessionsInput>
+  }
+
+  export type ContactUpdateWithoutChatSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    emails?: ContactUpdateemailsInput | string[]
+    phones?: ContactUpdatephonesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tenant?: TenantUpdateOneRequiredWithoutContactsNestedInput
+    customFields?: CustomFieldValueUpdateManyWithoutContactNestedInput
+    deals?: DealUpdateManyWithoutContactNestedInput
+    bookings?: BookingUpdateManyWithoutContactNestedInput
+    notes?: NoteUpdateManyWithoutContactNestedInput
+    activities?: ActivityUpdateManyWithoutContactNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutChatSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    emails?: ContactUpdateemailsInput | string[]
+    phones?: ContactUpdatephonesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customFields?: CustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
+    deals?: DealUncheckedUpdateManyWithoutContactNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutContactNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type AIAgentUpsertWithoutChatSessionsInput = {
+    update: XOR<AIAgentUpdateWithoutChatSessionsInput, AIAgentUncheckedUpdateWithoutChatSessionsInput>
+    create: XOR<AIAgentCreateWithoutChatSessionsInput, AIAgentUncheckedCreateWithoutChatSessionsInput>
+    where?: AIAgentWhereInput
+  }
+
+  export type AIAgentUpdateToOneWithWhereWithoutChatSessionsInput = {
+    where?: AIAgentWhereInput
+    data: XOR<AIAgentUpdateWithoutChatSessionsInput, AIAgentUncheckedUpdateWithoutChatSessionsInput>
+  }
+
+  export type AIAgentUpdateWithoutChatSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
+    greetingMessage?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    fallbackMessage?: StringFieldUpdateOperationsInput | string
+    businessInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    maxDuration?: IntFieldUpdateOperationsInput | number
+    dndCompliance?: BoolFieldUpdateOperationsInput | boolean
+    recordingConsent?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    systemPrompt?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    voice?: StringFieldUpdateOperationsInput | string
+    intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeEnabled?: BoolFieldUpdateOperationsInput | boolean
+    intakeFields?: AIAgentUpdateintakeFieldsInput | string[]
+    intakePrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    smsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
+    smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
+    knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
+  }
+
+  export type AIAgentUncheckedUpdateWithoutChatSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
+    greetingMessage?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    fallbackMessage?: StringFieldUpdateOperationsInput | string
+    businessInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    maxDuration?: IntFieldUpdateOperationsInput | number
+    dndCompliance?: BoolFieldUpdateOperationsInput | boolean
+    recordingConsent?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    systemPrompt?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    voice?: StringFieldUpdateOperationsInput | string
+    intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeEnabled?: BoolFieldUpdateOperationsInput | boolean
+    intakeFields?: AIAgentUpdateintakeFieldsInput | string[]
+    intakePrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    smsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
+    smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
+    knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
+  }
+
+  export type CommunicationLogUpsertWithWhereUniqueWithoutSessionInput = {
+    where: CommunicationLogWhereUniqueInput
+    update: XOR<CommunicationLogUpdateWithoutSessionInput, CommunicationLogUncheckedUpdateWithoutSessionInput>
+    create: XOR<CommunicationLogCreateWithoutSessionInput, CommunicationLogUncheckedCreateWithoutSessionInput>
+  }
+
+  export type CommunicationLogUpdateWithWhereUniqueWithoutSessionInput = {
+    where: CommunicationLogWhereUniqueInput
+    data: XOR<CommunicationLogUpdateWithoutSessionInput, CommunicationLogUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type CommunicationLogUpdateManyWithWhereWithoutSessionInput = {
+    where: CommunicationLogScalarWhereInput
+    data: XOR<CommunicationLogUpdateManyMutationInput, CommunicationLogUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type TenantCreateWithoutActivitiesInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    contacts?: ContactCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionCreateNestedManyWithoutTenantInput
+    deals?: DealCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
+    notes?: NoteCreateNestedManyWithoutTenantInput
+    bookings?: BookingCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutActivitiesInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    deals?: DealUncheckedCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageUncheckedCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderUncheckedCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
+    notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutActivitiesInput = {
@@ -41183,6 +49548,7 @@ export namespace Prisma {
     bookings?: BookingCreateNestedManyWithoutContactInput
     notes?: NoteCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutContactInput
   }
 
   export type ContactUncheckedCreateWithoutActivitiesInput = {
@@ -41200,6 +49566,7 @@ export namespace Prisma {
     bookings?: BookingUncheckedCreateNestedManyWithoutContactInput
     notes?: NoteUncheckedCreateNestedManyWithoutContactInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutContactInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutContactInput
   }
 
   export type ContactCreateOrConnectWithoutActivitiesInput = {
@@ -41233,6 +49600,7 @@ export namespace Prisma {
     contact: ContactCreateNestedOneWithoutCommunicationLogsInput
     agent: AIAgentCreateNestedOneWithoutCommunicationLogsInput
     workflowRun?: WorkflowRunCreateNestedOneWithoutCommunicationLogsInput
+    session?: ChatSessionCreateNestedOneWithoutMessagesInput
   }
 
   export type CommunicationLogUncheckedCreateWithoutActivitiesInput = {
@@ -41259,6 +49627,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
   }
@@ -41443,6 +49812,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41459,9 +49829,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
     notes?: NoteUpdateManyWithoutTenantNestedInput
     bookings?: BookingUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutActivitiesInput = {
@@ -41476,6 +49850,7 @@ export namespace Prisma {
     monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
     onboardingStep?: IntFieldUpdateOperationsInput | number
     onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41492,9 +49867,13 @@ export namespace Prisma {
     aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
     phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
     notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutActivitiesInput = {
@@ -41523,6 +49902,7 @@ export namespace Prisma {
     bookings?: BookingUpdateManyWithoutContactNestedInput
     notes?: NoteUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutActivitiesInput = {
@@ -41540,6 +49920,7 @@ export namespace Prisma {
     bookings?: BookingUncheckedUpdateManyWithoutContactNestedInput
     notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type CommunicationLogUpsertWithoutActivitiesInput = {
@@ -41579,6 +49960,7 @@ export namespace Prisma {
     contact?: ContactUpdateOneRequiredWithoutCommunicationLogsNestedInput
     agent?: AIAgentUpdateOneRequiredWithoutCommunicationLogsNestedInput
     workflowRun?: WorkflowRunUpdateOneWithoutCommunicationLogsNestedInput
+    session?: ChatSessionUpdateOneWithoutMessagesNestedInput
   }
 
   export type CommunicationLogUncheckedUpdateWithoutActivitiesInput = {
@@ -41605,6 +49987,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -41936,6 +50319,8 @@ export namespace Prisma {
     smsTriggerCondition?: string | null
     smsTemplate?: string | null
     smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -41947,6 +50332,8 @@ export namespace Prisma {
     id?: string
     phoneNumber: string
     label?: string | null
+    kind?: $Enums.PhoneNumberKind
+    twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -41974,7 +50361,23 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type ChatSessionCreateManyTenantInput = {
+    id?: string
+    contactId: string
+    agentId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
     createdAt?: Date | string
   }
 
@@ -42020,6 +50423,28 @@ export namespace Prisma {
     content?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type CreditLedgerCreateManyTenantInput = {
+    id?: string
+    delta: number
+    reason: $Enums.CreditReason
+    refId?: string | null
+    note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PaymentRecordCreateManyTenantInput = {
+    id?: string
+    provider?: string
+    paymentId: string
+    orderId: string
+    product: string
+    amountPaise: number
+    currency?: string
+    status?: string
+    description?: string | null
+    createdAt?: Date | string
   }
 
   export type UserUpdateWithoutTenantInput = {
@@ -42072,6 +50497,7 @@ export namespace Prisma {
     notes?: NoteUpdateManyWithoutContactNestedInput
     activities?: ActivityUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateWithoutTenantInput = {
@@ -42089,6 +50515,7 @@ export namespace Prisma {
     notes?: NoteUncheckedUpdateManyWithoutContactNestedInput
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
   }
 
   export type ContactUncheckedUpdateManyWithoutTenantInput = {
@@ -42457,6 +50884,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42464,6 +50893,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateWithoutTenantInput = {
@@ -42493,6 +50923,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42500,6 +50932,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateManyWithoutTenantInput = {
@@ -42529,6 +50962,8 @@ export namespace Prisma {
     smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
     smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42540,6 +50975,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42548,6 +50985,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42556,6 +50995,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42585,6 +51026,7 @@ export namespace Prisma {
     contact?: ContactUpdateOneRequiredWithoutCommunicationLogsNestedInput
     agent?: AIAgentUpdateOneRequiredWithoutCommunicationLogsNestedInput
     workflowRun?: WorkflowRunUpdateOneWithoutCommunicationLogsNestedInput
+    session?: ChatSessionUpdateOneWithoutMessagesNestedInput
     activities?: ActivityUpdateManyWithoutCommLogNestedInput
   }
 
@@ -42611,6 +51053,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutCommLogNestedInput
@@ -42639,7 +51082,55 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatSessionUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contact?: ContactUpdateOneRequiredWithoutChatSessionsNestedInput
+    agent?: AIAgentUpdateOneRequiredWithoutChatSessionsNestedInput
+    messages?: CommunicationLogUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: CommunicationLogUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -42777,6 +51268,72 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CreditLedgerUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    delta?: IntFieldUpdateOperationsInput | number
+    reason?: EnumCreditReasonFieldUpdateOperationsInput | $Enums.CreditReason
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CreditLedgerUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    delta?: IntFieldUpdateOperationsInput | number
+    reason?: EnumCreditReasonFieldUpdateOperationsInput | $Enums.CreditReason
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CreditLedgerUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    delta?: IntFieldUpdateOperationsInput | number
+    reason?: EnumCreditReasonFieldUpdateOperationsInput | $Enums.CreditReason
+    refId?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    paymentId?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    product?: StringFieldUpdateOperationsInput | string
+    amountPaise?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    paymentId?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    product?: StringFieldUpdateOperationsInput | string
+    amountPaise?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    paymentId?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    product?: StringFieldUpdateOperationsInput | string
+    amountPaise?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DealCreateManyOwnerInput = {
@@ -43009,7 +51566,23 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type ChatSessionCreateManyContactInput = {
+    id?: string
+    tenantId: string
+    agentId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
     createdAt?: Date | string
   }
 
@@ -43283,6 +51856,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutCommunicationLogsNestedInput
     agent?: AIAgentUpdateOneRequiredWithoutCommunicationLogsNestedInput
     workflowRun?: WorkflowRunUpdateOneWithoutCommunicationLogsNestedInput
+    session?: ChatSessionUpdateOneWithoutMessagesNestedInput
     activities?: ActivityUpdateManyWithoutCommLogNestedInput
   }
 
@@ -43309,6 +51883,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutCommLogNestedInput
@@ -43337,7 +51912,55 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatSessionUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutChatSessionsNestedInput
+    agent?: AIAgentUpdateOneRequiredWithoutChatSessionsNestedInput
+    messages?: CommunicationLogUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: CommunicationLogUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateManyWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -44100,6 +52723,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
   }
@@ -44177,6 +52801,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutCommunicationLogsNestedInput
     contact?: ContactUpdateOneRequiredWithoutCommunicationLogsNestedInput
     agent?: AIAgentUpdateOneRequiredWithoutCommunicationLogsNestedInput
+    session?: ChatSessionUpdateOneWithoutMessagesNestedInput
     activities?: ActivityUpdateManyWithoutCommLogNestedInput
   }
 
@@ -44203,6 +52828,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutCommLogNestedInput
@@ -44231,6 +52857,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44258,6 +52885,7 @@ export namespace Prisma {
     provider?: string | null
     providerRef?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: string | null
     occurredAt: Date | string
     createdAt?: Date | string
   }
@@ -44269,6 +52897,21 @@ export namespace Prisma {
     content?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ChatSessionCreateManyAgentInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    channel?: $Enums.CommType
+    status?: $Enums.ChatSessionStatus
+    commLogId?: string | null
+    humanTakeover?: boolean
+    startedAt?: Date | string
+    lastMessageAt?: Date | string
+    processedAt?: Date | string | null
+    dealId?: string | null
+    createdAt?: Date | string
   }
 
   export type CommunicationLogUpdateWithoutAgentInput = {
@@ -44296,6 +52939,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutCommunicationLogsNestedInput
     contact?: ContactUpdateOneRequiredWithoutCommunicationLogsNestedInput
     workflowRun?: WorkflowRunUpdateOneWithoutCommunicationLogsNestedInput
+    session?: ChatSessionUpdateOneWithoutMessagesNestedInput
     activities?: ActivityUpdateManyWithoutCommLogNestedInput
   }
 
@@ -44322,6 +52966,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutCommLogNestedInput
@@ -44350,6 +52995,7 @@ export namespace Prisma {
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44379,6 +53025,53 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChatSessionUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutChatSessionsNestedInput
+    contact?: ContactUpdateOneRequiredWithoutChatSessionsNestedInput
+    messages?: CommunicationLogUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: CommunicationLogUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ChatSessionUncheckedUpdateManyWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    channel?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    status?: EnumChatSessionStatusFieldUpdateOperationsInput | $Enums.ChatSessionStatus
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    humanTakeover?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastMessageAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dealId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ActivityCreateManyCommLogInput = {
@@ -44445,6 +53138,120 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CommunicationLogCreateManySessionInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    agentId: string
+    workflowRunId?: string | null
+    phoneNumberId?: string | null
+    type: $Enums.CommType
+    direction: $Enums.Direction
+    status: $Enums.CommStatus
+    duration?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    transcriptJson?: NullableJsonNullValueInput | InputJsonValue
+    sentimentScore?: number | null
+    extractionStatus?: $Enums.ExtractionStatus
+    extractedFields?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    mediaUrl?: string | null
+    subject?: string | null
+    deliveredAt?: Date | string | null
+    provider?: string | null
+    providerRef?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    occurredAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type CommunicationLogUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    direction?: EnumDirectionFieldUpdateOperationsInput | $Enums.Direction
+    status?: EnumCommStatusFieldUpdateOperationsInput | $Enums.CommStatus
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    transcriptJson?: NullableJsonNullValueInput | InputJsonValue
+    sentimentScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    extractionStatus?: EnumExtractionStatusFieldUpdateOperationsInput | $Enums.ExtractionStatus
+    extractedFields?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    mediaUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutCommunicationLogsNestedInput
+    contact?: ContactUpdateOneRequiredWithoutCommunicationLogsNestedInput
+    agent?: AIAgentUpdateOneRequiredWithoutCommunicationLogsNestedInput
+    workflowRun?: WorkflowRunUpdateOneWithoutCommunicationLogsNestedInput
+    activities?: ActivityUpdateManyWithoutCommLogNestedInput
+  }
+
+  export type CommunicationLogUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    workflowRunId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    direction?: EnumDirectionFieldUpdateOperationsInput | $Enums.Direction
+    status?: EnumCommStatusFieldUpdateOperationsInput | $Enums.CommStatus
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    transcriptJson?: NullableJsonNullValueInput | InputJsonValue
+    sentimentScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    extractionStatus?: EnumExtractionStatusFieldUpdateOperationsInput | $Enums.ExtractionStatus
+    extractedFields?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    mediaUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUncheckedUpdateManyWithoutCommLogNestedInput
+  }
+
+  export type CommunicationLogUncheckedUpdateManyWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    agentId?: StringFieldUpdateOperationsInput | string
+    workflowRunId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCommTypeFieldUpdateOperationsInput | $Enums.CommType
+    direction?: EnumDirectionFieldUpdateOperationsInput | $Enums.Direction
+    status?: EnumCommStatusFieldUpdateOperationsInput | $Enums.CommStatus
+    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    transcriptJson?: NullableJsonNullValueInput | InputJsonValue
+    sentimentScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    extractionStatus?: EnumExtractionStatusFieldUpdateOperationsInput | $Enums.ExtractionStatus
+    extractedFields?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    mediaUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
 
 
   /**
@@ -44507,9 +53314,25 @@ export namespace Prisma {
      */
     export type CommunicationLogCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CommunicationLogCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use ChatSessionCountOutputTypeDefaultArgs instead
+     */
+    export type ChatSessionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ChatSessionCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use TenantDefaultArgs instead
      */
     export type TenantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = TenantDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CreditLedgerDefaultArgs instead
+     */
+    export type CreditLedgerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CreditLedgerDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use PaymentRecordDefaultArgs instead
+     */
+    export type PaymentRecordArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PaymentRecordDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BillingSubscriptionDefaultArgs instead
+     */
+    export type BillingSubscriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BillingSubscriptionDefaultArgs<ExtArgs>
     /**
      * @deprecated Use UserDefaultArgs instead
      */
@@ -44578,6 +53401,10 @@ export namespace Prisma {
      * @deprecated Use CommunicationLogDefaultArgs instead
      */
     export type CommunicationLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CommunicationLogDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ChatSessionDefaultArgs instead
+     */
+    export type ChatSessionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ChatSessionDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ActivityDefaultArgs instead
      */

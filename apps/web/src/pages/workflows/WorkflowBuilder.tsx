@@ -1,4 +1,6 @@
 import * as React from "react";
+import { ErrorBoundary } from "../../components/common/ErrorBoundary.js";
+import { useEntitlements } from "../../hooks/useEntitlements.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PageWrapper } from "../../components/layout/PageWrapper.js";
@@ -28,9 +30,10 @@ import { DeleteWorkflowModal } from "./components/DeleteWorkflowModal.js";
  *  • Canvas is a vertical top-to-bottom chain.
  *  • Right inspector renders the schema-driven form + inline filter.
  */
-export function WorkflowBuilder(): React.JSX.Element {
+function WorkflowBuilderInner(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const entitlements = useEntitlements();
   const queryClient = useQueryClient();
 
   const { data: fetched, isLoading } = useQuery({
@@ -48,7 +51,9 @@ export function WorkflowBuilder(): React.JSX.Element {
 
   React.useEffect(() => {
     if (fetched) {
-      setWf({ ...fetched, steps: cloneTree(fetched.steps) });
+      // normalizeTree migrates any legacy "steps after a branch" into the
+      // Yes path — the tree model never merges branches back together.
+      setWf({ ...fetched, steps: normalizeTree(cloneTree(fetched.steps)) });
       setIsTriggerSelected(true);
       setSelectedId(null);
     }
@@ -149,11 +154,28 @@ export function WorkflowBuilder(): React.JSX.Element {
     return step;
   };
 
-  const handleAddByType = (afterId: string | null, type: string) => {
+  /** Every steps mutation flows through here so the tree invariant (nothing
+   *  follows an IF in a chain — branches never merge) always holds. */
+  const commitSteps = (steps: BlockNode[]) => {
+    if (!wf) return;
+    setWf({ ...wf, steps: normalizeTree(steps) });
+  };
+
+  const handleAddByType = (afterId: string | "__start__" | null, type: string) => {
     if (!wf) return;
     const step = buildStep(type);
     if (!step) return;
-    setWf({ ...wf, steps: insertAfter(wf.steps, afterId, step) });
+    // Nothing can follow a condition in the same chain — adding "after" an
+    // IF really means adding inside its Yes branch.
+    const target = afterId && afterId !== "__start__" ? findStep(wf.steps, afterId) : null;
+    if (target?.type === "IF") {
+      commitSteps(insertInBranch(wf.steps, target.id, "then", null, step));
+      toast.info("Added inside the Yes branch — branches never merge back");
+      setSelectedId(step.id);
+      setIsTriggerSelected(false);
+      return;
+    }
+    commitSteps(afterId === "__start__" ? [step, ...wf.steps] : insertAfter(wf.steps, afterId, step));
     setSelectedId(step.id);
     setIsTriggerSelected(false);
   };
@@ -161,28 +183,76 @@ export function WorkflowBuilder(): React.JSX.Element {
   const handleAddInBranch = (
     parentId: string,
     branch: "then" | "else",
-    afterId: string | null,
+    position: "start" | "end",
     type?: string,
   ) => {
     if (!wf) return;
     const step = buildStep(type || "SEND_SMS");
     if (!step) return;
-    setWf({
-      ...wf,
-      steps: insertInBranch(wf.steps, parentId, branch, afterId, step),
-    });
+    commitSteps(
+      position === "start"
+        ? insertInBranchStart(wf.steps, parentId, branch, step)
+        : insertInBranch(wf.steps, parentId, branch, null, step),
+    );
     setSelectedId(step.id);
     setIsTriggerSelected(false);
   };
 
+  // Deleting a step never destroys what's under it: an IF's branch contents
+  // are hoisted into the parent chain instead of being thrown away.
   const deleteStep = (stepId: string) => {
     if (!wf) return;
-    setWf({ ...wf, steps: removeStep(wf.steps, stepId) });
+    commitSteps(hoistDelete(wf.steps, stepId));
     if (selectedId === stepId) {
       setSelectedId(null);
       setIsTriggerSelected(true);
     }
   };
+
+  const moveStep = (stepId: string, dir: "up" | "down") => {
+    if (!wf) return;
+    commitSteps(moveWithin(wf.steps, stepId, dir));
+  };
+
+  // Drag-to-rewire: move a step (with its whole subtree) somewhere else.
+  const reattachAfter = (movedId: string, afterId: string | "__start__") => {
+    if (!wf || movedId === afterId) return;
+    const { steps: without, extracted } = extractStep(wf.steps, movedId);
+    if (!extracted) return;
+    if (afterId !== "__start__" && subtreeContains(extracted, afterId)) {
+      toast.error("Can't move a step inside its own branch");
+      return;
+    }
+    commitSteps(
+      afterId === "__start__" ? [extracted, ...without] : insertAfter(without, afterId, extracted),
+    );
+  };
+
+  const reattachIntoBranch = (movedId: string, parentId: string, branch: "then" | "else") => {
+    if (!wf || movedId === parentId) return;
+    const { steps: without, extracted } = extractStep(wf.steps, movedId);
+    if (!extracted) return;
+    if (subtreeContains(extracted, parentId)) {
+      toast.error("Can't move a step inside its own branch");
+      return;
+    }
+    commitSteps(insertInBranchStart(without, parentId, branch, extracted));
+  };
+
+  const setStepPosition = (stepId: string, x: number, y: number) => {
+    if (!wf) return;
+    setWf({
+      ...wf,
+      steps: patchStep(wf.steps, stepId, (s) => ({ ...s, ui: { x: Math.round(x), y: Math.round(y) } })),
+    });
+  };
+
+  const tidyLayout = () => {
+    if (!wf) return;
+    setWf({ ...wf, steps: clearUiPositions(wf.steps) });
+  };
+
+  const hasCustomPositions = React.useMemo(() => (wf ? anyUiPosition(wf.steps) : false), [wf]);
 
   const patchStepById = (stepId: string, patch: Partial<BlockNode>) => {
     if (!wf) return;
@@ -285,7 +355,15 @@ export function WorkflowBuilder(): React.JSX.Element {
                   type="checkbox"
                   className="sr-only peer"
                   checked={wf.isActive}
-                  onChange={(e) => toggleActive.mutate(e.target.checked)}
+                  onChange={(e) => {
+                    if (e.target.checked && !entitlements.can("WORKFLOW_ACTIVATION")) {
+                      toast.error("Activating workflows needs the Pro plan", {
+                        action: { label: "Upgrade", onClick: () => navigate("/settings?tab=billing") },
+                      });
+                      return;
+                    }
+                    toggleActive.mutate(e.target.checked);
+                  }}
                 />
                 <span className="w-9 h-5 bg-line-strong rounded-full peer-checked:bg-blue-500 transition-colors" />
                 <span
@@ -342,11 +420,17 @@ export function WorkflowBuilder(): React.JSX.Element {
                 setIsTriggerSelected(false);
               }}
               onChangeTriggerType={changeTriggerType}
-              onAddStep={(afterId, type) => handleAddByType(afterId, type || "SEND_SMS")}
-              onAddStepBranch={(parentId, branch, afterId, type) =>
-                handleAddInBranch(parentId, branch, afterId, type)
+              onAddStep={(afterId, type) => handleAddByType(afterId, type)}
+              onAddStepBranch={(parentId, branch, position, type) =>
+                handleAddInBranch(parentId, branch, position, type)
               }
               onDeleteStep={(stepId) => deleteStep(stepId)}
+              onMoveStep={moveStep}
+              onReattachAfter={reattachAfter}
+              onReattachIntoBranch={reattachIntoBranch}
+              onSetPosition={setStepPosition}
+              onTidy={tidyLayout}
+              hasCustomPositions={hasCustomPositions}
             />
           </div>
 
@@ -382,6 +466,14 @@ export function WorkflowBuilder(): React.JSX.Element {
         />
       </div>
     </PageWrapper>
+  );
+}
+
+export function WorkflowBuilder(): React.JSX.Element {
+  return (
+    <ErrorBoundary area="the workflow builder">
+      <WorkflowBuilderInner />
+    </ErrorBoundary>
   );
 }
 
@@ -456,20 +548,152 @@ function insertInBranch(
   });
 }
 
-function removeStep(steps: BlockNode[], id: string): BlockNode[] {
-  return steps
-    .filter((s) => s.id !== id)
-    .map((s) =>
+/** Enforce the tree invariant: an IF ends its chain. Any steps that end up
+ *  after an IF (legacy data, mid-chain inserts, hoisted deletes) flow into
+ *  its Yes branch — branches never merge back together. */
+function normalizeTree(steps: BlockNode[]): BlockNode[] {
+  const out: BlockNode[] = [];
+  for (let i = 0; i < steps.length; i++) {
+    const s = steps[i]!;
+    if (s.type === "IF" && s.children) {
+      const trailing = steps.slice(i + 1);
+      out.push({
+        ...s,
+        children: {
+          then: normalizeTree([...s.children.then, ...trailing]),
+          else: normalizeTree(s.children.else),
+        },
+      });
+      return out;
+    }
+    out.push(
+      s.children
+        ? { ...s, children: { then: normalizeTree(s.children.then), else: normalizeTree(s.children.else) } }
+        : s,
+    );
+  }
+  return out;
+}
+
+/** Delete a node but keep everything under it: an IF's branches are hoisted
+ *  into the surrounding chain (then-branch first, else-branch after). */
+function hoistDelete(steps: BlockNode[], id: string): BlockNode[] {
+  const out: BlockNode[] = [];
+  for (const s of steps) {
+    if (s.id === id) {
+      if (s.children) out.push(...s.children.then, ...s.children.else);
+      continue;
+    }
+    out.push(
       s.children
         ? {
             ...s,
             children: {
-              then: removeStep(s.children.then, id),
-              else: removeStep(s.children.else, id),
+              then: hoistDelete(s.children.then, id),
+              else: hoistDelete(s.children.else, id),
             },
           }
         : s,
     );
+  }
+  return out;
+}
+
+/** Swap a node with its neighbour inside whichever chain contains it. */
+function moveWithin(steps: BlockNode[], id: string, dir: "up" | "down"): BlockNode[] {
+  const idx = steps.findIndex((s) => s.id === id);
+  if (idx !== -1) {
+    const target = idx + (dir === "up" ? -1 : 1);
+    if (target < 0 || target >= steps.length) return steps;
+    const next = [...steps];
+    [next[idx], next[target]] = [next[target]!, next[idx]!];
+    return next;
+  }
+  return steps.map((s) =>
+    s.children
+      ? {
+          ...s,
+          children: {
+            then: moveWithin(s.children.then, id, dir),
+            else: moveWithin(s.children.else, id, dir),
+          },
+        }
+      : s,
+  );
+}
+
+/** Pull a node (with its whole subtree) out of the tree. */
+function extractStep(
+  steps: BlockNode[],
+  id: string,
+): { steps: BlockNode[]; extracted: BlockNode | null } {
+  let extracted: BlockNode | null = null;
+  const walk = (list: BlockNode[]): BlockNode[] => {
+    const out: BlockNode[] = [];
+    for (const s of list) {
+      if (s.id === id) {
+        extracted = s;
+        continue;
+      }
+      out.push(
+        s.children
+          ? { ...s, children: { then: walk(s.children.then), else: walk(s.children.else) } }
+          : s,
+      );
+    }
+    return out;
+  };
+  const next = walk(steps);
+  return { steps: next, extracted };
+}
+
+function subtreeContains(node: BlockNode, id: string): boolean {
+  if (node.id === id) return true;
+  if (!node.children) return false;
+  return [...node.children.then, ...node.children.else].some((c) => subtreeContains(c, id));
+}
+
+function insertInBranchStart(
+  steps: BlockNode[],
+  parentId: string,
+  branch: "then" | "else",
+  node: BlockNode,
+): BlockNode[] {
+  return steps.map((s) => {
+    if (s.id === parentId && s.children) {
+      return { ...s, children: { ...s.children, [branch]: [node, ...s.children[branch]] } };
+    }
+    if (s.children) {
+      return {
+        ...s,
+        children: {
+          then: insertInBranchStart(s.children.then, parentId, branch, node),
+          else: insertInBranchStart(s.children.else, parentId, branch, node),
+        },
+      };
+    }
+    return s;
+  });
+}
+
+function clearUiPositions(steps: BlockNode[]): BlockNode[] {
+  return steps.map((s) => {
+    const { ui: _ui, ...rest } = s;
+    return {
+      ...rest,
+      children: s.children
+        ? { then: clearUiPositions(s.children.then), else: clearUiPositions(s.children.else) }
+        : undefined,
+    } as BlockNode;
+  });
+}
+
+function anyUiPosition(steps: BlockNode[]): boolean {
+  return steps.some(
+    (s) =>
+      !!s.ui ||
+      (s.children ? anyUiPosition(s.children.then) || anyUiPosition(s.children.else) : false),
+  );
 }
 
 function patchStep(

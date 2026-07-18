@@ -23,6 +23,10 @@ interface WorkflowSetupProps {
   setSmsTemplate: (val: string) => void;
   smsAgentReply: string;
   setSmsAgentReply: (val: string) => void;
+  whatsappEnabled: boolean;
+  setWhatsappEnabled: (val: boolean) => void;
+  whatsappPrompt: string;
+  setWhatsappPrompt: (val: string) => void;
   disabled?: boolean;
 }
 
@@ -40,6 +44,10 @@ export function WorkflowSetup({
   setSmsTemplate,
   smsAgentReply,
   setSmsAgentReply,
+  whatsappEnabled,
+  setWhatsappEnabled,
+  whatsappPrompt,
+  setWhatsappPrompt,
   disabled,
 }: WorkflowSetupProps): React.JSX.Element {
   const [intakeScenarios, setIntakeScenarios] = React.useState<IntakeScenario[]>(() => {
@@ -237,6 +245,41 @@ export function WorkflowSetup({
           >
             <Plus className="h-3.5 w-3.5" /> Add SMS scenario
           </button>
+        </div>
+      </FeatureBlock>
+
+      {/* WHATSAPP */}
+      <FeatureBlock
+        icon={MessageSquareText}
+        title="WhatsApp Bot"
+        description="Auto-reply to WhatsApp messages on this agent's number — same persona and knowledge base as calls."
+        enabled={whatsappEnabled}
+        setEnabled={setWhatsappEnabled}
+        disabled={disabled}
+      >
+        <div className="space-y-3 p-3 bg-white border border-[#E5E5E5] rounded-[8px]">
+          <div className="flex items-start gap-2 rounded-[6px] bg-[#F0FDF4] border border-[#BBF7D0] px-2.5 py-2">
+            <span className="text-[13px] leading-none mt-0.5">✓</span>
+            <p className="text-[10.5px] text-[#166534] leading-snug">
+              Works out of the box — the bot answers from this agent's persona and knowledge base,
+              remembers the conversation, and every chat appears on the contact's timeline in CRM.
+            </p>
+          </div>
+          <div>
+            <label className="block text-[11px] font-semibold text-[#111111] mb-1">
+              Extra WhatsApp instructions <span className="font-normal text-[#999999]">(optional)</span>
+            </label>
+            <p className="text-[10px] text-[#666666] mb-2 leading-tight">
+              Add channel-specific guidance — reply style, offers to highlight, or when to hand off to your team.
+            </p>
+            <textarea
+              value={whatsappPrompt}
+              onChange={(e) => setWhatsappPrompt(e.target.value)}
+              disabled={disabled}
+              placeholder="e.g. Share our catalog link when someone asks about products. For bulk orders, collect quantity and city, then tell them our team will call."
+              className="w-full text-xs bg-white border border-[#E5E5E5] rounded-[6px] px-3 py-2 text-[#111111] focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-all min-h-[80px]"
+            />
+          </div>
         </div>
       </FeatureBlock>
     </div>

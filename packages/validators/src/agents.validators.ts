@@ -33,6 +33,8 @@ export const createAgentSchema = z.object({
   smsTriggerCondition: z.string().optional().nullable(),
   smsTemplate: z.string().optional().nullable(),
   smsAgentReply: z.string().optional().nullable(),
+  whatsappEnabled: z.boolean().optional().default(false),
+  whatsappPrompt: z.string().optional().nullable(),
   businessHours: z.any().optional().nullable(),
   timeZone: z.string().default("Asia/Kolkata").optional(),
 });

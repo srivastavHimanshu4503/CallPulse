@@ -1,4 +1,6 @@
 import * as React from "react";
+import { ErrorBoundary } from "../../components/common/ErrorBoundary.js";
+import { useEntitlements } from "../../hooks/useEntitlements.js";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPortal } from "react-dom";
@@ -49,8 +51,9 @@ import { BulkDeleteWorkflowsModal } from "./components/BulkDeleteWorkflowsModal.
  * a starting point (blank / template) AND the target folder. No implicit
  * behaviour based on where the user happened to be selected.
  */
-export function Workflows(): React.JSX.Element {
+function WorkflowsInner(): React.JSX.Element {
   const navigate = useNavigate();
+  const entitlements = useEntitlements();
   const queryClient = useQueryClient();
   const [search, setSearch] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "active" | "paused">("all");
@@ -71,9 +74,16 @@ export function Workflows(): React.JSX.Element {
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [bulkAction, setBulkAction] = React.useState<"delete" | "move" | null>(null);
 
-  const { data: workflows = [], isLoading } = useQuery({
+  const {
+    data: workflows = [],
+    isLoading,
+    isError,
+    refetch: refetchWorkflows,
+  } = useQuery({
     queryKey: ["workflows"],
     queryFn: async () => (await api.get("/workflows")).data.data as WorkflowDef[],
+    retry: 2,
+    refetchOnWindowFocus: true,
   });
 
   const { data: folders = [] } = useQuery({
@@ -273,7 +283,7 @@ export function Workflows(): React.JSX.Element {
         const q = search.toLowerCase();
         return (
           w.name.toLowerCase().includes(q) ||
-          w.trigger.type.toLowerCase().includes(q) ||
+          (w.trigger?.type || "").toLowerCase().includes(q) ||
           (w.description || "").toLowerCase().includes(q)
         );
       }
@@ -355,7 +365,7 @@ export function Workflows(): React.JSX.Element {
       header: "Workflow",
       sortValue: (r) => r.name.toLowerCase(),
       cell: (w) => {
-        const triggerDef = getBlockDef(w.trigger.type);
+        const triggerDef = getBlockDef(w.trigger?.type || "");
         const folder = w.folderId ? folders.find((f) => f.id === w.folderId) : null;
         return (
           <div className="flex items-center gap-3 min-w-0">
@@ -365,9 +375,9 @@ export function Workflows(): React.JSX.Element {
                 {w.name}
               </div>
               <div className="text-[10.5px] text-fg-muted truncate mt-0.5 flex items-center gap-1 flex-wrap">
-                <span>{triggerDef?.label || w.trigger.type}</span>
+                <span>{triggerDef?.label || w.trigger?.type || "Unknown trigger"}</span>
                 <span>·</span>
-                <span>{w.steps.length} step{w.steps.length === 1 ? "" : "s"}</span>
+                <span>{(w.steps || []).length} step{(w.steps || []).length === 1 ? "" : "s"}</span>
                 {folder && selectedFolder === null && (
                   <>
                     <span>·</span>
@@ -444,7 +454,16 @@ export function Workflows(): React.JSX.Element {
         <div className="flex items-center gap-1.5 justify-end" onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
-            onClick={() => toggleActive.mutate({ id: w.id, isActive: !w.isActive })}
+            onClick={() => {
+              // Building workflows is free; ACTIVATING one needs a paid plan.
+              if (!w.isActive && !entitlements.can("WORKFLOW_ACTIVATION")) {
+                toast.error("Activating workflows needs the Pro plan", {
+                  action: { label: "Upgrade", onClick: () => navigate("/settings?tab=billing") },
+                });
+                return;
+              }
+              toggleActive.mutate({ id: w.id, isActive: !w.isActive });
+            }}
             className={`inline-flex items-center justify-center gap-1 h-8 w-[80px] rounded-md text-[11.5px] font-semibold border ${
               w.isActive
                 ? "border-line-default bg-white text-fg-secondary hover:text-fg-primary hover:bg-slate-50"
@@ -545,7 +564,25 @@ export function Workflows(): React.JSX.Element {
           />
 
           <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            {workflows.length === 0 && !isLoading ? (
+            {isError ? (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center space-y-2">
+                  <div className="text-[13px] font-semibold text-fg-primary">
+                    Couldn't load your workflows
+                  </div>
+                  <div className="text-[11.5px] text-fg-secondary">
+                    Check your connection and try again.
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => refetchWorkflows()}
+                    className="inline-flex items-center h-8 px-3 rounded-md bg-blue-500 hover:bg-blue-600 text-white text-[12px] font-semibold"
+                  >
+                    Retry
+                  </button>
+                </div>
+              </div>
+            ) : workflows.length === 0 && !isLoading ? (
               <EmptyWorkflows onCreate={() => setIsCreateOpen(true)} />
             ) : (
               <>
@@ -825,6 +862,14 @@ export function Workflows(): React.JSX.Element {
           })()}
       </div>
     </PageWrapper>
+  );
+}
+
+export function Workflows(): React.JSX.Element {
+  return (
+    <ErrorBoundary area="your workflows">
+      <WorkflowsInner />
+    </ErrorBoundary>
   );
 }
 

@@ -7,12 +7,9 @@ import { AuthLayout } from "../../components/auth/AuthLayout.js";
 const inputClass =
   "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-11 px-3.5 w-full transition-all";
 
-const goldButton =
-  "w-full h-11 text-[#0a0416] font-bold text-[14px] rounded-[10px] flex items-center justify-center transition-all hover:brightness-110 shadow-[0_10px_30px_-10px_rgba(251,191,36,0.55)] disabled:opacity-70";
+const primaryButton =
+  "w-full h-11 text-white font-bold text-[14px] rounded-[6px] flex items-center justify-center transition-colors bg-brand-500 hover:bg-brand-600 shadow-sm disabled:opacity-70";
 
-const goldStyle: React.CSSProperties = {
-  background: "linear-gradient(135deg, #FFE9A0 0%, #F5B849 50%, #F97316 100%)",
-};
 
 export function Login(): React.JSX.Element {
   const navigate = useNavigate();
@@ -67,8 +64,8 @@ export function Login(): React.JSX.Element {
     <AuthLayout>
       <div className="w-full">
         <div className="mb-7">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">
-            <span className="h-1 w-1 rounded-full bg-orange-600" />
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-600 mb-3">
+            <span className="h-1 w-1 rounded-full bg-brand-600" />
             Welcome back
           </span>
           <h1 className="text-[30px] leading-tight font-bold tracking-tight text-[#111111]">
@@ -104,7 +101,7 @@ export function Login(): React.JSX.Element {
           <div>
             <div className="flex justify-between items-center mb-1.5">
               <label className="block text-[13px] font-semibold text-[#111111]">Password</label>
-              <Link to="/forgot-password" className="text-[12.5px] text-orange-600 hover:text-orange-700 font-semibold">
+              <Link to="/forgot-password" className="text-[12.5px] text-brand-600 hover:text-brand-700 font-semibold">
                 Forgot password?
               </Link>
             </div>
@@ -127,10 +124,10 @@ export function Login(): React.JSX.Element {
             </div>
           </div>
 
-          <Button type="submit" variant="primary" className={`${goldButton} mt-2`} style={goldStyle} disabled={isLoading}>
+          <Button type="submit" variant="primary" className={`${primaryButton} mt-2`} disabled={isLoading}>
             {isLoading ? (
               <span className="inline-flex items-center gap-2">
-                <span className="h-3.5 w-3.5 rounded-full border-2 border-[#0a0416]/30 border-t-[#0a0416] animate-spin" />
+                <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                 Signing in…
               </span>
             ) : (
@@ -141,7 +138,7 @@ export function Login(): React.JSX.Element {
 
         <div className="mt-8 text-center text-[13.5px] text-[#666666]">
           New to Indi AI?{" "}
-          <Link to="/register" className="text-[#111111] font-bold hover:text-orange-600 transition-colors">
+          <Link to="/register" className="text-[#111111] font-bold hover:text-brand-600 transition-colors">
             Create a business account
           </Link>
         </div>

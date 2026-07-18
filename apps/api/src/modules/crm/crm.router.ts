@@ -2,6 +2,7 @@ import { Router } from "express";
 import { CrmController } from "./crm.controller.js";
 import { authMiddleware } from "../../middleware/auth.middleware.js";
 import { tenantMiddleware } from "../../middleware/tenant.middleware.js";
+import { requireFeature } from "../../middleware/feature.middleware.js";
 
 const router: Router = Router();
 const controller = new CrmController();
@@ -13,7 +14,8 @@ router.use(tenantMiddleware);
 // Contacts endpoints
 router.get("/contacts", controller.getContacts);
 router.post("/contacts", controller.createContact);
-router.get("/contacts/:id", controller.getContactDetails);
+// Contact details (full activity timeline) is a paid feature; the list stays free.
+router.get("/contacts/:id", requireFeature("CONTACT_DETAILS"), controller.getContactDetails);
 router.put("/contacts/:id", controller.updateContact);
 router.delete("/contacts/:id", controller.deleteContact);
 router.post("/contacts/bulk-delete", controller.bulkDeleteContacts);

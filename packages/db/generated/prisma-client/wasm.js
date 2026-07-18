@@ -134,7 +134,44 @@ exports.Prisma.TenantScalarFieldEnum = {
   monthlyRevenue: 'monthlyRevenue',
   onboardingStep: 'onboardingStep',
   onboardingDone: 'onboardingDone',
+  creditBalance: 'creditBalance',
   deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CreditLedgerScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  delta: 'delta',
+  reason: 'reason',
+  refId: 'refId',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PaymentRecordScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  provider: 'provider',
+  paymentId: 'paymentId',
+  orderId: 'orderId',
+  product: 'product',
+  amountPaise: 'amountPaise',
+  currency: 'currency',
+  status: 'status',
+  description: 'description',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BillingSubscriptionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  provider: 'provider',
+  providerSubId: 'providerSubId',
+  plan: 'plan',
+  status: 'status',
+  currentPeriodEnd: 'currentPeriodEnd',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -336,6 +373,8 @@ exports.Prisma.AIAgentScalarFieldEnum = {
   smsTriggerCondition: 'smsTriggerCondition',
   smsTemplate: 'smsTemplate',
   smsAgentReply: 'smsAgentReply',
+  whatsappEnabled: 'whatsappEnabled',
+  whatsappPrompt: 'whatsappPrompt',
   businessHours: 'businessHours',
   timeZone: 'timeZone',
   deletedAt: 'deletedAt',
@@ -348,6 +387,8 @@ exports.Prisma.PhoneNumberScalarFieldEnum = {
   tenantId: 'tenantId',
   phoneNumber: 'phoneNumber',
   label: 'label',
+  kind: 'kind',
+  twilioSid: 'twilioSid',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -386,7 +427,24 @@ exports.Prisma.CommunicationLogScalarFieldEnum = {
   provider: 'provider',
   providerRef: 'providerRef',
   metadata: 'metadata',
+  sessionId: 'sessionId',
   occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ChatSessionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  contactId: 'contactId',
+  agentId: 'agentId',
+  channel: 'channel',
+  status: 'status',
+  commLogId: 'commLogId',
+  humanTakeover: 'humanTakeover',
+  startedAt: 'startedAt',
+  lastMessageAt: 'lastMessageAt',
+  processedAt: 'processedAt',
+  dealId: 'dealId',
   createdAt: 'createdAt'
 };
 
@@ -458,6 +516,20 @@ exports.TeamSize = exports.$Enums.TeamSize = {
   LARGE: 'LARGE'
 };
 
+exports.CreditReason = exports.$Enums.CreditReason = {
+  SIGNUP_GRANT: 'SIGNUP_GRANT',
+  PLAN_GRANT: 'PLAN_GRANT',
+  TOPUP_PURCHASE: 'TOPUP_PURCHASE',
+  CALL_DEDUCTION: 'CALL_DEDUCTION',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
+exports.SubscriptionStatus = exports.$Enums.SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  PAST_DUE: 'PAST_DUE',
+  CANCELED: 'CANCELED'
+};
+
 exports.CustomFieldType = exports.$Enums.CustomFieldType = {
   TEXT: 'TEXT',
   NUMBER: 'NUMBER',
@@ -496,6 +568,11 @@ exports.DealHealth = exports.$Enums.DealHealth = {
   HIGH_RISK: 'HIGH_RISK'
 };
 
+exports.PhoneNumberKind = exports.$Enums.PhoneNumberKind = {
+  BUSINESS: 'BUSINESS',
+  AGENT_LINE: 'AGENT_LINE'
+};
+
 exports.CommType = exports.$Enums.CommType = {
   CALL: 'CALL',
   SMS: 'SMS',
@@ -528,6 +605,11 @@ exports.ExtractionStatus = exports.$Enums.ExtractionStatus = {
   SKIPPED: 'SKIPPED'
 };
 
+exports.ChatSessionStatus = exports.$Enums.ChatSessionStatus = {
+  OPEN: 'OPEN',
+  PROCESSED: 'PROCESSED'
+};
+
 exports.ActivityType = exports.$Enums.ActivityType = {
   CALL_INBOUND: 'CALL_INBOUND',
   CALL_OUTBOUND: 'CALL_OUTBOUND',
@@ -546,6 +628,9 @@ exports.ActivityType = exports.$Enums.ActivityType = {
 
 exports.Prisma.ModelName = {
   Tenant: 'Tenant',
+  CreditLedger: 'CreditLedger',
+  PaymentRecord: 'PaymentRecord',
+  BillingSubscription: 'BillingSubscription',
   User: 'User',
   Contact: 'Contact',
   CustomFieldDefinition: 'CustomFieldDefinition',
@@ -563,6 +648,7 @@ exports.Prisma.ModelName = {
   PhoneNumber: 'PhoneNumber',
   KnowledgeBase: 'KnowledgeBase',
   CommunicationLog: 'CommunicationLog',
+  ChatSession: 'ChatSession',
   Activity: 'Activity',
   PasswordResetOtp: 'PasswordResetOtp'
 };

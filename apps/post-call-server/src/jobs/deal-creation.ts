@@ -45,6 +45,18 @@ export const dealCreation: JobHandler = {
       log.info("skipping — no contact on call", { logId: ctx.job.logId });
       return {};
     }
+    // A deal needs a real amount. Zero-value deals pollute the pipeline and
+    // carry no signal — if the LLM couldn't extract or estimate an amount,
+    // the lead still exists as a contact + activity, just not as a deal.
+    const value = ctx.intent?.dealAmount ?? 0;
+    if (value <= 0) {
+      log.info("skipping — no deal amount extracted from call", {
+        logId: ctx.job.logId,
+        intent,
+        dealAmount: ctx.intent?.dealAmount ?? null,
+      });
+      return {};
+    }
 
     try {
       // Idempotency: one call → at most one deal, even across queue retries.
@@ -75,7 +87,6 @@ export const dealCreation: JobHandler = {
       const firstStageCfg = pipeline?.stageConfigs.find((s) => !s.isWon && !s.isLost);
       const firstStage = firstStageCfg?.name ?? pipeline?.stages[0] ?? "New Lead";
       const probability = firstStageCfg?.probability ?? 10;
-      const value = ctx.intent?.dealAmount ?? 0;
 
       const callerName =
         typeof ctx.extractedFields?.name === "string" && ctx.extractedFields.name.trim()

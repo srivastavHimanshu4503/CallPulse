@@ -32,7 +32,7 @@ const TONES = [
 
 const GREETING_MAX = 240;
 const FALLBACK_MAX = 240;
-const BUSINESS_INFO_MAX = 1000;
+
 
 export function PersonaSetup({
   name,
@@ -192,11 +192,10 @@ export function PersonaSetup({
         <Field
           label="Business FAQ / notes"
           hint="Paste pricing, service list, hours, or common Q&A. Higher signal = fewer fallbacks."
-          counter={{ current: businessInfo.length, max: BUSINESS_INFO_MAX }}
         >
           <textarea
             value={businessInfo}
-            onChange={(e) => setBusinessInfo(e.target.value.slice(0, BUSINESS_INFO_MAX))}
+            onChange={(e) => setBusinessInfo(e.target.value)}
             disabled={disabled}
             placeholder="E.g. Pricing starts at ₹50L. Bandra listing. Open on weekends 10am–7pm..."
             rows={5}

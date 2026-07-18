@@ -1,13 +1,44 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { Plus, Trash2, GitBranch, ChevronDown, Filter as FilterIcon, AlertCircle } from "lucide-react";
+import {
+  ReactFlow,
+  Background,
+  BackgroundVariant,
+  Controls,
+  MiniMap,
+  Handle,
+  Position,
+  NodeToolbar,
+  EdgeLabelRenderer,
+  BaseEdge,
+  Panel,
+  getSmoothStepPath,
+  applyNodeChanges,
+  type Node,
+  type Edge,
+  type NodeChange,
+  type Connection,
+  type EdgeProps,
+  type NodeProps,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import {
+  Plus,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  Filter as FilterIcon,
+  LayoutGrid,
+  Zap,
+} from "lucide-react";
 import { getBlockDef, TONE_STYLES, listByCategory } from "../registry.js";
-import type { BlockNode, Trigger, BlockDef } from "../types.js";
+import type { BlockNode, Trigger } from "../types.js";
 import { BlockIcon } from "./BlockIcon.js";
 import { cn } from "@antigravity/ui";
-import { FilterLogicalOperator, FilterOperator } from "@antigravity/types";
 
-interface WorkflowCanvasProps {
+/* ─────────────────────────── Public props ─────────────────────────── */
+
+export interface WorkflowCanvasProps {
   trigger: Trigger;
   steps: BlockNode[];
   selectedId: string | null;
@@ -15,744 +46,592 @@ interface WorkflowCanvasProps {
   onSelectTrigger: () => void;
   onSelectStep: (id: string) => void;
   onChangeTriggerType: (type: string) => void;
-  onAddStep: (afterId: string | null, type?: string) => void;
-  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null, type?: string) => void;
+  /** afterId "__start__" inserts at the front of the root chain. */
+  onAddStep: (afterId: string | "__start__" | null, type: string) => void;
+  onAddStepBranch: (
+    parentId: string,
+    branch: "then" | "else",
+    position: "start" | "end",
+    type: string,
+  ) => void;
   onDeleteStep: (id: string) => void;
+  onMoveStep: (id: string, dir: "up" | "down") => void;
+  onReattachAfter: (movedId: string, afterId: string | "__start__") => void;
+  onReattachIntoBranch: (movedId: string, parentId: string, branch: "then" | "else") => void;
+  onSetPosition: (id: string, x: number, y: number) => void;
+  onTidy: () => void;
+  hasCustomPositions: boolean;
 }
+
+/* ─────────────────────────── Layout constants ───────────────────────────
+ * Every card is EXACTLY the same size — uniformity was a hard requirement. */
+
+const NODE_W = 264;
+const NODE_H = 84;
+const GHOST_H = 44;
+const VGAP = 64;
+const HGAP = 56;
+
+type InsertSpec =
+  | { kind: "after"; afterId: string | "__start__" }
+  | { kind: "branch"; parentId: string; branch: "then" | "else"; position: "start" | "end" };
+
+interface EdgeData {
+  label?: "Yes" | "No";
+  insert?: InsertSpec;
+  [key: string]: unknown;
+}
+
+/* ─────────────────────────── Tree → graph derivation ─────────────────────────── */
+
+const chainWidth = (chain: BlockNode[]): number =>
+  chain.length === 0 ? NODE_W : Math.max(...chain.map(stepWidth));
+
+const stepWidth = (s: BlockNode): number =>
+  s.type === "IF" && s.children
+    ? chainWidth(s.children.then) + HGAP + chainWidth(s.children.else)
+    : NODE_W;
+
+interface Incoming {
+  sources: Array<{ id: string; handle?: "then" | "else"; label?: "Yes" | "No" }>;
+  insert: InsertSpec;
+}
+
+type ChainScope = { kind: "root" } | { kind: "branch"; parentId: string; branch: "then" | "else" };
 
 /**
- * Vertical top-down builder. Trigger is a fixed first card (same size as
- * step cards). Filter conditions render inline where they matter — as
- * PRIMARY content on the CONTACT_MATCHES trigger, and as chips on any
- * block that has an optional filter set.
+ * TREE SEMANTICS: once a condition splits the flow, the branches NEVER merge
+ * back. An IF permanently ends its chain — everything that happens next
+ * lives inside its Yes or No branch (which can nest further IFs). Every
+ * branch therefore carries its own trailing "+ Add step" slot.
  */
-export function WorkflowCanvas({
-  trigger,
-  steps,
-  selectedId,
-  isTriggerSelected,
-  onSelectTrigger,
-  onSelectStep,
-  onChangeTriggerType,
-  onAddStep,
-  onAddStepBranch,
-  onDeleteStep,
-}: WorkflowCanvasProps): React.JSX.Element {
-  return (
-    <div
-      className="flex-1 overflow-auto"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle at 1px 1px, rgba(15,23,42,0.06) 1px, transparent 0)",
-        backgroundSize: "22px 22px",
-      }}
-    >
-      <div className="min-h-full flex flex-col items-center py-6 px-4">
-        <div className="w-full max-w-[440px] flex flex-col items-center gap-0">
-          <TriggerCard
-            trigger={trigger}
-            selected={isTriggerSelected}
-            onClick={onSelectTrigger}
-            onChangeType={onChangeTriggerType}
-          />
+function buildGraph(
+  trigger: Trigger,
+  steps: BlockNode[],
+): { nodes: Node[]; edges: Edge<EdgeData>[] } {
+  const nodes: Node[] = [];
+  const edges: Edge<EdgeData>[] = [];
+  let edgeSeq = 0;
 
-          {steps.length === 0 ? (
-            <>
-              <Connector tone="positive" />
-              <AddButton
-                onSelect={(t) => onAddStep(null, t)}
-                label="Add first action"
-                isPrimary
-              />
-            </>
-          ) : (
-            <StepChain
-              steps={steps}
-              selectedId={selectedId}
-              onSelectStep={onSelectStep}
-              onAddStep={onAddStep}
-              onAddStepBranch={onAddStepBranch}
-              onDeleteStep={onDeleteStep}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+  const connect = (incoming: Incoming, targetId: string, withInsert = true) => {
+    incoming.sources.forEach((src, i) => {
+      edges.push({
+        id: `e${edgeSeq++}`,
+        source: src.id,
+        sourceHandle: src.handle,
+        target: targetId,
+        type: "flow",
+        data: { label: src.label, insert: withInsert && i === 0 ? incoming.insert : undefined },
+      });
+    });
+  };
+
+  nodes.push({
+    id: "trigger",
+    type: "trigger",
+    position: { x: -NODE_W / 2, y: 0 },
+    draggable: false,
+    data: { trigger },
+  });
+
+  /** Lays out one chain centered on `cx`; returns the bottom Y reached. */
+  const walkChain = (
+    chain: BlockNode[],
+    cx: number,
+    startY: number,
+    incoming: Incoming,
+    scope: ChainScope,
+  ): number => {
+    let cursor: Incoming | null = incoming;
+    let y = startY;
+
+    for (const step of chain) {
+      if (!cursor) break; // defensive: nothing may follow an IF in a chain
+      const pos = step.ui ?? { x: cx - NODE_W / 2, y };
+      nodes.push({ id: step.id, type: "step", position: pos, data: { step } });
+      connect(cursor, step.id);
+
+      if (step.type === "IF" && step.children) {
+        const thenW = chainWidth(step.children.then);
+        const elseW = chainWidth(step.children.else);
+        const total = thenW + HGAP + elseW;
+        const branchY = y + NODE_H + VGAP;
+        let bottom = branchY;
+
+        (["then", "else"] as const).forEach((br) => {
+          const bCx = br === "then" ? cx - total / 2 + thenW / 2 : cx + total / 2 - elseW / 2;
+          const entry: Incoming = {
+            sources: [{ id: step.id, handle: br, label: br === "then" ? "Yes" : "No" }],
+            insert: { kind: "branch", parentId: step.id, branch: br, position: "start" },
+          };
+          bottom = Math.max(
+            bottom,
+            walkChain(step.children![br], bCx, branchY, entry, {
+              kind: "branch",
+              parentId: step.id,
+              branch: br,
+            }),
+          );
+        });
+
+        y = bottom;
+        cursor = null; // the tree only grows — branches never merge back
+      } else {
+        y += NODE_H + VGAP;
+        cursor = { sources: [{ id: step.id }], insert: { kind: "after", afterId: step.id } };
+      }
+    }
+
+    // Chains that don't end in an IF get their own "+ Add step" slot; the
+    // ghost itself is the add button, so its edge needs no extra "+".
+    if (cursor) {
+      const ghostId =
+        scope.kind === "root" ? "ghost-end-root" : `ghost-end-${scope.parentId}-${scope.branch}`;
+      const insert: InsertSpec =
+        scope.kind === "root"
+          ? cursor.insert
+          : { kind: "branch", parentId: scope.parentId, branch: scope.branch, position: "end" };
+      nodes.push({
+        id: ghostId,
+        type: "ghost",
+        position: { x: cx - NODE_W / 2, y },
+        draggable: false,
+        data: { insert },
+      });
+      connect(cursor, ghostId, false);
+      y += GHOST_H + VGAP;
+    }
+
+    return y;
+  };
+
+  walkChain(
+    steps,
+    0,
+    NODE_H + VGAP,
+    { sources: [{ id: "trigger" }], insert: { kind: "after", afterId: "__start__" } },
+    { kind: "root" },
   );
+
+  return { nodes, edges };
 }
 
-/* ─────────────────── Trigger card ─────────────────── */
+/* ─────────────────────────── Custom nodes ─────────────────────────── */
 
-function TriggerCard({
-  trigger,
-  selected,
-  onClick,
-  onChangeType,
-}: {
-  trigger: Trigger;
-  selected: boolean;
-  onClick: () => void;
-  onChangeType: (type: string) => void;
-}): React.JSX.Element {
+const HANDLE_CLS = "!h-2 !w-2 !bg-slate-300 !border !border-white";
+
+function TriggerNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
+  const trigger = (data as any).trigger as Trigger;
   const def = getBlockDef(trigger.type);
-  const triggerOptions = listByCategory("trigger");
-  const filter = trigger.filter;
-  const needsFilter = def?.requiresFilter && (!filter || filter.conditions.length === 0);
+  const tone = TONE_STYLES[def?.tone || "positive"];
+  const options = listByCategory("trigger");
+  const ctx = React.useContext(CanvasCtx);
 
   return (
     <div
-      onClick={onClick}
+      style={{ width: NODE_W, height: NODE_H }}
       className={cn(
-        "w-full rounded-xl bg-white cursor-pointer transition-all overflow-hidden",
+        "rounded-xl bg-white cursor-pointer transition-all overflow-hidden flex flex-col",
         selected
-          ? "ring-2 ring-blue-500/40 border-2 border-blue-500 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]"
+          ? "ring-2 ring-blue-500/40 border border-blue-500 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]"
           : "border border-line-default hover:border-blue-500/40 shadow-card",
       )}
+      onClick={ctx.onSelectTrigger}
     >
-      {/* Blue top strip */}
-      <div className="h-[3px] bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500" />
-
-      <div className="p-3">
-        {/* Type selector (segmented, always visible) */}
-        <div
-          className="flex items-center gap-1 p-1 bg-blue-50/70 border border-blue-500/20 rounded-md mb-2.5"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {triggerOptions.map((opt) => {
-            const isActive = opt.type === trigger.type;
-            return (
-              <button
-                key={opt.type}
-                type="button"
-                onClick={() => onChangeType(opt.type)}
-                className={cn(
-                  "flex-1 inline-flex items-center justify-center gap-1 h-7 px-2 rounded text-[11px] font-semibold transition-all",
-                  isActive
-                    ? "bg-white text-blue-700 shadow-card ring-1 ring-blue-500/25"
-                    : "text-blue-800/60 hover:text-blue-800 hover:bg-white/40",
-                )}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Header row */}
-        <div className="flex items-start gap-2.5">
-          <BlockIcon icon={def?.icon || "Zap"} tone="positive" size="md" />
-          <div className="min-w-0 flex-1">
-            <div className="text-[9.5px] font-bold uppercase tracking-wider text-blue-700">
+      <div className={cn("h-[3px] shrink-0", tone.bar)} />
+      <div className="flex items-center gap-2.5 px-3 flex-1 min-h-0">
+        <BlockIcon icon={def?.icon || "Zap"} tone={def?.tone || "positive"} size="sm" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600">
               Trigger
-            </div>
-            <div className="text-[13.5px] font-semibold text-fg-primary tracking-tight leading-tight mt-0.5">
-              {def?.label}
-            </div>
-            <div className="text-[11px] text-fg-secondary leading-snug mt-0.5">
-              {def?.description}
-            </div>
-          </div>
-        </div>
-
-        {/* Config content — differs by trigger type */}
-        {trigger.type === "CALL_ENDED" && (
-          <CallEndedConfigSummary config={trigger.config} />
-        )}
-
-        {trigger.type === "CONTACT_MATCHES" && (
-          <ContactMatchesFilterView filter={filter} needsFilter={!!needsFilter} />
-        )}
-
-        {/* Optional filter chips (for CALL_ENDED — additional contact filter) */}
-        {trigger.type === "CALL_ENDED" && filter && filter.conditions.length > 0 && (
-          <InlineFilterChips filter={filter} label="Also only if contact" />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function CallEndedConfigSummary({ config }: { config: Record<string, any> }): React.JSX.Element {
-  const outcomeLabels: Record<string, string> = {
-    any: "Any outcome",
-    positive: "Positive sentiment",
-    negative: "Negative sentiment",
-    missed: "Missed / no answer",
-  };
-  const directionLabels: Record<string, string> = {
-    any: "Inbound or outbound",
-    inbound: "Inbound only",
-    outbound: "Outbound only",
-  };
-  return (
-    <div className="mt-2.5 rounded-md bg-blue-50/60 border border-blue-500/20 px-2.5 py-1.5 flex items-center gap-2 flex-wrap text-[11px]">
-      <span className="text-fg-muted font-medium">Outcome:</span>
-      <b className="text-blue-700">{outcomeLabels[config.outcome] || "any"}</b>
-      <span className="h-3 w-px bg-blue-500/25" />
-      <span className="text-fg-muted font-medium">Direction:</span>
-      <b className="text-blue-700">{directionLabels[config.direction] || "any"}</b>
-    </div>
-  );
-}
-
-function ContactMatchesFilterView({
-  filter,
-  needsFilter,
-}: {
-  filter: any;
-  needsFilter: boolean;
-}): React.JSX.Element {
-  if (needsFilter) {
-    return (
-      <div className="mt-2.5 rounded-md bg-amber-50 border border-amber-500/30 px-2.5 py-2 flex items-start gap-2">
-        <AlertCircle className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-        <div className="text-[11px] text-amber-800 leading-relaxed">
-          <b>Add at least one condition</b> to define who this workflow targets.
-          Open the inspector on the right to add rules like <i>lead score ≥ 75</i>.
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="mt-2.5">
-      <div className="text-[9.5px] font-bold uppercase tracking-wider text-blue-700 mb-1 flex items-center gap-1">
-        <FilterIcon className="h-3 w-3" />
-        Match {filter.logical === FilterLogicalOperator.AND ? "ALL" : "ANY"}
-      </div>
-      <FilterConditionChips filter={filter} tone="positive" />
-    </div>
-  );
-}
-
-/* ─────────────────── Step chain ─────────────────── */
-
-function StepChain({
-  steps,
-  selectedId,
-  onSelectStep,
-  onAddStep,
-  onAddStepBranch,
-  onDeleteStep,
-}: {
-  steps: BlockNode[];
-  selectedId: string | null;
-  onSelectStep: (id: string) => void;
-  onAddStep: (afterId: string | null, type?: string) => void;
-  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null, type?: string) => void;
-  onDeleteStep: (id: string) => void;
-}): React.JSX.Element {
-  return (
-    <div className="w-full flex flex-col items-center">
-      {steps.map((s, i) => {
-        const def = getBlockDef(s.type);
-        const tone = def?.tone || "muted";
-        return (
-          <React.Fragment key={s.id}>
-            <Connector tone={i === 0 ? "positive" : tone} />
-            <StepCard
-              step={s}
-              selected={selectedId === s.id}
-              onSelect={() => onSelectStep(s.id)}
-              onDelete={() => onDeleteStep(s.id)}
-              onSelectStep={onSelectStep}
-              onAddStepBranch={onAddStepBranch}
-              onDeleteStep={onDeleteStep}
-              selectedId={selectedId}
-            />
-            <Connector tone={tone} />
-            <AddButton onSelect={(t) => onAddStep(s.id, t)} label={i === steps.length - 1 ? "Add next step" : ""} icon={i !== steps.length - 1} />
-          </React.Fragment>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ─────────────────── Step card (compact) ─────────────────── */
-
-function StepCard({
-  step,
-  selected,
-  onSelect,
-  onDelete,
-  onSelectStep,
-  onAddStepBranch,
-  onDeleteStep,
-  selectedId,
-}: {
-  step: BlockNode;
-  selected: boolean;
-  onSelect: () => void;
-  onDelete: () => void;
-  onSelectStep: (id: string) => void;
-  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null, type?: string) => void;
-  onDeleteStep: (id: string) => void;
-  selectedId: string | null;
-}): React.JSX.Element {
-  const def = getBlockDef(step.type);
-  const tone = def?.tone || "muted";
-  const t = TONE_STYLES[tone];
-
-  return (
-    <div
-      onClick={onSelect}
-      className={cn(
-        "w-full rounded-xl bg-white cursor-pointer transition-all overflow-hidden group",
-        selected
-          ? "ring-2 ring-blue-500/40 border-2 border-blue-500 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]"
-          : "border border-line-default hover:border-line-strong shadow-card",
-      )}
-    >
-      <div className={cn("h-[3px]", t.bar)} />
-
-      <div className="p-3">
-        {/* Header row */}
-        <div className="flex items-start gap-2.5">
-          <BlockIcon icon={def?.icon || "Zap"} tone={tone} size="md" />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1">
-              <span className={cn("text-[9.5px] font-bold uppercase tracking-wider", t.text)}>
-                {def?.category === "logic" ? "Logic" : "Action"}
+            </span>
+            {(trigger.filter?.conditions?.length ?? 0) > 0 && (
+              <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-blue-600">
+                <FilterIcon className="h-2.5 w-2.5" />
+                {trigger.filter!.conditions.length}
               </span>
-              {step.type === "IF" && <GitBranch className={cn("h-3 w-3", t.text)} />}
-            </div>
-            <div className="text-[13px] font-semibold text-fg-primary tracking-tight leading-tight mt-0.5">
-              {def?.label || step.type}
-            </div>
-            <div className="text-[11px] text-fg-secondary leading-snug mt-0.5">
-              {def ? def.summary(step.config) : "Configure this step"}
-            </div>
+            )}
           </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 rounded text-fg-muted hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center shrink-0"
-            title="Delete"
+          <select
+            value={trigger.type}
+            onClick={(e) => e.stopPropagation()}
+            onChange={(e) => ctx.onChangeTriggerType(e.target.value)}
+            className="mt-0.5 w-full bg-transparent text-[12px] font-semibold text-fg-primary focus:outline-none cursor-pointer"
           >
-            <Trash2 className="h-3 w-3" />
-          </button>
+            {options.map((o) => (
+              <option key={o.type} value={o.type}>
+                {o.label}
+              </option>
+            ))}
+          </select>
         </div>
-
-        {/* One tight preview row when meaningful */}
-        <CompactPreview config={step.config} def={def} tone={tone} />
-
-        {/* Filter chips */}
-        {def?.supportsFilter && step.filter && step.filter.conditions.length > 0 && (
-          <div className="mt-2">
-            <div className={cn("text-[9.5px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1", t.text)}>
-              <FilterIcon className="h-3 w-3" />
-              Only if contact
-            </div>
-            <FilterConditionChips filter={step.filter} tone={tone} />
-          </div>
-        )}
-
-        {/* Two-lane branches for IF */}
-        {step.type === "IF" && step.children && (
-          <div className="mt-2.5 grid grid-cols-2 gap-2" onClick={(e) => e.stopPropagation()}>
-            <BranchColumn
-              label="If TRUE"
-              tone="positive"
-              steps={step.children.then}
-              selectedId={selectedId}
-              onSelectStep={onSelectStep}
-              onAddInBranch={(afterId, type) => onAddStepBranch(step.id, "then", afterId, type)}
-              onDeleteStep={onDeleteStep}
-            />
-            <BranchColumn
-              label="If FALSE"
-              tone="negative"
-              steps={step.children.else}
-              selectedId={selectedId}
-              onSelectStep={onSelectStep}
-              onAddInBranch={(afterId, type) => onAddStepBranch(step.id, "else", afterId, type)}
-              onDeleteStep={onDeleteStep}
-            />
-          </div>
-        )}
+        <Zap className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
       </div>
+      <Handle type="source" position={Position.Bottom} className={HANDLE_CLS} />
     </div>
   );
 }
 
-/* ─────────────────── Compact preview (one row of chips or a quote) ─────────────────── */
-
-function CompactPreview({
-  config,
-  def,
-  tone,
-}: {
-  config: Record<string, any>;
-  def: BlockDef | undefined;
-  tone: keyof typeof TONE_STYLES;
-}): React.JSX.Element {
-  const t = TONE_STYLES[tone];
-  if (!def) return <></>;
-  const rows = def.preview ? def.preview(config) : [];
-  if (rows.length === 0) return <></>;
-
-  // Prefer showing the quote if there is one — it's the most informative.
-  const quote = rows.find((r: any) => r.kind === "quote");
-  if (quote) {
-    return (
-      <div className={cn("mt-2 rounded-md border-l-2 px-2 py-1.5 italic text-[11.5px] text-fg-primary leading-relaxed", t.border, t.softBg)}>
-        "{(quote as any).value}"
-      </div>
-    );
-  }
-
-  const chips = rows.filter((r: any) => r.kind === "chip");
-  if (chips.length === 0) return <></>;
-  return (
-    <div className="mt-2 flex flex-wrap gap-1">
-      {chips.map((c: any, i: number) => (
-        <span
-          key={i}
-          className={cn(
-            "inline-flex items-center gap-1 rounded text-[10.5px] font-semibold px-1.5 py-0.5 ring-1",
-            t.tile,
-            t.ring,
-          )}
-        >
-          {c.label && <span className="opacity-60 font-medium">{c.label}:</span>}
-          <span>{c.value}</span>
-        </span>
-      ))}
-    </div>
-  );
-}
-
-/* ─────────────────── Filter condition chips ─────────────────── */
-
-function FilterConditionChips({
-  filter,
-  tone,
-}: {
-  filter: { logical: FilterLogicalOperator; conditions: any[] };
-  tone: keyof typeof TONE_STYLES;
-}): React.JSX.Element {
-  const t = TONE_STYLES[tone];
-  return (
-    <div className="flex flex-wrap gap-1">
-      {filter.conditions.map((cond, i) => (
-        <span
-          key={cond.id || i}
-          className={cn(
-            "inline-flex items-center gap-1 rounded text-[10.5px] font-semibold px-1.5 py-0.5 ring-1 bg-white",
-            t.text,
-            t.ring,
-          )}
-        >
-          <span className="opacity-70 font-medium">{prettyField(cond.fieldId)}</span>
-          <span className="text-fg-muted font-normal">{prettyOp(cond.operator)}</span>
-          {cond.operator !== FilterOperator.IS_EMPTY && cond.operator !== FilterOperator.IS_NOT_EMPTY && (
-            <b>{cond.value || "?"}</b>
-          )}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function InlineFilterChips({
-  filter,
-  label,
-}: {
-  filter: { logical: FilterLogicalOperator; conditions: any[] };
-  label: string;
-}): React.JSX.Element {
-  return (
-    <div className="mt-2">
-      <div className="text-[9.5px] font-bold uppercase tracking-wider text-blue-700 mb-1 flex items-center gap-1">
-        <FilterIcon className="h-3 w-3" />
-        {label} · {filter.logical === FilterLogicalOperator.AND ? "match all" : "match any"}
-      </div>
-      <FilterConditionChips filter={filter} tone="positive" />
-    </div>
-  );
-}
-
-/* ─────────────────── Branch column ─────────────────── */
-
-function BranchColumn({
-  label,
-  tone,
-  steps,
-  selectedId,
-  onSelectStep,
-  onAddInBranch,
-  onDeleteStep,
-}: {
-  label: string;
-  tone: "positive" | "negative";
-  steps: BlockNode[];
-  selectedId: string | null;
-  onSelectStep: (id: string) => void;
-  onAddInBranch: (afterId: string | null, type?: string) => void;
-  onDeleteStep: (id: string) => void;
-}): React.JSX.Element {
-  const t = TONE_STYLES[tone];
-  return (
-    <div className={cn("rounded-md border border-dashed p-1.5", t.border, t.softBg)}>
-      <div className={cn("text-[9px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1", t.text)}>
-        <span className={cn("h-1.5 w-1.5 rounded-full", t.bar)} />
-        {label}
-      </div>
-      {steps.length === 0 ? (
-        <AddButton onSelect={(type) => onAddInBranch(null, type)} label="Add" size="sm" tone={tone} />
-      ) : (
-        <div className="flex flex-col items-center">
-          {steps.map((child, i) => {
-            const def = getBlockDef(child.type);
-            const childTone = def?.tone || "muted";
-            const ct = TONE_STYLES[childTone];
-            const isSel = selectedId === child.id;
-            return (
-              <React.Fragment key={child.id}>
-                {i > 0 && <div className={cn("h-2 w-px my-0.5", ct.bar)} />}
-                <div className="w-full group/mini relative">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectStep(child.id);
-                    }}
-                    className={cn(
-                      "w-full rounded bg-white text-left p-1.5 transition-all overflow-hidden",
-                      isSel
-                        ? "border-2 border-blue-500 ring-1 ring-blue-500/20"
-                        : "border border-line-default hover:border-line-strong",
-                    )}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <BlockIcon icon={def?.icon || "Zap"} tone={childTone} size="sm" />
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[10.5px] font-semibold text-fg-primary truncate leading-tight">
-                          {def?.label || child.type}
-                        </div>
-                        <div className="text-[9.5px] text-fg-muted truncate leading-tight">
-                          {def ? def.summary(child.config) : ""}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteStep(child.id);
-                    }}
-                    className="absolute top-0.5 right-0.5 opacity-0 group-hover/mini:opacity-100 transition-opacity h-4 w-4 rounded text-fg-muted hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center"
-                  >
-                    <Trash2 className="h-2.5 w-2.5" />
-                  </button>
-                </div>
-                {i === steps.length - 1 && (
-                  <div className="mt-1.5 w-full">
-                    <AddButton onSelect={(type) => onAddInBranch(child.id, type)} label="Add" size="sm" tone={tone} />
-                  </div>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ─────────────────── Connector ─────────────────── */
-
-function Connector({ tone = "muted" }: { tone?: keyof typeof TONE_STYLES }): React.JSX.Element {
-  const t = TONE_STYLES[tone];
-  return (
-    <div className="flex flex-col items-center py-1" aria-hidden>
-      <div className={cn("h-4 w-[2px] rounded-full", t.bar, "opacity-70")} />
-      <ChevronDown className={cn("h-3.5 w-3.5 -mt-1", t.text)} />
-    </div>
-  );
-}
-
-/* ─────────────────── Add button (with block-type picker menu) ─────────────────── */
-
-const ADD_MENU_WIDTH = 260;
-
-function AddButton({
-  onSelect,
-  label,
-  icon,
-  size = "md",
-  tone,
-  isPrimary,
-}: {
-  onSelect: (type: string) => void;
-  label?: string;
-  icon?: boolean;
-  size?: "sm" | "md";
-  tone?: keyof typeof TONE_STYLES;
-  isPrimary?: boolean;
-}): React.JSX.Element {
-  const [open, setOpen] = React.useState(false);
-  const [pos, setPos] = React.useState<{ top: number; left: number } | null>(null);
-  const btnRef = React.useRef<HTMLButtonElement>(null);
-  const menuRef = React.useRef<HTMLDivElement>(null);
-
-  // Compute menu position from the button's rect — portal escapes any
-  // overflow-hidden ancestor (which was clipping the menu inside StepCards).
-  const positionMenu = React.useCallback(() => {
-    if (!btnRef.current) return;
-    const r = btnRef.current.getBoundingClientRect();
-    const viewportH = window.innerHeight;
-    const viewportW = window.innerWidth;
-    // Rough est so the menu flips upward when there isn't room below.
-    const estMenuH = 260;
-    let top = r.bottom + 6;
-    if (top + estMenuH > viewportH - 8) top = Math.max(8, r.top - 6 - estMenuH);
-    let left = r.left + r.width / 2 - ADD_MENU_WIDTH / 2;
-    if (left + ADD_MENU_WIDTH > viewportW - 8) left = viewportW - ADD_MENU_WIDTH - 8;
-    if (left < 8) left = 8;
-    setPos({ top, left });
-  }, []);
-
-  const toggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (open) {
-      setOpen(false);
-    } else {
-      positionMenu();
-      setOpen(true);
-    }
-  };
-
-  React.useEffect(() => {
-    if (!open) return;
-    const onDocClick = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node)) return;
-      if (menuRef.current?.contains(e.target as Node)) return;
-      setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    const onWinChange = () => setOpen(false);
-    document.addEventListener("mousedown", onDocClick);
-    document.addEventListener("keydown", onKey);
-    window.addEventListener("resize", onWinChange);
-    window.addEventListener("scroll", onWinChange, true);
-    return () => {
-      document.removeEventListener("mousedown", onDocClick);
-      document.removeEventListener("keydown", onKey);
-      window.removeEventListener("resize", onWinChange);
-      window.removeEventListener("scroll", onWinChange, true);
-    };
-  }, [open]);
-
-  const actions = listByCategory("action");
-  const logic = listByCategory("logic");
-
-  const btnH = size === "sm" ? "h-6" : "h-8";
-  const styles = isPrimary
-    ? "bg-blue-500 hover:bg-blue-600 text-white border-blue-500 shadow-[0_4px_12px_-3px_rgba(59,130,246,0.4)]"
-    : tone === "positive"
-      ? "bg-white border-blue-500/40 text-blue-700 hover:bg-blue-50 hover:border-blue-500"
-      : tone === "negative"
-        ? "bg-white border-rose-500/40 text-rose-600 hover:bg-rose-50 hover:border-rose-500"
-        : "bg-white border-blue-500/40 text-blue-600 hover:bg-blue-50 hover:border-blue-500";
+function StepNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
+  const step = (data as any).step as BlockNode;
+  const def = getBlockDef(step.type);
+  const tone = TONE_STYLES[def?.tone || "brand"];
+  const ctx = React.useContext(CanvasCtx);
+  const isIf = step.type === "IF";
+  const summary = def?.summary(step.config) || "";
 
   return (
     <>
-      <button
-        ref={btnRef}
-        type="button"
-        onClick={toggle}
-        className={cn(
-          "inline-flex items-center gap-1.5 px-2.5 rounded-full border-2 border-dashed font-semibold transition-all",
-          btnH,
-          size === "sm" ? "text-[10px] w-full justify-center" : "text-[11px]",
-          styles,
-        )}
-      >
-        <Plus className={size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5"} />
-        {(icon && !label) ? null : label || "Add step"}
-      </button>
+      <NodeToolbar isVisible={selected} position={Position.Right} className="flex flex-col gap-1">
+        <button
+          type="button"
+          onClick={() => ctx.onMoveStep(step.id, "up")}
+          className="h-7 w-7 rounded-md bg-white border border-line-default text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 flex items-center justify-center shadow-card"
+          title="Move earlier in its chain"
+        >
+          <ArrowUp className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => ctx.onMoveStep(step.id, "down")}
+          className="h-7 w-7 rounded-md bg-white border border-line-default text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 flex items-center justify-center shadow-card"
+          title="Move later in its chain"
+        >
+          <ArrowDown className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => ctx.onDeleteStep(step.id)}
+          className="h-7 w-7 rounded-md bg-white border border-line-default text-fg-secondary hover:text-rose-500 hover:border-rose-500/40 flex items-center justify-center shadow-card"
+          title={isIf ? "Delete condition (steps inside are kept)" : "Delete step"}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </NodeToolbar>
 
-      {open && pos &&
-        createPortal(
-          <div
-            ref={menuRef}
-            role="menu"
-            style={{ position: "fixed", top: pos.top, left: pos.left, width: ADD_MENU_WIDTH, zIndex: 1000 }}
-            className="rounded-xl border border-line-default bg-white shadow-pop overflow-hidden animate-in fade-in duration-100"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <MenuSection title="Actions" items={actions} onPick={(t) => { setOpen(false); onSelect(t); }} />
-            <div className="h-px bg-line-subtle" />
-            <MenuSection title="Logic" items={logic} onPick={(t) => { setOpen(false); onSelect(t); }} />
-          </div>,
-          document.body,
+      <div
+        style={{ width: NODE_W, height: NODE_H }}
+        className={cn(
+          "rounded-xl bg-white cursor-pointer transition-all overflow-hidden flex flex-col",
+          selected
+            ? "ring-2 ring-blue-500/40 border border-blue-500 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]"
+            : "border border-line-default hover:border-blue-500/40 shadow-card",
         )}
+        onClick={() => ctx.onSelectStep(step.id)}
+      >
+        <div className={cn("h-[3px] shrink-0", tone.bar)} />
+        <div className="flex items-center gap-2.5 px-3 flex-1 min-h-0">
+          <BlockIcon icon={def?.icon || "Zap"} tone={def?.tone || "brand"} size="sm" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[12px] font-semibold text-fg-primary truncate">
+                {def?.label || step.type}
+              </span>
+              {(step.filter?.conditions?.length ?? 0) > 0 && (
+                <span
+                  className="inline-flex items-center gap-0.5 text-[9px] font-bold text-blue-600 shrink-0"
+                  title="Only runs when the contact matches this step's filter"
+                >
+                  <FilterIcon className="h-2.5 w-2.5" />
+                  {step.filter!.conditions.length}
+                </span>
+              )}
+            </div>
+            <div className="text-[10.5px] text-fg-muted leading-snug line-clamp-2 mt-0.5">
+              {summary}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Handle type="target" position={Position.Top} className={HANDLE_CLS} />
+      {isIf ? (
+        <>
+          <Handle
+            type="source"
+            id="then"
+            position={Position.Bottom}
+            style={{ left: "25%" }}
+            className="!h-2.5 !w-2.5 !bg-emerald-500 !border !border-white"
+          />
+          <Handle
+            type="source"
+            id="else"
+            position={Position.Bottom}
+            style={{ left: "75%" }}
+            className="!h-2.5 !w-2.5 !bg-rose-400 !border !border-white"
+          />
+        </>
+      ) : (
+        <Handle type="source" position={Position.Bottom} className={HANDLE_CLS} />
+      )}
     </>
   );
 }
 
-function MenuSection({
-  title,
-  items,
-  onPick,
-}: {
-  title: string;
-  items: BlockDef[];
-  onPick: (type: string) => void;
-}): React.JSX.Element {
+function GhostNodeCmp({ data }: NodeProps): React.JSX.Element {
+  const ctx = React.useContext(CanvasCtx);
+  const insert = (data as any).insert as InsertSpec;
   return (
-    <div className="py-1">
-      <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-fg-muted">
-        {title}
-      </div>
-      {items.map((b) => (
-        <button
-          key={b.type}
-          type="button"
-          onClick={() => onPick(b.type)}
-          className="w-full flex items-start gap-2 px-3 py-1.5 text-left hover:bg-slate-50 transition-colors"
-        >
-          <BlockIcon icon={b.icon} tone={b.tone} size="sm" />
-          <div className="min-w-0 flex-1">
-            <div className="text-[11.5px] font-semibold text-fg-primary leading-tight">{b.label}</div>
-            <div className="text-[10.5px] text-fg-muted leading-tight mt-0.5 truncate">{b.description}</div>
-          </div>
-        </button>
-      ))}
-    </div>
+    <>
+      <Handle type="target" position={Position.Top} className="!opacity-0" />
+      <button
+        type="button"
+        style={{ width: NODE_W, height: GHOST_H }}
+        onClick={(e) => ctx.openMenu(insert, e.currentTarget.getBoundingClientRect())}
+        className="rounded-xl border-2 border-dashed border-line-strong bg-white/60 hover:border-blue-500/50 hover:bg-blue-50/40 text-fg-muted hover:text-blue-600 flex items-center justify-center gap-1.5 text-[11.5px] font-semibold transition-colors"
+      >
+        <Plus className="h-3.5 w-3.5" />
+        Add step
+      </button>
+    </>
   );
 }
 
-/* ─────────────────── field/op pretty ─────────────────── */
+/* ─────────────────────────── Custom edge ─────────────────────────── */
 
-function prettyField(k: string): string {
-  const map: Record<string, string> = {
-    name: "Name",
-    email: "Email",
-    phone: "Phone",
-    createdAt: "Created",
-    hasOpenDeals: "Has deals",
-    language: "Language",
-    score: "Lead score",
-  };
-  return map[k] || k;
+function FlowEdgeCmp(props: EdgeProps): React.JSX.Element {
+  const { sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, markerEnd } = props;
+  const data = (props.data || {}) as EdgeData;
+  const ctx = React.useContext(CanvasCtx);
+  const [path, labelX, labelY] = getSmoothStepPath({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    borderRadius: 12,
+  });
+
+  return (
+    <>
+      <BaseEdge path={path} markerEnd={markerEnd} style={{ stroke: "#94a3b8", strokeWidth: 1.5 }} />
+      <EdgeLabelRenderer>
+        <div
+          style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
+          className="absolute pointer-events-auto flex items-center gap-1 nodrag nopan"
+        >
+          {data.label && (
+            <span
+              className={cn(
+                "text-[9px] font-bold uppercase tracking-wide rounded-full px-1.5 py-0.5 border bg-white",
+                data.label === "Yes"
+                  ? "text-emerald-600 border-emerald-500/40"
+                  : "text-rose-500 border-rose-400/40",
+              )}
+            >
+              {data.label}
+            </span>
+          )}
+          {data.insert && (
+            <button
+              type="button"
+              onClick={(e) => ctx.openMenu(data.insert!, e.currentTarget.getBoundingClientRect())}
+              className="h-5 w-5 rounded-full bg-white border border-line-strong text-fg-muted hover:text-blue-600 hover:border-blue-500 flex items-center justify-center shadow-card transition-colors"
+              title="Insert a step here"
+            >
+              <Plus className="h-3 w-3" />
+            </button>
+          )}
+        </div>
+      </EdgeLabelRenderer>
+    </>
+  );
 }
 
-function prettyOp(op: string): string {
-  const map: Record<string, string> = {
-    [FilterOperator.CONTAINS]: "contains",
-    [FilterOperator.EQUALS]: "=",
-    [FilterOperator.GREATER_THAN_OR_EQUAL]: "≥",
-    [FilterOperator.LESS_THAN_OR_EQUAL]: "≤",
-    [FilterOperator.IS_EMPTY]: "is empty",
-    [FilterOperator.IS_NOT_EMPTY]: "is set",
-    [FilterOperator.IS_AFTER]: "after",
-    [FilterOperator.IS_BEFORE]: "before",
-  };
-  return map[op] || op;
+/* ─────────────────────────── Context (fresh callbacks per render) ─────────────────────────── */
+
+interface CanvasCtxValue {
+  onSelectTrigger: () => void;
+  onSelectStep: (id: string) => void;
+  onChangeTriggerType: (t: string) => void;
+  onMoveStep: (id: string, dir: "up" | "down") => void;
+  onDeleteStep: (id: string) => void;
+  openMenu: (insert: InsertSpec, anchor: DOMRect) => void;
+}
+
+const CanvasCtx = React.createContext<CanvasCtxValue>({} as CanvasCtxValue);
+
+const NODE_TYPES = { trigger: TriggerNodeCmp, step: StepNodeCmp, ghost: GhostNodeCmp };
+const EDGE_TYPES = { flow: FlowEdgeCmp };
+
+/* ─────────────────────────── Add-step menu ─────────────────────────── */
+
+function AddMenu({
+  anchor,
+  onPick,
+  onClose,
+}: {
+  anchor: DOMRect;
+  onPick: (type: string) => void;
+  onClose: () => void;
+}): React.JSX.Element {
+  const groups = [
+    { title: "Actions", defs: listByCategory("action") },
+    { title: "Logic", defs: listByCategory("logic") },
+  ];
+  const left = Math.min(anchor.left, window.innerWidth - 280);
+  const top = Math.min(anchor.bottom + 6, window.innerHeight - 380);
+
+  return createPortal(
+    <div className="fixed inset-0 z-50" onClick={onClose}>
+      <div
+        style={{ left, top }}
+        onClick={(e) => e.stopPropagation()}
+        className="absolute w-[264px] max-h-[360px] overflow-y-auto bg-white border border-line-default rounded-xl shadow-2xl p-1.5 animate-in fade-in zoom-in-95 duration-100"
+      >
+        {groups.map((g) => (
+          <div key={g.title}>
+            <div className="px-2 pt-2 pb-1 text-[9.5px] font-bold text-fg-muted uppercase tracking-wider">
+              {g.title}
+            </div>
+            {g.defs.map((d) => (
+              <button
+                key={d.type}
+                type="button"
+                onClick={() => onPick(d.type)}
+                className="w-full flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-blue-50/60 text-left transition-colors"
+              >
+                <BlockIcon icon={d.icon} tone={d.tone} size="sm" />
+                <span className="min-w-0">
+                  <span className="block text-[12px] font-semibold text-fg-primary">{d.label}</span>
+                  <span className="block text-[10px] text-fg-muted truncate">{d.description}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+/* ─────────────────────────── Canvas ─────────────────────────── */
+
+export function WorkflowCanvas(props: WorkflowCanvasProps): React.JSX.Element {
+  const {
+    trigger,
+    steps,
+    selectedId,
+    isTriggerSelected,
+    onAddStep,
+    onAddStepBranch,
+    onReattachAfter,
+    onReattachIntoBranch,
+    onSetPosition,
+  } = props;
+
+  const [menu, setMenu] = React.useState<{ insert: InsertSpec; anchor: DOMRect } | null>(null);
+
+  const derived = React.useMemo(() => buildGraph(trigger, steps), [trigger, steps]);
+
+  const [nodes, setNodes] = React.useState<Node[]>(derived.nodes);
+  React.useEffect(() => {
+    setNodes(
+      derived.nodes.map((n) => ({
+        ...n,
+        selected: n.id === selectedId || (n.id === "trigger" && isTriggerSelected),
+      })),
+    );
+  }, [derived, selectedId, isTriggerSelected]);
+
+  const onNodesChange = React.useCallback(
+    (changes: NodeChange[]) =>
+      setNodes((nds) => applyNodeChanges(changes.filter((c) => c.type !== "remove"), nds)),
+    [],
+  );
+
+  const onConnect = React.useCallback(
+    (conn: Connection) => {
+      const { source, target, sourceHandle } = conn;
+      if (!source || !target) return;
+      if (target === "trigger" || target.startsWith("ghost-") || source.startsWith("ghost-")) return;
+      if (source === target) return;
+      if (source === "trigger") {
+        onReattachAfter(target, "__start__");
+      } else if (sourceHandle === "then" || sourceHandle === "else") {
+        onReattachIntoBranch(target, source, sourceHandle);
+      } else {
+        onReattachAfter(target, source);
+      }
+    },
+    [onReattachAfter, onReattachIntoBranch],
+  );
+
+  const ctxValue = React.useMemo<CanvasCtxValue>(
+    () => ({
+      onSelectTrigger: props.onSelectTrigger,
+      onSelectStep: props.onSelectStep,
+      onChangeTriggerType: props.onChangeTriggerType,
+      onMoveStep: props.onMoveStep,
+      onDeleteStep: props.onDeleteStep,
+      openMenu: (insert, anchor) => setMenu({ insert, anchor }),
+    }),
+    [props.onSelectTrigger, props.onSelectStep, props.onChangeTriggerType, props.onMoveStep, props.onDeleteStep],
+  );
+
+  return (
+    <CanvasCtx.Provider value={ctxValue}>
+      <div className="flex-1 min-h-0">
+        <ReactFlow
+          nodes={nodes}
+          edges={derived.edges}
+          nodeTypes={NODE_TYPES}
+          edgeTypes={EDGE_TYPES}
+          onNodesChange={onNodesChange}
+          onConnect={onConnect}
+          onNodeDragStop={(_, node) => {
+            if (node.type === "step") onSetPosition(node.id, node.position.x, node.position.y);
+          }}
+          fitView
+          fitViewOptions={{ padding: 0.25, maxZoom: 1 }}
+          minZoom={0.25}
+          maxZoom={1.75}
+          proOptions={{ hideAttribution: true }}
+          deleteKeyCode={null}
+          nodesDraggable
+          elementsSelectable
+        >
+          <Background variant={BackgroundVariant.Dots} gap={22} size={1.5} color="rgba(15,23,42,0.08)" />
+          <Controls showInteractive={false} position="bottom-left" />
+          <MiniMap
+            pannable
+            zoomable
+            position="bottom-right"
+            className="!h-24 !w-36 rounded-lg border border-line-default overflow-hidden"
+            nodeColor={(n) => (n.type === "trigger" ? "#10b981" : n.type === "ghost" ? "#e2e8f0" : "#3b82f6")}
+          />
+          {props.hasCustomPositions && (
+            <Panel position="top-right">
+              <button
+                type="button"
+                onClick={props.onTidy}
+                className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md bg-white border border-line-default text-[11.5px] font-semibold text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 shadow-card transition-colors"
+                title="Snap all steps back to the automatic layout"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+                Tidy layout
+              </button>
+            </Panel>
+          )}
+        </ReactFlow>
+      </div>
+
+      {menu && (
+        <AddMenu
+          anchor={menu.anchor}
+          onClose={() => setMenu(null)}
+          onPick={(type) => {
+            const ins = menu.insert;
+            setMenu(null);
+            if (ins.kind === "after") onAddStep(ins.afterId, type);
+            else onAddStepBranch(ins.parentId, ins.branch, ins.position, type);
+          }}
+        />
+      )}
+    </CanvasCtx.Provider>
+  );
 }

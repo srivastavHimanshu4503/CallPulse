@@ -21,6 +21,20 @@ const envSchema = z.object({
   LIVEKIT_API_SECRET: z.string().min(1).optional(),
   LIVEKIT_AGENT_NAME: z.string().default("inbound-agent"),
 
+  // Twilio — optional; needed only for phone-number purchasing.
+  TWILIO_ACCOUNT_SID: z.string().min(1).optional(),
+  TWILIO_AUTH_TOKEN: z.string().min(1).optional(),
+  // WhatsApp Business Account — enables automatic sender registration when
+  // an agent's WhatsApp bot is turned on. One-time setup in Twilio Console.
+  TWILIO_WABA_ID: z.string().min(1).optional(),
+  // Public URL Twilio calls for inbound WhatsApp (set per environment).
+  WHATSAPP_WEBHOOK_URL: z.string().url().optional(),
+
+  // Razorpay — optional so the API boots without payments configured.
+  RAZORPAY_KEY_ID: z.string().min(1).optional(),
+  RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
+  RAZORPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
+
   // Speech APIs
   SARVAM_API_KEY: z.string().min(1).optional(),
   OPENAI_API_KEY: z.string().min(1).optional(),

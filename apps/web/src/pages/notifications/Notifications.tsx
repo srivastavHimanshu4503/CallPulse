@@ -18,13 +18,6 @@ import {
   X,
   Slack,
   PhoneCall,
-  PhoneMissed,
-  Flame,
-  CalendarCheck,
-  UserPlus,
-  Sparkles,
-  CreditCard,
-  AlertTriangle,
   Copy,
   Signal,
   Wifi,
@@ -36,15 +29,7 @@ import {
 // ─────────────────────────────────────────────────────────────
 
 type ChannelKey = "email" | "sms" | "slack";
-type EventKey =
-  | "call_ended"
-  | "missed_call"
-  | "hot_lead"
-  | "booking_made"
-  | "new_contact"
-  | "credit_added"
-  | "low_balance"
-  | "weekly_digest";
+type EventKey = "call_ended";
 
 interface Recipient {
   id: string;
@@ -65,14 +50,7 @@ interface EventDef {
 // ─────────────────────────────────────────────────────────────
 
 const EVENTS: EventDef[] = [
-  { key: "call_ended",    title: "Call ended",          hint: "Summary after every AI call",       icon: PhoneCall,     tone: "brand"     },
-  { key: "missed_call",   title: "Missed call",         hint: "Caller couldn't be connected",       icon: PhoneMissed,   tone: "negative"  },
-  { key: "hot_lead",      title: "Hot lead detected",   hint: "AI scored caller as high-intent",    icon: Flame,         tone: "accent"    },
-  { key: "booking_made",  title: "Booking made",        hint: "AI scheduled an appointment",         icon: CalendarCheck, tone: "positive"  },
-  { key: "new_contact",   title: "New contact",         hint: "First-time caller added to CRM",      icon: UserPlus,      tone: "brand"     },
-  { key: "credit_added",  title: "Credits recharged",   hint: "New voice credits purchased",         icon: CreditCard,    tone: "positive"  },
-  { key: "low_balance",   title: "Low balance",         hint: "Under 15% credits remaining",         icon: AlertTriangle, tone: "attention" },
-  { key: "weekly_digest", title: "Weekly digest",       hint: "Monday morning performance report",   icon: Sparkles,      tone: "attention" },
+  { key: "call_ended", title: "Call ended", hint: "Summary after every AI call", icon: PhoneCall, tone: "brand" },
 ];
 
 const CHANNEL_META: Record<ChannelKey, {
@@ -140,54 +118,6 @@ const DEFAULT_TEMPLATES: Record<EventKey, {
       "Indi AI: {{contact_name}} · {{duration}} · {{outcome}}. Details: {{short_url}}",
     slack:
       ":telephone_receiver: *Call ended* — {{contact_name}} spoke with {{agent_name}} for {{duration}}.\n> {{summary}}\n<{{transcript_url}}|View transcript>",
-  },
-  missed_call: {
-    emailSubject: "Missed call — {{contact_name}}",
-    email:
-      "Heads-up {{owner_name}} — {{contact_name}} ({{contact_phone}}) called but couldn't be connected.\n\nCall back: {{callback_url}}",
-    sms: "Missed call from {{contact_name}} — call back: {{callback_url}}",
-    slack: ":warning: Missed call from {{contact_name}} — <{{callback_url}}|Call back>",
-  },
-  hot_lead: {
-    emailSubject: "🔥 Hot lead — {{contact_name}}",
-    email:
-      "🔥 Hot lead alert\n\n{{contact_name}} showed strong intent on the call: {{intent_summary}}.\n\nOpen the deal in CRM: {{deal_url}}",
-    sms: "🔥 Hot lead: {{contact_name}} — {{intent_summary}}. CRM: {{deal_url}}",
-    slack: ":fire: *Hot lead* — {{contact_name}}\n> {{intent_summary}}\n<{{deal_url}}|Open in CRM>",
-  },
-  booking_made: {
-    emailSubject: "Booking confirmed — {{contact_name}}",
-    email:
-      "New booking confirmed ✅\n\n{{contact_name}} booked {{service}} on {{booking_date}} at {{booking_time}}.\n\nManage: {{booking_url}}",
-    sms: "✅ Booking: {{contact_name}} · {{service}} · {{booking_date}} {{booking_time}}",
-    slack: ":white_check_mark: *Booking* — {{contact_name}} · {{service}} · {{booking_date}} {{booking_time}}",
-  },
-  new_contact: {
-    emailSubject: "New contact — {{contact_name}}",
-    email: "New contact added: {{contact_name}} · {{contact_phone}}.\n\nProfile: {{contact_url}}",
-    sms: "New contact: {{contact_name}} — {{contact_url}}",
-    slack: ":bust_in_silhouette: New contact: {{contact_name}} · {{contact_phone}}",
-  },
-  credit_added: {
-    emailSubject: "Credits recharged — {{credit_amount}} minutes",
-    email:
-      "Thanks {{owner_name}}!\n\n{{credit_amount}} voice minutes have been added to your workspace.\n\nNew balance: {{balance}} minutes.\n\nInvoice: {{invoice_url}}",
-    sms: "Indi AI: {{credit_amount}} min added. New balance: {{balance}} min.",
-    slack: ":credit_card: Credits recharged: +{{credit_amount}} min. Balance: {{balance}} min.",
-  },
-  low_balance: {
-    emailSubject: "⚠ Low balance — {{balance}} minutes remaining",
-    email:
-      "Heads-up — your workspace has {{balance}} voice minutes remaining ({{balance_pct}}%).\n\nTop up: {{billing_url}}",
-    sms: "Low balance: {{balance}} min left. Top up: {{billing_url}}",
-    slack: ":warning: Low balance — {{balance}} min ({{balance_pct}}%) remaining.",
-  },
-  weekly_digest: {
-    emailSubject: "Your weekly Indi AI report",
-    email:
-      "Your weekly report\n\n{{calls_handled}} calls · {{leads_captured}} leads · {{bookings}} bookings.\n\nFull dashboard: {{dashboard_url}}",
-    sms: "Weekly Indi AI: {{calls_handled}} calls · {{leads_captured}} leads · {{bookings}} bookings.",
-    slack: ":sparkles: Weekly digest: {{calls_handled}} calls · {{leads_captured}} leads · {{bookings}} bookings.",
   },
 };
 
@@ -458,9 +388,9 @@ export function Notifications(): React.JSX.Element {
     const init: any = {};
     EVENTS.forEach((e) => {
       init[e.key] = {
-        email: e.key !== "call_ended" && e.key !== "new_contact",
-        sms: e.key === "missed_call" || e.key === "hot_lead" || e.key === "booking_made" || e.key === "low_balance",
-        slack: e.key === "hot_lead" || e.key === "booking_made" || e.key === "call_ended",
+        email: true,
+        sms: true,
+        slack: true,
       };
     });
     return init;

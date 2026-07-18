@@ -3,6 +3,7 @@ import { WorkflowsController } from "./workflows.controller.js";
 import { WorkflowFoldersController } from "./workflow-folders.controller.js";
 import { authMiddleware } from "../../middleware/auth.middleware.js";
 import { tenantMiddleware } from "../../middleware/tenant.middleware.js";
+import { requireFeatureWhen } from "../../middleware/feature.middleware.js";
 
 const router: Router = Router();
 const controller = new WorkflowsController();
@@ -26,7 +27,13 @@ router.get("/", controller.list);
 router.post("/", controller.create);
 router.get("/:id", controller.get);
 router.put("/:id", controller.update);
-router.post("/:id/toggle", controller.toggleActive);
+// Creating/editing workflows is free; turning one ON needs a paid plan.
+// Pausing is always allowed.
+router.post(
+  "/:id/toggle",
+  requireFeatureWhen("WORKFLOW_ACTIVATION", (req) => req.body?.isActive === true),
+  controller.toggleActive,
+);
 router.put("/:id/move", controller.move);
 router.delete("/:id", controller.remove);
 

@@ -14,12 +14,15 @@ const log = createLogger("persistence:log-status");
 
 export const markExtractionInProgress = async (logId: string): Promise<void> => {
   try {
-    await db.communicationLog.update({
+    const res = await db.communicationLog.updateMany({
       where: { id: logId },
       data: { extractionStatus: "PENDING" },
     });
+    if (res.count === 0) {
+      log.warn("no CommunicationLog row for logId — skipping status tracking", { logId });
+    }
   } catch (err) {
-    log.warn("failed to mark extraction PENDING (row may be missing)", {
+    log.warn("failed to mark extraction PENDING", {
       logId,
       message: getErrorMessage(err),
     });
@@ -41,7 +44,7 @@ export const finalizeExtraction = async (
   }
 ): Promise<void> => {
   try {
-    await db.communicationLog.update({
+    await db.communicationLog.updateMany({
       where: { id: logId },
       data: {
         extractionStatus: result.status,

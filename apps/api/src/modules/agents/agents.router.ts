@@ -13,7 +13,6 @@ router.use(tenantMiddleware);
 router.get("/", controller.getAgents);
 router.post("/", controller.createAgent);
 router.get("/telephony/numbers", controller.getTelephonyNumbers);
-router.post("/telephony/purchase", controller.purchaseTelephonyNumber);
 router.get("/workflows/list", controller.getWorkflowsList);
 router.post("/workflows", controller.createWorkflow);
 router.post("/test-voice", controller.testVoice);

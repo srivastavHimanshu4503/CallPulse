@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -19,7 +19,8 @@ import {
 import { useAuthStore } from "../../stores/auth.store.js";
 import { useUIStore } from "../../stores/ui.store.js";
 import { Logo } from "../common/Logo.js";
-import { toast } from "sonner";
+import { useEntitlements } from "../../hooks/useEntitlements.js";
+import { PLAN_CREDITS } from "@antigravity/types";
 
 interface NavItem {
   name: string;
@@ -40,11 +41,13 @@ const NAV: NavItem[] = [
 
 export function Sidebar(): React.JSX.Element {
   const location = useLocation();
+  const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
   const sidebarMinimized = useUIStore((state) => state.sidebarMinimized);
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
 
+  const entitlements = useEntitlements();
   const [profileOpen, setProfileOpen] = React.useState(false);
   const profileRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -141,64 +144,89 @@ export function Sidebar(): React.JSX.Element {
         <div className="space-y-0.5">{NAV.map(renderNavItem)}</div>
       </nav>
 
-      {/* Billing / Usage — minimal card */}
+      {/* Billing / Usage — live plan + credits */}
       <div className="border-t border-line-subtle p-3 shrink-0">
-        {sidebarMinimized ? (
-          <button
-            type="button"
-            onClick={() =>
-              toast.info("Workspace usage: 4,850 of 5,000 credits remaining · Business Pro plan.")
-            }
-            className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all border border-line-default bg-white text-fg-primary hover:bg-bg-muted"
-            title="Business Pro · 97% available"
-          >
-            <Zap className="h-[17px] w-[17px]" />
-          </button>
-        ) : (
-          <div className="relative rounded-xl p-3 border border-line-default bg-white">
-            <div className="relative">
+        {(() => {
+          const isPro = entitlements.plan !== "FREE";
+          const allotment = PLAN_CREDITS[entitlements.plan] ?? PLAN_CREDITS.FREE;
+          const pct = Math.max(0, Math.min(100, Math.round((entitlements.creditBalance / allotment) * 100)));
+          const goBilling = () => navigate("/settings?tab=billing");
+
+          if (sidebarMinimized) {
+            return (
+              <button
+                type="button"
+                onClick={goBilling}
+                className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all border border-line-default bg-white text-fg-primary hover:bg-bg-muted"
+                title={`${isPro ? "Pro" : "Free plan"} · ${entitlements.creditBalance} credits`}
+              >
+                <Zap className="h-[17px] w-[17px]" />
+              </button>
+            );
+          }
+
+          return (
+            <div className={["relative rounded-xl p-3 border", isPro ? "border-emerald-200 bg-emerald-50/50" : "border-line-default bg-white"].join(" ")}>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-fg-primary">
-                  Business Pro
+                  {isPro ? "Pro" : "Free plan"}
                 </span>
                 <span
-                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-success-50 text-success-600 border border-success-200/50"
+                  className={[
+                    "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border",
+                    isPro
+                      ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                      : "bg-bg-muted text-fg-secondary border-line-default",
+                  ].join(" ")}
                 >
-                  <span className="h-1.5 w-1.5 rounded-full bg-success-500" />
-                  Active
+                  <span className={`h-1.5 w-1.5 rounded-full ${isPro ? "bg-emerald-500 animate-pulse" : "bg-fg-muted"}`} />
+                  {isPro ? "Active" : "Limited"}
                 </span>
               </div>
 
               <div className="space-y-1.5">
-                <div className="flex justify-between text-[11px] font-medium">
-                  <span className="text-fg-secondary">Credits</span>
-                  <span className="font-semibold text-fg-primary">
-                    4,850 / 5,000
+                <div className="flex justify-between text-[11px] font-medium items-center">
+                  <span className="text-fg-secondary flex items-center gap-1.5">
+                    <Zap className="h-3 w-3 text-amber-500" />
+                    Remaining credits
+                  </span>
+                  <span className="text-fg-primary tabular-nums">
+                    {entitlements.creditBalance}
                   </span>
                 </div>
                 <div className="h-2 w-full rounded-full overflow-hidden bg-line-subtle">
                   <div
-                    className="h-full rounded-full bg-primary"
-                    style={{ width: "97%" }}
+                    className={`h-full rounded-full ${pct <= 15 ? "bg-negative-500" : "bg-primary"}`}
+                    style={{ width: `${pct}%` }}
                   />
                 </div>
-                <div className="flex justify-between text-[9.5px] font-semibold tracking-wide uppercase text-fg-muted">
-                  <span>97% available</span>
-                  <span>12d renewal</span>
-                </div>
+                {entitlements.creditBalance <= 0 ? (
+                  <div className="text-[9.5px] font-bold text-negative-500 uppercase tracking-wide">
+                    Calls paused — top up now
+                  </div>
+                ) : pct <= 15 ? (
+                  <div className="text-[9.5px] font-bold text-amber-600 uppercase tracking-wide">
+                    Running low on credits
+                  </div>
+                ) : null}
               </div>
 
               <button
                 type="button"
-                onClick={() => toast.warning("Billing portal coming soon.")}
-                className="w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 bg-white border border-line-default text-fg-primary hover:bg-bg-muted"
+                onClick={goBilling}
+                className={[
+                  "w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5",
+                  isPro
+                    ? "bg-white border border-line-default text-fg-primary hover:bg-bg-muted"
+                    : "bg-primary text-white hover:opacity-90 shadow-sm",
+                ].join(" ")}
               >
                 <CreditCard className="h-3.5 w-3.5" />
-                Manage billing
+                {isPro ? "Manage billing" : "Upgrade to Pro"}
               </button>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Profile + Logout — bottom popover */}

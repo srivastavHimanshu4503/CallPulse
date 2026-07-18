@@ -2,6 +2,10 @@ import * as React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "../stores/auth.store.js";
 import { Logo } from "../components/common/Logo.js";
+import { useEntitlements } from "../hooks/useEntitlements.js";
+import { UpgradeGate } from "../components/common/UpgradeGate.js";
+import { PageWrapper } from "../components/layout/PageWrapper.js";
+import type { FeatureKey } from "@antigravity/types";
 
 // Lazy-loaded pages as per Rules
 const Dashboard = React.lazy(() => import("../pages/dashboard/Dashboard.js"));
@@ -22,6 +26,29 @@ const Settings = React.lazy(() => import("../pages/settings/Settings.js"));
 
 interface AuthGuardProps {
   children: React.JSX.Element;
+}
+
+/**
+ * Plan gate for whole pages. Friendly UX layer only — the API enforces the
+ * same gates server-side, so bypassing this changes nothing.
+ */
+function FeatureGuard({
+  feature,
+  children,
+}: {
+  feature: FeatureKey;
+  children: React.JSX.Element;
+}): React.JSX.Element {
+  const ent = useEntitlements();
+  if (ent.isLoading) return <PageWrapper>{null}</PageWrapper>;
+  if (!ent.can(feature)) {
+    return (
+      <PageWrapper>
+        <UpgradeGate feature={feature} />
+      </PageWrapper>
+    );
+  }
+  return children;
 }
 
 function AuthGuard({ children }: AuthGuardProps): React.JSX.Element {
@@ -76,7 +103,9 @@ export function AppRouter(): React.JSX.Element {
           path="/crm/contacts/:id"
           element={
             <AuthGuard>
-              <ContactRecord />
+              <FeatureGuard feature="CONTACT_DETAILS">
+                <ContactRecord />
+              </FeatureGuard>
             </AuthGuard>
           }
         />
@@ -123,7 +152,9 @@ export function AppRouter(): React.JSX.Element {
           path="/widget"
           element={
             <AuthGuard>
-              <Widget />
+              <FeatureGuard feature="WEBSITE_WIDGET">
+                <Widget />
+              </FeatureGuard>
             </AuthGuard>
           }
         />
@@ -133,7 +164,9 @@ export function AppRouter(): React.JSX.Element {
           path="/analytics"
           element={
             <AuthGuard>
-              <Analytics />
+              <FeatureGuard feature="ANALYTICS_PAGE">
+                <Analytics />
+              </FeatureGuard>
             </AuthGuard>
           }
         />

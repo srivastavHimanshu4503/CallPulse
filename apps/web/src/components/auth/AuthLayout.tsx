@@ -119,10 +119,10 @@ function LiveVisualizer(): React.JSX.Element {
   return (
     <div className="relative rounded-lg border border-white/10 bg-black/45 px-2.5 py-2 overflow-hidden">
       <div
-        className="absolute inset-0 opacity-70"
+        className="absolute inset-0 opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(251,191,36,0.22) 0%, rgba(139,92,246,0.14) 45%, transparent 75%)",
+            "radial-gradient(ellipse at center, rgba(37,99,235,0.4) 0%, transparent 75%)",
           animation: "authBreathe 2s ease-in-out infinite",
         }}
       />
@@ -130,22 +130,20 @@ function LiveVisualizer(): React.JSX.Element {
         {bars.map((h, i) => (
           <span
             key={i}
-            className="flex-1 rounded-full"
+            className="flex-1 rounded-full bg-brand-400"
             style={{
               height: `${h}px`,
               minWidth: "2.5px",
-              background:
-                "linear-gradient(to top, #FBBF24 0%, #F97316 45%, #8B5CF6 100%)",
               animation: `authWave ${0.45 + (i % 5) * 0.08}s ease-in-out ${i * 0.03}s infinite alternate`,
             }}
           />
         ))}
       </div>
-      <div className="relative mt-1.5 flex items-center justify-between text-[9.5px] font-semibold uppercase tracking-wider">
-        <span className="inline-flex items-center gap-1.5 text-amber-300">
+      <div className="relative mt-1.5 flex items-center justify-between text-[9.5px] font-semibold uppercase tracking-wider text-brand-300">
+        <span className="inline-flex items-center gap-1.5">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
+            <span className="absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75 animate-ping" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-400" />
           </span>
           Live · AI speaking
         </span>
@@ -259,80 +257,22 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
 
       {/* ============ LEFT: BRAND / STORY PANEL ============ */}
       <div className="relative hidden lg:flex lg:w-1/2 overflow-hidden">
-        {/* Deep midnight base — near-black with royal purple undertone */}
-        <div className="absolute inset-0 bg-[radial-gradient(140%_120%_at_0%_0%,#1a0b3d_0%,#0f0620_45%,#050214_100%)]" />
-
-        {/* Saffron/amber warm accent (top-right) — India feel */}
+        {/* Clean minimal dark background (Linear style) */}
+        <div className="absolute inset-0 bg-[#0A0A0A]" />
+        
+        {/* Subtle dot grid */}
         <div
-          className="absolute -top-40 -right-24 h-[520px] w-[520px] rounded-full blur-3xl"
+          className="absolute inset-0 opacity-20"
           style={{
-            background: "radial-gradient(circle, rgba(251,146,60,0.5) 0%, rgba(217,70,239,0.25) 45%, transparent 75%)",
-            animation: "authOrb 14s ease-in-out infinite",
+            backgroundImage: "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+            maskImage: "radial-gradient(ellipse at center, black 50%, transparent 80%)",
+            WebkitMaskImage: "radial-gradient(ellipse at center, black 50%, transparent 80%)",
           }}
         />
-        {/* Violet orb (bottom-left) */}
-        <div
-          className="absolute bottom-[-180px] -left-24 h-[520px] w-[520px] rounded-full blur-3xl"
-          style={{
-            background: "radial-gradient(circle, rgba(139,92,246,0.55) 0%, transparent 70%)",
-            animation: "authOrb 16s ease-in-out 2s infinite",
-          }}
-        />
-        {/* Cyan (center) */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[340px] w-[340px] rounded-full blur-3xl"
-          style={{
-            background: "radial-gradient(circle, rgba(34,211,238,0.28) 0%, transparent 70%)",
-            animation: "authOrb 18s ease-in-out 1s infinite",
-          }}
-        />
-
-        {/* Fine grid */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-            backgroundSize: "56px 56px",
-            maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-            WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-          }}
-        />
-        {/* Contrast wash so orbs don't wash out text */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/10 to-black/50 pointer-events-none" />
-
-        {/* Sparkle particles */}
-        {[
-          { top: "14%", left: "22%", size: 3, delay: "0s" },
-          { top: "28%", left: "68%", size: 2, delay: "1.2s" },
-          { top: "62%", left: "18%", size: 2, delay: "0.6s" },
-          { top: "72%", left: "72%", size: 3, delay: "2s" },
-          { top: "48%", left: "42%", size: 2, delay: "1.8s" },
-          { top: "22%", left: "82%", size: 2, delay: "0.4s" },
-          { top: "86%", left: "48%", size: 3, delay: "1s" },
-        ].map((s, i) => (
-          <span
-            key={i}
-            className="absolute rounded-full bg-white pointer-events-none"
-            style={{
-              top: s.top,
-              left: s.left,
-              height: `${s.size}px`,
-              width: `${s.size}px`,
-              boxShadow: "0 0 8px rgba(255,255,255,0.9)",
-              animation: `authTwinkle 3s ease-in-out ${s.delay} infinite`,
-            }}
-          />
-        ))}
-
-        {/* Noise texture */}
-        <div
-          className="absolute inset-0 opacity-[0.05] mix-blend-overlay pointer-events-none"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>\")",
-          }}
-        />
+        
+        {/* Subtle brand glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-brand-500/10 blur-[100px] rounded-full pointer-events-none" />
 
         {/* Content — full-width, scrollable if viewport short, hidden scrollbar */}
         <div className="relative z-10 w-full h-full overflow-y-auto auth-hide-scroll">
@@ -353,23 +293,11 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
                   </span>
                 </div>
 
-                {/* Headline — English, metallic gold accent */}
+                {/* Headline — Clean and sharp */}
                 <div className="space-y-3">
-                  <h1
-                    className="text-[32px] xl:text-[38px] leading-[1.1] font-bold tracking-tight text-white"
-                    style={{ textShadow: "0 2px 30px rgba(0,0,0,0.5)" }}
-                  >
+                  <h1 className="text-[32px] xl:text-[38px] leading-[1.1] font-bold tracking-tight text-white">
                     Answer every call —{" "}
-                    <span
-                      className="inline-block bg-clip-text text-transparent"
-                      style={{
-                        backgroundImage:
-                          "linear-gradient(120deg, #FFE9A0 0%, #F5B849 30%, #F97316 55%, #FBBF24 80%, #FFE9A0 100%)",
-                        backgroundSize: "200% 100%",
-                        animation: "authShimmer 6s linear infinite",
-                        filter: "drop-shadow(0 2px 12px rgba(251,146,60,0.35))",
-                      }}
-                    >
+                    <span className="text-brand-400">
                       in every Indian language.
                     </span>
                   </h1>
@@ -388,13 +316,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
                       key={s.label}
                       className="rounded-xl border border-white/15 bg-black/35 backdrop-blur px-3 py-2.5"
                     >
-                      <div
-                        className="text-[20px] font-bold leading-none bg-clip-text text-transparent"
-                        style={{
-                          backgroundImage:
-                            "linear-gradient(135deg, #FFE9A0 0%, #F5B849 60%, #F97316 100%)",
-                        }}
-                      >
+                      <div className="text-[20px] font-bold leading-none text-white">
                         {s.value}
                       </div>
                       <div className="mt-1.5 text-[10px] text-white/70 font-semibold uppercase tracking-wider">
@@ -413,10 +335,10 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
                     {BUSINESS_TYPES.map((b) => (
                       <div
                         key={b.label}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/35 backdrop-blur px-2.5 py-1"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur px-2.5 py-1 transition-colors hover:bg-white/[0.06]"
                       >
-                        <span className="text-amber-300">{b.icon}</span>
-                        <span className="text-[11px] font-semibold text-white">{b.label}</span>
+                        <span className="text-brand-400">{b.icon}</span>
+                        <span className="text-[11px] font-semibold text-white/90">{b.label}</span>
                       </div>
                     ))}
                   </div>
@@ -424,12 +346,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
 
                 {/* Testimonial */}
                 <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-black/25 px-4 py-3">
-                  <div
-                    className="shrink-0 h-9 w-9 rounded-full flex items-center justify-center text-white text-[11.5px] font-bold ring-2 ring-white/20"
-                    style={{
-                      background: "linear-gradient(135deg, #F97316 0%, #EC4899 100%)",
-                    }}
-                  >
+                  <div className="shrink-0 h-9 w-9 rounded-full flex items-center justify-center text-white bg-brand-500 text-[11.5px] font-bold ring-2 ring-white/10">
                     {TESTIMONIAL.initials}
                   </div>
                   <div className="min-w-0">
@@ -444,36 +361,24 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
               </div>
 
               {/* RIGHT COLUMN — Voice preview card */}
-              <div
-                className="relative rounded-xl p-[1px] w-full"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(135deg, rgba(251,191,36,0.55) 0%, rgba(139,92,246,0.5) 45%, rgba(34,211,238,0.55) 100%)",
-                }}
-              >
-                <div className="relative rounded-xl bg-[#0a0416]/90 backdrop-blur-xl p-4 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] space-y-3">
+              <div className="relative rounded-xl border border-white/10 bg-white/[0.03] p-1 shadow-2xl backdrop-blur-xl">
+                <div className="relative rounded-xl bg-[#0A0A0A]/90 p-4 space-y-3">
                   {/* Header row */}
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       {isPlaying && (
                         <>
                           <span
-                            className="absolute inset-0 rounded-full bg-amber-400/45"
+                            className="absolute inset-0 rounded-full bg-brand-500/40"
                             style={{ animation: "authRing 1.8s ease-out infinite" }}
                           />
                           <span
-                            className="absolute inset-0 rounded-full bg-fuchsia-400/40"
+                            className="absolute inset-0 rounded-full bg-brand-500/20"
                             style={{ animation: "authRing 1.8s ease-out 0.6s infinite" }}
                           />
                         </>
                       )}
-                      <div
-                        className="relative h-9 w-9 rounded-full flex items-center justify-center text-white font-bold text-[11px] shadow-lg ring-2 ring-white/25"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #FBBF24 0%, #F97316 45%, #8B5CF6 100%)",
-                        }}
-                      >
+                      <div className="relative h-9 w-9 rounded-full flex items-center justify-center text-white bg-brand-600 font-bold text-[11px] shadow-lg ring-2 ring-white/10">
                         IA
                       </div>
                       <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0a0416]" />
@@ -527,15 +432,11 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
                     type="button"
                     onClick={playGreeting}
                     disabled={isLoadingAudio}
-                    className="group inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-[13px] font-bold transition-all text-[#0a0416] hover:brightness-110 disabled:opacity-70 shadow-[0_10px_30px_-10px_rgba(251,191,36,0.5)]"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #FFE9A0 0%, #F5B849 50%, #F97316 100%)",
-                    }}
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-[13px] font-bold transition-all text-white hover:bg-brand-600 disabled:opacity-70 bg-brand-500 shadow-sm"
                   >
                     {isLoadingAudio ? (
                       <>
-                        <span className="h-3.5 w-3.5 rounded-full border-2 border-[#0a0416]/30 border-t-[#0a0416] animate-spin" />
+                        <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                         Loading voice…
                       </>
                     ) : isPlaying ? (

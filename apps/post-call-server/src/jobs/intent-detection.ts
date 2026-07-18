@@ -37,6 +37,8 @@ export const intentDetection: JobHandler = {
         logId: ctx.job.logId,
         intent: result.primary,
         confidence: result.confidence,
+        dealAmount: result.dealAmount,
+        dealAmountReasoning: result.dealAmountReasoning,
       });
 
       return {

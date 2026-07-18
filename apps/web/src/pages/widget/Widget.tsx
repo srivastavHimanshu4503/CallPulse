@@ -1,5 +1,7 @@
 import * as React from "react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../../lib/axios.js";
 import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import {
   Card,
@@ -25,7 +27,8 @@ import {
   ShoppingCart,
   Scissors,
   Home,
-  Send,
+  MicOff,
+  PhoneOff,
   Palette,
   Bot,
   Terminal,
@@ -62,11 +65,7 @@ const TEMPLATES: { label: string; value: Template; icon: React.ComponentType<{ c
   { label: "E-commerce",  value: "ecom",       icon: ShoppingCart },
 ];
 
-const AGENTS = [
-  { id: "priya", name: "Priya · Front desk" },
-  { id: "kabir", name: "Kabir · Bookings" },
-  { id: "neha",  name: "Neha · Support" },
-];
+
 
 const COLOR_SWATCHES = [
   { name: "Blue",    value: "#2563EB" },
@@ -114,12 +113,12 @@ function SiteChrome({
 }): React.JSX.Element {
   const container =
     device === "mobile"
-      ? "max-w-[260px] mx-auto rounded-[22px] p-1.5 bg-slate-900 shadow-pop"
-      : "rounded-lg bg-slate-100 border border-line-default shadow-pop max-w-[560px] mx-auto";
+      ? "max-w-[280px] h-[560px] mx-auto rounded-[22px] p-1.5 bg-slate-900 shadow-pop flex flex-col"
+      : "w-full h-full max-w-[900px] rounded-lg bg-slate-100 border border-line-default shadow-pop mx-auto flex flex-col";
   const inner =
     device === "mobile"
-      ? "rounded-[16px] bg-white overflow-hidden"
-      : "rounded-md bg-white overflow-hidden";
+      ? "rounded-[16px] bg-white overflow-hidden flex-1 flex flex-col relative"
+      : "rounded-md bg-white overflow-hidden flex-1 flex flex-col relative";
 
   return (
     <div className={container}>
@@ -136,7 +135,7 @@ function SiteChrome({
             <Search className="h-2 w-2 ml-auto" />
           </div>
         </div>
-        <div className="relative">{children}</div>
+        <div className="relative flex-1 bg-white overflow-y-auto">{children}</div>
       </div>
     </div>
   );
@@ -322,58 +321,48 @@ function WidgetPanel({
   const headerText = light ? "#0F172A" : "#FFFFFF";
   return (
     <div
-      className="w-60 rounded-2xl bg-white border border-line-default overflow-hidden"
+      className="w-72 rounded-[24px] bg-white border border-line-default overflow-hidden flex flex-col"
       style={{ boxShadow: "0 20px 60px -12px rgba(15,23,42,0.30)" }}
     >
-      <div
-        style={{ backgroundColor: color, color: headerText, borderBottom: light ? "1px solid rgba(15,23,42,0.08)" : "none" }}
-        className="px-3 py-2.5 flex items-center gap-2"
-      >
-        <div
-          className="h-7 w-7 rounded-full flex items-center justify-center text-[11px] font-bold"
-          style={{
-            backgroundColor: light ? "rgba(15,23,42,0.08)" : "rgba(255,255,255,0.25)",
-          }}
-        >
-          {agentName.charAt(0).toUpperCase()}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[11px] font-bold leading-tight">{agentName}</div>
-          <div className="text-[9.5px] opacity-80 flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            Online · replies in seconds
-          </div>
-        </div>
+      <div className="p-6 flex flex-col items-center justify-center gap-4 bg-bg-subtle relative pt-10 pb-8">
         <button
           type="button"
           onClick={onClose}
-          className="opacity-70 hover:opacity-100 p-1"
-          style={{ color: headerText }}
+          className="absolute top-4 right-4 opacity-50 hover:opacity-100 p-2 text-fg-muted bg-white rounded-full shadow-sm"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-4 w-4" />
         </button>
+        <div className="relative mt-2">
+          <div className="absolute inset-0 rounded-full animate-ping opacity-25" style={{ backgroundColor: color }} />
+          <div
+            className="h-20 w-20 rounded-full flex items-center justify-center text-[28px] font-bold shadow-md relative z-10 text-white"
+            style={{ backgroundColor: color, color: headerText }}
+          >
+            {agentName.charAt(0).toUpperCase()}
+          </div>
+        </div>
+        <div className="text-center mt-2">
+          <div className="text-[16px] font-bold text-fg-primary">{agentName}</div>
+          <div className="text-[12px] text-fg-muted mt-1 animate-pulse font-medium">Speaking...</div>
+        </div>
       </div>
-      <div className="p-2.5 space-y-2 bg-bg-subtle">
-        <div className="rounded-lg bg-white border border-line-subtle px-2.5 py-2">
-          <p className="text-[10.5px] text-slate-700 leading-snug">{welcome}</p>
+      <div className="p-5 bg-white border-t border-line-subtle text-center pb-6">
+        <p className="text-[12px] text-slate-600 leading-relaxed italic mb-6 font-medium">"{welcome}"</p>
+        <div className="flex justify-center gap-6">
+          <button
+            type="button"
+            className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors"
+          >
+            <MicOff className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-12 w-12 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 shadow-sm transition-colors"
+          >
+            <PhoneOff className="h-5 w-5" />
+          </button>
         </div>
-        <div className="rounded-lg bg-white border border-line-subtle px-2.5 py-2 ml-5">
-          <p className="text-[10px] text-slate-600 leading-snug italic">
-            I'd like to book for tomorrow…
-          </p>
-        </div>
-      </div>
-      <div className="border-t border-line-subtle p-2 flex items-center gap-1.5">
-        <div className="flex-1 rounded-lg bg-bg-subtle border border-line-subtle px-2 py-1.5 text-[10px] text-fg-muted">
-          Type a message…
-        </div>
-        <button
-          type="button"
-          style={{ backgroundColor: color, color: headerText }}
-          className="h-6 w-6 rounded-full flex items-center justify-center"
-        >
-          <Send className="h-2.5 w-2.5" />
-        </button>
       </div>
     </div>
   );
@@ -460,7 +449,21 @@ export function Widget(): React.JSX.Element {
   const [color, setColor] = React.useState("#2563EB");
   const [shape, setShape] = React.useState<Shape>("pill");
   const [label, setLabel] = React.useState("Call us");
-  const [agent, setAgent] = React.useState(AGENTS[0]!.id);
+  const { data: agents = [] } = useQuery({
+    queryKey: ["agents"],
+    queryFn: async () => {
+      const res = await api.get("/agents");
+      return res.data.data;
+    },
+  });
+
+  const [agent, setAgent] = React.useState("");
+
+  React.useEffect(() => {
+    if (!agent && agents.length > 0) {
+      setAgent(agents[0].id);
+    }
+  }, [agents, agent]);
   const [welcome, setWelcome] = React.useState(
     "Hi! I'm here to help you 24/7 — in your preferred language."
   );
@@ -470,7 +473,7 @@ export function Widget(): React.JSX.Element {
   const [panelOpen, setPanelOpen] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
 
-  const currentAgent = AGENTS.find((a) => a.id === agent) || AGENTS[0]!;
+  const currentAgent = agents.find((a: any) => a.id === agent) || agents[0] || { name: "Agent" };
   const templateMeta = TEMPLATE_META[template];
   const TemplateBody = TEMPLATE_BODY[template];
 
@@ -633,8 +636,8 @@ export function Widget(): React.JSX.Element {
                       onChange={(e) => setAgent(e.target.value)}
                       className={`${inputClass} appearance-none pr-8 cursor-pointer`}
                     >
-                      {AGENTS.map((a) => (
-                        <option key={a.id} value={a.id}>{a.name}</option>
+                      {agents.map((a: any) => (
+                        <option key={a.id} value={a.id}>{a.name}{a.role ? ` · ${a.role}` : ""}</option>
                       ))}
                     </select>
                     <svg viewBox="0 0 24 24" fill="none" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-fg-muted">
@@ -742,12 +745,12 @@ export function Widget(): React.JSX.Element {
           </div>
 
           {/* Preview surface — tinted so any color, even white, still contrasts */}
-          <div className="flex-1 min-h-0 overflow-hidden rounded-xl p-3 flex items-center justify-center"
+          <div className="flex-1 min-h-[500px] overflow-hidden rounded-xl p-3 flex items-center justify-center"
             style={{
               background: "linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #eef2ff 100%)",
             }}
           >
-            <div className="w-full max-h-full">
+            <div className="w-full h-full flex flex-col justify-center">
               <SiteChrome device={device} domain={templateMeta.domain}>
                 <TemplateBody />
 

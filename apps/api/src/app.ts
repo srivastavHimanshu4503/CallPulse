@@ -7,11 +7,20 @@ import { agentsRouter } from "./modules/agents/agents.router.js";
 import { dashboardRouter } from "./modules/dashboard/dashboard.router.js";
 import { crmRouter } from "./modules/crm/crm.router.js";
 import { workflowsRouter } from "./modules/workflows/workflows.router.js";
+import { billingRouter, billingWebhookHandler } from "./modules/billing/billing.router.js";
+import { telephonyRouter } from "./modules/telephony/telephony.router.js";
+import { recordingsRouter } from "./modules/recordings/recordings.router.js";
+import { whatsappRouter, whatsappConversationsRouter } from "./modules/whatsapp/whatsapp.router.js";
 
 const app: Express = express();
 
 // Standard express middleware configurations
 app.use(cors({ origin: "*" })); // Configure strictly in production
+
+// Razorpay webhook needs the RAW request bytes for signature verification,
+// so it mounts BEFORE the global JSON parser.
+app.post("/api/v1/billing/webhook", express.raw({ type: "*/*" }), billingWebhookHandler);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,6 +30,11 @@ app.use("/api/v1/agents", agentsRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/crm", crmRouter);
 app.use("/api/v1/workflows", workflowsRouter);
+app.use("/api/v1/billing", billingRouter);
+app.use("/api/v1/telephony", telephonyRouter);
+app.use("/api/v1/recordings", recordingsRouter);
+app.use("/api/v1/webhooks/whatsapp", whatsappRouter);
+app.use("/api/v1/whatsapp", whatsappConversationsRouter);
 
 
 // Health Check Route - returns { success: true, version: "1.0.0" } as requested

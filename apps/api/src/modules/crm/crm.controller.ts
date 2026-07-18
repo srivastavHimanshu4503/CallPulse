@@ -359,7 +359,9 @@ export class CrmController {
         res.status(400).json({ success: false, data: null, error: "ids array required" });
         return;
       }
-      const result = await crmService.bulkDeleteContacts(tenantId, ids);
+      const result = await crmService.bulkDeleteContacts(tenantId, ids, {
+        deleteDeals: req.body?.deleteDeals === true,
+      });
       res.json({ success: true, data: result, error: null });
     } catch (err) {
       res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });

@@ -33,10 +33,17 @@ export const IntentSchema = z.object({
   reasoning: z
     .string()
     .describe("One sentence citing the transcript evidence for this label"),
+  dealAmountReasoning: z
+    .string()
+    .describe(
+      "Show your work BEFORE deciding the amount: quote every price, budget, quantity, and unit price mentioned in the transcript, then write out the arithmetic step by step (e.g. '3 tents × ₹2500 = ₹7500, plus 50 chairs × ₹20 = ₹1000, total ₹8500'). If no monetary signal exists, say so explicitly.",
+    ),
   dealAmount: z
     .number()
     .nullable()
-    .describe("If the call implies a potential deal, extract or calculate the total amount based on the transcript (e.g. quantity * price). Return null if no amount can be assumed."),
+    .describe(
+      "The total potential deal value in rupees, derived from dealAmountReasoning. Must be a positive number — NEVER 0. Return null only when the transcript contains no price, budget, quote, or estimable amount at all.",
+    ),
 });
 
 export type IntentResult = z.infer<typeof IntentSchema>;
@@ -65,4 +72,24 @@ Rules:
 3. BOOKING_REQUEST beats PRICING_INQUIRY when the caller asks price and then tries to book.
 4. Use NO_CONTENT only when the caller said nothing meaningful.
 6. reasoning must quote or paraphrase the specific caller line that decided the label.
-7. dealAmount: If the intent relates to a sale, booking, or pricing, calculate or estimate the deal amount from context (e.g., quantity * unit price). If no reasonable estimate can be made, return null.`;
+
+DEAL AMOUNT EXTRACTION (dealAmountReasoning + dealAmount):
+For sales/booking/pricing intents, work hard to find the deal's monetary value. Callers and agents mention money in many forms — catch ALL of them:
+
+- Explicit quotes by the AGENT: "yeh package 15000 ka hai", "per tent 2500 rupaye".
+- Budgets stated by the CALLER: "mera budget 50000 hai", "around 2 lakh soch rahe hain".
+- Indian number words — convert to digits: "paanch hazaar" = 5000, "dedh lakh" = 150000, "dhai hazaar" = 2500, "pandrah sau" = 1500, "do lakh" = 200000, "ek crore" = 10000000. Also shorthand: "2.5k" = 2500, "1.5L" = 150000, "₹5,000" = 5000.
+- Quantity × unit price: if the caller wants 3 tents and the agent quoted ₹2500 per tent, compute 3 × 2500 = 7500. Sum multiple line items.
+- Ranges: "do se teen lakh ke beech" → use the LOWER bound (200000). Conservative beats inflated.
+- Advance/token amounts: if only an advance is mentioned but the full price is also stated, use the full price, not the advance.
+
+Procedure:
+1. In dealAmountReasoning, list every monetary signal found in the transcript with the exact quote.
+2. Do the arithmetic step by step in writing (never in your head) — quantity × price per item, then sum.
+3. Set dealAmount to that total.
+
+Hard rules:
+- dealAmount must be POSITIVE. Never output 0 — a zero-value deal is worse than no deal. If genuinely no price, budget, or estimable amount appears anywhere in the transcript, return null.
+- Do not invent amounts that have no basis in the transcript. Null is the correct answer when the caller only asked "kitna lagega?" and got no number back.
+- Ignore obviously joking amounts ("ek rupaye mein karwa do") — those are banter, not budgets.
+- Amounts are in Indian Rupees (INR).`;

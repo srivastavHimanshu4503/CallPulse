@@ -20,6 +20,7 @@ import {
   Search,
   Clock,
   MessageSquareText,
+  MessageCircle,
   ClipboardList,
   Users,
   MoreHorizontal,
@@ -32,6 +33,7 @@ import {
 } from "lucide-react";
 import { AgentWizard } from "./components/AgentWizard.js";
 import { TestCallModal } from "./components/TestCallModal.js";
+import { PurchaseNumberModal } from "./components/PurchaseNumberModal.js";
 import type { SerializedAgent } from "@antigravity/types";
 
 type StatusFilter = "all" | "active" | "offline";
@@ -51,10 +53,8 @@ const PALETTE = [
   { from: "#6366F1", to: "#4F46E5", soft: "#EEF2FF", softText: "#4338CA" },
 ];
 
-function colorForAgent(seed: string) {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  return PALETTE[Math.abs(h) % PALETTE.length]!;
+function colorForAgent() {
+  return PALETTE[0]!; // Consistently use primary brand blue
 }
 
 function initialsOf(name: string): string {
@@ -105,6 +105,8 @@ export function Agents(): React.JSX.Element {
   const [isWizardOpen, setIsWizardOpen] = React.useState(false);
   const [editingAgent, setEditingAgent] = React.useState<SerializedAgent | null>(null);
   const [testingAgent, setTestingAgent] = React.useState<SerializedAgent | null>(null);
+  const [buyingNumberAgent, setBuyingNumberAgent] = React.useState<SerializedAgent | null>(null);
+  const [waAgent, setWaAgent] = React.useState<SerializedAgent | null>(null);
   const [aiOpen, setAiOpen] = React.useState(false);
   const [aiPrompt, setAiPrompt] = React.useState("");
 
@@ -154,6 +156,17 @@ export function Agents(): React.JSX.Element {
       toast.success("Agent status updated");
     },
     onError: (err: any) => toast.error(err.response?.data?.error || "Failed to update status"),
+  });
+
+  const waToggleMutation = useMutation({
+    mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
+      await api.put(`/agents/${id}`, { whatsappEnabled: enabled });
+    },
+    onSuccess: (_d, { enabled }) => {
+      queryClient.invalidateQueries({ queryKey: ["agents"] });
+      toast.success(enabled ? "WhatsApp bot is on — number registration runs automatically" : "WhatsApp bot turned off");
+    },
+    onError: (err: any) => toast.error(err.response?.data?.error || "Failed to update WhatsApp"),
   });
 
   const handleDelete = (id: string) => {
@@ -330,6 +343,9 @@ export function Agents(): React.JSX.Element {
             <AgentCard
               key={agent.id}
               agent={agent}
+              onBuyNumber={() => setBuyingNumberAgent(agent)}
+              onWhatsApp={() => setWaAgent(agent)}
+              onToggleWhatsApp={(enabled) => waToggleMutation.mutate({ id: agent.id, enabled })}
               onTest={() => setTestingAgent(agent)}
               onConfigure={() => handleOpenConfigure(agent)}
               onLogs={() => navigate(`/agents/${agent.id}/logs`)}
@@ -358,7 +374,7 @@ export function Agents(): React.JSX.Element {
             </thead>
             <tbody>
               {filteredAgents.map((agent) => {
-                const c = colorForAgent(agent.name);
+                const c = colorForAgent();
                 return (
                   <tr key={agent.id} className="border-b border-line-subtle last:border-b-0 hover:bg-bg-muted/50 transition-colors">
                     <td className="px-3 py-2">
@@ -376,10 +392,24 @@ export function Agents(): React.JSX.Element {
                       </div>
                     </td>
                     <td className="px-3 py-2">
-                      <div className="inline-flex items-center gap-1 text-[11.5px] text-fg-primary tabular-nums font-medium">
-                        <Phone className="h-3 w-3 text-fg-muted" />
-                        {agent.phoneNumber || "—"}
-                      </div>
+                      {agent.phoneNumberId ? (
+                        <div className="inline-flex items-center gap-1 text-[11.5px] text-fg-primary tabular-nums font-medium">
+                          <Phone className="h-3 w-3 text-fg-muted" />
+                          {agent.phoneNumber}
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setBuyingNumberAgent(agent);
+                          }}
+                          className="inline-flex items-center gap-1 h-6 px-2 rounded-md border border-dashed border-brand-500/40 bg-brand-50/50 text-brand-600 hover:bg-brand-50 text-[10.5px] font-bold transition-colors"
+                        >
+                          <Phone className="h-3 w-3" />
+                          Get number
+                        </button>
+                      )}
                     </td>
                     <td className="px-3 py-2"><LanguagePill language={agent.language} /></td>
                     <td className="px-3 py-2 text-right font-semibold text-fg-primary tabular-nums">{agent.callsToday || 0}</td>
@@ -409,6 +439,18 @@ export function Agents(): React.JSX.Element {
           isOpen={!!testingAgent}
           onClose={() => setTestingAgent(null)}
         />
+      )}
+
+      {buyingNumberAgent && (
+        <PurchaseNumberModal
+          agentId={buyingNumberAgent.id}
+          agentName={buyingNumberAgent.name}
+          onClose={() => setBuyingNumberAgent(null)}
+        />
+      )}
+
+      {waAgent && (
+        <WhatsAppSetupModal agent={waAgent} onClose={() => setWaAgent(null)} />
       )}
 
       {aiOpen && (
@@ -455,8 +497,8 @@ interface AgentCardProps {
   isToggling: boolean;
 }
 
-function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActive, isToggling }: AgentCardProps): React.JSX.Element {
-  const c = colorForAgent(agent.name);
+function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActive, isToggling, onBuyNumber, onWhatsApp, onToggleWhatsApp }: AgentCardProps & { onBuyNumber: () => void; onWhatsApp: () => void; onToggleWhatsApp: (enabled: boolean) => void }): React.JSX.Element {
+  const c = colorForAgent();
   const initials = initialsOf(agent.name);
   const gradient = `linear-gradient(135deg, ${c.from} 0%, ${c.to} 100%)`;
 
@@ -542,13 +584,86 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
           )}
         </div>
 
+        {/* WhatsApp Bot row — a first-class channel control, not a chip */}
+        <div
+          className={[
+            "flex items-center justify-between rounded-lg border px-2.5 py-2 mb-3 transition-colors",
+            agent.whatsappEnabled
+              ? "bg-emerald-50/70 border-emerald-200"
+              : "bg-bg-subtle border-line-subtle",
+          ].join(" ")}
+        >
+          <div className="flex items-center gap-1.5 min-w-0">
+            <MessageCircle
+              className={`h-3.5 w-3.5 shrink-0 ${agent.whatsappEnabled ? "text-emerald-600" : "text-fg-muted"}`}
+            />
+            <span
+              className={`text-[11px] font-bold ${agent.whatsappEnabled ? "text-emerald-800" : "text-fg-secondary"}`}
+            >
+              WhatsApp Bot
+            </span>
+            <span
+              className={`text-[9px] font-bold uppercase tracking-wide px-1.5 py-px rounded ${
+                agent.whatsappEnabled ? "bg-emerald-100 text-emerald-700" : "bg-bg-muted text-fg-muted"
+              }`}
+            >
+              {agent.whatsappEnabled ? "On" : "Off"}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onWhatsApp();
+              }}
+              className="text-[10.5px] font-bold text-fg-secondary hover:text-fg-primary underline-offset-2 hover:underline"
+            >
+              Configure
+            </button>
+            <label
+              className="relative inline-flex items-center cursor-pointer"
+              title={
+                !agent.phoneNumberId
+                  ? "WhatsApp needs a phone number first"
+                  : agent.whatsappEnabled
+                    ? "Turn WhatsApp bot off"
+                    : "Turn WhatsApp bot on"
+              }
+              onClick={(e) => e.stopPropagation()}
+            >
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={agent.whatsappEnabled}
+                disabled={!agent.phoneNumberId}
+                onChange={(e) => onToggleWhatsApp(e.target.checked)}
+              />
+              <div className="w-8 h-4 bg-line-default peer-disabled:opacity-40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-line-default after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500" />
+            </label>
+          </div>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-2 mt-auto">
           <div className="rounded-lg border border-line-subtle bg-bg-subtle p-2 flex flex-col justify-center">
              <div className="flex items-center gap-1 text-[10px] text-fg-muted font-semibold uppercase tracking-wider mb-1">
                <Phone className="h-3 w-3" /> Number
              </div>
-             <span className="text-[12px] font-bold text-fg-primary truncate">{agent.phoneNumber || "Unassigned"}</span>
+             {agent.phoneNumberId ? (
+               <span className="text-[12px] font-bold text-fg-primary truncate">{agent.phoneNumber}</span>
+             ) : (
+               <button
+                 type="button"
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   onBuyNumber();
+                 }}
+                 className="text-[11px] font-bold text-brand-600 hover:text-brand-700 text-left"
+               >
+                 + Get number
+               </button>
+             )}
           </div>
           <div className="rounded-lg border border-line-subtle bg-bg-subtle p-2 flex flex-col justify-center">
              <div className="flex items-center gap-1 text-[10px] text-fg-muted font-semibold uppercase tracking-wider mb-1">
@@ -596,61 +711,168 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
 }
 
 // ═════════════════════════════════════════════════════════════
-// AI-create tile (inline in the grid)
+// WhatsApp quick-setup modal
 // ═════════════════════════════════════════════════════════════
 
-function AiCreateTile({ onClick }: { onClick: () => void }): React.JSX.Element {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group relative rounded-lg overflow-hidden text-left transition-transform hover:-translate-y-0.5"
-      style={{
-        background: "linear-gradient(135deg, #EEF2FF 0%, #FDF4FF 55%, #FFF1F2 100%)",
-        border: "1px dashed rgba(139,92,246,0.4)",
-      }}
+const SENDER_STATUS_UI: Record<string, { label: string; cls: string; dot: string }> = {
+  ONLINE: { label: "WhatsApp number live", cls: "bg-emerald-50 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
+  CREATING: { label: "Registering with WhatsApp…", cls: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-500" },
+  UPDATING: { label: "Updating registration…", cls: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-500" },
+  PENDING_VERIFICATION: { label: "Pending Meta review", cls: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-500" },
+  OFFLINE: { label: "Sender offline — check Twilio Console", cls: "bg-red-50 text-red-700 border-red-200", dot: "bg-red-500" },
+  NOT_REGISTERED: { label: "Will be registered automatically on save", cls: "bg-bg-muted text-fg-secondary border-line-default", dot: "bg-fg-muted" },
+};
+
+function WhatsAppSetupModal({
+  agent,
+  onClose,
+}: {
+  agent: SerializedAgent;
+  onClose: () => void;
+}): React.JSX.Element {
+  const queryClient = useQueryClient();
+  const [enabled, setEnabled] = React.useState(agent.whatsappEnabled);
+  const [prompt, setPrompt] = React.useState(agent.whatsappPrompt ?? "");
+
+  const { data: sender } = useQuery({
+    queryKey: ["wa-sender-status", agent.id],
+    queryFn: async () => {
+      const res = await api.get(`/whatsapp/sender-status/${agent.id}`);
+      return res.data.data as { status: string; webhookConfigured: boolean } | null;
+    },
+    enabled: !!agent.phoneNumberId,
+    refetchInterval: 15_000,
+  });
+  const senderUi = sender ? SENDER_STATUS_UI[sender.status] : undefined;
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      await api.put(`/agents/${agent.id}`, {
+        whatsappEnabled: enabled,
+        whatsappPrompt: prompt.trim() || null,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["agents"] });
+      toast.success(enabled ? "WhatsApp bot is on" : "WhatsApp bot turned off");
+      onClose();
+    },
+    onError: (err: any) => toast.error(err.response?.data?.error || "Failed to save"),
+  });
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(15,23,42,0.55)", backdropFilter: "blur(2px)" }}
+      onClick={onClose}
     >
       <div
-        className="absolute -top-8 -right-6 h-24 w-24 rounded-full blur-2xl opacity-70 pointer-events-none"
-        style={{ backgroundColor: "rgba(236,72,153,0.35)" }}
-      />
-      <div
-        className="absolute -bottom-8 -left-4 h-24 w-24 rounded-full blur-2xl opacity-70 pointer-events-none"
-        style={{ backgroundColor: "rgba(99,102,241,0.35)" }}
-      />
-
-      <div className="relative p-3">
-        <div className="flex items-center gap-2">
-          <div
-            className="h-9 w-9 rounded-lg text-white flex items-center justify-center shadow-md"
-            style={{ background: "linear-gradient(135deg, #8B5CF6 0%, #6366F1 50%, #2563EB 100%)" }}
-          >
-            <Wand2 className="h-4 w-4" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-[12.5px] font-bold text-fg-primary leading-tight">Let AI create it</div>
-            <div className="text-[10.5px] text-fg-secondary mt-0.5 leading-tight">Describe your business, we'll set up the agent.</div>
-          </div>
-        </div>
-
-        <div className="mt-2 space-y-1">
-          {AI_PROMPTS.slice(0, 2).map((p) => (
-            <div
-              key={p.label}
-              className="flex items-center gap-1.5 rounded-md bg-white/60 backdrop-blur border border-white/60 px-2 py-1 text-[10.5px] text-fg-secondary"
-            >
-              <span>{p.icon}</span>
-              <span className="truncate italic">"{p.label}"</span>
+        className="w-full max-w-[480px] rounded-2xl bg-white shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          className="relative px-5 py-4 text-white"
+          style={{ background: "linear-gradient(135deg, #059669 0%, #10B981 100%)" }}
+        >
+          <div className="flex items-start gap-3">
+            <div className="h-9 w-9 rounded-lg bg-white/25 backdrop-blur flex items-center justify-center shrink-0">
+              <MessageCircle className="h-5 w-5" />
             </div>
-          ))}
+            <div className="flex-1">
+              <div className="text-[15px] font-bold leading-tight">WhatsApp Bot — {agent.name}</div>
+              <div className="text-[11.5px] opacity-90 mt-0.5">
+                Auto-replies on {agent.phoneNumber || "this agent's number"} using the same persona
+                and knowledge base as calls.
+              </div>
+            </div>
+            <button type="button" onClick={onClose} className="opacity-80 hover:opacity-100 transition-opacity p-1">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
-        <div className="mt-2.5 pt-2 border-t border-white/70 flex items-center justify-between text-[11px] font-bold text-brand-600 group-hover:text-brand-700">
-          <span>Start with AI</span>
-          <ArrowRight className="h-3.5 w-3.5" />
+        {/* Body */}
+        <div className="p-5 space-y-4">
+          {!agent.phoneNumberId && (
+            <div className="flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2.5">
+              <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-[11.5px] text-amber-800 leading-snug">
+                This agent has no phone number yet. WhatsApp needs a number — get one from the
+                agent card first.
+              </p>
+            </div>
+          )}
+
+          {agent.phoneNumberId && senderUi && (
+            <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${senderUi.cls}`}>
+              <span className={`h-2 w-2 rounded-full ${senderUi.dot} ${sender?.status !== "ONLINE" && sender?.status !== "NOT_REGISTERED" ? "animate-pulse" : ""}`} />
+              <span className="text-[11.5px] font-semibold">{senderUi.label}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between rounded-xl border border-line-default p-3.5">
+            <div>
+              <div className="text-[13px] font-semibold text-fg-primary">Enable WhatsApp bot</div>
+              <div className="text-[11px] text-fg-muted mt-0.5">
+                Replies instantly, remembers the conversation, logs everything to CRM.
+              </div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={enabled}
+                onChange={(e) => setEnabled(e.target.checked)}
+              />
+              <div className="w-10 h-5 bg-line-default rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-line-default after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500" />
+            </label>
+          </div>
+
+          {enabled && (
+            <div>
+              <label className="block text-[12px] font-semibold text-fg-primary mb-1">
+                Extra instructions <span className="font-normal text-fg-muted">(optional)</span>
+              </label>
+              <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="e.g. Share our catalog when someone asks about products. For bulk orders, collect quantity and city."
+                className="w-full text-[12px] bg-white border border-line-default rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[76px]"
+              />
+              <p className="text-[10.5px] text-fg-muted mt-1">
+                Works out of the box without this — add guidance only if you want channel-specific behavior.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-5 py-3.5 bg-bg-subtle border-t border-line-subtle flex items-center justify-between">
+          <a href="/chats" className="text-[11.5px] font-semibold text-emerald-700 hover:text-emerald-800">
+            View chats →
+          </a>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-8 px-3.5 rounded-lg text-[12px] font-semibold text-fg-secondary hover:bg-bg-muted transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => saveMutation.mutate()}
+              disabled={saveMutation.isPending}
+              className="h-8 px-4 rounded-lg text-[12px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 transition-colors shadow-sm"
+            >
+              {saveMutation.isPending ? "Saving…" : "Save"}
+            </button>
+          </div>
         </div>
       </div>
-    </button>
+    </div>,
+    document.body,
   );
 }
 

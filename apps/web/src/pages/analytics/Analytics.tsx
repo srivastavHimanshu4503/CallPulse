@@ -1,5 +1,7 @@
 import * as React from "react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../../lib/axios.js";
 import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import {
   Card,
@@ -11,23 +13,16 @@ import {
 import {
   PhoneCall,
   Users,
-  CalendarCheck,
   ArrowUpRight,
   Download,
   Star,
   Clock,
   Sparkles,
-  PhoneMissed,
-  MessageSquareQuote,
+  MessageSquare,
   Bot,
   ChevronDown,
-  TrendingUp,
+  CalendarDays,
 } from "lucide-react";
-
-// ─────────────────────────────────────────────────────────────
-// Demo dataset — realistic Indian SMB (salon / clinic / real-estate)
-// Structured so an "agent" filter can slice everything.
-// ─────────────────────────────────────────────────────────────
 
 type Period = "today" | "7d" | "30d" | "90d";
 
@@ -38,298 +33,152 @@ const PERIODS = [
   { label: "90 days", value: "90d"   as Period },
 ];
 
-interface Agent {
-  id: string;
-  name: string;
-  role: string;
-  hex: string; // inline color
-}
-
-const AGENTS: Agent[] = [
-  { id: "all",   name: "All agents",  role: "Aggregate",    hex: "#64748B" },
-  { id: "priya", name: "Priya",       role: "Front desk",   hex: "#2563EB" },
-  { id: "kabir", name: "Kabir",       role: "Bookings",     hex: "#6366F1" },
-  { id: "neha",  name: "Neha",        role: "Support",      hex: "#059669" },
-  { id: "rahul", name: "Rahul",       role: "Sales",        hex: "#F97316" },
-];
-
-// Outcome colors — used in bars, legend, everywhere
 const OUTCOME_HEX = {
-  booked:   "#16A34A", // positive green
-  lead:     "#2563EB", // brand blue
-  followup: "#D97706", // attention amber
-  missed:   "#DC2626", // negative red
+  booked:   "#16A34A", // null sentiment (handled/booked)
+  lead:     "#2563EB", // >= 70
+  followup: "#D97706", // 40-69
+  missed:   "#DC2626", // < 40
 };
 
-// Heatmap intensities — pale gray → deep blue
 const HEAT_HEX = ["#F1F5F9", "#DBEAFE", "#93C5FD", "#2563EB", "#1E40AF"];
-
-// Per-agent numbers for the 7-day window. `all` = sum.
-const AGENT_STATS: Record<string, {
-  calls: number;
-  missed: number;
-  bookings: number;
-  conv: number;
-  duration: string;
-  rating: number;
-  minutes: number;
-  daily: { d: string; booked: number; lead: number; missed: number; followup: number }[];
-  languages: { name: string; pct: number; dot: string }[];
-  sentiment: { label: string; pct: number; color: string }[];
-  funnel:  { label: string; value: number; pct: number }[];
-  intents: { name: string; count: number; tone: "positive" | "brand" | "attention" | "negative" }[];
-}> = {
-  all: {
-    calls: 843, missed: 18, bookings: 214, conv: 25, duration: "2m 14s", rating: 4.7, minutes: 1892,
-    daily: [
-      { d: "Mon", booked: 22, lead: 12, missed: 3, followup: 5  },
-      { d: "Tue", booked: 30, lead: 18, missed: 2, followup: 8  },
-      { d: "Wed", booked: 41, lead: 16, missed: 4, followup: 10 },
-      { d: "Thu", booked: 34, lead: 20, missed: 1, followup: 8  },
-      { d: "Fri", booked: 52, lead: 22, missed: 5, followup: 10 },
-      { d: "Sat", booked: 18, lead: 8,  missed: 2, followup: 6  },
-      { d: "Sun", booked: 12, lead: 6,  missed: 1, followup: 8  },
-    ],
-    languages: [
-      { name: "Hindi",    pct: 42, dot: "#F97316" },
-      { name: "English",  pct: 24, dot: "#2563EB" },
-      { name: "Marathi",  pct: 14, dot: "#8B5CF6" },
-      { name: "Tamil",    pct: 10, dot: "#10B981" },
-      { name: "Gujarati", pct:  6, dot: "#EC4899" },
-      { name: "Others",   pct:  4, dot: "#94A3B8" },
-    ],
-    sentiment: [
-      { label: "Positive", pct: 68, color: "#16A34A" },
-      { label: "Neutral",  pct: 24, color: "#CBD5E1" },
-      { label: "Negative", pct:  8, color: "#DC2626" },
-    ],
-    funnel: [
-      { label: "Calls answered",  value: 843, pct: 100 },
-      { label: "Qualified leads", value: 512, pct: 61  },
-      { label: "Bookings made",   value: 214, pct: 25  },
-      { label: "Deals closed",    value: 68,  pct: 8   },
-    ],
-    intents: [
-      { name: "Book an appointment",  count: 214, tone: "positive" },
-      { name: "Ask for pricing",      count: 187, tone: "brand" },
-      { name: "Reschedule booking",   count: 132, tone: "attention" },
-      { name: "Check availability",   count: 96,  tone: "brand" },
-      { name: "Cancel appointment",   count: 42,  tone: "negative" },
-      { name: "Speak to human",       count: 28,  tone: "attention" },
-    ],
-  },
-  priya: {
-    calls: 342, missed: 6, bookings: 108, conv: 32, duration: "2m 22s", rating: 4.9, minutes: 762,
-    daily: [
-      { d: "Mon", booked: 12, lead: 6,  missed: 1, followup: 2 },
-      { d: "Tue", booked: 14, lead: 9,  missed: 1, followup: 3 },
-      { d: "Wed", booked: 18, lead: 7,  missed: 2, followup: 4 },
-      { d: "Thu", booked: 15, lead: 10, missed: 0, followup: 3 },
-      { d: "Fri", booked: 24, lead: 11, missed: 2, followup: 4 },
-      { d: "Sat", booked: 8,  lead: 3,  missed: 0, followup: 2 },
-      { d: "Sun", booked: 5,  lead: 2,  missed: 0, followup: 3 },
-    ],
-    languages: [
-      { name: "Hindi",   pct: 54, dot: "#F97316" },
-      { name: "English", pct: 22, dot: "#2563EB" },
-      { name: "Marathi", pct: 14, dot: "#8B5CF6" },
-      { name: "Others",  pct: 10, dot: "#94A3B8" },
-    ],
-    sentiment: [
-      { label: "Positive", pct: 76, color: "#16A34A" },
-      { label: "Neutral",  pct: 20, color: "#CBD5E1" },
-      { label: "Negative", pct:  4, color: "#DC2626" },
-    ],
-    funnel: [
-      { label: "Calls answered",  value: 342, pct: 100 },
-      { label: "Qualified leads", value: 232, pct: 68 },
-      { label: "Bookings made",   value: 108, pct: 32 },
-      { label: "Deals closed",    value: 42,  pct: 12 },
-    ],
-    intents: [
-      { name: "Book an appointment", count: 108, tone: "positive" },
-      { name: "Reschedule booking",  count: 62,  tone: "attention" },
-      { name: "Ask for pricing",     count: 58,  tone: "brand" },
-      { name: "Check availability",  count: 42,  tone: "brand" },
-      { name: "Cancel appointment",  count: 12,  tone: "negative" },
-    ],
-  },
-  kabir: {
-    calls: 264, missed: 5, bookings: 62, conv: 24, duration: "3m 04s", rating: 4.7, minutes: 812,
-    daily: [
-      { d: "Mon", booked: 6,  lead: 4,  missed: 1, followup: 2 },
-      { d: "Tue", booked: 10, lead: 6,  missed: 0, followup: 3 },
-      { d: "Wed", booked: 12, lead: 5,  missed: 1, followup: 3 },
-      { d: "Thu", booked: 10, lead: 6,  missed: 0, followup: 3 },
-      { d: "Fri", booked: 14, lead: 8,  missed: 2, followup: 4 },
-      { d: "Sat", booked: 6,  lead: 3,  missed: 1, followup: 2 },
-      { d: "Sun", booked: 4,  lead: 2,  missed: 0, followup: 3 },
-    ],
-    languages: [
-      { name: "Hindi",    pct: 38, dot: "#F97316" },
-      { name: "English",  pct: 28, dot: "#2563EB" },
-      { name: "Gujarati", pct: 20, dot: "#EC4899" },
-      { name: "Others",   pct: 14, dot: "#94A3B8" },
-    ],
-    sentiment: [
-      { label: "Positive", pct: 64, color: "#16A34A" },
-      { label: "Neutral",  pct: 28, color: "#CBD5E1" },
-      { label: "Negative", pct:  8, color: "#DC2626" },
-    ],
-    funnel: [
-      { label: "Calls answered",  value: 264, pct: 100 },
-      { label: "Qualified leads", value: 148, pct: 56 },
-      { label: "Bookings made",   value: 62,  pct: 24 },
-      { label: "Deals closed",    value: 18,  pct: 7  },
-    ],
-    intents: [
-      { name: "Ask for pricing",     count: 82, tone: "brand" },
-      { name: "Book an appointment", count: 62, tone: "positive" },
-      { name: "Check availability",  count: 48, tone: "brand" },
-      { name: "Reschedule booking",  count: 32, tone: "attention" },
-      { name: "Speak to human",      count: 12, tone: "attention" },
-    ],
-  },
-  neha: {
-    calls: 138, missed: 4, bookings: 28, conv: 20, duration: "1m 48s", rating: 4.6, minutes: 214,
-    daily: [
-      { d: "Mon", booked: 3, lead: 2, missed: 1, followup: 1 },
-      { d: "Tue", booked: 4, lead: 3, missed: 1, followup: 1 },
-      { d: "Wed", booked: 6, lead: 3, missed: 1, followup: 2 },
-      { d: "Thu", booked: 5, lead: 3, missed: 0, followup: 1 },
-      { d: "Fri", booked: 8, lead: 2, missed: 1, followup: 1 },
-      { d: "Sat", booked: 2, lead: 1, missed: 0, followup: 1 },
-      { d: "Sun", booked: 0, lead: 1, missed: 0, followup: 1 },
-    ],
-    languages: [
-      { name: "English", pct: 42, dot: "#2563EB" },
-      { name: "Hindi",   pct: 32, dot: "#F97316" },
-      { name: "Tamil",   pct: 18, dot: "#10B981" },
-      { name: "Others",  pct:  8, dot: "#94A3B8" },
-    ],
-    sentiment: [
-      { label: "Positive", pct: 60, color: "#16A34A" },
-      { label: "Neutral",  pct: 28, color: "#CBD5E1" },
-      { label: "Negative", pct: 12, color: "#DC2626" },
-    ],
-    funnel: [
-      { label: "Calls answered",  value: 138, pct: 100 },
-      { label: "Qualified leads", value: 84,  pct: 61 },
-      { label: "Bookings made",   value: 28,  pct: 20 },
-      { label: "Deals closed",    value: 6,   pct: 4  },
-    ],
-    intents: [
-      { name: "Speak to human",      count: 28, tone: "attention" },
-      { name: "Cancel appointment",  count: 22, tone: "negative" },
-      { name: "Check availability",  count: 18, tone: "brand" },
-      { name: "Reschedule booking",  count: 12, tone: "attention" },
-    ],
-  },
-  rahul: {
-    calls: 99, missed: 3, bookings: 16, conv: 16, duration: "2m 40s", rating: 4.5, minutes: 104,
-    daily: [
-      { d: "Mon", booked: 1, lead: 0, missed: 0, followup: 0 },
-      { d: "Tue", booked: 2, lead: 0, missed: 0, followup: 1 },
-      { d: "Wed", booked: 5, lead: 1, missed: 0, followup: 1 },
-      { d: "Thu", booked: 4, lead: 1, missed: 1, followup: 1 },
-      { d: "Fri", booked: 6, lead: 1, missed: 0, followup: 1 },
-      { d: "Sat", booked: 2, lead: 1, missed: 1, followup: 1 },
-      { d: "Sun", booked: 3, lead: 1, missed: 1, followup: 1 },
-    ],
-    languages: [
-      { name: "Hindi",    pct: 46, dot: "#F97316" },
-      { name: "English",  pct: 26, dot: "#2563EB" },
-      { name: "Marathi",  pct: 20, dot: "#8B5CF6" },
-      { name: "Others",   pct:  8, dot: "#94A3B8" },
-    ],
-    sentiment: [
-      { label: "Positive", pct: 58, color: "#16A34A" },
-      { label: "Neutral",  pct: 30, color: "#CBD5E1" },
-      { label: "Negative", pct: 12, color: "#DC2626" },
-    ],
-    funnel: [
-      { label: "Calls answered",  value: 99, pct: 100 },
-      { label: "Qualified leads", value: 48, pct: 48 },
-      { label: "Bookings made",   value: 16, pct: 16 },
-      { label: "Deals closed",    value: 2,  pct: 2  },
-    ],
-    intents: [
-      { name: "Ask for pricing",     count: 46, tone: "brand" },
-      { name: "Book an appointment", count: 16, tone: "positive" },
-      { name: "Speak to human",      count: 8,  tone: "attention" },
-    ],
-  },
-};
-
-// Peak-hour heatmap (7d × 12 hours, 9AM–8PM). Used for "all" only for now.
-const HEATMAP: number[][] = [
-  [0,1,2,3,3,4,3,2,3,2,1,0],
-  [1,2,3,4,4,3,3,3,2,2,1,0],
-  [1,2,3,3,4,4,4,3,3,2,1,0],
-  [0,1,3,3,4,3,3,4,3,2,1,0],
-  [1,3,4,4,4,4,3,3,4,3,2,1],
-  [0,1,2,2,3,3,2,2,2,1,1,0],
-  [0,0,1,1,2,2,2,1,1,1,0,0],
-];
 
 // ─────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────
 
-const INTENT_TONE: Record<string, string> = {
-  positive:  "bg-positive-50 text-positive-500 ring-positive-500/20",
-  brand:     "bg-brand-50 text-brand-600 ring-brand-500/20",
-  attention: "bg-attention-50 text-attention-600 ring-attention-500/20",
-  negative:  "bg-negative-50 text-negative-500 ring-negative-500/20",
+/** One chart bucket from the backend — `label` is already human-friendly
+ *  ("Tue, Jul 15" daily · "Jul 8 – Jul 14" weekly). */
+type SeriesRow = {
+  date: string;
+  label: string;
+  booked: number;
+  lead: number;
+  missed: number;
+  followup: number;
+  total: number;
 };
 
-type DailyRow = { d: string; booked: number; lead: number; missed: number; followup: number };
-function StackedBars({ data }: { data: DailyRow[] }): React.JSX.Element {
-  const totals = data.map((d) => d.booked + d.lead + d.missed + d.followup);
-  const max = Math.max(...totals, 1);
+/** With many buckets, print only every Nth x-axis label so they stay legible. */
+const labelStep = (count: number): number => Math.max(1, Math.ceil(count / 8));
+
+function XAxis({ data }: { data: SeriesRow[] }): React.JSX.Element {
+  const step = labelStep(data.length);
+  return (
+    <div className="flex text-[10px] font-semibold text-fg-secondary">
+      {data.map((d, i) => (
+        <div key={d.date} className="flex-1 text-center truncate px-0.5" title={d.label}>
+          {i % step === 0 ? d.label : ""}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StackedBars({ data }: { data: SeriesRow[] }): React.JSX.Element {
+  if (data.length === 0) return <EmptyChart />;
+  const max = Math.max(...data.map((d) => d.total), 1);
   return (
     <div className="relative h-40">
-      {/* horizontal gridlines */}
       <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
         {[0, 1, 2, 3].map((i) => (
           <div key={i} className="h-px bg-line-subtle" />
         ))}
       </div>
-      <div className="relative flex items-end gap-2.5 h-full pt-1">
+      <div className="relative flex items-end gap-1.5 h-[calc(100%-20px)] pt-1">
         {data.map((d) => {
-          const total = d.booked + d.lead + d.missed + d.followup;
-          const h = Math.max(14, (total / max) * 100);
+          const h = d.total === 0 ? 2 : Math.max(8, (d.total / max) * 100);
           return (
-            <div key={d.d} className="flex-1 flex flex-col items-center gap-1 group h-full justify-end">
+            <div key={d.date} className="flex-1 flex flex-col items-center group h-full justify-end">
               <span className="text-[10px] font-bold text-fg-primary tabular-nums opacity-0 group-hover:opacity-100 transition-opacity">
-                {total}
+                {d.total}
               </span>
               <div className="w-full h-full flex items-end">
                 <div
-                  className="w-full flex flex-col rounded-t-md overflow-hidden transition-transform group-hover:-translate-y-0.5"
+                  className="w-full flex flex-col rounded-t-md overflow-hidden transition-transform group-hover:-translate-y-0.5 bg-bg-muted"
                   style={{ height: `${h}%`, boxShadow: "0 1px 2px rgba(15,23,42,0.08)" }}
-                  title={`${d.d}: ${total} calls`}
+                  title={`${d.label} — ${d.total} calls (${d.lead} hot leads, ${d.followup} follow-ups, ${d.missed} negative, ${d.booked} other)`}
                 >
-                  <div style={{ flexGrow: d.booked,   backgroundColor: OUTCOME_HEX.booked }} />
-                  <div style={{ flexGrow: d.lead,     backgroundColor: OUTCOME_HEX.lead }} />
+                  <div style={{ flexGrow: d.booked, backgroundColor: OUTCOME_HEX.booked }} />
+                  <div style={{ flexGrow: d.lead, backgroundColor: OUTCOME_HEX.lead }} />
                   <div style={{ flexGrow: d.followup, backgroundColor: OUTCOME_HEX.followup }} />
-                  <div style={{ flexGrow: d.missed,   backgroundColor: OUTCOME_HEX.missed }} />
+                  <div style={{ flexGrow: d.missed, backgroundColor: OUTCOME_HEX.missed }} />
                 </div>
               </div>
-              <span className="text-[10px] font-semibold tracking-wider text-fg-secondary mt-1">
-                {d.d}
-              </span>
             </div>
           );
         })}
+      </div>
+      <div className="absolute bottom-0 left-0 w-full">
+        <XAxis data={data} />
       </div>
     </div>
   );
 }
 
-function Heatmap(): React.JSX.Element {
+/** One clean solid line — how many calls came in, nothing else. */
+function LineChart({ data }: { data: SeriesRow[] }): React.JSX.Element {
+  if (data.length === 0) return <EmptyChart />;
+  const max = Math.max(...data.map((d) => d.total), 1);
+  const w = 100 / data.length;
+  // 4% padding top/bottom so the line never kisses the chart edges.
+  const y = (t: number) => 96 - (t / max) * 92;
+  const points = data.map((d, i) => `${(i + 0.5) * w},${y(d.total)}`).join(" ");
+
+  return (
+    <div className="relative h-40">
+      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-px bg-line-subtle" />
+        ))}
+      </div>
+      <div className="relative h-full w-full pt-1 pb-[20px]">
+        <svg
+          className="absolute top-1 left-0 w-full h-[calc(100%-24px)]"
+          preserveAspectRatio="none"
+          viewBox="0 0 100 100"
+        >
+          <polyline
+            points={points}
+            fill="none"
+            stroke="#2563EB"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+        {/* Invisible hover columns → precise per-day tooltip */}
+        <div className="absolute top-1 left-0 w-full h-[calc(100%-24px)] flex">
+          {data.map((d) => (
+            <div key={d.date} className="flex-1" title={`${d.label} — ${d.total} calls`} />
+          ))}
+        </div>
+        <div className="absolute bottom-0 left-0 w-full">
+          <XAxis data={data} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmptyChart(): React.JSX.Element {
+  return (
+    <div className="h-40 flex items-center justify-center text-[11.5px] text-fg-muted font-medium">
+      No calls in this period yet
+    </div>
+  );
+}
+
+function Heatmap({
+  grid,
+  counts,
+  hours,
+}: {
+  grid: number[][];
+  counts: number[][];
+  hours: string[];
+}): React.JSX.Element {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const hoursLabel = ["9a", "10", "11a", "12p", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p"];
   return (
     <div className="flex gap-2.5">
       <div className="flex flex-col gap-1.5 pt-5">
@@ -340,23 +189,25 @@ function Heatmap(): React.JSX.Element {
         ))}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="flex justify-between text-[9.5px] font-semibold text-fg-muted mb-1.5 tabular-nums">
-          {hoursLabel.map((h, i) => (
-            <span key={i} className="flex-1 text-center">{h}</span>
+        <div className="flex justify-between text-[8.5px] font-bold text-fg-muted mb-1.5 tabular-nums">
+          {hours.map((h, i) => (
+            <span key={i} className="flex-1 text-center whitespace-nowrap">
+              {h}
+            </span>
           ))}
         </div>
         <div className="flex flex-col gap-1.5">
-          {HEATMAP.map((row, r) => (
+          {grid.map((row, r) => (
             <div key={r} className="flex gap-1.5">
               {row.map((v, c) => (
                 <div
                   key={c}
                   className="h-6 flex-1 rounded-md transition-transform hover:scale-110 cursor-pointer"
                   style={{
-                    backgroundColor: HEAT_HEX[v],
+                    backgroundColor: HEAT_HEX[Math.min(v, 4)],
                     border: "1px solid rgba(255,255,255,0.7)",
                   }}
-                  title={`${days[r]} · ${9 + c}:00 · ${v * 5} calls`}
+                  title={`${days[r]} · ${hours[c]} — ${counts[r]?.[c] ?? 0} call${(counts[r]?.[c] ?? 0) === 1 ? "" : "s"}`}
                 />
               ))}
             </div>
@@ -370,8 +221,9 @@ function Heatmap(): React.JSX.Element {
 const AgentFilter: React.FC<{
   value: string;
   onChange: (v: string) => void;
-}> = ({ value, onChange }) => {
-  const current = AGENTS.find((a) => a.id === value) || AGENTS[0]!;
+  agents: any[];
+}> = ({ value, onChange, agents }) => {
+  const current = agents.find((a) => a.id === value) || agents[0]!;
   return (
     <div className="relative inline-block">
       <select
@@ -385,7 +237,7 @@ const AgentFilter: React.FC<{
           boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
         }}
       >
-        {AGENTS.map((a) => (
+        {agents.map((a) => (
           <option key={a.id} value={a.id}>{a.name === "All agents" ? a.name : `${a.name} · ${a.role}`}</option>
         ))}
       </select>
@@ -415,58 +267,108 @@ export function Analytics(): React.JSX.Element {
   const [period, setPeriod] = React.useState<Period>("7d");
   const [agentId, setAgentId] = React.useState<string>("all");
 
-  const stats = AGENT_STATS[agentId] || AGENT_STATS.all!;
+  const { data: dbAgents = [] } = useQuery({
+    queryKey: ["agents"],
+    queryFn: async () => (await api.get("/agents")).data.data as any[],
+  });
+
+  const agents = React.useMemo(() => {
+    return [
+      { id: "all", name: "All agents", role: "Aggregate", hex: "#64748B" },
+      ...dbAgents.map((a: any) => ({
+        id: a.id,
+        name: a.name,
+        role: a.role || "Support",
+        hex: "#2563EB",
+      })),
+    ];
+  }, [dbAgents]);
+
+  // Send the browser's own timezone so the backend groups days/hours exactly
+  // as this user experiences them (a Saturday call must show on Saturday).
+  const tz = React.useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, []);
+
+  const { data: analyticsData } = useQuery({
+    queryKey: ["analytics", agentId, period, tz],
+    queryFn: async () =>
+      (
+        await api.get(
+          `/dashboard/analytics?agentId=${agentId}&period=${period}&tz=${encodeURIComponent(tz)}`,
+        )
+      ).data.data,
+  });
+
+  const stats = analyticsData?.stats || {
+    calls: 0, callsDelta: { pct: 0, direction: "up" },
+    smsSent: 0, smsSentDelta: { pct: 0, direction: "up" },
+    conv: 0, convDelta: { pct: 0, direction: "up" },
+    duration: "0s", durationDelta: { pct: 0, direction: "up" },
+    minutes: 0, rating: "0.0", daily: [], sentiment: [], funnel: []
+  };
+
+  const zeroGrid = React.useMemo(() => Array.from({ length: 7 }, () => Array(12).fill(0)), []);
+  const heatmapGrid: number[][] = analyticsData?.heatmap || zeroGrid;
+  const heatmapCounts: number[][] = analyticsData?.heatmapCounts || zeroGrid;
+  const heatmapHours: string[] =
+    analyticsData?.heatmapHours ||
+    ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM"];
+  const rangeLabel: string = analyticsData?.range?.label || "";
   const isAll = agentId === "all";
-  const agent = AGENTS.find((a) => a.id === agentId) || AGENTS[0]!;
+  const agent = agents.find((a) => a.id === agentId) || agents[0]!;
 
   const kpis = [
     {
       label: "Calls answered",
       value: stats.calls,
-      delta: 18,
+      delta: stats.callsDelta,
       tone: "positive" as const,
       icon: PhoneCall,
       hint: "vs previous period",
     },
     {
-      label: "Missed calls",
-      value: stats.missed,
-      delta: -32,
-      tone: "negative" as const,
-      icon: PhoneMissed,
-      hint: "AI recovery in progress",
+      label: "SMS Sent",
+      value: stats.smsSent,
+      delta: stats.smsSentDelta,
+      tone: "attention" as const,
+      icon: MessageSquare,
+      hint: "Text messages your AI sent",
     },
     {
-      label: "Booking conversion",
+      label: "Calls that became leads",
       value: `${stats.conv}%`,
-      delta: 6,
+      delta: stats.convDelta,
       tone: "brand" as const,
-      icon: CalendarCheck,
-      hint: "Call → booking rate",
+      icon: Users,
+      hint: "Interested callers out of all calls",
     },
     {
       label: "Avg call duration",
       value: stats.duration,
-      delta: -8,
+      delta: stats.durationDelta,
       tone: "attention" as const,
       icon: Clock,
-      hint: "Faster than last period",
+      hint: "vs previous period",
     },
   ];
 
   return (
     <PageWrapper noScroll={true}>
-      {/* Header with agent filter + period + export */}
       <PageHeader
         title="Analytics"
         subtitle={
           <>
-            <span>Call & CRM performance across your AI receptionists.</span>
+            <span>How your AI receptionists performed.</span>
+            {rangeLabel && (
+              <span className="inline-flex items-center gap-1 rounded-md bg-bg-subtle border border-line-default px-2 py-0.5 text-[10.5px] font-semibold text-fg-secondary">
+                <CalendarDays className="h-3 w-3" />
+                {rangeLabel}
+              </span>
+            )}
           </>
         }
         actions={
           <>
-            <AgentFilter value={agentId} onChange={setAgentId} />
+            <AgentFilter value={agentId} onChange={setAgentId} agents={agents} />
             <Segmented options={PERIODS} value={period} onChange={setPeriod} />
             <AppButton
               variant="primary"
@@ -479,9 +381,7 @@ export function Analytics(): React.JSX.Element {
         }
       />
 
-      {/* Scrollable body — hidden scrollbar, with real bottom breathing room */}
       <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar -mx-1 px-1 pb-4">
-        {/* Agent hero strip — only when filtering to a specific agent */}
         {!isAll && (
           <div className="rounded-xl border border-line-default bg-bg-raised shadow-card p-4 mb-3 flex items-center gap-3">
             <div
@@ -520,7 +420,6 @@ export function Analytics(): React.JSX.Element {
           </div>
         )}
 
-        {/* KPI row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
           {kpis.map((k) => (
             <div
@@ -534,7 +433,7 @@ export function Analytics(): React.JSX.Element {
                 <span className={[
                   "inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1",
                   k.tone === "positive"  && "bg-positive-50 text-positive-500 ring-positive-500/15",
-                  k.tone === "negative"  && "bg-negative-50 text-negative-500 ring-negative-500/15",
+                  (k.tone as string) === "negative"  && "bg-negative-50 text-negative-500 ring-negative-500/15",
                   k.tone === "brand"     && "bg-brand-50 text-brand-600 ring-brand-500/15",
                   k.tone === "attention" && "bg-attention-50 text-attention-500 ring-attention-500/15",
                 ].filter(Boolean).join(" ")}>
@@ -547,10 +446,10 @@ export function Analytics(): React.JSX.Element {
                 </span>
                 <span className={[
                   "inline-flex items-center gap-0.5 text-[10.5px] font-semibold",
-                  k.delta >= 0 ? "text-positive-500" : "text-negative-500",
+                  k.delta.direction === "up" ? "text-positive-500" : "text-negative-500",
                 ].join(" ")}>
-                  <ArrowUpRight className={`h-3 w-3 ${k.delta < 0 ? "rotate-90" : ""}`} />
-                  {Math.abs(k.delta)}%
+                  <ArrowUpRight className={`h-3 w-3 ${k.delta.direction === "down" ? "rotate-90" : ""}`} />
+                  {k.delta.pct}%
                 </span>
               </div>
               <div className="mt-1 text-[10.5px] font-medium text-fg-muted">{k.hint}</div>
@@ -558,7 +457,6 @@ export function Analytics(): React.JSX.Element {
           ))}
         </div>
 
-        {/* Compact AI insight banner — horizontal strip, no tall tile */}
         <button
           type="button"
           onClick={() => toast.info("Detailed insight report coming soon.")}
@@ -578,8 +476,8 @@ export function Analytics(): React.JSX.Element {
             <div className="text-[10px] font-bold uppercase tracking-wider opacity-80">AI Insight</div>
             <p className="text-[12.5px] font-bold leading-snug">
               {isAll
-                ? "Fridays convert 40% higher — schedule extra agent capacity between 11 AM & 3 PM."
-                : `${agent.name} closes fastest on Fri. Consider routing weekend spillover here.`}
+                ? "Your agents are actively engaging leads. Consider routing weekend spillover to your primary agent."
+                : `${agent.name} is performing well! They're successfully capturing leads and advancing them down the funnel.`}
             </p>
           </div>
           <span className="inline-flex items-center gap-1 text-[11px] font-bold shrink-0 pr-1">
@@ -587,18 +485,24 @@ export function Analytics(): React.JSX.Element {
           </span>
         </button>
 
-        {/* Row: Call volume by outcome */}
-        <div className="mb-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
           <Card>
             <SectionHead
-              title="Call volume by outcome"
-              hint="Stacked · last 7 days"
+              title="Call volume trend"
+              hint={`How many calls came in each ${period === "90d" ? "week" : "day"}${rangeLabel ? ` · ${rangeLabel}` : ""}`}
+            />
+            <LineChart data={stats.daily} />
+          </Card>
+          <Card>
+            <SectionHead
+              title="Calls by outcome"
+              hint={`What each call turned into${rangeLabel ? ` · ${rangeLabel}` : ""}`}
               action={
                 <div className="hidden md:flex items-center gap-3 text-[10px] font-semibold">
-                  <Legend color={OUTCOME_HEX.booked}   label="Booked" />
-                  <Legend color={OUTCOME_HEX.lead}     label="Lead" />
+                  <Legend color={OUTCOME_HEX.booked}   label="Completed/Unknown" />
+                  <Legend color={OUTCOME_HEX.lead}     label="Hot Lead" />
                   <Legend color={OUTCOME_HEX.followup} label="Follow-up" />
-                  <Legend color={OUTCOME_HEX.missed}   label="Missed" />
+                  <Legend color={OUTCOME_HEX.missed}   label="Negative" />
                 </div>
               }
             />
@@ -606,11 +510,13 @@ export function Analytics(): React.JSX.Element {
           </Card>
         </div>
 
-        {/* Row: Heatmap + Language mix + Sentiment (3 compact cards) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
           <Card>
-            <SectionHead title="Peak hours" hint="Calls by day × hour" />
-            <Heatmap />
+            <SectionHead
+              title="Peak hours"
+              hint="When your phone rings the most — darker means busier"
+            />
+            <Heatmap grid={heatmapGrid} counts={heatmapCounts} hours={heatmapHours} />
             <div className="flex items-center gap-1.5 justify-end mt-2 text-[9.5px] text-fg-muted font-medium">
               <span>Less</span>
               {HEAT_HEX.map((h, i) => (
@@ -621,29 +527,9 @@ export function Analytics(): React.JSX.Element {
           </Card>
 
           <Card>
-            <SectionHead title="Languages spoken" hint="Share of calls" />
-            <div className="h-2 w-full rounded-full overflow-hidden flex mb-3" style={{ backgroundColor: "#F1F5F9" }}>
-              {stats.languages.map((l) => (
-                <div key={l.name} className="h-full" style={{ width: `${l.pct}%`, backgroundColor: l.dot }} />
-              ))}
-            </div>
-            <ul className="grid grid-cols-2 gap-x-3 gap-y-1">
-              {stats.languages.map((l) => (
-                <li key={l.name} className="flex items-center justify-between text-[11px]">
-                  <span className="inline-flex items-center gap-1.5 text-fg-secondary font-medium">
-                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: l.dot }} />
-                    {l.name}
-                  </span>
-                  <span className="text-fg-primary font-semibold tabular-nums">{l.pct}%</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-
-          <Card>
-            <SectionHead title="Caller sentiment" hint="AI-scored" />
+            <SectionHead title="Caller sentiment" hint="How callers felt, judged by AI after each call" />
             <div className="space-y-2">
-              {stats.sentiment.map((s) => (
+              {stats.sentiment.map((s: any) => (
                 <div key={s.label} className="flex items-center gap-3">
                   <span className="text-[11px] font-semibold text-fg-secondary w-14">{s.label}</span>
                   <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#F1F5F9" }}>
@@ -654,7 +540,7 @@ export function Analytics(): React.JSX.Element {
               ))}
             </div>
             <div className="mt-3 pt-3 border-t border-line-subtle flex items-center justify-between text-[10.5px]">
-              <span className="text-fg-muted font-medium">CSAT (post-call)</span>
+              <span className="text-fg-muted font-medium">Est. CSAT (post-call)</span>
               <span className="inline-flex items-center gap-0.5 text-attention-500 font-bold">
                 <Star className="h-3 w-3 fill-attention-500 stroke-attention-500" />
                 {stats.rating} / 5.0
@@ -663,29 +549,28 @@ export function Analytics(): React.JSX.Element {
           </Card>
         </div>
 
-        {/* Row: Agent performance leaderboard — hidden when a single agent is selected */}
         {isAll && (
           <Card className="mb-3">
             <SectionHead
               title="Agent performance"
-              hint="Click a row to filter the whole page by that agent."
-              action={<span className="text-[10.5px] font-semibold text-fg-muted">{AGENTS.length - 1} agents</span>}
+              hint={`Each agent's totals${rangeLabel ? ` · ${rangeLabel}` : ""} — click a row to see just that agent`}
+              action={<span className="text-[10.5px] font-semibold text-fg-muted">{agents.length - 1} agents</span>}
             />
             <div className="overflow-x-auto -mx-1">
               <table className="w-full text-[12px]">
                 <thead>
                   <tr className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold border-b border-line-subtle">
                     <th className="text-left font-semibold px-2 py-2">Agent</th>
-                    <th className="text-right font-semibold px-2 py-2">Calls</th>
+                    <th className="text-right font-semibold px-2 py-2">Calls answered</th>
                     <th className="text-right font-semibold px-2 py-2">Talk time</th>
-                    <th className="text-left font-semibold px-2 py-2 w-[30%]">Conversion</th>
+                    <th className="text-right font-semibold px-2 py-2">Hot leads</th>
                     <th className="text-right font-semibold px-2 py-2">Rating</th>
                     <th className="text-right font-semibold px-2 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {AGENTS.filter((a) => a.id !== "all").map((a) => {
-                    const s = AGENT_STATS[a.id]!;
+                  {agents.filter((a) => a.id !== "all").map((a) => {
+                    const perf = stats.agentPerformance?.find((p: any) => p.agentId === a.id);
                     return (
                       <tr
                         key={a.id}
@@ -706,23 +591,19 @@ export function Analytics(): React.JSX.Element {
                             </div>
                           </div>
                         </td>
-                        <td className="text-right px-2 py-2.5 font-semibold text-fg-primary tabular-nums">{s.calls}</td>
-                        <td className="text-right px-2 py-2.5 text-fg-secondary tabular-nums">{s.minutes}m</td>
-                        <td className="px-2 py-2.5">
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 h-1.5 rounded-full bg-bg-muted overflow-hidden">
-                              <div
-                                className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-400"
-                                style={{ width: `${s.conv}%` }}
-                              />
-                            </div>
-                            <span className="text-[10.5px] font-semibold text-fg-secondary tabular-nums w-8 text-right">{s.conv}%</span>
-                          </div>
+                        <td className="text-right px-2 py-2.5 font-semibold text-fg-primary tabular-nums">
+                          {perf?.calls ?? 0}
+                        </td>
+                        <td className="text-right px-2 py-2.5 text-fg-secondary tabular-nums">
+                          {perf?.minutes ?? 0} min
+                        </td>
+                        <td className="text-right px-2 py-2.5 font-semibold text-brand-600 tabular-nums">
+                          {perf?.leads ?? 0}
                         </td>
                         <td className="text-right px-2 py-2.5">
                           <span className="inline-flex items-center gap-0.5 text-[11.5px] font-semibold text-attention-500">
                             <Star className="h-3 w-3 fill-attention-500 stroke-attention-500" />
-                            {s.rating}
+                            {perf?.rating ?? "0.0"}
                           </span>
                         </td>
                         <td className="text-right px-2 py-2.5">
@@ -731,18 +612,27 @@ export function Analytics(): React.JSX.Element {
                       </tr>
                     );
                   })}
+                  {agents.length === 1 && (
+                    <tr>
+                      <td colSpan={6} className="px-2 py-6 text-center text-[11.5px] text-fg-muted">
+                        No agents yet — create your first AI agent to see performance here.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </Card>
         )}
 
-        {/* Row: Funnel + Intents */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+        <div className="grid grid-cols-1 gap-3 mb-3">
           <Card>
-            <SectionHead title="Conversion funnel" hint="Call → deal closed" />
+            <SectionHead
+              title="Conversion funnel"
+              hint={`From first call to closed deal${rangeLabel ? ` · ${rangeLabel}` : ""}`}
+            />
             <div className="space-y-2">
-              {stats.funnel.map((f, i) => {
+              {stats.funnel.map((f: any, i: number) => {
                 const shade = ["bg-brand-500", "bg-brand-500/85", "bg-brand-500/70", "bg-brand-500/55"][i] || "bg-brand-500";
                 return (
                   <div key={f.label}>
@@ -765,70 +655,8 @@ export function Analytics(): React.JSX.Element {
               })}
             </div>
           </Card>
-
-          <Card>
-            <SectionHead
-              title="Top caller intents"
-              hint="What visitors ask most"
-              action={<MessageSquareQuote className="h-3.5 w-3.5 text-fg-muted" />}
-            />
-            <ul className="space-y-1">
-              {stats.intents.map((intent) => (
-                <li key={intent.name} className="flex items-center justify-between gap-2 py-1">
-                  <span className="text-[12px] font-medium text-fg-primary truncate">{intent.name}</span>
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold ring-1 tabular-nums shrink-0 ${INTENT_TONE[intent.tone]}`}>
-                    {intent.count}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Card>
         </div>
 
-        {/* Bottom: secondary metric strip */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Card>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
-                Outbound campaigns
-              </span>
-              <TrendingUp className="h-3.5 w-3.5 text-fg-muted" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[19px] font-semibold text-fg-primary tabular-nums">1,204</span>
-              <span className="text-[11px] font-semibold text-positive-500">↑ 22%</span>
-            </div>
-            <div className="text-[10.5px] text-fg-muted mt-0.5">42 workflows active</div>
-          </Card>
-
-          <Card>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
-                Avg first-response
-              </span>
-              <Clock className="h-3.5 w-3.5 text-fg-muted" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[19px] font-semibold text-fg-primary tabular-nums">3m 42s</span>
-              <span className="text-[11px] font-semibold text-positive-500">↓ 18%</span>
-            </div>
-            <div className="text-[10.5px] text-fg-muted mt-0.5">Faster than industry avg (8m)</div>
-          </Card>
-
-          <Card>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10.5px] font-semibold uppercase tracking-wider text-fg-muted">
-                Callers this period
-              </span>
-              <Users className="h-3.5 w-3.5 text-fg-muted" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[19px] font-semibold text-fg-primary tabular-nums">628</span>
-              <span className="text-[11px] font-semibold text-positive-500">↑ 12%</span>
-            </div>
-            <div className="text-[10.5px] text-fg-muted mt-0.5">312 first-time · 316 returning</div>
-          </Card>
-        </div>
       </div>
     </PageWrapper>
   );

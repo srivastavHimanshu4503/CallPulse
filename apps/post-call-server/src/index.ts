@@ -4,6 +4,7 @@ import express from "express";
 import { config } from "./config.js";
 import { createLogger } from "./logger.js";
 import { runPostCallPipeline } from "./jobs/pipeline.js";
+import { startChatSessionSweeper } from "./jobs/chat-session-sweeper.js";
 import type { PostCallJob } from "./jobs/types.js";
 import { createQueue } from "./queue/factory.js";
 import { createIngestRouter } from "./routes/ingest.js";
@@ -43,6 +44,8 @@ const httpServer = app.listen(config.server.port, () => {
   log.info("post-call-server listening", { port: config.server.port });
 });
 
+const chatSweeper = startChatSessionSweeper();
+
 const gracefulShutdown = async (signal: string) => {
   log.info("shutdown signal received", { signal });
   const forceExitTimer = setTimeout(() => {
@@ -52,6 +55,7 @@ const gracefulShutdown = async (signal: string) => {
   forceExitTimer.unref();
 
   try {
+    clearInterval(chatSweeper);
     await queue.close();
     await db.$disconnect();
   } catch (err) {

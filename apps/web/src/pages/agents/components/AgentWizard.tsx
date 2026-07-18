@@ -118,7 +118,16 @@ export function AgentWizard({
   const [smsTemplate, setSmsTemplate] = React.useState(editingAgent?.smsTemplate || "");
   const [smsAgentReply, setSmsAgentReply] = React.useState(editingAgent?.smsAgentReply || "");
 
+  const [whatsappEnabled, setWhatsappEnabled] = React.useState(editingAgent?.whatsappEnabled ?? false);
+  const [whatsappPrompt, setWhatsappPrompt] = React.useState(editingAgent?.whatsappPrompt || "");
+
   const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  // Buying a number requires the agent to EXIST (numbers bind permanently).
+  // If the user buys mid-creation, we save the agent quietly first and
+  // remember its id — the final button then becomes an update, not a dupe.
+  const [draftAgentId, setDraftAgentId] = React.useState<string | null>(null);
+  const effectiveAgentId = editingAgent?.id ?? draftAgentId;
 
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
@@ -137,7 +146,7 @@ export function AgentWizard({
 
   const updateMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const res = await api.put(`/agents/${editingAgent?.id}`, payload);
+      const res = await api.put(`/agents/${effectiveAgentId}`, payload);
       return res.data.data;
     },
     onSuccess: () => {
@@ -164,10 +173,7 @@ export function AgentWizard({
       }
     }
     if (currStep === 2) {
-      if (!phoneNumberId) {
-        errs.phoneNumberId = "A phone number is required";
-        toast.error("Please assign a phone number for this agent before continuing.");
-      }
+      // Phone number is optional, no validation required
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -190,9 +196,7 @@ export function AgentWizard({
     setStep(target);
   };
 
-  const handleFinish = () => {
-    if (!validateStep(step)) return;
-    const payload = {
+  const buildPayload = () => ({
       name,
       role,
       language,
@@ -216,11 +220,38 @@ export function AgentWizard({
       smsTriggerCondition: smsEnabled ? smsTriggerCondition : null,
       smsTemplate: smsEnabled ? smsTemplate : null,
       smsAgentReply: smsEnabled ? smsAgentReply : null,
+      whatsappEnabled,
+      whatsappPrompt: whatsappEnabled ? whatsappPrompt : null,
       timeZone,
       businessHours: { is24x7, startTime, endTime },
-    };
-    if (editingAgent) updateMutation.mutate(payload);
+  });
+
+  const handleFinish = () => {
+    if (!validateStep(step)) return;
+    const payload = buildPayload();
+    if (effectiveAgentId) updateMutation.mutate(payload);
     else createMutation.mutate(payload);
+  };
+
+  /** Create the agent now (used by number purchase); returns its id. */
+  const ensureAgentExists = async (): Promise<string | null> => {
+    if (effectiveAgentId) return effectiveAgentId;
+    if (!validateStep(1)) {
+      toast.error("Complete the agent basics first (name, role, greeting)");
+      setStep(1);
+      return null;
+    }
+    try {
+      const res = await api.post("/agents", buildPayload());
+      const created = res.data.data;
+      setDraftAgentId(created.id);
+      queryClient.invalidateQueries({ queryKey: ["agents"] });
+      toast.success("Agent saved — continuing to number purchase");
+      return created.id as string;
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || "Couldn't save the agent yet");
+      return null;
+    }
   };
 
   const activeStep = STEPS[step - 1]!;
@@ -383,6 +414,8 @@ export function AgentWizard({
                       disabled={isFormLoading}
                     />
                     <TelephonySetup
+                      agentId={effectiveAgentId}
+                      onEnsureAgent={ensureAgentExists}
                       phoneNumberId={phoneNumberId}
                       setPhoneNumberId={setPhoneNumberId}
                       phoneNumbers={phoneNumbers}
@@ -432,6 +465,10 @@ export function AgentWizard({
                       setSmsTemplate={setSmsTemplate}
                       smsAgentReply={smsAgentReply}
                       setSmsAgentReply={setSmsAgentReply}
+                      whatsappEnabled={whatsappEnabled}
+                      setWhatsappEnabled={setWhatsappEnabled}
+                      whatsappPrompt={whatsappPrompt}
+                      setWhatsappPrompt={setWhatsappPrompt}
                       disabled={isFormLoading}
                     />
                   </div>

@@ -105,30 +105,109 @@ model Tenant {
   monthlyRevenue String? // optional range: "0-1L" | "1-10L" | "10L+"
   onboardingStep Int       @default(0)
   onboardingDone Boolean   @default(false)
+  // Cached credit balance — the CreditLedger is the source of truth; this
+  // is kept in sync inside the same transaction as every ledger write.
+  creditBalance  Int       @default(0)
   deletedAt      DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
   // Relations
-  users             User[]
-  contacts          Contact[]
-  customFieldDefs   CustomFieldDefinition[]
-  deals             Deal[]
-  pipelines         Pipeline[]
-  pipelineStages    PipelineStage[]
-  dealStageHistory  DealStageHistory[]
-  workflows         WorkflowDefinition[]
-  workflowFolders   WorkflowFolder[]
-  workflowRuns      WorkflowRun[]
-  aiAgents          AIAgent[]
-  phoneNumbers      PhoneNumber[]
-  communicationLogs CommunicationLog[]
-  activities        Activity[]
-  notes             Note[]
-  bookings          Booking[]
-  knowledgeBase     KnowledgeBase[]
+  users               User[]
+  contacts            Contact[]
+  customFieldDefs     CustomFieldDefinition[]
+  deals               Deal[]
+  pipelines           Pipeline[]
+  pipelineStages      PipelineStage[]
+  dealStageHistory    DealStageHistory[]
+  workflows           WorkflowDefinition[]
+  workflowFolders     WorkflowFolder[]
+  workflowRuns        WorkflowRun[]
+  aiAgents            AIAgent[]
+  phoneNumbers        PhoneNumber[]
+  communicationLogs   CommunicationLog[]
+  chatSessions        ChatSession[]
+  activities          Activity[]
+  notes               Note[]
+  bookings            Booking[]
+  knowledgeBase       KnowledgeBase[]
+  creditLedger        CreditLedger[]
+  billingSubscription BillingSubscription?
+  paymentRecords      PaymentRecord[]
 
   @@map("tenants")
+}
+
+// ─────────────────────────────────────────────
+// BILLING — credits ledger + provider subscription
+// ─────────────────────────────────────────────
+
+enum CreditReason {
+  SIGNUP_GRANT
+  PLAN_GRANT
+  TOPUP_PURCHASE
+  CALL_DEDUCTION
+  ADJUSTMENT
+}
+
+// Auditable, append-only record of every credit movement. Positive delta =
+// grant, negative = deduction. Tenant.creditBalance is the cached sum.
+model CreditLedger {
+  id        String       @id @default(uuid())
+  tenantId  String
+  delta     Int
+  reason    CreditReason
+  refId     String? // e.g. CommunicationLog id for call deductions
+  note      String?
+  createdAt DateTime     @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@map("credit_ledger")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+// Every successful payment — the audit trail behind invoices. Amounts are
+// stored in paise (Razorpay's unit) to avoid float rounding.
+model PaymentRecord {
+  id          String   @id @default(uuid())
+  tenantId    String
+  provider    String   @default("razorpay")
+  paymentId   String   @unique
+  orderId     String
+  product     String // "pro-30d" | "credits"
+  amountPaise Int
+  currency    String   @default("INR")
+  status      String   @default("captured")
+  description String?
+  createdAt   DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@map("payment_records")
+}
+
+model BillingSubscription {
+  id               String             @id @default(uuid())
+  tenantId         String             @unique
+  provider         String             @default("razorpay")
+  providerSubId    String?
+  plan             Plan
+  status           SubscriptionStatus @default(ACTIVE)
+  currentPeriodEnd DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("billing_subscriptions")
 }
 
 // ─────────────────────────────────────────────
@@ -176,6 +255,7 @@ model Contact {
   notes             Note[]
   activities        Activity[]
   communicationLogs CommunicationLog[]
+  chatSessions      ChatSession[]
 
   @@map("contacts")
 }
@@ -495,6 +575,8 @@ model AIAgent {
   smsTriggerCondition String?
   smsTemplate         String?
   smsAgentReply       String?
+  whatsappEnabled     Boolean   @default(false)
+  whatsappPrompt      String?
   businessHours       Json?
   timeZone            String    @default("Asia/Kolkata")
   deletedAt           DateTime?
@@ -504,6 +586,7 @@ model AIAgent {
   tenant            Tenant             @relation(fields: [tenantId], references: [id])
   communicationLogs CommunicationLog[]
   knowledgeBases    KnowledgeBase[]
+  chatSessions      ChatSession[]
 
   @@map("ai_agents")
 }
@@ -512,13 +595,25 @@ model AIAgent {
 // PHONE NUMBER — assigned numbers
 // ─────────────────────────────────────────────
 
+enum PhoneNumberKind {
+  // The owner's own contact number captured at signup — NEVER assignable
+  // to an agent; it's where the business is reached, not an AI line.
+  BUSINESS
+  // A real telephony line (purchased via Twilio) that an agent answers.
+  AGENT_LINE
+}
+
 model PhoneNumber {
-  id          String   @id @default(uuid())
+  id          String          @id @default(uuid())
   tenantId    String
-  phoneNumber String   @unique
+  phoneNumber String          @unique
   label       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  kind        PhoneNumberKind @default(AGENT_LINE)
+  // Twilio resource sid for purchased numbers — needed to configure or
+  // release the number later. Null for manually-added legacy numbers.
+  twilioSid   String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 
@@ -573,6 +668,7 @@ model CommunicationLog {
   provider         String?
   providerRef      String?
   metadata         Json?
+  sessionId        String?
   occurredAt       DateTime
   createdAt        DateTime         @default(now())
 
@@ -580,6 +676,7 @@ model CommunicationLog {
   contact     Contact      @relation(fields: [contactId], references: [id])
   agent       AIAgent      @relation(fields: [agentId], references: [id])
   workflowRun WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+  session     ChatSession? @relation(fields: [sessionId], references: [id])
   activities  Activity[]
 
   @@index([tenantId, occurredAt(sort: Desc)])
@@ -587,7 +684,45 @@ model CommunicationLog {
   @@index([agentId, occurredAt(sort: Desc)])
   @@index([tenantId, type, occurredAt(sort: Desc)])
   @@index([tenantId, agentId, type])
+  @@index([sessionId])
   @@map("communication_logs")
+}
+
+// ─────────────────────────────────────────────
+// CHAT SESSION — groups chat messages into a conversation window so
+// post-processing (intent, deals, scoring) can run when the chat goes idle.
+// ─────────────────────────────────────────────
+
+enum ChatSessionStatus {
+  OPEN
+  PROCESSED
+}
+
+model ChatSession {
+  id            String            @id @default(uuid())
+  tenantId      String
+  contactId     String
+  agentId       String
+  channel       CommType          @default(WHATSAPP)
+  status        ChatSessionStatus @default(OPEN)
+  // One conversation = one CommunicationLog; turns live in its transcriptJson.
+  commLogId     String?           @unique
+  // When a human replies from the dashboard, the AI stops auto-replying.
+  humanTakeover Boolean           @default(false)
+  startedAt     DateTime          @default(now())
+  lastMessageAt DateTime          @default(now())
+  processedAt   DateTime?
+  dealId        String?
+  createdAt     DateTime          @default(now())
+
+  tenant   Tenant             @relation(fields: [tenantId], references: [id])
+  contact  Contact            @relation(fields: [contactId], references: [id])
+  agent    AIAgent            @relation(fields: [agentId], references: [id])
+  messages CommunicationLog[]
+
+  @@index([status, lastMessageAt])
+  @@index([tenantId, contactId, agentId, status])
+  @@map("chat_sessions")
 }
 
 // ─────────────────────────────────────────────

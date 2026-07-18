@@ -7,12 +7,8 @@ import { AuthLayout } from "../../components/auth/AuthLayout.js";
 const inputClass =
   "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-11 px-3.5 w-full transition-all";
 
-const goldButton =
-  "text-[#0a0416] font-bold text-[14px] rounded-[10px] flex items-center justify-center transition-all hover:brightness-110 shadow-[0_10px_30px_-10px_rgba(251,191,36,0.55)] disabled:opacity-70";
-
-const goldStyle: React.CSSProperties = {
-  background: "linear-gradient(135deg, #FFE9A0 0%, #F5B849 50%, #F97316 100%)",
-};
+const primaryButton =
+  "text-white font-bold text-[14px] rounded-[6px] flex items-center justify-center transition-colors bg-brand-500 hover:bg-brand-600 shadow-sm disabled:opacity-70";
 
 const ghostButton =
   "border border-[#E5E5E5] bg-white text-[#111111] font-semibold text-[14px] rounded-[10px] hover:bg-[#F7F7F7] transition-all";
@@ -106,8 +102,8 @@ export function Register(): React.JSX.Element {
         {step < 4 && (
           <>
             <div className="mb-5">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">
-                <span className="h-1 w-1 rounded-full bg-orange-600" />
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-600 mb-3">
+                <span className="h-1 w-1 rounded-full bg-brand-600" />
                 Get started free
               </span>
               <h1 className="text-[26px] leading-tight font-bold tracking-tight text-[#111111]">
@@ -134,10 +130,9 @@ export function Register(): React.JSX.Element {
                           done
                             ? "bg-emerald-500 text-white"
                             : active
-                            ? "text-[#0a0416] ring-4 ring-amber-400/25"
+                            ? "bg-brand-500 text-white ring-4 ring-brand-500/25"
                             : "bg-[#F0F0F0] text-[#999999]"
                         }`}
-                        style={active && !done ? goldStyle : undefined}
                       >
                         {done ? (
                           <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
@@ -204,13 +199,13 @@ export function Register(): React.JSX.Element {
               </div>
             </div>
 
-            <Button type="button" variant="primary" className={`w-full h-11 mt-2 ${goldButton}`} style={goldStyle} onClick={handleNextStep}>
+            <Button type="button" variant="primary" className={`w-full h-11 mt-2 ${primaryButton}`} onClick={handleNextStep}>
               Continue →
             </Button>
 
             <div className="mt-3 text-center text-[13px] text-[#666666]">
               Already have an account?{" "}
-              <Link to="/login" className="text-[#111111] font-bold hover:text-orange-600 transition-colors">Sign in</Link>
+              <Link to="/login" className="text-[#111111] font-bold hover:text-brand-600 transition-colors">Sign in</Link>
             </div>
           </div>
         )}
@@ -264,7 +259,7 @@ export function Register(): React.JSX.Element {
                   <button key={item.value} type="button" onClick={() => setTeamSize(item.value)}
                     className={`flex items-center justify-center px-2 rounded-[10px] border text-[12px] font-semibold transition-all h-10 ${
                       teamSize === item.value
-                        ? "border-amber-500 bg-amber-50 text-orange-700"
+                        ? "border-amber-500 bg-amber-50 text-brand-700"
                         : "border-[#E5E5E5] bg-white text-[#666666] hover:text-[#111111] hover:border-[#B0B0B0]"
                     }`}>
                     {item.label}
@@ -275,7 +270,7 @@ export function Register(): React.JSX.Element {
 
             <div className="flex gap-3 mt-4">
               <Button type="button" variant="secondary" className={`w-1/3 h-11 ${ghostButton}`} onClick={handlePrevStep}>Back</Button>
-              <Button type="button" variant="primary" className={`w-2/3 h-11 ${goldButton}`} style={goldStyle} onClick={handleNextStep}>
+              <Button type="button" variant="primary" className={`w-2/3 h-11 ${primaryButton}`} onClick={handleNextStep}>
                 Continue →
               </Button>
             </div>
@@ -296,17 +291,17 @@ export function Register(): React.JSX.Element {
 
             <div className="rounded-[12px] border border-[#E5E5E5] bg-[#FAFBFC] p-4 space-y-4">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600">Owner</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-600">Owner</span>
                 <p className="text-[14px] text-[#111111] font-semibold mt-1">{name}</p>
                 <p className="text-[12.5px] text-[#666666] mt-0.5">{email} · {phone}</p>
               </div>
               <div className="border-t border-[#EEEEEE] pt-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600">Business</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-600">Business</span>
                 <p className="text-[14px] text-[#111111] font-semibold mt-1">{businessName}</p>
                 <p className="text-[12.5px] text-[#666666] mt-0.5 capitalize">
                   {businessType.replace("_", " ")} · {teamSize.toLowerCase()} team
                 </p>
-                {websiteUrl && <p className="text-[12.5px] text-orange-600 truncate mt-1">{websiteUrl}</p>}
+                {websiteUrl && <p className="text-[12.5px] text-brand-600 truncate mt-1">{websiteUrl}</p>}
               </div>
             </div>
 
@@ -317,18 +312,18 @@ export function Register(): React.JSX.Element {
               />
               <span className="text-[12.5px] text-[#666666] leading-relaxed select-none">
                 I agree to the{" "}
-                <span className="text-[#111111] font-semibold hover:text-orange-600 transition-colors">Terms of Service</span> &{" "}
-                <span className="text-[#111111] font-semibold hover:text-orange-600 transition-colors">Privacy Policy</span>.
+                <span className="text-[#111111] font-semibold hover:text-brand-600 transition-colors">Terms of Service</span> &{" "}
+                <span className="text-[#111111] font-semibold hover:text-brand-600 transition-colors">Privacy Policy</span>.
               </span>
             </label>
 
             <div className="flex gap-3 pt-1">
               <Button type="button" variant="secondary" className={`w-1/3 h-11 ${ghostButton}`} onClick={handlePrevStep} disabled={isLoading}>Back</Button>
-              <Button type="submit" variant="primary" className={`w-2/3 h-11 ${goldButton}`} style={goldStyle} disabled={isLoading}>
+              <Button type="submit" variant="primary" className={`w-2/3 h-11 ${primaryButton}`} disabled={isLoading}>
                 {isLoading ? (
                   <span className="inline-flex items-center gap-2">
-                    <span className="h-3.5 w-3.5 rounded-full border-2 border-[#0a0416]/30 border-t-[#0a0416] animate-spin" />
-                    Creating…
+                    <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                    Creating workspace…
                   </span>
                 ) : ( <>Create account →</> )}
               </Button>
@@ -352,7 +347,7 @@ export function Register(): React.JSX.Element {
             <p className="text-[13.5px] text-[#666666] leading-relaxed max-w-sm mx-auto mb-8">
               Your business workspace is ready and your AI receptionist is being configured right now.
             </p>
-            <Button type="button" variant="primary" className={`w-full h-11 ${goldButton}`} style={goldStyle} onClick={() => navigate("/dashboard")}>
+            <Button type="button" variant="primary" className={`w-full h-11 ${primaryButton}`} onClick={() => navigate("/dashboard")}>
               Go to dashboard →
             </Button>
           </div>

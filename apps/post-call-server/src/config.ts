@@ -27,12 +27,21 @@ const envSchema = z.object({
 
   OPENAI_API_KEY: optionalString,
 
+  // Twilio — used to fetch call recordings after each call.
+  TWILIO_ACCOUNT_SID: optionalString,
+  TWILIO_AUTH_TOKEN: optionalString,
+
   // Which model runs post-call extraction. Must be a registered model id
   // from @antigravity/llm — typos fail fast at boot instead of at call time.
   POST_CALL_LLM_MODEL: z.enum(OPENAI_MODEL_IDS).default(DEFAULT_STRUCTURED_MODEL),
 
   // Max retry attempts for a job before it lands in the dead-letter log.
   POST_CALL_MAX_ATTEMPTS: z.coerce.number().int().positive().default(3),
+
+  // Chat sessions: a conversation is considered over after this many minutes
+  // of customer silence; the sweeper then runs post-processing on it.
+  CHAT_SESSION_IDLE_MINUTES: z.coerce.number().int().positive().default(30),
+  CHAT_SWEEP_INTERVAL_MINUTES: z.coerce.number().int().positive().default(10),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -59,6 +68,14 @@ export const config = {
   llm: {
     openaiApiKey: env.OPENAI_API_KEY,
     model: env.POST_CALL_LLM_MODEL,
+  },
+  twilio: {
+    accountSid: env.TWILIO_ACCOUNT_SID,
+    authToken: env.TWILIO_AUTH_TOKEN,
+  },
+  chat: {
+    idleMinutes: env.CHAT_SESSION_IDLE_MINUTES,
+    sweepIntervalMinutes: env.CHAT_SWEEP_INTERVAL_MINUTES,
   },
 } as const;
 

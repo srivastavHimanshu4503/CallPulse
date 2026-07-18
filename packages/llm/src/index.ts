@@ -51,6 +51,7 @@ export const createPipelineLLM = (opts: {
 
 export type { LLMInstance, LLMProviderConfig, LLMProviderName } from "./types.js";
 export { generateStructuredOutput } from "./structured.js";
+export { generateChatReply, type ChatTurn } from "./chat.js";
 export {
   OPENAI_MODELS,
   OPENAI_MODEL_IDS,

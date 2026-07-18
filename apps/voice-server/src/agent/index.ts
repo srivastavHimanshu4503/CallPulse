@@ -1,7 +1,7 @@
 import { defineAgent, voice, type JobContext, type JobProcess } from "@livekit/agents";
 import { RoomEvent } from "@livekit/rtc-node";
 import { RoomServiceClient } from "livekit-server-sdk";
-import { db } from "@antigravity/db";
+import { db, getCreditBalance } from "@antigravity/db";
 
 import { config } from "../config.js";
 import { createLogger } from "../logger.js";
@@ -112,7 +112,7 @@ export default defineAgent({
     // Browser test calls have no SIP number in the room name — fall back to
     // the stable caller identity minted by the api server so every test call
     // from the same dashboard user maps to the same contact.
-    const callerNumber =
+    let callerNumber =
       extractCallerNumberFromRoom(roomName) ?? roomHint.callerId ?? "unknown";
     const callerName = roomHint.callerName;
     const callLog = log.child(callSid);
@@ -126,8 +126,14 @@ export default defineAgent({
       hintAgentId: roomHint.agentId,
     });
 
-    // Test calls from the web app pass agentId via room metadata; real SIP
-    // calls fall back to phone-number lookup.
+    // Which of our numbers the caller dialed — stored in session metadata so
+    // the post-call pipeline can find this call's Twilio recording.
+    let resolvedDialedNumber: string | null = null;
+
+    // Test calls from the web app pass agentId via room metadata. Real SIP
+    // calls resolve the agent by WHICH of our numbers was dialed — LiveKit
+    // delivers that as participant attributes, so multiple purchased numbers
+    // route to their own agents automatically.
     let persona = null;
     if (roomHint.agentId) {
       persona = await agentConfigProvider.getById(roomHint.agentId);
@@ -137,17 +143,35 @@ export default defineAgent({
         });
         return;
       }
-    } else if (dialedNumber) {
-      persona = await agentConfigProvider.getByPhoneNumber(dialedNumber);
+    } else {
+      await connectPromise;
+      const participant = await ctx.waitForParticipant();
+      const attrs = (participant.attributes ?? {}) as Record<string, string>;
+      const dialed = attrs["sip.trunkPhoneNumber"] || dialedNumber;
+      if (attrs["sip.phoneNumber"]) callerNumber = attrs["sip.phoneNumber"];
+
+      if (!dialed) {
+        callLog.error("no dialed number in SIP attributes and none configured — aborting call");
+        return;
+      }
+
+      persona =
+        (await agentConfigProvider.getByPhoneNumber(dialed)) ??
+        (!dialed.startsWith("+")
+          ? await agentConfigProvider.getByPhoneNumber(`+${dialed}`)
+          : null);
       if (!persona) {
         callLog.error("no agent registered in DB for dialed number — aborting call", {
-          dialedNumber,
+          dialed,
         });
         return;
       }
-    } else {
-      callLog.error("no agentId hint and no dialed number configured — aborting call");
-      return;
+      callLog.info("agent resolved from dialed number", {
+        dialed,
+        caller: callerNumber,
+        agentId: persona.ids.agentId,
+      });
+      resolvedDialedNumber = dialed;
     }
 
     const languageKey = normalizeLanguage(persona.language);
@@ -169,6 +193,28 @@ export default defineAgent({
     });
 
     const session = createSession(callSid, callerNumber, languageKey);
+    if (resolvedDialedNumber) session.metadata.dialedNumber = resolvedDialedNumber;
+
+    // Zero-balance guard: with no credits left, the call is answered only to
+    // deliver a short "unavailable" notice and hang up. The flag rides in
+    // session metadata so the post-call pipeline does NOT charge this call.
+    let outOfCredits = false;
+    try {
+      const balance = await getCreditBalance(persona.ids.tenantId);
+      outOfCredits = balance <= 0;
+      if (outOfCredits) {
+        session.metadata.outOfCredits = true;
+        callLog.warn("tenant has zero credits — answering with unavailable notice", {
+          tenantId: persona.ids.tenantId,
+          balance,
+        });
+      }
+    } catch (err) {
+      // Billing must never take a call down — fail open.
+      callLog.warn("credit balance check failed — allowing call", {
+        message: (err as Error).message,
+      });
+    }
 
     eventBus.emit("call.started", {
       callSid,
@@ -615,6 +661,20 @@ export default defineAgent({
         transcriptionEnabled: true,
       },
     });
+
+    if (outOfCredits) {
+      // Zero balance: deliver one polite line and hang up. The 8s delay
+      // clears the 6s hangup grace period and lets TTS finish speaking.
+      const message =
+        callSource === "browser"
+          ? "You are out of credits, so your AI assistant cannot take calls right now. Please top up from Settings, Billing to continue."
+          : "Sorry, our assistant is currently unavailable. Please call back later. Thank you!";
+      agentSession.say(message, { allowInterruptions: false, addToChatCtx: true });
+      setTimeout(() => {
+        void endCall("out of credits");
+      }, 8_000);
+      return;
+    }
 
     agentSession.say(persona.greetingMessage, {
       allowInterruptions: false,

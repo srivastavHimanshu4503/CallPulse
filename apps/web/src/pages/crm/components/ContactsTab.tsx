@@ -2,7 +2,6 @@ import * as React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../lib/axios.js";
-import { ConfirmModal } from "../../../components/common/ConfirmModal.js";
 import {
   Plus,
   Filter,
@@ -36,6 +35,7 @@ import {
 } from "../../../components/ui-ext/index.js";
 import type { Column, FilterFieldDef } from "../../../components/ui-ext/index.js";
 import { AddContactModal } from "./AddContactModal.js";
+import { DeleteContactModal } from "./DeleteContactModal.js";
 import { ImportContactsModal } from "./ImportContactsModal.js";
 
 interface ContactsTabProps {
@@ -218,8 +218,8 @@ export function ContactsTab({
   }, [filtered, currentPage, pageSize]);
 
   const bulkDeleteMutation = useMutation({
-    mutationFn: async (ids: string[]) => {
-      const res = await api.post("/crm/contacts/bulk-delete", { ids });
+    mutationFn: async ({ ids, deleteDeals }: { ids: string[]; deleteDeals: boolean }) => {
+      const res = await api.post("/crm/contacts/bulk-delete", { ids, deleteDeals });
       return res.data.data;
     },
     onSuccess: (data: any) => {
@@ -330,10 +330,17 @@ export function ContactsTab({
     },
     {
       id: "createdAt",
-      header: "Added",
+      header: "Created at",
       sortValue: (r) => new Date(r.createdAt),
       width: "100px",
       cell: (c) => <span className="text-[11.5px] text-fg-secondary">{formatTimeAgo(c.createdAt)}</span>,
+    },
+    {
+      id: "updatedAt",
+      header: "Last updated",
+      sortValue: (r) => new Date(r.updatedAt),
+      width: "110px",
+      cell: (c) => <span className="text-[11.5px] text-fg-secondary">{formatTimeAgo(c.updatedAt)}</span>,
     },
   ];
 
@@ -614,14 +621,20 @@ export function ContactsTab({
         <ImportContactsModal onClose={() => setIsImportOpen(false)} onImported={refetch} />
       )}
 
-      <ConfirmModal
-        isOpen={showBulkDeleteConfirm}
-        title="Delete contacts"
-        message={`Delete ${selectedIds.length} contact${selectedIds.length === 1 ? "" : "s"}? This action cannot be undone.`}
-        confirmText="Delete contacts"
-        onConfirm={() => bulkDeleteMutation.mutate(selectedIds)}
-        onClose={() => setShowBulkDeleteConfirm(false)}
-      />
+      {showBulkDeleteConfirm && (
+        <DeleteContactModal
+          contactCount={selectedIds.length}
+          dealCount={enrichedContacts
+            .filter((c) => selectedIds.includes(c.id))
+            .reduce((sum, c) => sum + (c.deals?.length || 0), 0)}
+          isDeleting={bulkDeleteMutation.isPending}
+          onConfirm={({ deleteDeals }) => {
+            bulkDeleteMutation.mutate({ ids: selectedIds, deleteDeals });
+            setShowBulkDeleteConfirm(false);
+          }}
+          onClose={() => setShowBulkDeleteConfirm(false)}
+        />
+      )}
     </div>
   );
 }

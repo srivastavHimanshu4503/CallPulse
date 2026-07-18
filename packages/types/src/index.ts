@@ -6,3 +6,5 @@ export type { CustomFieldType } from "./contact.types.js";
 export * from "./agent.types.js";
 export * from "./crm.types.js";
 export * from "./activity.types.js";
+export * from "./billing.types.js";
+export * from "./whatsapp.types.js";

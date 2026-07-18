@@ -1,8 +1,11 @@
 import { getErrorMessage, toAppError } from "@antigravity/errors";
 import { createLogger } from "../logger.js";
 import { finalizeExtraction, markExtractionInProgress } from "../persistence/log-status.js";
+import { creditDeduction } from "./credit-deduction.js";
 import { crmExtraction } from "./crm-extraction.js";
+import { recordingFetch } from "./recording-fetch.js";
 import { dealCreation } from "./deal-creation.js";
+import { chatDealCreation } from "./chat-deal-creation.js";
 import { integrations } from "./integrations.js";
 import { intentDetection } from "./intent-detection.js";
 import { leadScoring } from "./lead-scoring.js";
@@ -29,6 +32,8 @@ const log = createLogger("job:pipeline");
  * would just repeat the same partial failure.
  */
 const HANDLERS: JobHandler[] = [
+  creditDeduction, // first — the call happened, it gets charged regardless
+  recordingFetch, // attach the Twilio recording while LLM handlers run
   intentDetection,
   crmExtraction,
   dealCreation,
@@ -37,7 +42,25 @@ const HANDLERS: JobHandler[] = [
   integrations,
 ];
 
-export const runPostCallPipeline = async (job: PostCallJob): Promise<void> => {
+// Chat sessions reuse the same LLM handlers but: no per-call credit charge,
+// no Twilio recording, and a session-aware deal handler that can merge a
+// continuation chat into the previous session's deal.
+const CHAT_HANDLERS: JobHandler[] = [
+  intentDetection,
+  crmExtraction,
+  chatDealCreation,
+  leadScoring,
+  notifications,
+  integrations,
+];
+
+export const runPostCallPipeline = (job: PostCallJob): Promise<void> =>
+  runPipeline(job, HANDLERS);
+
+export const runChatSessionPipeline = (job: PostCallJob): Promise<void> =>
+  runPipeline(job, CHAT_HANDLERS);
+
+const runPipeline = async (job: PostCallJob, handlers: JobHandler[]): Promise<void> => {
   const started = Date.now();
   log.info("pipeline start", {
     logId: job.logId,
@@ -52,7 +75,7 @@ export const runPostCallPipeline = async (job: PostCallJob): Promise<void> => {
   let ctx: PostCallContext = { job };
   const failures: { handler: string; message: string; retryable: boolean }[] = [];
 
-  for (const handler of HANDLERS) {
+  for (const handler of handlers) {
     const handlerStart = Date.now();
     try {
       const patch = await handler.run(ctx);

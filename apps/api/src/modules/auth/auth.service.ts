@@ -6,6 +6,7 @@ import { generateTokens } from "../../utils/auth.helpers.js";
 import { generateBusinessSlug } from "@antigravity/utils";
 import type { RegisterInput, LoginInput, ResetPasswordInput } from "@antigravity/validators";
 import type { AuthResponseData, AuthTokens } from "@antigravity/types";
+import { PLAN_CREDITS } from "@antigravity/types";
 
 export class AuthService {
   async register(data: RegisterInput): Promise<AuthResponseData> {
@@ -28,7 +29,7 @@ export class AuthService {
 
     // 4. Create Tenant, User, and default AI Agent inside a database transaction to ensure Atomicity
     const result = await db.$transaction(async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
-      // Create Tenant
+      // Create Tenant with the free-plan welcome credits
       const tenant = await tx.tenant.create({
         data: {
           name: businessName,
@@ -38,6 +39,15 @@ export class AuthService {
           teamSize: teamSize || "SOLO",
           onboardingStep: 1,
           onboardingDone: false,
+          creditBalance: PLAN_CREDITS.FREE,
+        },
+      });
+      await tx.creditLedger.create({
+        data: {
+          tenantId: tenant.id,
+          delta: PLAN_CREDITS.FREE,
+          reason: "SIGNUP_GRANT",
+          note: "Welcome credits",
         },
       });
 
@@ -58,6 +68,8 @@ export class AuthService {
           tenantId: tenant.id,
           phoneNumber: phone,
           label: "Primary Business Line",
+          // The owner's contact number — never assignable to an AI agent.
+          kind: "BUSINESS",
         },
       });
 
