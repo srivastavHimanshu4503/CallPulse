@@ -193,9 +193,28 @@ exports.Prisma.DealScalarFieldEnum = {
   tenantId: 'tenantId',
   contactId: 'contactId',
   pipelineId: 'pipelineId',
+  stageId: 'stageId',
   title: 'title',
-  value: 'value',
   stage: 'stage',
+  value: 'value',
+  currency: 'currency',
+  probability: 'probability',
+  probabilitySource: 'probabilitySource',
+  weightedValue: 'weightedValue',
+  expectedCloseDate: 'expectedCloseDate',
+  actualCloseDate: 'actualCloseDate',
+  priority: 'priority',
+  leadSource: 'leadSource',
+  tags: 'tags',
+  ownerId: 'ownerId',
+  lastActivityAt: 'lastActivityAt',
+  nextFollowUpAt: 'nextFollowUpAt',
+  aiSummary: 'aiSummary',
+  aiHealth: 'aiHealth',
+  aiRiskScore: 'aiRiskScore',
+  aiNextAction: 'aiNextAction',
+  aiConfidence: 'aiConfidence',
+  lastAiAnalysisAt: 'lastAiAnalysisAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -209,6 +228,32 @@ exports.Prisma.PipelineScalarFieldEnum = {
   filters: 'filters',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PipelineStageScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  pipelineId: 'pipelineId',
+  name: 'name',
+  color: 'color',
+  position: 'position',
+  probability: 'probability',
+  isWon: 'isWon',
+  isLost: 'isLost',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DealStageHistoryScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  dealId: 'dealId',
+  fromStage: 'fromStage',
+  toStage: 'toStage',
+  changedById: 'changedById',
+  comment: 'comment',
+  changedAt: 'changedAt'
 };
 
 exports.Prisma.BookingScalarFieldEnum = {
@@ -235,9 +280,19 @@ exports.Prisma.NoteScalarFieldEnum = {
 exports.Prisma.WorkflowDefinitionScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
+  folderId: 'folderId',
   name: 'name',
   triggerType: 'triggerType',
   actions: 'actions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkflowFolderScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  parentId: 'parentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -281,6 +336,8 @@ exports.Prisma.AIAgentScalarFieldEnum = {
   smsTriggerCondition: 'smsTriggerCondition',
   smsTemplate: 'smsTemplate',
   smsAgentReply: 'smsAgentReply',
+  businessHours: 'businessHours',
+  timeZone: 'timeZone',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -421,6 +478,24 @@ exports.CustomFieldValueSource = exports.$Enums.CustomFieldValueSource = {
   SMS: 'SMS'
 };
 
+exports.DealProbabilitySource = exports.$Enums.DealProbabilitySource = {
+  AUTO: 'AUTO',
+  MANUAL: 'MANUAL'
+};
+
+exports.DealPriority = exports.$Enums.DealPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+};
+
+exports.DealHealth = exports.$Enums.DealHealth = {
+  HEALTHY: 'HEALTHY',
+  NEEDS_ATTENTION: 'NEEDS_ATTENTION',
+  HIGH_RISK: 'HIGH_RISK'
+};
+
 exports.CommType = exports.$Enums.CommType = {
   CALL: 'CALL',
   SMS: 'SMS',
@@ -477,9 +552,12 @@ exports.Prisma.ModelName = {
   CustomFieldValue: 'CustomFieldValue',
   Deal: 'Deal',
   Pipeline: 'Pipeline',
+  PipelineStage: 'PipelineStage',
+  DealStageHistory: 'DealStageHistory',
   Booking: 'Booking',
   Note: 'Note',
   WorkflowDefinition: 'WorkflowDefinition',
+  WorkflowFolder: 'WorkflowFolder',
   WorkflowRun: 'WorkflowRun',
   AIAgent: 'AIAgent',
   PhoneNumber: 'PhoneNumber',

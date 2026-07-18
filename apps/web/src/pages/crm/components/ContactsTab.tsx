@@ -2,17 +2,19 @@ import * as React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../lib/axios.js";
+import { ConfirmModal } from "../../../components/common/ConfirmModal.js";
 import {
   Plus,
   Filter,
   Trash2,
-  Download,
   Upload,
   Users,
   Star,
   X,
-  ChevronDown,
-  ChevronUp,
+  Sparkles,
+  Flame,
+  PhoneCall,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@antigravity/ui";
 import { toast } from "sonner";
@@ -31,12 +33,10 @@ import {
   computeLeadScore,
   BAND_LABEL,
   BAND_TONE,
-  buildSmartSegments,
 } from "../../../components/ui-ext/index.js";
 import type { Column, FilterFieldDef } from "../../../components/ui-ext/index.js";
 import { AddContactModal } from "./AddContactModal.js";
 import { ImportContactsModal } from "./ImportContactsModal.js";
-import { DuplicatesModal } from "./DuplicatesModal.js";
 
 interface ContactsTabProps {
   contacts: any[];
@@ -44,8 +44,6 @@ interface ContactsTabProps {
   refetch: () => void;
   customFields: any[];
 }
-
-const SEGMENTS = buildSmartSegments();
 
 export function ContactsTab({
   contacts,
@@ -59,8 +57,30 @@ export function ContactsTab({
   const [conditions, setConditions] = React.useState<FilterCondition[]>([]);
   const [logical, setLogical] = React.useState<FilterLogicalOperator>(FilterLogicalOperator.AND);
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const [activeSegment, setActiveSegment] = React.useState<string | null>(null);
-  const [showSegments, setShowSegments] = React.useState(true);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = React.useState(false);
+
+  // One-click focus filters driven by the AI strip chips.
+  const [quickBand, setQuickBand] = React.useState("all"); // all | hot | warm | cold
+  const [quickSource, setQuickSource] = React.useState("all"); // all | ai | manual
+
+  // Sort by any custom field: pick the field, then a type-aware direction
+  // (Low→High for numbers, A→Z for text). Picklist/boolean fields are
+  // excluded — simple ordering only makes sense for text and numbers.
+  const [sortFieldId, setSortFieldId] = React.useState("");
+  const [sortDir, setSortDir] = React.useState<"asc" | "desc">("asc");
+  const sortableFields = React.useMemo(
+    () => customFields.filter((cf: any) => cf.type === "TEXT" || cf.type === "NUMBER"),
+    [customFields],
+  );
+  const sortField = sortableFields.find((cf: any) => cf.id === sortFieldId);
+
+  const quickActive = quickBand !== "all" || quickSource !== "all" || !!sortFieldId;
+  const clearQuickFilters = () => {
+    setQuickBand("all");
+    setQuickSource("all");
+    setSortFieldId("");
+    setSortDir("asc");
+  };
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -68,7 +88,6 @@ export function ContactsTab({
 
   const [isAddOpen, setIsAddOpen] = React.useState(false);
   const [isImportOpen, setIsImportOpen] = React.useState(false);
-  const [isDupesOpen, setIsDupesOpen] = React.useState(false);
 
   const enrichedContacts = React.useMemo(() => {
     return contacts.map((c) => ({
@@ -131,23 +150,6 @@ export function ContactsTab({
           (c.phones && c.phones.some((p: string) => p.includes(q))),
       );
     }
-    if (activeSegment) {
-      const seg = SEGMENTS.find((s) => s.id === activeSegment);
-      if (seg) {
-        if (seg.clientMatcher) {
-          result = result.filter((c) => seg.clientMatcher!(c));
-        } else {
-          result = result.filter((c) => {
-            const matches = seg.conditions.map((cond) =>
-              evaluateCondition(cond, resolveValue(c, cond.fieldId)),
-            );
-            return seg.logical === FilterLogicalOperator.OR
-              ? matches.some(Boolean)
-              : matches.every(Boolean);
-          });
-        }
-      }
-    }
     if (conditions.length > 0) {
       result = result.filter((c) => {
         const matches = conditions.map((cond) =>
@@ -156,41 +158,64 @@ export function ContactsTab({
         return logical === FilterLogicalOperator.OR ? matches.some(Boolean) : matches.every(Boolean);
       });
     }
+
+    // Quick focus filters (AI strip chips)
+    if (quickBand !== "all") {
+      result = result.filter((c) => (c._computedScore?.band ?? "cold") === quickBand);
+    }
+    if (quickSource !== "all") {
+      result = result.filter((c) =>
+        quickSource === "ai" ? (c.callCount || 0) > 0 : (c.callCount || 0) === 0,
+      );
+    }
+
+    // Custom-field ordering — contacts without a value sink to the bottom.
+    if (sortField) {
+      const dir = sortDir === "asc" ? 1 : -1;
+      result = [...result].sort((a, b) => {
+        const av = a.customFields?.find((v: any) => v.fieldDefinitionId === sortField.id);
+        const bv = b.customFields?.find((v: any) => v.fieldDefinitionId === sortField.id);
+        if (sortField.type === "NUMBER") {
+          const an = av?.numberValue;
+          const bn = bv?.numberValue;
+          if (an == null && bn == null) return 0;
+          if (an == null) return 1;
+          if (bn == null) return -1;
+          return (an - bn) * dir;
+        }
+        const as = (av?.textValue ?? "").trim();
+        const bs = (bv?.textValue ?? "").trim();
+        if (!as && !bs) return 0;
+        if (!as) return 1;
+        if (!bs) return -1;
+        return as.localeCompare(bs) * dir;
+      });
+    }
     return result;
-  }, [enrichedContacts, searchQuery, conditions, logical, activeSegment]);
+  }, [enrichedContacts, searchQuery, conditions, logical, quickBand, quickSource, sortField, sortDir]);
+
+  // AI insight aggregates — real numbers surfaced from the data, and each
+  // one doubles as a one-click filter.
+  const aiInsights = React.useMemo(() => {
+    const hot = enrichedContacts.filter((c) => c._computedScore?.band === "hot").length;
+    const aiCaptured = enrichedContacts.filter((c) => (c.callCount || 0) > 0).length;
+    const weekAgo = Date.now() - 7 * 86_400_000;
+    const newThisWeek = enrichedContacts.filter(
+      (c) => new Date(c.createdAt).getTime() >= weekAgo,
+    ).length;
+    const withDeals = enrichedContacts.filter((c) => (c.deals?.length || 0) > 0).length;
+    return { hot, aiCaptured, newThisWeek, withDeals };
+  }, [enrichedContacts]);
 
   React.useEffect(() => {
     setCurrentPage(1);
     setSelectedIds([]);
-  }, [searchQuery, conditions, logical, activeSegment]);
+  }, [searchQuery, conditions, logical, quickBand, quickSource, sortFieldId, sortDir]);
 
   const paginated = React.useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return filtered.slice(start, start + pageSize);
   }, [filtered, currentPage, pageSize]);
-
-  // Inline stat strip counts (recomputed cheaply from enrichedContacts)
-  const stats = React.useMemo(() => {
-    const hot = enrichedContacts.filter((c) => c._computedScore?.band === "hot").length;
-    const newWeek = enrichedContacts.filter(
-      (c) => new Date(c.createdAt).getTime() > Date.now() - 7 * 86_400_000,
-    ).length;
-    const withDeals = enrichedContacts.filter((c) => c.deals && c.deals.length > 0).length;
-    return { hot, newWeek, withDeals };
-  }, [enrichedContacts]);
-
-  // Per-segment counts (for segment chips)
-  const segmentCounts = React.useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const seg of SEGMENTS) {
-      counts[seg.id] = enrichedContacts.filter((c) => {
-        if (seg.clientMatcher) return seg.clientMatcher(c);
-        const matches = seg.conditions.map((cond) => evaluateCondition(cond, resolveValue(c, cond.fieldId)));
-        return seg.logical === FilterLogicalOperator.OR ? matches.some(Boolean) : matches.every(Boolean);
-      }).length;
-    }
-    return counts;
-  }, [enrichedContacts]);
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
@@ -207,42 +232,7 @@ export function ContactsTab({
 
   const handleBulkDelete = () => {
     if (selectedIds.length === 0) return;
-    if (!window.confirm(`Delete ${selectedIds.length} contact${selectedIds.length === 1 ? "" : "s"}?`)) return;
-    bulkDeleteMutation.mutate(selectedIds);
-  };
-
-  const handleExportCsv = () => {
-    const rows = filtered.map((c) => ({
-      "First name": c.firstName,
-      "Last name": c.lastName,
-      Email: c.emails?.[0] || "",
-      Phone: c.phones?.[0] || "",
-      Score: c.score ?? c._computedScore?.score ?? "",
-      Band: c._computedScore?.band ?? "",
-      "Open deals": c.deals?.length || 0,
-      "Created at": c.createdAt,
-    }));
-    const header = Object.keys(rows[0] || { "First name": "" });
-    const csv = [
-      header.join(","),
-      ...rows.map((r) =>
-        header
-          .map((h) => {
-            const v = (r as any)[h] ?? "";
-            const s = String(v).replace(/"/g, '""');
-            return /[,\n"]/.test(s) ? `"${s}"` : s;
-          })
-          .join(","),
-      ),
-    ].join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `contacts-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success(`Exported ${rows.length} contacts`);
+    setShowBulkDeleteConfirm(true);
   };
 
   const columns: Column<any>[] = [
@@ -258,9 +248,19 @@ export function ContactsTab({
               {c.firstName} {c.lastName}
             </div>
             <div className="text-[10.5px] text-fg-muted truncate">
-              {c.emails?.[0] || c.phones?.[0] || "—"}
+              {c.phones?.[0] || "—"}
             </div>
           </div>
+        </div>
+      ),
+    },
+    {
+      id: "email",
+      header: "Email",
+      sortValue: (r) => r.emails?.[0] || "",
+      cell: (c) => (
+        <div className="text-[11.5px] text-fg-secondary" title={c.emails?.[0] || ""}>
+          {c.emails?.[0] || <span className="text-fg-muted">—</span>}
         </div>
       ),
     },
@@ -362,131 +362,163 @@ export function ContactsTab({
 
   return (
     <div className="flex flex-col h-full overflow-hidden font-sans gap-2">
-      {/* ============ Slim inline stat strip ============ */}
-      <div className="flex items-center flex-wrap gap-x-4 gap-y-1 text-[11.5px] shrink-0 px-0.5">
-        <span className="inline-flex items-center gap-1.5 text-fg-secondary">
-          <Users className="h-3 w-3 text-fg-muted" />
-          <b className="text-fg-primary tabular-nums">{contacts.length.toLocaleString("en-IN")}</b>
-          <span className="text-fg-muted">contacts</span>
-        </span>
-        <span className="text-line-strong">·</span>
-        <span className="text-fg-secondary">
-          <b className="text-positive-600 tabular-nums">{stats.hot}</b>
-          <span className="text-fg-muted"> hot</span>
-        </span>
-        <span className="text-line-strong">·</span>
-        <span className="text-fg-secondary">
-          <b className="text-fg-primary tabular-nums">{stats.newWeek}</b>
-          <span className="text-fg-muted"> new this week</span>
-        </span>
-        <span className="text-line-strong">·</span>
-        <span className="text-fg-secondary">
-          <b className="text-brand-600 tabular-nums">{stats.withDeals}</b>
-          <span className="text-fg-muted"> with open deals</span>
-        </span>
-        <button
-          type="button"
-          onClick={() => setIsDupesOpen(true)}
-          className="ml-auto text-[11px] font-semibold text-brand-600 hover:text-brand-700"
-        >
-          Find duplicates
-        </button>
-      </div>
+      {/* ============ AI insights banner — live numbers, each chip filters ============ */}
+      {contacts.length > 0 && (
+        <div className="flex items-center gap-3 rounded-md border border-line-default bg-bg-subtle px-3.5 py-2.5 shrink-0 select-none">
+          <span className="h-8 w-8 rounded-md bg-brand-50 text-brand-600 ring-1 ring-brand-500/20 flex items-center justify-center shrink-0">
+            <Sparkles className="h-4 w-4" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="text-[12px] font-bold text-fg-primary leading-tight">
+              {aiInsights.aiCaptured > 0
+                ? `Your AI captured ${aiInsights.aiCaptured} contact${aiInsights.aiCaptured === 1 ? "" : "s"} from calls`
+                : "Your AI keeps this CRM updated from every call"}
+              {aiInsights.hot > 0 && (
+                <span className="text-negative-500"> · {aiInsights.hot} hot lead{aiInsights.hot === 1 ? "" : "s"} need attention</span>
+              )}
+            </div>
+            <div className="text-[10.5px] text-fg-muted leading-tight mt-0.5">
+              Names, budgets, dates and deals are extracted automatically — click a stat to focus on it.
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => setQuickBand(quickBand === "hot" ? "all" : "hot")}
+              className={`inline-flex items-center gap-1 h-7 px-2 rounded-md border text-[11px] font-bold transition-colors ${
+                quickBand === "hot"
+                  ? "border-negative-500 bg-negative-50 text-negative-500"
+                  : "border-line-default bg-white text-fg-secondary hover:text-negative-500 hover:border-negative-500/40"
+              }`}
+              title="Show hot leads only"
+            >
+              <Flame className="h-3 w-3" /> {aiInsights.hot} hot
+            </button>
+            <button
+              type="button"
+              onClick={() => setQuickSource(quickSource === "ai" ? "all" : "ai")}
+              className={`inline-flex items-center gap-1 h-7 px-2 rounded-md border text-[11px] font-bold transition-colors ${
+                quickSource === "ai"
+                  ? "border-brand-500 bg-brand-50 text-brand-700"
+                  : "border-line-default bg-white text-fg-secondary hover:text-brand-700 hover:border-brand-500/40"
+              }`}
+              title="Show contacts captured by AI calls"
+            >
+              <PhoneCall className="h-3 w-3" /> {aiInsights.aiCaptured} from calls
+            </button>
+            <span className="hidden lg:inline-flex items-center gap-1 h-7 px-2 rounded-md border border-line-default bg-white text-[11px] font-bold text-fg-secondary">
+              <TrendingUp className="h-3 w-3" /> {aiInsights.newThisWeek} new this week
+            </span>
+            <span className="hidden xl:inline-flex items-center gap-1 h-7 px-2 rounded-md border border-line-default bg-white text-[11px] font-bold text-fg-secondary">
+              <Star className="h-3 w-3" /> {aiInsights.withDeals} with deals
+            </span>
+          </div>
+        </div>
+      )}
 
-      {/* ============ Toolbar ============ */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 shrink-0">
+      {/* ============ Toolbar — search + quick filters + actions ============ */}
+      <div className="flex flex-wrap items-center gap-1.5 shrink-0">
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="Search by name, email, or phone…"
-          className="flex-1 max-w-sm"
+          className="flex-1 min-w-[180px] max-w-sm"
         />
 
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => setShowSegments((v) => !v)}
-            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted transition-colors"
-            title={showSegments ? "Hide quick views" : "Show quick views"}
-          >
-            {showSegments ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-            Views
-          </button>
+        {/* Sort by any custom field — direction adapts to the field type */}
+        {sortableFields.length > 0 && (
+          <>
+            <select
+              value={sortFieldId}
+              onChange={(e) => {
+                setSortFieldId(e.target.value);
+                setSortDir("asc");
+              }}
+              className={`h-9 border text-[12px] font-semibold rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer max-w-[180px] truncate ${
+                sortFieldId ? "border-brand-500 bg-brand-50 text-brand-700" : "border-line-default bg-white text-fg-secondary"
+              }`}
+              title="Order contacts by a custom field"
+            >
+              <option value="">Sort by field…</option>
+              {sortableFields.map((cf: any) => (
+                <option key={cf.id} value={cf.id}>
+                  {cf.name}
+                </option>
+              ))}
+            </select>
 
-          <button
-            type="button"
-            onClick={() => setIsFilterOpen(true)}
-            className={`inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border transition-colors ${
-              conditions.length > 0
-                ? "border-brand-500 text-brand-700 bg-brand-50"
-                : "border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted"
-            }`}
-          >
-            <Filter className="h-3.5 w-3.5" />
-            Filters
-            {conditions.length > 0 && (
-              <span className="bg-brand-500 text-white text-[10px] font-bold h-4 min-w-4 px-1 rounded-full inline-flex items-center justify-center ml-0.5">
-                {conditions.length}
-              </span>
+            {sortField && (
+              <select
+                value={sortDir}
+                onChange={(e) => setSortDir(e.target.value as "asc" | "desc")}
+                className="h-9 border border-brand-500 bg-brand-50 text-brand-700 text-[12px] font-semibold rounded-md px-2 focus:outline-none cursor-pointer"
+                title="Sort direction"
+              >
+                {sortField.type === "NUMBER" ? (
+                  <>
+                    <option value="asc">Low → High</option>
+                    <option value="desc">High → Low</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="asc">A → Z</option>
+                    <option value="desc">Z → A</option>
+                  </>
+                )}
+              </select>
             )}
-          </button>
+          </>
+        )}
 
+        {quickActive && (
           <button
             type="button"
-            onClick={handleExportCsv}
-            disabled={filtered.length === 0}
-            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted disabled:opacity-40 transition-colors"
+            onClick={clearQuickFilters}
+            className="h-9 px-2 rounded-md text-[11.5px] font-bold text-negative-500 hover:bg-negative-50 transition-colors"
+            title="Clear quick filters"
           >
-            <Download className="h-3.5 w-3.5" />
-            Export
+            Reset
           </button>
+        )}
 
-          <button
-            type="button"
-            onClick={() => setIsImportOpen(true)}
-            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted transition-colors"
-          >
-            <Upload className="h-3.5 w-3.5" />
-            Import
-          </button>
+        <div className="flex-1 hidden md:block" />
 
-          <Button
-            variant="primary"
-            onClick={() => setIsAddOpen(true)}
-            className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold bg-brand-500 hover:bg-brand-600 text-white shadow-card border-none"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Add contact
-          </Button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setIsFilterOpen(true)}
+          className={`inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border transition-colors ${
+            conditions.length > 0
+              ? "border-brand-500 text-brand-700 bg-brand-50"
+              : "border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted"
+          }`}
+          title="Advanced multi-condition filters"
+        >
+          <Filter className="h-3.5 w-3.5" />
+          {conditions.length > 0 && (
+            <span className="bg-brand-500 text-white text-[10px] font-bold h-4 min-w-4 px-1 rounded-full inline-flex items-center justify-center">
+              {conditions.length}
+            </span>
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setIsImportOpen(true)}
+          className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md text-[12px] font-semibold border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted transition-colors"
+        >
+          <Upload className="h-3.5 w-3.5" />
+          Import
+        </button>
+
+        <Button
+          variant="primary"
+          onClick={() => setIsAddOpen(true)}
+          className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold bg-brand-500 hover:bg-brand-600 text-white shadow-card border-none"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Add contact
+        </Button>
       </div>
-
-      {/* ============ Inline segments chip row (no card wrapper) ============ */}
-      {showSegments && (
-        <div className="flex items-center flex-wrap gap-1.5 shrink-0 pb-1">
-          <SegmentChip
-            active={activeSegment === null}
-            onClick={() => setActiveSegment(null)}
-            label="All"
-            count={contacts.length}
-          />
-          {SEGMENTS.map((seg) => {
-            const Icon = seg.icon;
-            const active = activeSegment === seg.id;
-            const count = segmentCounts[seg.id] ?? 0;
-            return (
-              <SegmentChip
-                key={seg.id}
-                active={active}
-                onClick={() => setActiveSegment(active ? null : seg.id)}
-                label={seg.name}
-                count={count}
-                Icon={Icon}
-              />
-            );
-          })}
-        </div>
-      )}
 
       {/* ============ Bulk action bar ============ */}
       {selectedIds.length > 0 && (
@@ -531,9 +563,9 @@ export function ContactsTab({
           emptyState={
             <EmptyState
               icon={Users}
-              title={searchQuery || conditions.length > 0 || activeSegment ? "No matching contacts" : "No contacts yet"}
+              title={searchQuery || conditions.length > 0 ? "No matching contacts" : "No contacts yet"}
               description={
-                searchQuery || conditions.length > 0 || activeSegment
+                searchQuery || conditions.length > 0
                   ? "Try clearing filters, or add a contact manually."
                   : "Contacts flow in automatically from your AI agent's calls, or you can add them here."
               }
@@ -581,43 +613,15 @@ export function ContactsTab({
       {isImportOpen && (
         <ImportContactsModal onClose={() => setIsImportOpen(false)} onImported={refetch} />
       )}
-      {isDupesOpen && (
-        <DuplicatesModal onClose={() => setIsDupesOpen(false)} onMerged={refetch} />
-      )}
+
+      <ConfirmModal
+        isOpen={showBulkDeleteConfirm}
+        title="Delete contacts"
+        message={`Delete ${selectedIds.length} contact${selectedIds.length === 1 ? "" : "s"}? This action cannot be undone.`}
+        confirmText="Delete contacts"
+        onConfirm={() => bulkDeleteMutation.mutate(selectedIds)}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+      />
     </div>
-  );
-}
-
-/* ---------------- Segment chip (tinted so it's visible on white) ---------------- */
-
-interface SegmentChipProps {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  count: number;
-  Icon?: React.ComponentType<{ className?: string }>;
-}
-
-function SegmentChip({ active, onClick, label, count, Icon }: SegmentChipProps): React.JSX.Element {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`inline-flex items-center gap-1.5 h-7 pl-2.5 pr-2 rounded-full text-[11.5px] font-semibold transition-colors ${
-        active
-          ? "bg-blue-600 text-white shadow-card"
-          : "bg-bg-subtle border border-line-default text-fg-secondary hover:text-fg-primary hover:bg-bg-muted hover:border-line-strong"
-      }`}
-    >
-      {Icon && <Icon className="h-3 w-3" />}
-      {label}
-      <span
-        className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center tabular-nums ${
-          active ? "bg-white/20 text-white" : "bg-white text-fg-muted border border-line-default"
-        }`}
-      >
-        {count}
-      </span>
-    </button>
   );
 }

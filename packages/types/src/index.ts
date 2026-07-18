@@ -5,3 +5,4 @@ export * from "./contact.types.js";
 export type { CustomFieldType } from "./contact.types.js";
 export * from "./agent.types.js";
 export * from "./crm.types.js";
+export * from "./activity.types.js";

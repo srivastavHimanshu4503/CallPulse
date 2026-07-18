@@ -14,6 +14,7 @@ router.use(tenantMiddleware);
 router.get("/contacts", controller.getContacts);
 router.post("/contacts", controller.createContact);
 router.get("/contacts/:id", controller.getContactDetails);
+router.put("/contacts/:id", controller.updateContact);
 router.delete("/contacts/:id", controller.deleteContact);
 router.post("/contacts/bulk-delete", controller.bulkDeleteContacts);
 router.post("/contacts/import", controller.bulkImport);
@@ -28,6 +29,7 @@ router.put("/contacts/:contactId/custom-fields", controller.updateContactCustomF
 router.get("/deals", controller.getDeals);
 router.post("/deals", controller.createDeal);
 router.put("/deals/:id/stage", controller.updateDealStage);
+router.put("/deals/:id/probability/reset", controller.resetDealProbability);
 router.put("/deals/:id", controller.updateDeal);
 router.delete("/deals/:id", controller.deleteDeal);
 
@@ -37,6 +39,7 @@ router.post("/custom-fields", controller.createCustomField);
 
 // Custom pipeline endpoints
 router.get("/pipelines", controller.getPipelines);
+router.get("/pipelines/:id/stats", controller.getPipelineStats);
 router.post("/pipelines", controller.createPipeline);
 router.put("/pipelines/:id", controller.updatePipeline);
 router.delete("/pipelines/:id", controller.deletePipeline);

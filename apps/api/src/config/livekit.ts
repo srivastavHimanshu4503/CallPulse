@@ -39,12 +39,20 @@ export const createTestCallCredentials = async (input: {
   agentId: string;
   userIdentity: string;
   userName?: string;
+  /** Phone-like identity persisted as the contact's number for this call. */
+  callerId?: string;
   ttlSeconds?: number;
 }): Promise<TestCallCredentials> => {
   assertConfigured();
 
   const roomName = `test-${input.agentId}-${Date.now().toString(36)}`;
   const agentName = env.LIVEKIT_AGENT_NAME;
+  const roomMetadata = JSON.stringify({
+    agentId: input.agentId,
+    callSource: "browser",
+    callerId: input.callerId ?? input.userIdentity,
+    callerName: input.userName,
+  });
 
   const roomService = new RoomServiceClient(
     httpUrlFromWs(env.LIVEKIT_URL!),
@@ -53,7 +61,7 @@ export const createTestCallCredentials = async (input: {
   );
   await roomService.createRoom({
     name: roomName,
-    metadata: JSON.stringify({ agentId: input.agentId, callSource: "browser" }),
+    metadata: roomMetadata,
     emptyTimeout: 60,
     maxParticipants: 4,
   });
@@ -64,7 +72,7 @@ export const createTestCallCredentials = async (input: {
     env.LIVEKIT_API_SECRET!
   );
   await dispatch.createDispatch(roomName, agentName, {
-    metadata: JSON.stringify({ agentId: input.agentId, callSource: "browser" }),
+    metadata: roomMetadata,
   });
 
   const at = new AccessToken(env.LIVEKIT_API_KEY!, env.LIVEKIT_API_SECRET!, {

@@ -60,12 +60,23 @@ export interface WorkflowDef {
   name: string;
   description?: string;
   isActive: boolean;
+  folderId?: string | null;
   trigger: Trigger;
   steps: BlockNode[];
   createdAt?: string;
   updatedAt?: string;
   lastRunAt?: string | null;
   runCount?: number;
+}
+
+export interface WorkflowFolder {
+  id: string;
+  name: string;
+  parentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  workflowCount: number;
+  childCount: number;
 }
 
 // ─────────────────────────── Registry ───────────────────────────
@@ -78,7 +89,8 @@ export type FieldKind =
   | "boolean"
   | "duration"
   | "sentiment"
-  | "score";
+  | "score"
+  | "conditions"; // multi-row condition builder (AND/OR with N rules)
 
 export interface FieldSchema {
   key: string;

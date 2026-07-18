@@ -27,6 +27,7 @@ function serialize(w: any) {
   return {
     id: w.id,
     tenantId: w.tenantId,
+    folderId: w.folderId ?? null,
     name: w.name,
     description: stored.description || "",
     isActive: stored.isActive !== false,
@@ -130,5 +131,64 @@ export class WorkflowsService {
       await tx.workflowRun.deleteMany({ where: { workflowDefinitionId: id, tenantId } });
       await tx.workflowDefinition.delete({ where: { id } });
     });
+  }
+
+  /** Reassign a workflow to a folder (or null for root). */
+  async move(tenantId: string, id: string, folderId: string | null) {
+    const existing = await db.workflowDefinition.findFirst({ where: { id, tenantId } });
+    if (!existing) throw new Error("Workflow not found");
+
+    if (folderId) {
+      const folder = await db.workflowFolder.findFirst({ where: { id: folderId, tenantId } });
+      if (!folder) throw new Error("Target folder not found");
+    }
+
+    const updated = await db.workflowDefinition.update({
+      where: { id },
+      data: { folderId: folderId || null },
+    });
+    return serialize(updated);
+  }
+
+  /**
+   * Delete several workflows at once. Runs history cascades per row. A bad
+   * id (e.g. already deleted) is skipped, not fatal — the caller gets a
+   * count so the UI can surface partial success.
+   */
+  async bulkDelete(tenantId: string, ids: string[]): Promise<{ deleted: number; skipped: number }> {
+    if (!Array.isArray(ids) || ids.length === 0) return { deleted: 0, skipped: 0 };
+    let deleted = 0;
+    let skipped = 0;
+    for (const id of ids) {
+      try {
+        await this.remove(tenantId, id);
+        deleted += 1;
+      } catch {
+        skipped += 1;
+      }
+    }
+    return { deleted, skipped };
+  }
+
+  /** Move several workflows to the same folder in one round-trip. */
+  async bulkMove(
+    tenantId: string,
+    ids: string[],
+    folderId: string | null,
+  ): Promise<{ moved: number; skipped: number }> {
+    if (!Array.isArray(ids) || ids.length === 0) return { moved: 0, skipped: 0 };
+
+    if (folderId) {
+      const folder = await db.workflowFolder.findFirst({ where: { id: folderId, tenantId } });
+      if (!folder) throw new Error("Target folder not found");
+    }
+
+    // Constrained by tenantId so a rogue id can't slip through.
+    const result = await db.workflowDefinition.updateMany({
+      where: { id: { in: ids }, tenantId },
+      data: { folderId: folderId || null },
+    });
+
+    return { moved: result.count, skipped: ids.length - result.count };
   }
 }

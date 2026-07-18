@@ -4,7 +4,7 @@ import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { api } from "../../lib/axios.js";
 import { Users, FolderKanban, Sliders } from "lucide-react";
 import { Tabs } from "../../components/ui-ext/index.js";
-import { PageHeader } from "../../components/common/UI.tsx";
+import { PageHeader } from "../../components/common/UI.js";
 import { ContactsTab } from "./components/ContactsTab.js";
 import { PipelineTab } from "./components/PipelineTab.js";
 import { CustomFieldsTab } from "./components/CustomFieldsTab.js";
@@ -40,8 +40,12 @@ export function CRM(): React.JSX.Element {
     <PageWrapper noScroll={true}>
       <div className="flex flex-col h-full overflow-hidden font-sans">
         <PageHeader
-          title="CRM"
-          subtitle={<span>Contacts, pipelines and custom fields for your Indian SMB workspace.</span>}
+          title="Smart CRM"
+          subtitle={
+            <span>
+              Every call auto-updates contacts, scores leads and creates deals — no manual data entry.
+            </span>
+          }
           actions={<Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} variant="segmented" />}
         />
 

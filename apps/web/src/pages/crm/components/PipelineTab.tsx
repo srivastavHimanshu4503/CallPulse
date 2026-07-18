@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { api } from "../../../lib/axios.js";
-import { TrendingUp, Plus, ArrowLeft, ArrowRight, Layers, FolderKanban, Sparkles, Filter, Trash2, AlertTriangle, Search, Settings } from "lucide-react";
+import { Plus, ArrowLeft, ArrowRight, Layers, FolderKanban, Sparkles, Filter, Trash2, AlertTriangle, Search, Settings } from "lucide-react";
 import { Button } from "@antigravity/ui";
 import { toast } from "sonner";
 import { FilterLogicalOperator, FilterOperator } from "@antigravity/types";
@@ -51,6 +51,8 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
   const [title, setTitle] = React.useState("");
   const [value, setValue] = React.useState("");
   const [stage, setStage] = React.useState("");
+  const [newDealPriority, setNewDealPriority] = React.useState("MEDIUM");
+  const [newDealExpectedClose, setNewDealExpectedClose] = React.useState("");
 
   // Sync default stage when STAGES change
   React.useEffect(() => {
@@ -68,6 +70,15 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
   const [editDealTitle, setEditDealTitle] = React.useState("");
   const [editDealValue, setEditDealValue] = React.useState("");
   const [editDealStage, setEditDealStage] = React.useState("");
+  const [editDealProbability, setEditDealProbability] = React.useState("");
+  // What was loaded when the modal opened — probability is only submitted
+  // when the user actually edits it, otherwise a stage change would wrongly
+  // convert an AUTO probability into a MANUAL override.
+  const editDealProbabilityInitial = React.useRef("");
+  const [editDealProbabilitySource, setEditDealProbabilitySource] = React.useState("AUTO");
+  const [editDealPriority, setEditDealPriority] = React.useState("MEDIUM");
+  const [editDealExpectedClose, setEditDealExpectedClose] = React.useState("");
+  const [editDealNextFollowUp, setEditDealNextFollowUp] = React.useState("");
 
   // Custom Delete Confirmation Modal states
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
@@ -95,6 +106,26 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       return res.data.data as any[];
     },
   });
+
+  // Server-computed pipeline statistics (spec: single source of truth for
+  // forecasting numbers — never recompute weighted revenue client-side).
+  const { data: pipelineStats, refetch: refetchStats } = useQuery({
+    queryKey: ["pipeline-stats", activePipeline?.id],
+    queryFn: async () => {
+      const res = await api.get(`/crm/pipelines/${activePipeline!.id}/stats`);
+      return res.data.data;
+    },
+    enabled: !!activePipeline?.id,
+  });
+
+  // Structured stage configs (color, probability, won/lost) keyed by name.
+  const stageCfgByName = React.useMemo(() => {
+    const m: Record<string, any> = {};
+    (activePipeline?.stageConfigs || []).forEach((s: any) => {
+      m[s.name] = s;
+    });
+    return m;
+  }, [activePipeline]);
 
   // Filter deals belonging to the active pipeline (including legacy deals for default pipeline)
   // Plus dynamic smart filter application based on the Pipeline's custom field configuration!
@@ -330,10 +361,13 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       toast.success(`Successfully registered pipeline record: "${data.title}"`);
       refetchDeals();
       refetchContacts();
+      refetchStats();
       setIsAddOpen(false);
       setTitle("");
       setValue("");
       setContactId("");
+      setNewDealPriority("MEDIUM");
+      setNewDealExpectedClose("");
       if (STAGES.length > 0) setStage(STAGES[0]);
     },
     onError: (err: any) => {
@@ -350,9 +384,28 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
     onSuccess: () => {
       refetchDeals();
       refetchContacts();
+      refetchStats();
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.error || "Failed to shift stage");
+    },
+  });
+
+  // Reset a manual probability override back to the stage default
+  const resetProbabilityMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await api.put(`/crm/deals/${id}/probability/reset`, {});
+      return res.data.data;
+    },
+    onSuccess: (data: any) => {
+      toast.success(`Probability reset to stage default (${data.probability}%)`);
+      setEditDealProbability(String(data.probability));
+      setEditDealProbabilitySource("AUTO");
+      refetchDeals();
+      refetchStats();
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.error || "Failed to reset probability");
     },
   });
 
@@ -366,6 +419,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       toast.success("Pipeline record removed successfully!");
       refetchDeals();
       refetchContacts();
+      refetchStats();
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.error || "Failed to remove pipeline record");
@@ -374,18 +428,16 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
 
   // Update Deal Mutation
   const updateDealMutation = useMutation({
-    mutationFn: async (payload: { id: string; title: string; value: number; stage: string }) => {
-      const res = await api.put(`/crm/deals/${payload.id}`, {
-        title: payload.title,
-        value: payload.value,
-        stage: payload.stage,
-      });
+    mutationFn: async (payload: { id: string } & Record<string, unknown>) => {
+      const { id, ...body } = payload;
+      const res = await api.put(`/crm/deals/${id}`, body);
       return res.data.data;
     },
     onSuccess: (data) => {
       toast.success(`Successfully updated opportunity: "${data.title}"`);
       refetchDeals();
       refetchContacts();
+      refetchStats();
       setIsEditDealOpen(false);
     },
     onError: (err: any) => {
@@ -412,6 +464,8 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       title: title.trim(),
       value: Number(value),
       stage,
+      priority: newDealPriority,
+      expectedCloseDate: newDealExpectedClose || null,
     });
   };
 
@@ -457,52 +511,93 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
   return (
     <div className="flex flex-col h-full overflow-hidden font-sans">
       
-      {/* Header — pipeline selector + settings + create actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-2 mb-2 select-none">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md bg-bg-subtle border border-line-default text-[11px] font-semibold text-fg-muted uppercase tracking-wider shrink-0">
-            <TrendingUp className="h-3.5 w-3.5 text-brand-500" />
-            Pipeline
-          </span>
+      {/* Toolbar — one compact row so the board gets maximum space */}
+      <div className="flex flex-wrap items-center gap-1.5 shrink-0 mb-2 select-none">
+        {pipelines.length > 0 && (
+          <>
+            <select
+              value={activePipelineId}
+              onChange={(e) => setActivePipelineId(e.target.value)}
+              className="h-9 bg-white border border-line-default text-[13px] font-semibold text-fg-primary rounded-md pl-3 pr-8 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 cursor-pointer shadow-card max-w-[220px] truncate"
+              title="Switch pipeline"
+            >
+              {pipelines.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                  {p.filters && p.filters.length > 0 ? "  ·  auto" : ""}
+                </option>
+              ))}
+            </select>
 
-          {pipelines.length > 0 && (
-            <>
-              <select
-                value={activePipelineId}
-                onChange={(e) => setActivePipelineId(e.target.value)}
-                className="h-9 bg-white border border-line-default text-[12.5px] font-semibold text-fg-primary rounded-md px-3 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 cursor-pointer shadow-card"
-              >
-                {pipelines.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                    {p.filters && p.filters.length > 0 ? "  ·  auto-filter" : ""}
-                  </option>
-                ))}
-              </select>
+            <button
+              type="button"
+              onClick={() => {
+                if (activePipeline) setIsEditOpen(true);
+              }}
+              className="h-9 w-9 rounded-md border border-line-default bg-white text-fg-secondary hover:text-fg-primary hover:bg-bg-muted flex items-center justify-center transition-colors"
+              title="Pipeline settings — stages, probabilities, colors"
+            >
+              <Settings className="h-3.5 w-3.5" />
+            </button>
+          </>
+        )}
 
-              <button
-                type="button"
-                onClick={() => {
-                  if (activePipeline) setIsEditOpen(true);
-                }}
-                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-line-default bg-bg-subtle text-fg-secondary hover:text-fg-primary hover:bg-bg-muted text-[12px] font-semibold transition-colors"
-                title="Pipeline settings"
-              >
-                <Settings className="h-3.5 w-3.5" />
-                Settings
-              </button>
-            </>
-          )}
+        <button
+          type="button"
+          onClick={() => setIsPipelineModalOpen(true)}
+          className="h-9 w-9 rounded-md border border-dashed border-line-default bg-white text-fg-secondary hover:text-brand-600 hover:border-brand-500/40 flex items-center justify-center transition-colors"
+          title="New pipeline"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
 
-          <button
-            type="button"
-            onClick={() => setIsPipelineModalOpen(true)}
-            className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-brand-500/30 bg-brand-50 text-brand-700 hover:bg-brand-100 text-[12px] font-semibold transition-colors"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            New pipeline
-          </button>
+        <div className="h-5 w-px bg-line-default mx-1 hidden sm:block" />
+
+        {/* Search */}
+        <div className="relative flex-1 min-w-[160px] max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-fg-muted" />
+          <input
+            type="text"
+            placeholder="Search deals or contacts…"
+            value={dealSearchQuery}
+            onChange={(e) => setDealSearchQuery(e.target.value)}
+            className="w-full bg-white border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12px] text-fg-primary placeholder-fg-muted rounded-md h-9 pl-8 pr-3 focus:outline-none"
+          />
         </div>
+
+        {/* Filters (drawer) */}
+        <button
+          type="button"
+          onClick={() => setIsFilterBuilderOpen(true)}
+          className={`h-9 px-2.5 rounded-md border text-[12px] font-semibold flex items-center gap-1.5 transition-colors focus:outline-none ${
+            filterConditions.length > 0
+              ? "border-brand-500 text-brand-700 bg-brand-50"
+              : "border-line-default bg-white text-fg-secondary hover:text-fg-primary"
+          }`}
+          title="Advanced filters"
+        >
+          <Filter className="h-3.5 w-3.5" />
+          {filterConditions.length > 0 && (
+            <span className="bg-brand-500 text-white text-[10px] font-bold h-4 min-w-4 px-1 rounded-full flex items-center justify-center">
+              {filterConditions.length}
+            </span>
+          )}
+        </button>
+
+        {/* Sort */}
+        <select
+          value={dealSortBy}
+          onChange={(e) => setDealSortBy(e.target.value)}
+          className="h-9 bg-white border border-line-default text-[12px] font-semibold text-fg-secondary rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer"
+          title="Sort deals"
+        >
+          <option value="value-desc">Value ↓</option>
+          <option value="value-asc">Value ↑</option>
+          <option value="title-asc">Title A–Z</option>
+          <option value="created-newest">Newest</option>
+        </select>
+
+        <div className="flex-1 hidden md:block" />
 
         <Button
           variant="primary"
@@ -516,68 +611,29 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
         </Button>
       </div>
 
-      {/* HubSpot Filters Toggle Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 shrink-0 bg-white border border-[#E5E5E5] p-2.5 rounded-[6px] select-none">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#111111] uppercase tracking-wider border-r border-[#E5E5E5] pr-3 mr-1 shrink-0 select-none">
-            <Filter className="h-3.5 w-3.5 text-[#2563EB]" /> Advanced Filters
-          </div>
-
-          {/* Live Card Title Search */}
-          <div className="relative flex-1 max-w-xs shrink-0">
-            <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-[#999999]" />
-            <input
-              type="text"
-              placeholder="Search deals or contacts..."
-              value={dealSearchQuery}
-              onChange={(e) => setDealSearchQuery(e.target.value)}
-              className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-[11px] text-[#111111] placeholder-[#999999] rounded-[6px] h-8 pl-8 pr-3 focus:outline-none"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsFilterBuilderOpen(true)}
-            className={`h-8 px-3 rounded-[6px] border text-[11px] font-semibold flex items-center gap-1.5 transition-colors focus:outline-none ${
-              filterConditions.length > 0
-                ? "border-[#2563EB] text-[#2563EB] bg-[#EFF6FF]"
-                : "border-[#E5E5E5] bg-white text-[#666666] hover:text-[#111111]"
-            }`}
-          >
-            Configure Filters
-            {filterConditions.length > 0 && (
-              <span className="bg-[#2563EB] text-white text-[10px] font-bold h-4.5 min-w-4.5 px-1 rounded-full flex items-center justify-center">
-                {filterConditions.length}
-              </span>
-            )}
-          </button>
-
-          {/* Deals Sort selection */}
-          <select
-            value={dealSortBy}
-            onChange={(e) => setDealSortBy(e.target.value)}
-            className="h-8 bg-white border border-[#E5E5E5] text-[11px] font-semibold text-[#666666] rounded-[6px] px-2 focus:outline-none focus:border-[#2563EB] cursor-pointer"
-          >
-            <option value="value-desc">Sort: Value (High → Low)</option>
-            <option value="value-asc">Sort: Value (Low → High)</option>
-            <option value="title-asc">Sort: Title (A → Z)</option>
-            <option value="created-newest">Sort: Newest First</option>
-          </select>
+      {/* Pipeline statistics — one quiet line, server-computed */}
+      {pipelineStats?.header && (
+        <div className="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] font-medium text-fg-secondary bg-white border border-line-default rounded-md px-3 py-1.5 mb-2 shrink-0 select-none overflow-x-auto whitespace-nowrap">
+          <span className="inline-flex items-center gap-1 text-brand-700 font-bold uppercase tracking-wide text-[9.5px]">
+            <Sparkles className="h-3 w-3" /> Live forecast
+          </span>
+          {[
+            { label: "Open", value: pipelineStats.header.openDeals },
+            { label: "Won", value: pipelineStats.header.wonDeals, tone: "text-positive-600" },
+            { label: "Lost", value: pipelineStats.header.lostDeals, tone: "text-negative-500" },
+            { label: "Value", value: `₹${Math.round(pipelineStats.header.pipelineValue).toLocaleString("en-IN")}` },
+            { label: "Weighted", value: `₹${Math.round(pipelineStats.header.weightedRevenue).toLocaleString("en-IN")}` },
+            { label: "Win rate", value: `${pipelineStats.header.winRate}%` },
+            { label: "Avg cycle", value: `${pipelineStats.header.avgSalesCycleDays}d` },
+            { label: "Closing this month", value: pipelineStats.header.closingThisMonth },
+          ].map((stat) => (
+            <span key={stat.label} className="inline-flex items-baseline gap-1">
+              <span className="text-fg-muted">{stat.label}</span>
+              <span className={`font-bold text-[12px] ${(stat as any).tone || "text-fg-primary"}`}>{stat.value}</span>
+            </span>
+          ))}
         </div>
-
-        {filterConditions.length > 0 && (
-          <button
-            type="button"
-            onClick={() => {
-              setFilterConditions([]);
-              setFilterOperator(FilterLogicalOperator.AND);
-            }}
-            className="h-8 px-3 rounded-[6px] border border-[#E5E5E5] bg-white text-[#DC2626] hover:bg-[#DC2626]/5 text-[11px] font-bold transition-colors"
-          >
-            Clear All Filters
-          </button>
-        )}
-      </div>
+      )}
 
       {/* HubSpot-style Advanced Filters Right Slide-Over Drawer */}
       {isFilterBuilderOpen && (
@@ -820,17 +876,34 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                 className="w-64 bg-white border border-[#E5E5E5] rounded-[6px] shrink-0 flex flex-col justify-between h-full"
               >
                 {/* Stage Header */}
-                <div className="p-4 border-b border-[#E5E5E5] bg-[#FFFFFF] rounded-t-[6px] shrink-0 flex flex-col gap-0.5">
+                <div
+                  className="p-4 border-b border-[#E5E5E5] bg-[#FFFFFF] rounded-t-[6px] shrink-0 flex flex-col gap-0.5"
+                  style={{ borderTop: `3px solid ${stageCfgByName[s]?.color || "#E5E5E5"}` }}
+                >
                   <div className="flex items-center justify-between">
-                    <h4 className="text-[10px] font-bold text-[#111111] uppercase tracking-wider leading-none truncate pr-2">
+                    <h4 className="text-[10px] font-bold text-[#111111] uppercase tracking-wider leading-none truncate pr-2 flex items-center gap-1.5">
+                      <span
+                        className="h-2 w-2 rounded-full shrink-0"
+                        style={{ backgroundColor: stageCfgByName[s]?.color || "#999999" }}
+                      />
                       {s}
                     </h4>
-                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#F7F7F7] border border-[#E5E5E5] text-[#666666]">
-                      {list.length}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      {stageCfgByName[s] && (
+                        <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#EFF6FF] border border-[#2563EB]/20 text-[#2563EB]" title="Stage default probability">
+                          {stageCfgByName[s].probability}%
+                        </span>
+                      )}
+                      <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#F7F7F7] border border-[#E5E5E5] text-[#666666]">
+                        {list.length}
+                      </span>
+                    </div>
                   </div>
                   <div className="text-[10px] text-[#999999] font-bold tracking-wide uppercase mt-1">
                     Value: <span className="text-[#111111] font-semibold">Rs. {sum.toLocaleString("en-IN")}</span>
+                    <span className="text-[#999999] font-medium normal-case ml-2" title="Weighted revenue (value × probability)">
+                      wtd. Rs. {Math.round(list.reduce((acc: number, d: any) => acc + (d.weightedValue || 0), 0)).toLocaleString("en-IN")}
+                    </span>
                   </div>
                 </div>
 
@@ -866,16 +939,69 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                           setEditDealTitle(d.title);
                           setEditDealValue(String(d.value));
                           setEditDealStage(d.stage);
+                          setEditDealProbability(String(d.probability ?? ""));
+                          editDealProbabilityInitial.current = String(d.probability ?? "");
+                          setEditDealProbabilitySource(d.probabilitySource || "AUTO");
+                          setEditDealPriority(d.priority || "MEDIUM");
+                          setEditDealExpectedClose(d.expectedCloseDate ? d.expectedCloseDate.slice(0, 10) : "");
+                          setEditDealNextFollowUp(d.nextFollowUpAt ? d.nextFollowUpAt.slice(0, 10) : "");
                           setIsEditDealOpen(true);
                         }}
-                        className="bg-white border border-[#E5E5E5] rounded-[6px] p-3.5 space-y-3 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#2563EB]/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.03)] cursor-pointer active:cursor-grabbing transition-all duration-200"
+                        className={`bg-white border rounded-[6px] p-3.5 space-y-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#2563EB]/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.03)] cursor-pointer active:cursor-grabbing transition-all duration-200 ${
+                          d.isOverdue ? "border-[#DC2626]/40 border-l-[3px] border-l-[#DC2626]" : "border-[#E5E5E5]"
+                        }`}
                       >
                         <div>
-                          <h5 className="text-xs font-bold text-[#111111] capitalize leading-snug">{d.title}</h5>
+                          <div className="flex items-start justify-between gap-1.5">
+                            <h5 className="text-xs font-bold text-[#111111] capitalize leading-snug">{d.title}</h5>
+                            {d.leadSource === "AI Call" && (
+                              <span
+                                className="shrink-0 inline-flex items-center gap-0.5 text-[8.5px] font-bold uppercase tracking-wider rounded px-1 py-0.5 border text-[#7C3AED] bg-[#7C3AED]/5 border-[#7C3AED]/25"
+                                title="Created automatically by your AI agent from a call"
+                              >
+                                <Sparkles className="h-2.5 w-2.5" />
+                                AI
+                              </span>
+                            )}
+                            {(d.priority === "URGENT" || d.priority === "HIGH") && (
+                              <span
+                                className={`shrink-0 text-[8.5px] font-bold uppercase tracking-wider rounded px-1 py-0.5 border ${
+                                  d.priority === "URGENT"
+                                    ? "text-[#DC2626] bg-[#DC2626]/5 border-[#DC2626]/25"
+                                    : "text-[#EA580C] bg-[#EA580C]/5 border-[#EA580C]/25"
+                                }`}
+                              >
+                                {d.priority}
+                              </span>
+                            )}
+                          </div>
                           <span className="text-[10px] font-bold text-[#999999] capitalize tracking-wide block mt-1">
                             Contact: <span className="font-semibold text-[#666666]">{d.contactName}</span>
                           </span>
                         </div>
+
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold text-[#666666]">
+                          <span
+                            className="inline-flex items-center gap-0.5 rounded px-1 py-0.5 bg-[#F7F7F7] border border-[#E5E5E5]"
+                            title={d.probabilitySource === "MANUAL" ? "Probability manually set" : "Probability from stage default"}
+                          >
+                            {d.probability ?? 0}%{d.probabilitySource === "MANUAL" && <span className="text-[#2563EB]">·M</span>}
+                          </span>
+                          <span title="Weighted revenue">wtd. Rs. {Math.round(d.weightedValue || 0).toLocaleString("en-IN")}</span>
+                          {d.expectedCloseDate && (
+                            <span title="Expected close date">
+                              ⏱ {new Date(d.expectedCloseDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                            </span>
+                          )}
+                          {d.isOverdue && <span className="text-[#DC2626] font-bold">Follow-up overdue</span>}
+                        </div>
+
+                        {(d.aiNextAction || d.aiSummary) && (
+                          <div className="flex items-start gap-1 text-[10px] text-[#666666] leading-snug border-t border-[#F7F7F7] pt-1.5" title={d.aiSummary || undefined}>
+                            <Sparkles className="h-3 w-3 text-[#2563EB] shrink-0 mt-px" />
+                            <span className="line-clamp-2">{d.aiNextAction || d.aiSummary}</span>
+                          </div>
+                        )}
 
                         <div className="flex items-center justify-between border-t border-[#F7F7F7] pt-2">
                           <span className="text-xs font-bold text-[#2563EB]">Rs. {d.value.toLocaleString("en-IN")}</span>
@@ -1009,9 +1135,37 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     required
                   >
                     {STAGES.map((s: string) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {s}
+                        {stageCfgByName[s] ? ` (${stageCfgByName[s].probability}%)` : ""}
+                      </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Priority</label>
+                    <select
+                      value={newDealPriority}
+                      onChange={(e) => setNewDealPriority(e.target.value)}
+                      className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+                    >
+                      <option value="LOW">Low</option>
+                      <option value="MEDIUM">Medium</option>
+                      <option value="HIGH">High</option>
+                      <option value="URGENT">Urgent</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Expected Close</label>
+                    <input
+                      type="date"
+                      value={newDealExpectedClose}
+                      onChange={(e) => setNewDealExpectedClose(e.target.value)}
+                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                    />
+                  </div>
                 </div>
 
                 <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
@@ -1146,8 +1300,15 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     title: editDealTitle.trim(),
                     value: Number(editDealValue),
                     stage: editDealStage,
+                    probability:
+                      editDealProbability !== "" && editDealProbability !== editDealProbabilityInitial.current
+                        ? Number(editDealProbability)
+                        : undefined,
+                    priority: editDealPriority,
+                    expectedCloseDate: editDealExpectedClose || null,
+                    nextFollowUpAt: editDealNextFollowUp || null,
                   });
-                }} 
+                }}
                 className="p-6 space-y-4"
               >
                 <div>
@@ -1184,9 +1345,78 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     required
                   >
                     {STAGES.map((s: string) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {s}
+                        {stageCfgByName[s] ? ` (${stageCfgByName[s].probability}%)` : ""}
+                      </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">
+                      Probability (%)
+                      {editDealProbabilitySource === "MANUAL" && (
+                        <span className="ml-1.5 text-[9px] font-bold text-[#2563EB] uppercase">Manual</span>
+                      )}
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={editDealProbability}
+                        onChange={(e) => setEditDealProbability(e.target.value)}
+                        className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                      />
+                      {editDealProbabilitySource === "MANUAL" && (
+                        <button
+                          type="button"
+                          onClick={() => resetProbabilityMutation.mutate(editDealId)}
+                          disabled={resetProbabilityMutation.isPending}
+                          className="shrink-0 h-9 px-2 rounded-[6px] border border-[#E5E5E5] bg-white text-[10px] font-bold text-[#666666] hover:text-[#2563EB] hover:border-[#2563EB]/40 transition-colors"
+                          title="Reset to stage default probability"
+                        >
+                          Reset
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Priority</label>
+                    <select
+                      value={editDealPriority}
+                      onChange={(e) => setEditDealPriority(e.target.value)}
+                      className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+                    >
+                      <option value="LOW">Low</option>
+                      <option value="MEDIUM">Medium</option>
+                      <option value="HIGH">High</option>
+                      <option value="URGENT">Urgent</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Expected Close</label>
+                    <input
+                      type="date"
+                      value={editDealExpectedClose}
+                      onChange={(e) => setEditDealExpectedClose(e.target.value)}
+                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Next Follow-up</label>
+                    <input
+                      type="date"
+                      value={editDealNextFollowUp}
+                      onChange={(e) => setEditDealNextFollowUp(e.target.value)}
+                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                    />
+                  </div>
                 </div>
 
                 <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">

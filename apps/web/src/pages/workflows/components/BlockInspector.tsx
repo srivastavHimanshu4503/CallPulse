@@ -278,7 +278,7 @@ function FieldRow({
             step={0.05}
             value={Number(value) || 0}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full accent-emerald-500"
+            className="w-full accent-blue-500"
           />
           <div className="flex justify-between text-[10px] text-fg-muted font-medium mt-1">
             <span>Very negative</span>
@@ -297,7 +297,7 @@ function FieldRow({
             step={5}
             value={Number(value) || 0}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full accent-emerald-500"
+            className="w-full accent-blue-500"
           />
           <div className="flex justify-between text-[10px] text-fg-muted font-medium mt-1">
             <span>0</span>
@@ -317,6 +317,16 @@ function FieldRow({
           />
           <span className="text-[11px] text-fg-muted">minutes</span>
         </div>
+      )}
+
+      {field.kind === "conditions" && (
+        <ConditionsEditor
+          value={value && typeof value === "object" && Array.isArray(value.conditions)
+            ? value
+            : { logical: FilterLogicalOperator.AND, conditions: [] }
+          }
+          onChange={onChange}
+        />
       )}
 
       {field.helper && (
@@ -448,7 +458,7 @@ function FilterSection({
               checked={!!filter}
               onChange={toggle}
             />
-            <span className="w-9 h-5 bg-line-strong rounded-full peer-checked:bg-emerald-500 transition-colors" />
+            <span className="w-9 h-5 bg-line-strong rounded-full peer-checked:bg-blue-500 transition-colors" />
             <span
               className={cn(
                 "absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-line-default rounded-full shadow-card transition-transform",
@@ -607,6 +617,177 @@ function FilterSection({
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ─────────────────────── ConditionsEditor (multi-row, used inside IF block) ─────────────────────── */
+
+function ConditionsEditor({
+  value,
+  onChange,
+}: {
+  value: BlockFilter;
+  onChange: (next: BlockFilter) => void;
+}): React.JSX.Element {
+  const addCondition = () => {
+    const first = FILTER_FIELDS[0]!;
+    const cond: FilterCondition = {
+      id: Math.random().toString(36).slice(2, 9),
+      fieldId: first.id,
+      operator: operatorsFor(first.id)[0]!.value,
+      value: "",
+    };
+    onChange({ ...value, conditions: [...value.conditions, cond] });
+  };
+
+  const patch = (id: string, p: Partial<FilterCondition>) => {
+    onChange({
+      ...value,
+      conditions: value.conditions.map((c) => (c.id === id ? { ...c, ...p } : c)),
+    });
+  };
+
+  const remove = (id: string) => {
+    onChange({ ...value, conditions: value.conditions.filter((c) => c.id !== id) });
+  };
+
+  return (
+    <div className="rounded-md border border-line-default bg-slate-50/50 p-2 space-y-2">
+      {/* Match ALL / ANY */}
+      <div className="inline-flex items-center gap-1 bg-white border border-line-default p-1 rounded-md">
+        {[FilterLogicalOperator.AND, FilterLogicalOperator.OR].map((op) => (
+          <button
+            key={op}
+            type="button"
+            onClick={() => onChange({ ...value, logical: op })}
+            className={cn(
+              "px-2.5 h-6 rounded text-[10.5px] font-semibold transition-colors",
+              value.logical === op
+                ? "bg-amber-500 text-white"
+                : "text-fg-secondary hover:text-fg-primary",
+            )}
+          >
+            {op === FilterLogicalOperator.AND ? "Match ALL" : "Match ANY"}
+          </button>
+        ))}
+      </div>
+
+      {/* Warning if empty */}
+      {value.conditions.length === 0 ? (
+        <div className="rounded-md border border-dashed border-line-default bg-white py-4 text-center text-[11px] text-fg-muted">
+          No rules yet. Add at least one to branch.
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {value.conditions.map((c, idx) => {
+            const ops = operatorsFor(c.fieldId);
+            const field = FILTER_FIELDS.find((f) => f.id === c.fieldId);
+            const noValue = c.operator === FilterOperator.IS_EMPTY || c.operator === FilterOperator.IS_NOT_EMPTY;
+            return (
+              <div key={c.id} className="bg-white border border-line-default rounded-md p-2 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider text-fg-muted">
+                    {idx === 0 ? "Where" : value.logical === FilterLogicalOperator.AND ? "and" : "or"}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => remove(c.id)}
+                    className="h-5 w-5 rounded text-fg-muted hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <select
+                    value={c.fieldId}
+                    onChange={(e) => {
+                      const nf = e.target.value;
+                      patch(c.id, { fieldId: nf, operator: operatorsFor(nf)[0]!.value, value: "" });
+                    }}
+                    className="h-7 bg-white border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-amber-500"
+                  >
+                    {FILTER_FIELDS.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.label}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={c.operator}
+                    onChange={(e) => patch(c.id, { operator: e.target.value as FilterOperator })}
+                    className="h-7 bg-white border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-amber-500"
+                  >
+                    {ops.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {!noValue && (
+                  <>
+                    {field?.id === "hasOpenDeals" ? (
+                      <select
+                        value={c.value}
+                        onChange={(e) => patch(c.id, { value: e.target.value })}
+                        className="w-full h-7 bg-white border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-amber-500"
+                      >
+                        <option value="">Select…</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    ) : field?.id === "language" ? (
+                      <select
+                        value={c.value}
+                        onChange={(e) => patch(c.id, { value: e.target.value })}
+                        className="w-full h-7 bg-white border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-amber-500"
+                      >
+                        <option value="">Select…</option>
+                        {["English", "Hindi", "Hinglish", "Marathi", "Tamil", "Telugu"].map((l) => (
+                          <option key={l} value={l}>{l}</option>
+                        ))}
+                      </select>
+                    ) : field?.kind === "date" ? (
+                      <input
+                        type="date"
+                        value={c.value}
+                        onChange={(e) => patch(c.id, { value: e.target.value })}
+                        className="w-full h-7 bg-white border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-amber-500"
+                      />
+                    ) : field?.kind === "number" ? (
+                      <input
+                        type="number"
+                        value={c.value}
+                        onChange={(e) => patch(c.id, { value: e.target.value })}
+                        placeholder="value"
+                        className="w-full h-7 bg-white border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-amber-500"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={c.value}
+                        onChange={(e) => patch(c.id, { value: e.target.value })}
+                        placeholder="value"
+                        className="w-full h-7 bg-white border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-amber-500"
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={addCondition}
+        className="w-full inline-flex items-center justify-center gap-1 h-8 rounded-md border border-dashed border-amber-500/40 bg-amber-50 text-amber-700 hover:bg-amber-100 text-[11.5px] font-semibold"
+      >
+        <Plus className="h-3 w-3" />
+        {value.conditions.length > 0 ? "Add another rule" : "Add first rule"}
+      </button>
     </div>
   );
 }

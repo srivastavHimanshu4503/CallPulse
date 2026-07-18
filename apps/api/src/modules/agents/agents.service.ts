@@ -212,16 +212,36 @@ export class AgentsService {
     // Ownership check — this agent must belong to the caller's tenant.
     const agent = await db.aIAgent.findFirst({
       where: { id: agentId, tenantId, deletedAt: null, isActive: true },
-      select: { id: true },
+      select: { id: true, phoneNumberId: true },
     });
     if (!agent) {
       throw new Error("Agent not found for this tenant or is inactive");
     }
 
+    // Resolve the caller's real name so test-call contacts/logs show who
+    // actually made the call instead of a raw userId.
+    const user = await db.user.findFirst({
+      where: { id: userId, tenantId, deletedAt: null },
+      select: { name: true },
+    });
+
+    // Test-call contacts should carry a real-looking phone: use the agent's
+    // own number when the tenant has one purchased; the synthetic
+    // `test-<userId>` id is only the fallback for number-less accounts.
+    let callerId = `test-${userId}`;
+    if (agent.phoneNumberId) {
+      const phone = await db.phoneNumber.findFirst({
+        where: { id: agent.phoneNumberId, tenantId },
+        select: { phoneNumber: true },
+      });
+      if (phone?.phoneNumber) callerId = phone.phoneNumber;
+    }
+
     return createTestCallCredentials({
       agentId,
       userIdentity: `test-${userId}`,
-      userName,
+      userName: user?.name ?? userName,
+      callerId,
     });
   }
 
@@ -347,7 +367,7 @@ export class AgentsService {
   }
 
   async getAgentLogs(tenantId: string, agentId: string, filters: LogFilters): Promise<any[]> {
-    const { type, startDate, endDate, cursor, limit = 20 } = filters;
+    const { type, extractionStatus, startDate, endDate, cursor, limit = 20 } = filters;
 
     // Verify agent belongs to tenant
     const agentExists = await db.aIAgent.findFirst({
@@ -369,6 +389,10 @@ export class AgentsService {
 
     if (type && type !== "ALL") {
       whereClause.type = type;
+    }
+    
+    if (extractionStatus && extractionStatus !== "ALL") {
+      whereClause.extractionStatus = extractionStatus;
     }
 
     if (startDate || endDate) {
@@ -401,6 +425,22 @@ export class AgentsService {
     }
 
     return db.communicationLog.findMany(queryArgs);
+  }
+
+  async deleteAgentLog(tenantId: string, agentId: string, logId: string) {
+    const log = await db.communicationLog.findFirst({
+      where: { id: logId, tenantId, agentId }
+    });
+    
+    if (!log) {
+      throw new Error("Log not found or unauthorized");
+    }
+    
+    await db.communicationLog.delete({
+      where: { id: logId }
+    });
+    
+    return true;
   }
 
   async getTelephonyNumbers(tenantId: string) {

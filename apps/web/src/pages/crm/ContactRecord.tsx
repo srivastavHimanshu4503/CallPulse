@@ -4,7 +4,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { api } from "../../lib/axios.js";
 import { formatTimeAgo, formatINR, formatActivitySummary } from "@antigravity/utils";
+import { ACTIVITY_CHANNEL_BY_TYPE } from "@antigravity/types";
 import { toast } from "sonner";
+import { CreateCustomFieldModal } from "./components/CreateCustomFieldModal.js";
+import { ConfirmModal } from "../../components/common/ConfirmModal.js";
 import { Button } from "@antigravity/ui";
 import {
   ArrowLeft,
@@ -21,6 +24,7 @@ import {
   ShieldCheck,
   BadgeCheck,
   Trash2,
+  X,
 } from "lucide-react";
 import {
   Card,
@@ -38,15 +42,9 @@ import {
 
 type TabId = "all" | "calls" | "sms" | "whatsapp" | "notes";
 
-const ACTIVITY_CHANNEL_MAP: Record<string, TabId> = {
-  CALL_INBOUND: "calls",
-  CALL_OUTBOUND: "calls",
-  SMS_SENT: "sms",
-  SMS_RECEIVED: "sms",
-  WHATSAPP_SENT: "whatsapp",
-  WHATSAPP_RECEIVED: "whatsapp",
-  NOTE_ADDED: "notes",
-};
+// Channel mapping comes from the shared registry so api/post-call/web can
+// never disagree about where an activity type belongs.
+const ACTIVITY_CHANNEL_MAP: Record<string, string> = ACTIVITY_CHANNEL_BY_TYPE;
 
 export function ContactRecord(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
@@ -56,6 +54,7 @@ export function ContactRecord(): React.JSX.Element {
   const [activeTab, setActiveTab] = React.useState<TabId>("all");
   const [newNote, setNewNote] = React.useState("");
   const [isNoteOpen, setIsNoteOpen] = React.useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
   const { data: contact, isLoading, refetch } = useQuery({
     queryKey: ["contact-details", id],
@@ -199,7 +198,7 @@ export function ContactRecord(): React.JSX.Element {
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
-            onClick={() => window.confirm("Delete this contact? Their history stays available in call logs.") && deleteMutation.mutate()}
+            onClick={() => setShowDeleteConfirm(true)}
             className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold border border-line-default bg-white text-negative-500 hover:bg-negative-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -212,7 +211,7 @@ export function ContactRecord(): React.JSX.Element {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1 min-h-0">
         {/* ── LEFT: profile + custom fields + consent ── */}
         <div className="lg:col-span-3 space-y-3 min-h-0 overflow-y-auto pr-1">
-          <ProfileCard contact={contact} />
+          <ProfileCard contact={contact} onSaved={refetch} />
           <CustomFieldsCard contact={contact} onSaved={refetch} />
           <ConsentCard consent={consent} />
         </div>
@@ -318,6 +317,20 @@ export function ContactRecord(): React.JSX.Element {
           <DealsCard contact={contact} pipelines={pipelines} onCreated={refetch} />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        title="Delete contact"
+        message={
+          <>
+            Delete this contact? Their history stays available in call logs.
+            This action cannot be undone.
+          </>
+        }
+        confirmText="Delete contact"
+        onConfirm={() => deleteMutation.mutate()}
+        onClose={() => setShowDeleteConfirm(false)}
+      />
     </PageWrapper>
   );
 }
@@ -326,46 +339,147 @@ export default ContactRecord;
 
 /* ---------------- Profile card ---------------- */
 
-function ProfileCard({ contact }: { contact: any }): React.JSX.Element {
+function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }): React.JSX.Element {
+  const [editing, setEditing] = React.useState(false);
+  const [firstName, setFirstName] = React.useState(contact.firstName || "");
+  const [lastName, setLastName] = React.useState(contact.lastName || "");
+  const [email, setEmail] = React.useState(contact.emails?.[0] || "");
+  const [phone, setPhone] = React.useState(contact.phones?.[0] || "");
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      await api.put(`/crm/contacts/${contact.id}`, {
+        firstName,
+        lastName,
+        email,
+        phone,
+      });
+    },
+    onSuccess: () => {
+      toast.success("Profile updated");
+      setEditing(false);
+      onSaved();
+    },
+    onError: (err: any) => toast.error(err.response?.data?.error || "Failed to update profile"),
+  });
+
   return (
     <Card padded>
-      <SectionHead title="Profile" />
-      <ul className="space-y-2.5 text-[12px]">
-        <li>
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Name</div>
-          <div className="text-fg-primary font-semibold capitalize">
-            {contact.firstName} {contact.lastName}
-          </div>
-        </li>
-        {contact.emails?.length > 0 && (
-          <li>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Email</div>
-            {contact.emails.map((e: string) => (
-              <a
-                key={e}
-                href={`mailto:${e}`}
-                className="text-brand-600 hover:text-brand-700 font-medium block truncate"
+      <SectionHead
+        title="Profile"
+        action={
+          editing ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setEditing(false)}
+                className="text-[11px] font-semibold text-fg-secondary hover:text-fg-primary"
               >
-                {e}
-              </a>
-            ))}
-          </li>
-        )}
-        {contact.phones?.length > 0 && (
+                Cancel
+              </button>
+              <Button
+                variant="primary"
+                onClick={() => saveMutation.mutate()}
+                disabled={saveMutation.isPending}
+                className="bg-brand-500 hover:bg-brand-600 text-white h-6 px-2.5 text-[10.5px] font-semibold rounded-md border-none"
+              >
+                Save
+              </Button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="text-[11px] font-semibold text-brand-600 hover:text-brand-700"
+            >
+              Edit
+            </button>
+          )
+        }
+      />
+      {editing ? (
+        <div className="space-y-3 pt-2">
+          <div>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">First Name</label>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">Last Name</label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">Phone</label>
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+            />
+          </div>
+        </div>
+      ) : (
+        <ul className="space-y-2.5 text-[12px]">
           <li>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Phone</div>
-            {contact.phones.map((p: string) => (
-              <a key={p} href={`tel:${p}`} className="text-brand-600 hover:text-brand-700 font-medium block">
-                {p}
-              </a>
-            ))}
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Name</div>
+            <div className="text-fg-primary font-semibold capitalize">
+              {contact.firstName} {contact.lastName}
+            </div>
           </li>
-        )}
-        <li>
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Added</div>
-          <div className="text-fg-secondary">{new Date(contact.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
-        </li>
-      </ul>
+          {(contact.emails?.length > 0 || email) && (
+            <li>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Email</div>
+              {contact.emails?.map((e: string) => (
+                <a
+                  key={e}
+                  href={`mailto:${e}`}
+                  className="text-brand-600 hover:text-brand-700 font-medium block truncate"
+                >
+                  {e}
+                </a>
+              ))}
+              {contact.emails?.length === 0 && email && (
+                <a href={`mailto:${email}`} className="text-brand-600 hover:text-brand-700 font-medium block truncate">{email}</a>
+              )}
+            </li>
+          )}
+          {(contact.phones?.length > 0 || phone) && (
+            <li>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Phone</div>
+              {contact.phones?.map((p: string) => (
+                <a key={p} href={`tel:${p}`} className="text-brand-600 hover:text-brand-700 font-medium block">
+                  {p}
+                </a>
+              ))}
+              {contact.phones?.length === 0 && phone && (
+                <a href={`tel:${phone}`} className="text-brand-600 hover:text-brand-700 font-medium block">{phone}</a>
+              )}
+            </li>
+          )}
+          <li>
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Added</div>
+            <div className="text-fg-secondary">{new Date(contact.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+          </li>
+        </ul>
+      )}
     </Card>
   );
 }
@@ -388,7 +502,12 @@ function CustomFieldsCard({ contact, onSaved }: { contact: any; onSaved: () => v
         const t = typeof cf.value === "number" ? cf.value : Number(cf.value);
         if (!Number.isNaN(t)) {
           const d = new Date(t < 10000000000 ? t * 1000 : t);
-          map[cf.fieldDefinitionId] = d.toISOString().slice(0, 16);
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          const h = String(d.getHours()).padStart(2, '0');
+          const min = String(d.getMinutes()).padStart(2, '0');
+          map[cf.fieldDefinitionId] = `${y}-${m}-${day}T${h}:${min}`;
         }
       } else {
         map[cf.fieldDefinitionId] = cf.value ?? "";
@@ -396,6 +515,10 @@ function CustomFieldsCard({ contact, onSaved }: { contact: any; onSaved: () => v
     });
     setValues(map);
   }, [contact]);
+
+  const [isAddOpen, setIsAddOpen] = React.useState(false);
+
+  const queryClient = useQueryClient();
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -481,6 +604,20 @@ function CustomFieldsCard({ contact, onSaved }: { contact: any; onSaved: () => v
           );
         })}
       </ul>
+      <button
+        type="button"
+        onClick={() => setIsAddOpen(true)}
+        className="mt-4 flex items-center gap-1.5 text-[11px] font-semibold text-brand-600 hover:text-brand-700"
+      >
+        <Plus className="h-3.5 w-3.5" />
+        Add new field
+      </button>
+
+      <CreateCustomFieldModal
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        onSuccess={() => queryClient.invalidateQueries({ queryKey: ["custom-fields-defs"] })}
+      />
     </Card>
   );
 }
@@ -501,41 +638,48 @@ function formatFieldValue(def: any, cf: any): string {
 }
 
 function CFEditor({ def, value, onChange }: { def: any; value: any; onChange: (v: any) => void }): React.JSX.Element {
-  if (def.type === "DROPDOWN") {
-    return (
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
-      >
-        <option value="">Select…</option>
-        {def.options?.map((o: string) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
-    );
-  }
-  if (def.type === "BOOLEAN") {
-    return (
-      <select
-        value={String(value)}
-        onChange={(e) => onChange(e.target.value === "true")}
-        className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
-      >
-        <option value="true">Yes</option>
-        <option value="false">No</option>
-      </select>
-    );
-  }
   return (
-    <input
-      type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "datetime-local" : "text"}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
-    />
+    <div className="flex gap-2 items-center w-full">
+      {def.type === "DROPDOWN" ? (
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+        >
+          <option value="">Select…</option>
+          {def.options?.map((o: string) => (
+            <option key={o} value={o}>{o}</option>
+          ))}
+        </select>
+      ) : def.type === "BOOLEAN" ? (
+        <select
+          value={String(value)}
+          onChange={(e) => onChange(e.target.value === "true")}
+          className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+        >
+          <option value="">Select…</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      ) : (
+        <input
+          type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "datetime-local" : "text"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+        />
+      )}
+      {value !== "" && value !== null && value !== undefined && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="text-fg-muted hover:text-error shrink-0"
+          title="Clear field"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -696,33 +840,7 @@ function AIInsightsCard({
         </div>
       </div>
 
-      {/* AI-extracted fields from the call */}
-      {extractedEntries.length > 0 && (
-        <>
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1.5">
-            Signals from calls
-          </div>
-          <ul className="space-y-1.5">
-            {extractedEntries.map(([k, v]) => (
-              <li key={k} className="flex items-start justify-between gap-2 text-[11.5px]">
-                <span className="text-fg-secondary font-medium capitalize">{k.replace(/_/g, " ")}</span>
-                <span className="text-fg-primary font-semibold text-right truncate max-w-[60%]">{String(v)}</span>
-              </li>
-            ))}
-          </ul>
-          {onRunRules && (
-            <button
-              type="button"
-              onClick={onRunRules}
-              disabled={isRunningRules}
-              className="mt-3 w-full inline-flex items-center justify-center gap-1.5 h-8 rounded-md bg-accent-100 border border-accent-500/25 text-accent-700 hover:bg-accent-200 text-[11.5px] font-semibold disabled:opacity-50"
-            >
-              <Zap className="h-3 w-3" />
-              {isRunningRules ? "Running AI rules…" : "Apply AI rules"}
-            </button>
-          )}
-        </>
-      )}
+      {/* Removed AI-extracted fields and rules button as requested */}
     </Card>
   );
 }
@@ -908,12 +1026,23 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
 
 function ActivityRow({ activity: a }: { activity: any }): React.JSX.Element {
   const [showTranscript, setShowTranscript] = React.useState(false);
-  const isCall = a.commLog?.type === "CALL" || a.type === "CALL_INBOUND" || a.type === "CALL_OUTBOUND";
-  const isSms = a.commLog?.type === "SMS" || a.type === "SMS_SENT" || a.type === "SMS_RECEIVED";
-  const isWhatsApp = a.commLog?.type === "WHATSAPP" || a.type === "WHATSAPP_SENT" || a.type === "WHATSAPP_RECEIVED";
+  // Key strictly off the activity's own type — the commLog join is shared by
+  // several activity rows (call + field-update from the same call), so using
+  // commLog.type here would duplicate call details onto every linked entry.
+  const isCall = a.type === "CALL_INBOUND" || a.type === "CALL_OUTBOUND";
+  const isSms = a.type === "SMS_SENT" || a.type === "SMS_RECEIVED";
+  const isWhatsApp = a.type === "WHATSAPP_SENT" || a.type === "WHATSAPP_RECEIVED";
 
-  const extracted = a.commLog?.extractedFields || {};
-  const extractedEntries = Object.entries(extracted).slice(0, 6);
+  const extracted = (isCall && a.commLog?.extractedFields) || {};
+  const aiSummary = typeof extracted.summary === "string" ? extracted.summary : null;
+  const extractedEntries = Object.entries(extracted)
+    .filter(([k, v]) => k !== "summary" && v !== null && v !== undefined && v !== "")
+    .slice(0, 6);
+  // `sentimentScore` stores the post-call lead score (0-100).
+  const leadScore =
+    isCall && typeof a.commLog?.sentimentScore === "number"
+      ? Math.round(a.commLog.sentimentScore)
+      : null;
 
   return (
     <TimelineItem
@@ -921,22 +1050,22 @@ function ActivityRow({ activity: a }: { activity: any }): React.JSX.Element {
       title={formatActivitySummary(a.summary)}
       timestamp={`${new Date(a.occurredAt).toLocaleString("en-IN")} · ${formatTimeAgo(a.occurredAt)}`}
       extra={
-        typeof a.commLog?.sentimentScore === "number" && (
-          <StatusPill
-            tone={
-              a.commLog.sentimentScore > 0.3 ? "positive" : a.commLog.sentimentScore < -0.3 ? "negative" : "muted"
-            }
-          >
-            {a.commLog.sentimentScore > 0.3 ? "Positive" : a.commLog.sentimentScore < -0.3 ? "Negative" : "Neutral"}
+        leadScore !== null && (
+          <StatusPill tone={leadScore >= 70 ? "positive" : leadScore >= 40 ? "attention" : "muted"}>
+            Call score {leadScore}
           </StatusPill>
         )
       }
     >
       {isCall && a.commLog && (
         <div className="rounded-md border border-line-subtle bg-bg-subtle/70 p-3 space-y-2">
-          {a.commLog.recordingUrl && (
-            <audio src={a.commLog.recordingUrl} controls className="w-full h-8" />
+          {aiSummary && (
+            <p className="text-[11.5px] text-fg-primary leading-relaxed">
+              <Sparkles className="h-3 w-3 inline-block mr-1 text-accent-700" />
+              {aiSummary}
+            </p>
           )}
+
           {extractedEntries.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {extractedEntries.map(([k, v]) => (
@@ -945,15 +1074,19 @@ function ActivityRow({ activity: a }: { activity: any }): React.JSX.Element {
                   className="inline-flex items-center gap-1 bg-accent-100 border border-accent-500/25 text-accent-700 text-[10.5px] font-semibold rounded-md px-1.5 py-0.5"
                   title={String(v)}
                 >
-                  <Sparkles className="h-2.5 w-2.5" />
                   <span className="capitalize">{k.replace(/_/g, " ")}:</span>
-                  <span className="text-fg-primary font-bold truncate max-w-[120px]">{String(v)}</span>
+                  <span className="text-fg-primary font-bold truncate max-w-[140px]">{String(v)}</span>
                 </span>
               ))}
             </div>
           )}
-          {a.commLog.transcript && (
-            <div>
+
+          {a.commLog.recordingUrl && (
+            <audio src={a.commLog.recordingUrl} controls className="w-full h-8" />
+          )}
+
+          <div className="flex items-center gap-4">
+            {a.commLog.transcript && (
               <button
                 type="button"
                 onClick={() => setShowTranscript((v) => !v)}
@@ -961,12 +1094,22 @@ function ActivityRow({ activity: a }: { activity: any }): React.JSX.Element {
               >
                 {showTranscript ? "Hide transcript" : "Show transcript"}
               </button>
-              {showTranscript && (
-                <p className="text-[11.5px] text-fg-secondary leading-relaxed italic mt-2 border-l-2 border-brand-500/40 pl-3">
-                  {a.commLog.transcript}
-                </p>
-              )}
-            </div>
+            )}
+            {a.commLog.agentId && (
+              <button
+                type="button"
+                onClick={() => window.open(`/agents/${a.commLog.agentId}`, "_blank")}
+                className="text-[10.5px] font-semibold text-brand-600 hover:text-brand-700"
+              >
+                View full log →
+              </button>
+            )}
+          </div>
+
+          {showTranscript && a.commLog.transcript && (
+            <p className="text-[11.5px] text-fg-secondary leading-relaxed whitespace-pre-line border-l-2 border-brand-500/40 pl-3">
+              {a.commLog.transcript}
+            </p>
           )}
         </div>
       )}
@@ -974,6 +1117,21 @@ function ActivityRow({ activity: a }: { activity: any }): React.JSX.Element {
       {(isSms || isWhatsApp) && a.commLog?.body && (
         <div className="rounded-md border border-line-subtle bg-bg-subtle/70 p-3">
           <p className="text-[12px] text-fg-primary leading-relaxed">{a.commLog.body}</p>
+        </div>
+      )}
+
+      {a.type === "FIELD_UPDATED" && a.metadata?.fields && (
+        <div className="flex flex-wrap gap-1.5">
+          {Object.entries(a.metadata.fields as Record<string, unknown>).map(([k, v]) => (
+            <span
+              key={k}
+              className="inline-flex items-center gap-1 bg-bg-muted border border-line-default text-fg-secondary text-[10.5px] font-semibold rounded-md px-1.5 py-0.5"
+              title={String(v)}
+            >
+              <span>{k}:</span>
+              <span className="text-fg-primary font-bold truncate max-w-[140px]">{String(v)}</span>
+            </span>
+          ))}
         </div>
       )}
     </TimelineItem>

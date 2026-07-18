@@ -1,4 +1,5 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { Plus, Trash2, GitBranch, ChevronDown, Filter as FilterIcon, AlertCircle } from "lucide-react";
 import { getBlockDef, TONE_STYLES, listByCategory } from "../registry.js";
 import type { BlockNode, Trigger, BlockDef } from "../types.js";
@@ -15,7 +16,7 @@ interface WorkflowCanvasProps {
   onSelectStep: (id: string) => void;
   onChangeTriggerType: (type: string) => void;
   onAddStep: (afterId: string | null, type?: string) => void;
-  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null) => void;
+  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null, type?: string) => void;
   onDeleteStep: (id: string) => void;
 }
 
@@ -104,17 +105,17 @@ function TriggerCard({
       className={cn(
         "w-full rounded-xl bg-white cursor-pointer transition-all overflow-hidden",
         selected
-          ? "ring-2 ring-emerald-500/40 border-2 border-emerald-500 shadow-[0_8px_24px_-8px_rgba(16,185,129,0.35)]"
-          : "border border-line-default hover:border-emerald-500/40 shadow-card",
+          ? "ring-2 ring-blue-500/40 border-2 border-blue-500 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]"
+          : "border border-line-default hover:border-blue-500/40 shadow-card",
       )}
     >
-      {/* Green top strip */}
-      <div className="h-[3px] bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500" />
+      {/* Blue top strip */}
+      <div className="h-[3px] bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500" />
 
       <div className="p-3">
         {/* Type selector (segmented, always visible) */}
         <div
-          className="flex items-center gap-1 p-1 bg-emerald-50/70 border border-emerald-500/20 rounded-md mb-2.5"
+          className="flex items-center gap-1 p-1 bg-blue-50/70 border border-blue-500/20 rounded-md mb-2.5"
           onClick={(e) => e.stopPropagation()}
         >
           {triggerOptions.map((opt) => {
@@ -127,8 +128,8 @@ function TriggerCard({
                 className={cn(
                   "flex-1 inline-flex items-center justify-center gap-1 h-7 px-2 rounded text-[11px] font-semibold transition-all",
                   isActive
-                    ? "bg-white text-emerald-700 shadow-card ring-1 ring-emerald-500/25"
-                    : "text-emerald-800/60 hover:text-emerald-800 hover:bg-white/40",
+                    ? "bg-white text-blue-700 shadow-card ring-1 ring-blue-500/25"
+                    : "text-blue-800/60 hover:text-blue-800 hover:bg-white/40",
                 )}
               >
                 {opt.label}
@@ -141,7 +142,7 @@ function TriggerCard({
         <div className="flex items-start gap-2.5">
           <BlockIcon icon={def?.icon || "Zap"} tone="positive" size="md" />
           <div className="min-w-0 flex-1">
-            <div className="text-[9.5px] font-bold uppercase tracking-wider text-emerald-700">
+            <div className="text-[9.5px] font-bold uppercase tracking-wider text-blue-700">
               Trigger
             </div>
             <div className="text-[13.5px] font-semibold text-fg-primary tracking-tight leading-tight mt-0.5">
@@ -184,12 +185,12 @@ function CallEndedConfigSummary({ config }: { config: Record<string, any> }): Re
     outbound: "Outbound only",
   };
   return (
-    <div className="mt-2.5 rounded-md bg-emerald-50/60 border border-emerald-500/20 px-2.5 py-1.5 flex items-center gap-2 flex-wrap text-[11px]">
+    <div className="mt-2.5 rounded-md bg-blue-50/60 border border-blue-500/20 px-2.5 py-1.5 flex items-center gap-2 flex-wrap text-[11px]">
       <span className="text-fg-muted font-medium">Outcome:</span>
-      <b className="text-emerald-700">{outcomeLabels[config.outcome] || "any"}</b>
-      <span className="h-3 w-px bg-emerald-500/25" />
+      <b className="text-blue-700">{outcomeLabels[config.outcome] || "any"}</b>
+      <span className="h-3 w-px bg-blue-500/25" />
       <span className="text-fg-muted font-medium">Direction:</span>
-      <b className="text-emerald-700">{directionLabels[config.direction] || "any"}</b>
+      <b className="text-blue-700">{directionLabels[config.direction] || "any"}</b>
     </div>
   );
 }
@@ -214,7 +215,7 @@ function ContactMatchesFilterView({
   }
   return (
     <div className="mt-2.5">
-      <div className="text-[9.5px] font-bold uppercase tracking-wider text-emerald-700 mb-1 flex items-center gap-1">
+      <div className="text-[9.5px] font-bold uppercase tracking-wider text-blue-700 mb-1 flex items-center gap-1">
         <FilterIcon className="h-3 w-3" />
         Match {filter.logical === FilterLogicalOperator.AND ? "ALL" : "ANY"}
       </div>
@@ -237,7 +238,7 @@ function StepChain({
   selectedId: string | null;
   onSelectStep: (id: string) => void;
   onAddStep: (afterId: string | null, type?: string) => void;
-  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null) => void;
+  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null, type?: string) => void;
   onDeleteStep: (id: string) => void;
 }): React.JSX.Element {
   return (
@@ -284,7 +285,7 @@ function StepCard({
   onSelect: () => void;
   onDelete: () => void;
   onSelectStep: (id: string) => void;
-  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null) => void;
+  onAddStepBranch: (parentId: string, branch: "then" | "else", afterId: string | null, type?: string) => void;
   onDeleteStep: (id: string) => void;
   selectedId: string | null;
 }): React.JSX.Element {
@@ -358,7 +359,7 @@ function StepCard({
               steps={step.children.then}
               selectedId={selectedId}
               onSelectStep={onSelectStep}
-              onAddInBranch={(afterId) => onAddStepBranch(step.id, "then", afterId)}
+              onAddInBranch={(afterId, type) => onAddStepBranch(step.id, "then", afterId, type)}
               onDeleteStep={onDeleteStep}
             />
             <BranchColumn
@@ -367,7 +368,7 @@ function StepCard({
               steps={step.children.else}
               selectedId={selectedId}
               onSelectStep={onSelectStep}
-              onAddInBranch={(afterId) => onAddStepBranch(step.id, "else", afterId)}
+              onAddInBranch={(afterId, type) => onAddStepBranch(step.id, "else", afterId, type)}
               onDeleteStep={onDeleteStep}
             />
           </div>
@@ -465,7 +466,7 @@ function InlineFilterChips({
 }): React.JSX.Element {
   return (
     <div className="mt-2">
-      <div className="text-[9.5px] font-bold uppercase tracking-wider text-emerald-700 mb-1 flex items-center gap-1">
+      <div className="text-[9.5px] font-bold uppercase tracking-wider text-blue-700 mb-1 flex items-center gap-1">
         <FilterIcon className="h-3 w-3" />
         {label} · {filter.logical === FilterLogicalOperator.AND ? "match all" : "match any"}
       </div>
@@ -577,6 +578,8 @@ function Connector({ tone = "muted" }: { tone?: keyof typeof TONE_STYLES }): Rea
 
 /* ─────────────────── Add button (with block-type picker menu) ─────────────────── */
 
+const ADD_MENU_WIDTH = 260;
+
 function AddButton({
   onSelect,
   label,
@@ -593,21 +596,55 @@ function AddButton({
   isPrimary?: boolean;
 }): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
+  const [pos, setPos] = React.useState<{ top: number; left: number } | null>(null);
   const btnRef = React.useRef<HTMLButtonElement>(null);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
+  // Compute menu position from the button's rect — portal escapes any
+  // overflow-hidden ancestor (which was clipping the menu inside StepCards).
+  const positionMenu = React.useCallback(() => {
+    if (!btnRef.current) return;
+    const r = btnRef.current.getBoundingClientRect();
+    const viewportH = window.innerHeight;
+    const viewportW = window.innerWidth;
+    // Rough est so the menu flips upward when there isn't room below.
+    const estMenuH = 260;
+    let top = r.bottom + 6;
+    if (top + estMenuH > viewportH - 8) top = Math.max(8, r.top - 6 - estMenuH);
+    let left = r.left + r.width / 2 - ADD_MENU_WIDTH / 2;
+    if (left + ADD_MENU_WIDTH > viewportW - 8) left = viewportW - ADD_MENU_WIDTH - 8;
+    if (left < 8) left = 8;
+    setPos({ top, left });
+  }, []);
+
+  const toggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (open) {
+      setOpen(false);
+    } else {
+      positionMenu();
+      setOpen(true);
+    }
+  };
+
   React.useEffect(() => {
     if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node)) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (btnRef.current?.contains(e.target as Node)) return;
+      if (menuRef.current?.contains(e.target as Node)) return;
       setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("mousedown", onClick);
+    const onWinChange = () => setOpen(false);
+    document.addEventListener("mousedown", onDocClick);
     document.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onWinChange);
+    window.addEventListener("scroll", onWinChange, true);
     return () => {
-      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("mousedown", onDocClick);
       document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onWinChange);
+      window.removeEventListener("scroll", onWinChange, true);
     };
   }, [open]);
 
@@ -616,19 +653,19 @@ function AddButton({
 
   const btnH = size === "sm" ? "h-6" : "h-8";
   const styles = isPrimary
-    ? "bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-500 shadow-[0_4px_12px_-3px_rgba(16,185,129,0.4)]"
+    ? "bg-blue-500 hover:bg-blue-600 text-white border-blue-500 shadow-[0_4px_12px_-3px_rgba(59,130,246,0.4)]"
     : tone === "positive"
-      ? "bg-white border-emerald-500/40 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-500"
+      ? "bg-white border-blue-500/40 text-blue-700 hover:bg-blue-50 hover:border-blue-500"
       : tone === "negative"
         ? "bg-white border-rose-500/40 text-rose-600 hover:bg-rose-50 hover:border-rose-500"
         : "bg-white border-blue-500/40 text-blue-600 hover:bg-blue-50 hover:border-blue-500";
 
   return (
-    <div className="relative" onClick={(e) => e.stopPropagation()}>
+    <>
       <button
         ref={btnRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         className={cn(
           "inline-flex items-center gap-1.5 px-2.5 rounded-full border-2 border-dashed font-semibold transition-all",
           btnH,
@@ -640,17 +677,22 @@ function AddButton({
         {(icon && !label) ? null : label || "Add step"}
       </button>
 
-      {open && (
-        <div
-          ref={menuRef}
-          className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-[260px] rounded-xl border border-line-default bg-white shadow-pop overflow-hidden"
-        >
-          <MenuSection title="Actions" items={actions} onPick={(t) => { setOpen(false); onSelect(t); }} />
-          <div className="h-px bg-line-subtle" />
-          <MenuSection title="Logic" items={logic} onPick={(t) => { setOpen(false); onSelect(t); }} />
-        </div>
-      )}
-    </div>
+      {open && pos &&
+        createPortal(
+          <div
+            ref={menuRef}
+            role="menu"
+            style={{ position: "fixed", top: pos.top, left: pos.left, width: ADD_MENU_WIDTH, zIndex: 1000 }}
+            className="rounded-xl border border-line-default bg-white shadow-pop overflow-hidden animate-in fade-in duration-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MenuSection title="Actions" items={actions} onPick={(t) => { setOpen(false); onSelect(t); }} />
+            <div className="h-px bg-line-subtle" />
+            <MenuSection title="Logic" items={logic} onPick={(t) => { setOpen(false); onSelect(t); }} />
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 

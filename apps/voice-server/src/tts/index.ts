@@ -15,64 +15,105 @@ export interface TTSBuildOptions {
   pace?: number;
 }
 
+// Sarvam bulbul:v3 speakers grouped by gender. Used to (a) tag logs so a
+// wrong-gender complaint is diagnosable at a glance, and (b) map legacy /
+// display names to the current speaker id.
+const SARVAM_FEMALE = new Set([
+  "priya", "ritu", "neha", "pooja", "simran", "kavya", "ishita", "shreya",
+  "roopa", "amelia", "sophia", "tanya", "shruti", "suhani", "kavitha", "rupali",
+]);
+const SARVAM_MALE = new Set([
+  "shubh", "aditya", "rahul", "rohan", "amit", "dev", "ratan", "varun",
+  "manan", "sumit", "kabir", "aayan", "ashutosh", "advait", "anand", "tarun",
+  "sunny", "mani", "gokul", "vijay", "mohit", "rehan", "soham",
+]);
+
+// OpenAI TTS voices by gender (as OpenAI publishes them).
+const OPENAI_FEMALE = new Set(["alloy", "shimmer", "nova", "coral", "sage", "marin"]);
+const OPENAI_MALE = new Set(["echo", "fable", "onyx", "ash", "ballad", "verse", "cedar"]);
+
+const SARVAM_LEGACY_MAP: Record<string, string> = {
+  aravind: "soham",
+  aditi: "ritu",
+  deepika: "kavitha",
+  "priya (indian female)": "priya",
+};
+
+const inferGender = (provider: "sarvam" | "openai", voiceId: string): "male" | "female" | "unknown" => {
+  if (provider === "sarvam") {
+    if (SARVAM_FEMALE.has(voiceId)) return "female";
+    if (SARVAM_MALE.has(voiceId)) return "male";
+  } else {
+    if (OPENAI_FEMALE.has(voiceId)) return "female";
+    if (OPENAI_MALE.has(voiceId)) return "male";
+  }
+  return "unknown";
+};
+
+const DEFAULT_SARVAM_VOICE = "priya"; // female — matches DB column default.
+
 /**
- * Normalizes and parses the voice identifier to determine the provider and voice ID.
+ * Parse the voice identifier stored on the agent row into `(provider, voiceId)`.
+ *
+ * Accepts prefix form (`sarvam:priya`, `openai:alloy`) written by the current
+ * VoiceSelector UI, and unprefixed legacy values (`priya`, `Priya (Indian
+ * Female)`, `Aravind`, etc.) that were saved by earlier versions of the wizard.
+ *
+ * If the input is empty/blank, the parse falls back to Sarvam Priya (female)
+ * — the same default as the DB column, and specifically NOT the Sarvam plugin
+ * default (`shubh`, male), which would otherwise be picked up silently and
+ * present as "I selected a female voice but a male is speaking."
  */
 export const parseVoiceString = (voiceStr: string): { provider: "sarvam" | "openai"; voiceId: string } => {
   const normalized = (voiceStr || "").toLowerCase().trim();
+  if (!normalized) {
+    return { provider: "sarvam", voiceId: DEFAULT_SARVAM_VOICE };
+  }
 
   let provider: "sarvam" | "openai" = "sarvam";
-  let voiceId = "priya";
+  let voiceId: string;
 
   if (normalized.startsWith("sarvam:")) {
     provider = "sarvam";
-    voiceId = normalized.slice("sarvam:".length);
+    voiceId = normalized.slice("sarvam:".length).trim();
   } else if (normalized.startsWith("openai:")) {
     provider = "openai";
-    voiceId = normalized.slice("openai:".length);
-  } else if (normalized === "priya (indian female)" || normalized === "priya") {
-    provider = "sarvam";
-    voiceId = "priya";
-  } else if (normalized === "aravind") {
-    provider = "sarvam";
-    voiceId = "soham";
-  } else if (normalized === "aditi") {
-    provider = "sarvam";
-    voiceId = "ritu";
-  } else if (normalized === "kabir") {
-    provider = "sarvam";
-    voiceId = "kabir";
-  } else if (normalized === "deepika") {
-    provider = "sarvam";
-    voiceId = "kavitha";
+    voiceId = normalized.slice("openai:".length).trim();
+  } else if (OPENAI_FEMALE.has(normalized) || OPENAI_MALE.has(normalized)) {
+    provider = "openai";
+    voiceId = normalized;
   } else {
-    const openaiVoices = ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "ash", "ballad", "coral", "sage", "verse", "marin", "cedar"];
-    if (openaiVoices.includes(normalized)) {
-      provider = "openai";
-      voiceId = normalized;
-    } else {
-      provider = "sarvam";
-      voiceId = "priya";
-    }
+    provider = "sarvam";
+    voiceId = SARVAM_LEGACY_MAP[normalized] ?? normalized;
   }
 
-  // Map unrecognized legacy/prefixed Sarvam speakers to active ones
-  if (provider === "sarvam") {
-    if (voiceId === "aravind") voiceId = "soham";
-    if (voiceId === "aditi") voiceId = "ritu";
-    if (voiceId === "deepika") voiceId = "kavitha";
+  // Apply legacy → active speaker mapping AFTER prefix stripping, so both
+  // `Aravind` (legacy display name) and `sarvam:aravind` (legacy id form)
+  // resolve to `soham` on today's Sarvam bulbul:v3.
+  if (provider === "sarvam" && SARVAM_LEGACY_MAP[voiceId]) {
+    voiceId = SARVAM_LEGACY_MAP[voiceId]!;
+  }
+
+  // Guard against an empty voiceId slipping through (e.g. DB row of just
+  // `sarvam:` — unlikely but real if someone hand-edits). Falling through
+  // to the Sarvam plugin's own default would pick `shubh` (male), which
+  // silently violates the persona configuration.
+  if (!voiceId) {
+    return { provider: "sarvam", voiceId: DEFAULT_SARVAM_VOICE };
   }
 
   return { provider, voiceId };
 };
 
 /**
- * Build the pipeline TTS. Instantiates Sarvam bulbul:v3 or OpenAI TTS
- * dynamically based on the parsed voice configuration.
+ * Build the pipeline TTS from the agent's persona config. This is the ONLY
+ * path that decides which voice speaks on the call — the LiveKit plugin
+ * defaults must never leak through.
  */
 export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
   const { provider, voiceId } = parseVoiceString(opts.voice);
   const pace = opts.pace ?? 1.0;
+  const gender = inferGender(provider, voiceId);
 
   if (provider === "openai") {
     if (!config.tts.openaiApiKey) {
@@ -82,6 +123,8 @@ export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
       provider: "openai",
       model: "tts-1",
       voice: voiceId,
+      gender,
+      configuredVoice: opts.voice,
       speed: pace,
     });
     return new openai.TTS({
@@ -90,26 +133,28 @@ export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
       voice: voiceId as any,
       speed: pace,
     });
-  } else {
-    if (!config.tts.sarvamApiKey) {
-      throw new Error("SARVAM_API_KEY is required for the default TTS provider");
-    }
-    log.info("initializing tts provider", {
-      provider: "sarvam",
-      model: "bulbul:v3",
-      language: opts.language,
-      speaker: voiceId,
-      pace,
-    });
-    return new sarvam.TTS({
-      apiKey: config.tts.sarvamApiKey,
-      model: "bulbul:v3",
-      streaming: true,
-      speaker: voiceId,
-      targetLanguageCode: opts.language,
-      pace,
-      temperature: 0.6,
-      sampleRate: 24000,
-    });
   }
+
+  if (!config.tts.sarvamApiKey) {
+    throw new Error("SARVAM_API_KEY is required for the default TTS provider");
+  }
+  log.info("initializing tts provider", {
+    provider: "sarvam",
+    model: "bulbul:v3",
+    language: opts.language,
+    speaker: voiceId,
+    gender,
+    configuredVoice: opts.voice,
+    pace,
+  });
+  return new sarvam.TTS({
+    apiKey: config.tts.sarvamApiKey,
+    model: "bulbul:v3",
+    streaming: true,
+    speaker: voiceId,
+    targetLanguageCode: opts.language,
+    pace,
+    temperature: 0.6,
+    sampleRate: 24000,
+  });
 };

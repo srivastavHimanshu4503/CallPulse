@@ -1,6 +1,10 @@
-import type { llm } from "@livekit/agents";
-type Message = llm.ChatMessage;
 import type { VoiceKey } from "../voices/config.js";
+
+export interface TranscriptTurn {
+  role: "user" | "assistant";
+  text: string;
+  at: Date;
+}
 
 export interface CallSession {
   callSid: string;
@@ -9,7 +13,7 @@ export interface CallSession {
   sessionId: string;
   startedAt: Date;
   endedAt?: Date;
-  conversationHistory: Message[];
+  conversationHistory: TranscriptTurn[];
   language: VoiceKey;
   status: "active" | "ended" | "transferred";
   metadata: Record<string, any>; // Extensible — anything future needs
@@ -41,6 +45,12 @@ export const createSession = (
   sessions.set(callSid, session);
   console.log(`[CallSession] Created session for call ${callSid} (session: ${session.sessionId})`);
   return session;
+};
+
+export const appendTurn = (callSid: string, turn: TranscriptTurn): void => {
+  const session = sessions.get(callSid);
+  if (!session) return;
+  session.conversationHistory.push(turn);
 };
 
 export const updateSession = (callSid: string, updates: Partial<CallSession>): void => {

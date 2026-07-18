@@ -6,11 +6,13 @@ import { db } from "@antigravity/db";
 import { config } from "../config.js";
 import { createLogger } from "../logger.js";
 import { LocalEventBus } from "../events/emitter.js";
-import { createSession, endSession } from "./session.js";
+import { appendTurn, createSession, endSession } from "./session.js";
+import { persistCallLog } from "../persistence/call-log.js";
+import { dispatchPostCall } from "../notifier/post-call.js";
 import { buildSystemPrompt } from "./prompt.js";
 import { WorkflowTriggerStub } from "../workflows/stub.js";
 import { buildTools } from "./tools/index.js";
-import { createPipelineLLM } from "../llm/index.js";
+import { createPipelineLLM } from "@antigravity/llm";
 import { createSTT } from "../stt/index.js";
 import { createTTS, type TTSBuildOptions } from "../tts/index.js";
 import { getAgentConfigProvider } from "../agent-config/index.js";
@@ -44,6 +46,8 @@ const getDialedNumber = (): string | undefined => config.twilio.phoneNumber;
 interface RoomLookupHint {
   agentId?: string;
   callSource?: "sip" | "browser";
+  callerId?: string;
+  callerName?: string;
 }
 
 /**
@@ -58,6 +62,8 @@ const parseRoomMetadata = (raw: string | undefined): RoomLookupHint => {
     return {
       agentId: typeof parsed.agentId === "string" ? parsed.agentId : undefined,
       callSource: parsed.callSource === "browser" ? "browser" : undefined,
+      callerId: typeof parsed.callerId === "string" ? parsed.callerId : undefined,
+      callerName: typeof parsed.callerName === "string" ? parsed.callerName : undefined,
     };
   } catch {
     return {};
@@ -82,12 +88,33 @@ export default defineAgent({
   },
 
   entry: async (ctx: JobContext) => {
-    const roomName = ctx.room.name || "";
+    // Start the RTC connection immediately — LiveKit recommends calling
+    // connect() as early as possible; a late connect delays the agent's
+    // room join past the browser's answer watchdog. Persona loading below
+    // runs in parallel; the promise is awaited before session start.
+    const connectPromise = ctx.connect();
+    connectPromise.catch(() => {
+      /* observed via the await below; this guard prevents an unhandled
+         rejection if entry aborts before reaching it */
+    });
+
+    // IMPORTANT: `ctx.room.*` is empty until connect resolves. Pre-connect,
+    // room info + dispatch metadata live on the job proto — reading
+    // `ctx.room.name`/`ctx.room.metadata` here silently returns "" and made
+    // every browser test call look like a metadata-less SIP call.
+    const roomName = ctx.room.name || ctx.job.room?.name || "";
     const callSid = extractCallSidFromRoom(roomName, ctx.job.id);
-    const callerNumber = extractCallerNumberFromRoom(roomName) ?? "unknown";
     const dialedNumber = getDialedNumber();
-    const roomHint = parseRoomMetadata(ctx.room.metadata);
+    const roomHint = parseRoomMetadata(
+      ctx.job.metadata || ctx.job.room?.metadata || ctx.room.metadata
+    );
     const callSource = roomHint.callSource ?? "sip";
+    // Browser test calls have no SIP number in the room name — fall back to
+    // the stable caller identity minted by the api server so every test call
+    // from the same dashboard user maps to the same contact.
+    const callerNumber =
+      extractCallerNumberFromRoom(roomName) ?? roomHint.callerId ?? "unknown";
+    const callerName = roomHint.callerName;
     const callLog = log.child(callSid);
 
     callLog.info("job starting", {
@@ -126,6 +153,21 @@ export default defineAgent({
     const languageKey = normalizeLanguage(persona.language);
     const langCodes = resolveLanguageCodes(languageKey);
 
+    callLog.info("persona resolved — using user-configured voice and language", {
+      agentId: persona.ids.agentId,
+      agentName: persona.agentName,
+      role: persona.role,
+      tone: persona.tone,
+      configuredLanguage: persona.language,
+      resolvedLanguageKey: languageKey,
+      sttCode: langCodes.stt,
+      ttsCode: langCodes.tts,
+      configuredVoice: persona.voice,
+      knowledgeBases: persona.knowledge.length,
+      intakeEnabled: persona.intake.enabled,
+      maxDurationMinutes: persona.maxDurationMinutes,
+    });
+
     const session = createSession(callSid, callerNumber, languageKey);
 
     eventBus.emit("call.started", {
@@ -135,7 +177,7 @@ export default defineAgent({
       sessionId: session.sessionId,
     });
 
-    await ctx.connect();
+    await connectPromise;
     callLog.info("participant connected", { agent: persona.agentName, tenant: persona.businessName });
 
     // Twilio provider retained only for feature-flagged fallback; the primary
@@ -302,10 +344,12 @@ export default defineAgent({
       const text = extractItemText(msg.content);
       if (!text) return;
       callLog.info("transcript", { role: msg.role, text });
+      const role: "user" | "assistant" = msg.role === "assistant" ? "assistant" : "user";
+      appendTurn(callSid, { role, text, at: new Date() });
       eventBus.emit("transcript.final", {
         callSid,
         sessionId: session.sessionId,
-        role: msg.role,
+        role,
         text,
       });
 
@@ -480,14 +524,75 @@ export default defineAgent({
       clearTimeout(maxDurationTimer);
       callLog.info("shutdown", { jobId: ctx.job.id });
       endSession(callSid);
+
+      const durationSeconds = Math.round((Date.now() - session.startedAt.getTime()) / 1000);
+      const persistInput = {
+        callSid,
+        callerNumber,
+        callerName,
+        tenantId: persona.ids.tenantId,
+        agentId: persona.ids.agentId,
+        phoneNumberId:
+          persona.ids.phoneNumberId && persona.ids.phoneNumberId !== "test-call"
+            ? persona.ids.phoneNumberId
+            : undefined,
+        startedAt: session.startedAt,
+        durationSeconds,
+        direction: "INBOUND" as const,
+        callSource,
+        transcript: session.conversationHistory,
+        metadata: { ...session.metadata, room: roomName },
+      };
+
+      // Durability first: block the shutdown briefly on the DB write so the
+      // transcript is safe before the child process may be torn down. The
+      // post-call dispatch is fire-and-forget after this.
+      let persisted: { logId: string; contactId: string } | null = null;
+      try {
+        persisted = await persistCallLog(persistInput);
+      } catch (err) {
+        callLog.error("call log persistence failed — post-call dispatch aborted", {
+          message: (err as Error).message,
+        });
+      }
+
+      if (persisted) {
+        // MUST await — the LiveKit child process is torn down as soon as this
+        // shutdown callback resolves, so a fire-and-forget fetch gets its
+        // socket ripped out before the request lands. dispatchPostCall has
+        // its own 5s hard timeout so a slow/down post-call-server won't stall
+        // us indefinitely; a timed-out dispatch still leaves the DB row
+        // available for a reconciliation job to retry.
+        try {
+          await dispatchPostCall({
+            logId: persisted.logId,
+            callSid,
+            tenantId: persona.ids.tenantId,
+            agentId: persona.ids.agentId,
+            contactId: persisted.contactId,
+            callerNumber,
+            startedAt: session.startedAt,
+            durationSeconds,
+            direction: "INBOUND",
+            callSource,
+            transcript: session.conversationHistory,
+            metadata: persistInput.metadata,
+          });
+        } catch (err) {
+          callLog.warn("post-call dispatch threw unexpectedly", {
+            message: (err as Error).message,
+          });
+        }
+      }
+
       eventBus.emit("call.ended", {
         callSid,
         callerNumber,
         orgId: persona.ids.tenantId,
         sessionId: session.sessionId,
-        duration: Math.round((Date.now() - session.startedAt.getTime()) / 1000),
+        duration: durationSeconds,
         transcript: session.conversationHistory,
-        metadata: { ...session.metadata, agentId: persona.ids.agentId },
+        metadata: { ...session.metadata, agentId: persona.ids.agentId, logId: persisted?.logId },
       });
     });
 
@@ -565,9 +670,18 @@ const extractItemText = (content: unknown): string => {
 };
 
 const normalizeLanguage = (raw: string): VoiceKey => {
-  const lower = raw.toLowerCase();
+  const lower = (raw || "").toLowerCase().trim();
   if (lower.startsWith("hin") && lower.includes("glish")) return "hinglish";
   if (lower.startsWith("hin")) return "hindi";
   if (lower.startsWith("en")) return "english";
+  if (lower.startsWith("mar")) return "marathi";
+  if (lower.startsWith("tam")) return "tamil";
+  if (lower.startsWith("tel")) return "telugu";
+  if (lower.startsWith("ben") || lower.startsWith("bang")) return "bengali";
+  if (lower.startsWith("guj")) return "gujarati";
+  if (lower.startsWith("kan")) return "kannada";
+  if (lower.startsWith("mal")) return "malayalam";
+  if (lower.startsWith("pun") || lower.startsWith("pan")) return "punjabi";
+  if (lower.startsWith("odi") || lower.startsWith("ori")) return "odia";
   return "hinglish";
 };

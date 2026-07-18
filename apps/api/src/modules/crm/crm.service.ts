@@ -6,6 +6,16 @@ import type {
   Note,
   SerializedContactDetails
 } from "@antigravity/types";
+import type { CreateDealInput, UpdateDealInput } from "@antigravity/validators";
+import {
+  DEFAULT_PIPELINE_NAME,
+  DEFAULT_STAGES,
+  findStage,
+  normalizeStageInput,
+  stageMovePatch,
+  syncPipelineStages,
+  weightedRevenue,
+} from "./deal-engine.js";
 
 /**
  * Aggregated call/comm-log signals used for lead score + latest-sentiment
@@ -199,6 +209,44 @@ export class CrmService {
         updatedAt: created.updatedAt.toISOString(),
         deletedAt: null,
       };
+    });
+  }
+
+  async updateContact(
+    tenantId: string,
+    id: string,
+    data: { firstName?: string; lastName?: string; email?: string; phone?: string },
+  ): Promise<void> {
+    await db.$transaction(async (tx: any) => {
+      const existing = await tx.contact.findFirst({ where: { id, tenantId, deletedAt: null } });
+      if (!existing) throw new Error("Contact not found");
+      
+      const updateData: any = {};
+      if (data.firstName !== undefined) updateData.firstName = data.firstName;
+      if (data.lastName !== undefined) updateData.lastName = data.lastName;
+      
+      if (data.email !== undefined) {
+        if (!data.email) updateData.emails = [];
+        else updateData.emails = [data.email];
+      }
+      if (data.phone !== undefined) {
+        if (!data.phone) updateData.phones = [];
+        else updateData.phones = [data.phone];
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await tx.contact.update({ where: { id }, data: updateData });
+        await tx.activity.create({
+          data: {
+            tenantId,
+            contactId: id,
+            type: "FIELD_UPDATED",
+            summary: "Contact profile was manually updated",
+            metadata: { fields: Object.keys(updateData) },
+            occurredAt: new Date(),
+          },
+        });
+      }
     });
   }
 
@@ -499,6 +547,8 @@ export class CrmService {
               status: a.commLog.status,
               direction: a.commLog.direction,
               duration: a.commLog.duration,
+              agentId: a.commLog.agentId,
+              id: a.commLog.id,
             }
           : null,
       })) as any,
@@ -517,39 +567,82 @@ export class CrmService {
   async getDeals(tenantId: string): Promise<Deal[]> {
     const list = await db.deal.findMany({
       where: { tenantId, deletedAt: null },
-      include: { contact: true },
+      include: { contact: true, pipelineStage: true },
       orderBy: { createdAt: "desc" },
     });
 
-    return list.map((d: any) => ({
+    return list.map((d: any) => this.serializeDeal(d)) as any[];
+  }
+
+  private serializeDeal(d: any): any {
+    return {
       id: d.id,
       tenantId: d.tenantId,
       contactId: d.contactId,
       pipelineId: d.pipelineId,
+      stageId: d.stageId,
       title: d.title,
       value: d.value,
+      currency: d.currency,
       stage: d.stage,
+      probability: d.probability,
+      probabilitySource: d.probabilitySource,
+      weightedValue: d.weightedValue,
+      expectedCloseDate: d.expectedCloseDate?.toISOString() ?? null,
+      actualCloseDate: d.actualCloseDate?.toISOString() ?? null,
+      priority: d.priority,
+      leadSource: d.leadSource,
+      tags: d.tags ?? [],
+      ownerId: d.ownerId,
+      lastActivityAt: d.lastActivityAt?.toISOString() ?? null,
+      nextFollowUpAt: d.nextFollowUpAt?.toISOString() ?? null,
+      isOverdue: !!d.nextFollowUpAt && d.nextFollowUpAt < new Date(),
+      aiSummary: d.aiSummary,
+      aiHealth: d.aiHealth,
+      aiNextAction: d.aiNextAction,
+      stageColor: d.pipelineStage?.color ?? null,
+      isClosed: !!(d.pipelineStage?.isWon || d.pipelineStage?.isLost),
+      isWon: !!d.pipelineStage?.isWon,
       createdAt: d.createdAt.toISOString(),
       updatedAt: d.updatedAt.toISOString(),
       deletedAt: d.deletedAt ? d.deletedAt.toISOString() : null,
-      contactName: `${d.contact.firstName} ${d.contact.lastName}`,
-    })) as any[];
+      contactName: d.contact ? `${d.contact.firstName} ${d.contact.lastName}` : undefined,
+    };
   }
 
-  async createDeal(
-    tenantId: string,
-    data: { contactId: string; pipelineId?: string | null; title: string; value: number; stage: string },
-  ): Promise<Deal> {
+  async createDeal(tenantId: string, data: CreateDealInput): Promise<Deal> {
     return db.$transaction(async (tx: any) => {
+      const stageCfg = await findStage(tx, data.pipelineId, data.stage);
+      // Manual probability at creation is an explicit override; otherwise
+      // inherit the stage default (spec: Pipeline Probability System).
+      const probabilitySource = data.probability !== undefined ? "MANUAL" : "AUTO";
+      const probability = data.probability ?? stageCfg?.probability ?? 10;
+
       const created = await tx.deal.create({
         data: {
           tenantId,
           contactId: data.contactId,
           pipelineId: data.pipelineId || null,
+          stageId: stageCfg?.id ?? null,
           title: data.title,
           value: data.value,
-          stage: data.stage,
+          currency: data.currency ?? "INR",
+          stage: stageCfg?.name ?? data.stage,
+          probability,
+          probabilitySource,
+          weightedValue: weightedRevenue(data.value, probability),
+          expectedCloseDate: data.expectedCloseDate ?? null,
+          priority: data.priority ?? "MEDIUM",
+          leadSource: data.leadSource ?? null,
+          tags: data.tags ?? [],
+          ownerId: data.ownerId ?? null,
+          lastActivityAt: new Date(),
+          nextFollowUpAt: data.nextFollowUpAt ?? null,
         },
+      });
+
+      await tx.dealStageHistory.create({
+        data: { tenantId, dealId: created.id, fromStage: null, toStage: created.stage },
       });
 
       await tx.activity.create({
@@ -563,27 +656,42 @@ export class CrmService {
         },
       });
 
-      return {
-        id: created.id,
-        tenantId: created.tenantId,
-        contactId: created.contactId,
-        pipelineId: created.pipelineId,
-        title: created.title,
-        value: created.value,
-        stage: created.stage,
-        createdAt: created.createdAt.toISOString(),
-        updatedAt: created.updatedAt.toISOString(),
-        deletedAt: null,
-      };
+      return this.serializeDeal(created);
     });
   }
 
-  async updateDealStage(tenantId: string, id: string, stage: string): Promise<Deal> {
+  /**
+   * Stage movement is a business event (spec: "Stage Movement"): update the
+   * stage, inherit probability (AUTO only — manual overrides persist),
+   * recalc weighted revenue, stamp close dates on won/lost, record immutable
+   * history, and log the activity.
+   */
+  async updateDealStage(
+    tenantId: string,
+    id: string,
+    stage: string,
+    userId?: string,
+    comment?: string
+  ): Promise<Deal> {
     return db.$transaction(async (tx: any) => {
       const existing = await tx.deal.findFirst({ where: { id, tenantId, deletedAt: null } });
       if (!existing) throw new Error("Deal not found");
+      if (existing.stage === stage) return this.serializeDeal(existing);
 
-      const updated = await tx.deal.update({ where: { id }, data: { stage } });
+      const stageCfg = await findStage(tx, existing.pipelineId, stage);
+      const patch = stageMovePatch(existing, stageCfg, stage);
+      const updated = await tx.deal.update({ where: { id }, data: patch });
+
+      await tx.dealStageHistory.create({
+        data: {
+          tenantId,
+          dealId: id,
+          fromStage: existing.stage,
+          toStage: updated.stage,
+          changedById: userId ?? null,
+          comment: comment ?? null,
+        },
+      });
 
       await tx.activity.create({
         data: {
@@ -596,18 +704,31 @@ export class CrmService {
         },
       });
 
-      return {
-        id: updated.id,
-        tenantId: updated.tenantId,
-        contactId: updated.contactId,
-        pipelineId: updated.pipelineId,
-        title: updated.title,
-        value: updated.value,
-        stage: updated.stage,
-        createdAt: updated.createdAt.toISOString(),
-        updatedAt: updated.updatedAt.toISOString(),
-        deletedAt: null,
-      };
+      return this.serializeDeal(updated);
+    });
+  }
+
+  /**
+   * Reset a manual probability override back to the stage default
+   * (spec: "Reset to Stage Default").
+   */
+  async resetDealProbability(tenantId: string, id: string): Promise<Deal> {
+    return db.$transaction(async (tx: any) => {
+      const existing = await tx.deal.findFirst({ where: { id, tenantId, deletedAt: null } });
+      if (!existing) throw new Error("Deal not found");
+
+      const stageCfg = await findStage(tx, existing.pipelineId, existing.stage);
+      const probability = stageCfg?.probability ?? existing.probability;
+      const updated = await tx.deal.update({
+        where: { id },
+        data: {
+          probability,
+          probabilitySource: "AUTO",
+          weightedValue: weightedRevenue(existing.value, probability),
+          lastActivityAt: new Date(),
+        },
+      });
+      return this.serializeDeal(updated);
     });
   }
 
@@ -636,49 +757,175 @@ export class CrmService {
   }
 
   async getPipelines(tenantId: string): Promise<any[]> {
-    const list = await db.pipeline.findMany({ where: { tenantId }, orderBy: { createdAt: "asc" } });
-    if (list.length > 0) return list;
-
-    const defaultPipeline = await db.pipeline.create({
-      data: {
-        tenantId,
-        name: "Sales Pipeline",
-        stages: ["New lead", "Contacted", "Qualified", "Booked", "Closed won"],
-      },
+    let list = await db.pipeline.findMany({
+      where: { tenantId },
+      include: { stageConfigs: { where: { archivedAt: null }, orderBy: { position: "asc" } } },
+      orderBy: { createdAt: "asc" },
     });
-    return [defaultPipeline];
+
+    if (list.length === 0) {
+      await db.$transaction(async (tx: any) => {
+        const created = await tx.pipeline.create({
+          data: {
+            tenantId,
+            name: DEFAULT_PIPELINE_NAME,
+            stages: DEFAULT_STAGES.map((s) => s.name),
+          },
+        });
+        await syncPipelineStages(tx, tenantId, created.id, DEFAULT_STAGES);
+      });
+    } else {
+      // Legacy pipelines predate structured stages — backfill configs from
+      // the plain name array once, so probability defaults exist everywhere.
+      for (const p of list) {
+        if ((p as any).stageConfigs.length === 0 && p.stages.length > 0) {
+          await db.$transaction(async (tx: any) => {
+            await syncPipelineStages(tx, tenantId, p.id, normalizeStageInput(p.stages));
+          });
+        }
+      }
+    }
+
+    list = await db.pipeline.findMany({
+      where: { tenantId },
+      include: { stageConfigs: { where: { archivedAt: null }, orderBy: { position: "asc" } } },
+      orderBy: { createdAt: "asc" },
+    });
+    return list;
   }
 
   async createPipeline(
     tenantId: string,
-    data: { name: string; stages: string[]; filters?: any[] | null },
+    data: { name: string; stages: Array<string | any>; filters?: any[] | null },
   ): Promise<any> {
-    return db.pipeline.create({
-      data: {
-        tenantId,
-        name: data.name,
-        stages: data.stages,
-        filters: (data.filters as any) || undefined,
-      },
+    const configs = normalizeStageInput(data.stages);
+    return db.$transaction(async (tx: any) => {
+      const created = await tx.pipeline.create({
+        data: {
+          tenantId,
+          name: data.name,
+          stages: configs.map((s) => s.name),
+          filters: (data.filters as any) || undefined,
+        },
+      });
+      await syncPipelineStages(tx, tenantId, created.id, configs);
+      return tx.pipeline.findFirst({
+        where: { id: created.id },
+        include: { stageConfigs: { where: { archivedAt: null }, orderBy: { position: "asc" } } },
+      });
     });
   }
 
   async updatePipeline(
     tenantId: string,
     id: string,
-    data: { name: string; stages: string[]; filters?: any[] | null },
+    data: { name: string; stages: Array<string | any>; filters?: any[] | null },
   ): Promise<any> {
     const existing = await db.pipeline.findFirst({ where: { id, tenantId } });
     if (!existing) throw new Error("Pipeline not found");
 
-    return db.pipeline.update({
-      where: { id },
-      data: {
-        name: data.name,
-        stages: data.stages,
-        filters: (data.filters as any) || null,
+    const configs = normalizeStageInput(data.stages);
+    return db.$transaction(async (tx: any) => {
+      await tx.pipeline.update({
+        where: { id },
+        data: {
+          name: data.name,
+          stages: configs.map((s) => s.name),
+          filters: (data.filters as any) || null,
+        },
+      });
+      await syncPipelineStages(tx, tenantId, id, configs);
+      return tx.pipeline.findFirst({
+        where: { id },
+        include: { stageConfigs: { where: { archivedAt: null }, orderBy: { position: "asc" } } },
+      });
+    });
+  }
+
+  /**
+   * Per-stage and header statistics (spec: "Pipeline Statistics" +
+   * "Pipeline Header"). Server-side so every client sees the same numbers.
+   */
+  async getPipelineStats(tenantId: string, pipelineId: string): Promise<any> {
+    const pipeline = await db.pipeline.findFirst({
+      where: { id: pipelineId, tenantId },
+      include: { stageConfigs: { where: { archivedAt: null }, orderBy: { position: "asc" } } },
+    });
+    if (!pipeline) throw new Error("Pipeline not found");
+
+    const deals = await db.deal.findMany({
+      where: { tenantId, pipelineId, deletedAt: null },
+      include: {
+        stageHistory: { orderBy: { changedAt: "desc" }, take: 1 },
       },
     });
+
+    const now = Date.now();
+    const cfgByName = new Map((pipeline as any).stageConfigs.map((s: any) => [s.name, s]));
+
+    const stages = (pipeline as any).stageConfigs.map((cfg: any) => {
+      const inStage = deals.filter((d: any) => d.stage === cfg.name);
+      const values = inStage.map((d: any) => d.value);
+      const total = values.reduce((s: number, v: number) => s + v, 0);
+      const daysInStage = inStage.map((d: any) => {
+        const entered = d.stageHistory[0]?.changedAt ?? d.createdAt;
+        return (now - entered.getTime()) / 86_400_000;
+      });
+      return {
+        id: cfg.id,
+        name: cfg.name,
+        color: cfg.color,
+        probability: cfg.probability,
+        isWon: cfg.isWon,
+        isLost: cfg.isLost,
+        dealCount: inStage.length,
+        totalValue: total,
+        weightedValue: inStage.reduce((s: number, d: any) => s + d.weightedValue, 0),
+        avgDealSize: inStage.length ? total / inStage.length : 0,
+        highestDeal: values.length ? Math.max(...values) : 0,
+        lowestDeal: values.length ? Math.min(...values) : 0,
+        avgDaysInStage: daysInStage.length
+          ? Math.round(daysInStage.reduce((s: number, v: number) => s + v, 0) / daysInStage.length)
+          : 0,
+      };
+    });
+
+    const isWonDeal = (d: any) => (cfgByName.get(d.stage) as any)?.isWon ?? false;
+    const isLostDeal = (d: any) => (cfgByName.get(d.stage) as any)?.isLost ?? false;
+    const open = deals.filter((d: any) => !isWonDeal(d) && !isLostDeal(d));
+    const won = deals.filter(isWonDeal);
+    const lost = deals.filter(isLostDeal);
+
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+    const monthEnd = new Date(monthStart);
+    monthEnd.setMonth(monthEnd.getMonth() + 1);
+
+    const cycleDays = won
+      .filter((d: any) => d.actualCloseDate)
+      .map((d: any) => (d.actualCloseDate.getTime() - d.createdAt.getTime()) / 86_400_000);
+
+    return {
+      pipelineId: pipeline.id,
+      name: pipeline.name,
+      stages,
+      header: {
+        openDeals: open.length,
+        wonDeals: won.length,
+        lostDeals: lost.length,
+        pipelineValue: open.reduce((s: number, d: any) => s + d.value, 0),
+        weightedRevenue: open.reduce((s: number, d: any) => s + d.weightedValue, 0),
+        winRate: won.length + lost.length > 0 ? Math.round((won.length / (won.length + lost.length)) * 100) : 0,
+        avgDealValue: deals.length ? deals.reduce((s: number, d: any) => s + d.value, 0) / deals.length : 0,
+        avgSalesCycleDays: cycleDays.length
+          ? Math.round(cycleDays.reduce((s: number, v: number) => s + v, 0) / cycleDays.length)
+          : 0,
+        closingThisMonth: open.filter(
+          (d: any) => d.expectedCloseDate && d.expectedCloseDate >= monthStart && d.expectedCloseDate < monthEnd
+        ).length,
+      },
+    };
   }
 
   async deletePipeline(tenantId: string, id: string): Promise<void> {
@@ -761,6 +1008,8 @@ export class CrmService {
     values: { fieldDefinitionId: string; value: any }[],
   ): Promise<void> {
     await db.$transaction(async (tx: any) => {
+      const updatedFields: Record<string, any> = {};
+
       for (const item of values) {
         const def = await tx.customFieldDefinition.findFirst({
           where: { id: item.fieldDefinitionId, tenantId },
@@ -771,12 +1020,14 @@ export class CrmService {
           where: { contactId, fieldDefinitionId: item.fieldDefinitionId },
         });
 
-        const textVal = def.type === "TEXT" || def.type === "DROPDOWN" ? String(item.value) : null;
-        const numVal = def.type === "NUMBER" ? Number(item.value) : null;
-        const boolVal = def.type === "BOOLEAN" ? Boolean(item.value) : null;
+        const isUnset = item.value === "" || item.value === null || item.value === undefined;
+
+        const textVal = isUnset ? null : (def.type === "TEXT" || def.type === "DROPDOWN" ? String(item.value) : null);
+        const numVal = isUnset ? null : (def.type === "NUMBER" ? Number(item.value) : null);
+        const boolVal = isUnset ? null : (def.type === "BOOLEAN" ? Boolean(item.value) : null);
 
         let dateVal: Date | null = null;
-        if (def.type === "DATE" && item.value) {
+        if (!isUnset && def.type === "DATE" && item.value) {
           const val = item.value;
           if (typeof val === "number") {
             const isSeconds = val < 10000000000;
@@ -790,37 +1041,62 @@ export class CrmService {
           }
         }
 
+        let oldDisplayVal: string | null = null;
         if (match) {
-          await tx.customFieldValue.update({
-            where: { id: match.id },
-            data: {
-              textValue: textVal,
-              numberValue: numVal,
-              booleanValue: boolVal,
-              dateValue: dateVal,
-            },
-          });
-        } else {
-          await tx.customFieldValue.create({
-            data: {
-              tenantId,
-              contactId,
-              fieldDefinitionId: item.fieldDefinitionId,
-              textValue: textVal,
-              numberValue: numVal,
-              booleanValue: boolVal,
-              dateValue: dateVal,
-              source: "MANUAL",
-            },
-          });
+          oldDisplayVal = match.textValue ?? (match.numberValue !== null ? String(match.numberValue) : null) ?? (match.booleanValue !== null ? String(match.booleanValue) : null) ?? (match.dateValue ? match.dateValue.toISOString() : null);
         }
 
+        let newDisplayVal: string | null = null;
+        if (!isUnset) {
+          newDisplayVal = textVal ?? (numVal !== null ? String(numVal) : null) ?? (boolVal !== null ? String(boolVal) : null) ?? (dateVal ? dateVal.toISOString() : null);
+        }
+
+        if (oldDisplayVal !== newDisplayVal) {
+          if (match) {
+            await tx.customFieldValue.update({
+              where: { id: match.id },
+              data: {
+                textValue: textVal,
+                numberValue: numVal,
+                booleanValue: boolVal,
+                dateValue: dateVal,
+              },
+            });
+          } else if (!isUnset) {
+            await tx.customFieldValue.create({
+              data: {
+                tenantId,
+                contactId,
+                fieldDefinitionId: item.fieldDefinitionId,
+                textValue: textVal,
+                numberValue: numVal,
+                booleanValue: boolVal,
+                dateValue: dateVal,
+                source: "MANUAL",
+              },
+            });
+          }
+
+          let formattedValue = item.value;
+          if (isUnset) {
+            formattedValue = "Cleared";
+          } else if (def.type === "DATE" && dateVal) {
+            formattedValue = dateVal.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+          } else if (def.type === "BOOLEAN") {
+            formattedValue = boolVal ? "Yes" : "No";
+          }
+          updatedFields[def.name] = formattedValue;
+        }
+      }
+
+      if (Object.keys(updatedFields).length > 0) {
         await tx.activity.create({
           data: {
             tenantId,
             contactId,
             type: "FIELD_UPDATED",
-            summary: `Custom field "${def.name}" updated to "${item.value}"`,
+            summary: `Manually updated ${Object.keys(updatedFields).length} custom field(s)`,
+            metadata: { fields: updatedFields },
             occurredAt: new Date(),
           },
         });
@@ -931,49 +1207,53 @@ export class CrmService {
   async updateDeal(
     tenantId: string,
     id: string,
-    data: { title?: string; value?: number; stage?: string },
+    data: UpdateDealInput,
+    userId?: string,
   ): Promise<any> {
+    // Stage changes are business events with their own rules + history —
+    // route them through the dedicated path first (spec: never simply
+    // update the stage id).
+    const current = await db.deal.findFirst({ where: { id, tenantId, deletedAt: null } });
+    if (!current) throw new Error("Deal not found");
+    if (data.stage !== undefined && data.stage !== current.stage) {
+      await this.updateDealStage(tenantId, id, data.stage, userId);
+    }
+
     return db.$transaction(async (tx: any) => {
       const existing = await tx.deal.findFirst({ where: { id, tenantId, deletedAt: null } });
-      if (!existing) throw new Error("Deal not found");
+
+      // A user-supplied probability differing from the stored one is a
+      // manual override; it persists across stage moves until reset.
+      const probabilityChanged =
+        data.probability !== undefined && data.probability !== existing.probability;
+      const nextProbability = probabilityChanged ? data.probability! : existing.probability;
+      const nextValue = data.value !== undefined ? data.value : existing.value;
 
       const updated = await tx.deal.update({
         where: { id },
         data: {
-          title: data.title !== undefined ? data.title : undefined,
-          value: data.value !== undefined ? data.value : undefined,
-          stage: data.stage !== undefined ? data.stage : undefined,
+          title: data.title,
+          value: data.value,
+          currency: data.currency,
+          probability: probabilityChanged ? nextProbability : undefined,
+          probabilitySource: probabilityChanged ? "MANUAL" : undefined,
+          // Rule #4: weighted revenue always recalculates when value or
+          // probability changes.
+          weightedValue:
+            probabilityChanged || data.value !== undefined
+              ? weightedRevenue(nextValue, nextProbability)
+              : undefined,
+          expectedCloseDate: data.expectedCloseDate,
+          priority: data.priority,
+          leadSource: data.leadSource,
+          tags: data.tags,
+          ownerId: data.ownerId,
+          nextFollowUpAt: data.nextFollowUpAt,
+          lastActivityAt: new Date(),
         },
       });
 
-      let summary = `Deal "${updated.title}" updated`;
-      if (data.stage !== undefined && data.stage !== existing.stage) {
-        summary = `Deal "${updated.title}" moved stage from "${existing.stage}" to "${updated.stage}"`;
-      }
-
-      await tx.activity.create({
-        data: {
-          tenantId,
-          contactId: updated.contactId,
-          type: "DEAL_STAGE_CHANGED",
-          dealId: updated.id,
-          summary,
-          occurredAt: new Date(),
-        },
-      });
-
-      return {
-        id: updated.id,
-        tenantId: updated.tenantId,
-        contactId: updated.contactId,
-        pipelineId: updated.pipelineId,
-        title: updated.title,
-        value: updated.value,
-        stage: updated.stage,
-        createdAt: updated.createdAt.toISOString(),
-        updatedAt: updated.updatedAt.toISOString(),
-        deletedAt: null,
-      };
+      return this.serializeDeal(updated);
     });
   }
 }

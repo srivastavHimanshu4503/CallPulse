@@ -1,4 +1,4 @@
-import { createLogger } from "../logger.js";
+import { createLogger } from "./logger.js";
 import type { LLMFactory, LLMInstance, LLMProviderConfig, LLMProviderName } from "./types.js";
 import { buildOpenAILLM } from "./providers/openai.js";
 import { buildGoogleLLM } from "./providers/google.js";
@@ -50,3 +50,10 @@ export const createPipelineLLM = (opts: {
 };
 
 export type { LLMInstance, LLMProviderConfig, LLMProviderName } from "./types.js";
+export { generateStructuredOutput } from "./structured.js";
+export {
+  OPENAI_MODELS,
+  OPENAI_MODEL_IDS,
+  DEFAULT_STRUCTURED_MODEL,
+  type OpenAIModelId,
+} from "./models.js";

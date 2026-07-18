@@ -57,10 +57,10 @@ export function BlockLibrary({ onAddBlock, activeType }: BlockLibraryProps): Rea
 
       <div className="flex-1 overflow-y-auto py-2">
         {/* Info note about triggers */}
-        <div className="mx-3 mb-3 rounded-lg border border-emerald-500/25 bg-emerald-50 px-3 py-2 flex items-start gap-2">
-          <Info className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
-          <div className="text-[10.5px] text-emerald-800 leading-relaxed">
-            The <b>trigger</b> is set inside the green card on the canvas — one per workflow.
+        <div className="mx-3 mb-3 rounded-lg border border-blue-500/25 bg-blue-50 px-3 py-2 flex items-start gap-2">
+          <Info className="h-3.5 w-3.5 text-blue-600 shrink-0 mt-0.5" />
+          <div className="text-[10.5px] text-blue-800 leading-relaxed">
+            The <b>trigger</b> is set inside the card at the top of the canvas — one per workflow.
           </div>
         </div>
 

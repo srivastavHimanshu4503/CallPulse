@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import { CrmService } from "./crm.service.js";
-import { 
-  createContactSchema, 
-  createDealSchema, 
+import {
+  createContactSchema,
+  createDealSchema,
+  updateDealSchema,
   createCustomFieldSchema,
   createNoteSchema,
   createBookingSchema,
@@ -34,6 +35,22 @@ export class CrmController {
 
       const data = await crmService.createContact(tenantId, parsed.data);
       res.status(201).json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async updateContact(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Contact ID is required" });
+        return;
+      }
+
+      const data = await crmService.updateContact(tenantId, id, req.body);
+      res.json({ success: true, data, error: null });
     } catch (err) {
       res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
     }
@@ -89,14 +106,45 @@ export class CrmController {
   async updateDealStage(req: Request, res: Response): Promise<void> {
     try {
       const tenantId = (req as any).tenantId;
+      const userId = (req as any).userId;
       const { id } = req.params;
-      const { stage } = req.body;
+      const { stage, comment } = req.body;
       if (!id || !stage) {
         res.status(400).json({ success: false, data: null, error: "Deal ID and stage are required" });
         return;
       }
 
-      const data = await crmService.updateDealStage(tenantId, id, stage);
+      const data = await crmService.updateDealStage(tenantId, id, stage, userId, comment);
+      res.json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async resetDealProbability(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Deal ID is required" });
+        return;
+      }
+      const data = await crmService.resetDealProbability(tenantId, id);
+      res.json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async getPipelineStats(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Pipeline ID is required" });
+        return;
+      }
+      const data = await crmService.getPipelineStats(tenantId, id);
       res.json({ success: true, data, error: null });
     } catch (err) {
       res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
@@ -267,15 +315,21 @@ export class CrmController {
   async updateDeal(req: Request, res: Response): Promise<void> {
     try {
       const tenantId = (req as any).tenantId;
+      const userId = (req as any).userId;
       const { id } = req.params;
-      const { title, value, stage } = req.body;
 
       if (!id) {
         res.status(400).json({ success: false, data: null, error: "Deal ID is required" });
         return;
       }
 
-      const data = await crmService.updateDeal(tenantId, id, { title, value, stage });
+      const parsed = updateDealSchema.safeParse(req.body);
+      if (!parsed.success) {
+        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        return;
+      }
+
+      const data = await crmService.updateDeal(tenantId, id, parsed.data, userId);
       res.json({ success: true, data, error: null });
     } catch (err) {
       res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });

@@ -304,47 +304,59 @@ const LOGIC: BlockDef[] = [
     category: "logic",
     group: "Branch",
     label: "If / else",
-    description: "Split the flow based on a value from the contact or call.",
+    description: "Split the flow based on one or more conditions on the contact or call.",
     icon: "GitBranch",
     tone: "attention",
     supportsFilter: false,
     fields: [
       {
-        key: "field",
-        label: "Property to check",
-        kind: "select",
-        options: [
-          { value: "contact.leadScore", label: "Lead score" },
-          { value: "contact.sentiment", label: "Latest sentiment" },
-          { value: "contact.hasOpenDeals", label: "Has open deals" },
-          { value: "contact.language", label: "Preferred language" },
-          { value: "call.duration", label: "Call duration (sec)" },
-          { value: "extracted.budget", label: "Extracted budget" },
-        ],
-        defaultValue: "contact.leadScore",
+        key: "when",
+        label: "Conditions",
+        kind: "conditions",
+        helper: "Chain multiple rules with AND / OR — same feel as a CRM filter.",
       },
-      {
-        key: "operator",
-        label: "Operator",
-        kind: "select",
-        options: [
-          { value: "gte", label: "≥" },
-          { value: "lte", label: "≤" },
-          { value: "eq", label: "equals" },
-          { value: "contains", label: "contains" },
-          { value: "exists", label: "exists" },
+    ],
+    defaultConfig: {
+      when: {
+        logical: FilterLogicalOperator.AND,
+        conditions: [
+          {
+            id: rid(),
+            fieldId: "score",
+            operator: FilterOperator.GREATER_THAN_OR_EQUAL,
+            value: "75",
+          },
         ],
-        defaultValue: "gte",
       },
-      { key: "value", label: "Value", kind: "text", placeholder: "e.g. 75, hindi, 100000" },
-    ],
-    defaultConfig: { field: "contact.leadScore", operator: "gte", value: "75" },
-    summary: (c) => `If ${prettyField(c.field)} ${prettyOp(c.operator)} ${c.value || "?"}`,
-    preview: (c) => [
-      { kind: "chip", label: "Field", value: prettyField(c.field) },
-      { kind: "chip", label: "Op", value: prettyOp(c.operator) },
-      { kind: "chip", label: "Value", value: c.value || "—" },
-    ],
+    },
+    summary: (c) => {
+      const when = c.when || { logical: FilterLogicalOperator.AND, conditions: [] };
+      const n = when.conditions?.length || 0;
+      if (n === 0) return "No conditions yet";
+      if (n === 1) {
+        const cond = when.conditions[0];
+        return `If ${prettyField(cond.fieldId)} ${prettyOp(cond.operator)} ${cond.value || "?"}`;
+      }
+      return `${n} conditions · match ${when.logical === FilterLogicalOperator.AND ? "ALL" : "ANY"}`;
+    },
+    preview: (c) => {
+      const when = c.when || { logical: FilterLogicalOperator.AND, conditions: [] };
+      if (!when.conditions || when.conditions.length === 0) return [];
+      const rows: any[] = [];
+      rows.push({
+        kind: "chip",
+        label: "Match",
+        value: when.logical === FilterLogicalOperator.AND ? "ALL" : "ANY",
+      });
+      for (const cond of when.conditions) {
+        rows.push({
+          kind: "chip",
+          label: prettyField(cond.fieldId),
+          value: `${prettyOp(cond.operator)} ${cond.value || "?"}`,
+        });
+      }
+      return rows;
+    },
   },
   {
     type: "WAIT",
@@ -636,23 +648,27 @@ function truncate(s: string, n: number): string {
 
 function prettyField(k: string): string {
   const map: Record<string, string> = {
-    "contact.leadScore": "lead score",
-    "contact.sentiment": "sentiment",
-    "contact.hasOpenDeals": "open deals",
-    "contact.language": "language",
-    "call.duration": "call duration",
-    "extracted.budget": "budget",
+    name: "Name",
+    email: "Email",
+    phone: "Phone",
+    createdAt: "Created",
+    hasOpenDeals: "Has deals",
+    language: "Language",
+    score: "Lead score",
   };
   return map[k] || k;
 }
 
-function prettyOp(k: string): string {
+function prettyOp(op: string): string {
   const map: Record<string, string> = {
-    gte: "≥",
-    lte: "≤",
-    eq: "=",
-    contains: "contains",
-    exists: "exists",
+    [FilterOperator.CONTAINS]: "contains",
+    [FilterOperator.EQUALS]: "=",
+    [FilterOperator.GREATER_THAN_OR_EQUAL]: "≥",
+    [FilterOperator.LESS_THAN_OR_EQUAL]: "≤",
+    [FilterOperator.IS_EMPTY]: "is empty",
+    [FilterOperator.IS_NOT_EMPTY]: "is set",
+    [FilterOperator.IS_AFTER]: "after",
+    [FilterOperator.IS_BEFORE]: "before",
   };
-  return map[k] || k;
+  return map[op] || op;
 }

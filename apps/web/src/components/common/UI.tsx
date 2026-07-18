@@ -46,7 +46,7 @@ export const SectionHead: React.FC<{
 // PageHeader — top of each page
 // ─────────────────────────────────────────────────────────────
 export const PageHeader: React.FC<{
-  title: string;
+  title: React.ReactNode;
   subtitle?: React.ReactNode;
   actions?: React.ReactNode;
 }> = ({ title, subtitle, actions }) => (

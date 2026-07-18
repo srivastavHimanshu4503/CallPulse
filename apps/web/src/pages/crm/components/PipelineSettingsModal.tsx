@@ -19,7 +19,16 @@ interface Pipeline {
   id: string;
   name: string;
   stages: string[];
+  stageConfigs?: StageRow[];
   filters?: any[] | null;
+}
+
+interface StageRow {
+  name: string;
+  color: string;
+  probability: number;
+  isWon: boolean;
+  isLost: boolean;
 }
 
 interface CustomFieldDef {
@@ -38,7 +47,46 @@ interface PipelineSettingsModalProps {
   onDeleted?: () => void;
 }
 
-const DEFAULT_STAGES = ["New lead", "Contacted", "Qualified", "Booked", "Closed won"];
+// Spec-default stage set — each stage carries its own probability so the
+// weighted forecast works out of the box.
+const DEFAULT_STAGES: StageRow[] = [
+  { name: "New Lead", color: "#64748b", probability: 10, isWon: false, isLost: false },
+  { name: "Qualified", color: "#0ea5e9", probability: 30, isWon: false, isLost: false },
+  { name: "Discovery", color: "#6366f1", probability: 45, isWon: false, isLost: false },
+  { name: "Proposal Sent", color: "#f59e0b", probability: 70, isWon: false, isLost: false },
+  { name: "Negotiation", color: "#f97316", probability: 90, isWon: false, isLost: false },
+  { name: "Closed Won", color: "#10b981", probability: 100, isWon: true, isLost: false },
+  { name: "Closed Lost", color: "#ef4444", probability: 0, isWon: false, isLost: true },
+];
+
+const STAGE_COLORS = [
+  "#64748b", "#0ea5e9", "#6366f1", "#8b5cf6", "#f59e0b",
+  "#f97316", "#10b981", "#14b8a6", "#ef4444", "#ec4899",
+];
+
+const clampPct = (n: number): number => Math.max(0, Math.min(100, Math.round(n) || 0));
+
+const toStageRows = (pipeline?: Pipeline | null): StageRow[] => {
+  if (pipeline?.stageConfigs && pipeline.stageConfigs.length > 0) {
+    return pipeline.stageConfigs.map((s) => ({
+      name: s.name,
+      color: s.color || "#6366f1",
+      probability: s.probability ?? 10,
+      isWon: !!s.isWon,
+      isLost: !!s.isLost,
+    }));
+  }
+  if (pipeline?.stages && pipeline.stages.length > 0) {
+    return pipeline.stages.map((name, i) => ({
+      name,
+      color: STAGE_COLORS[i % STAGE_COLORS.length]!,
+      probability: Math.min(95, Math.round((i / Math.max(1, pipeline.stages.length - 1)) * 90) + 10),
+      isWon: name.toLowerCase().includes("won"),
+      isLost: name.toLowerCase().includes("lost"),
+    }));
+  }
+  return DEFAULT_STAGES.map((s) => ({ ...s }));
+};
 
 export function PipelineSettingsModal({
   pipeline,
@@ -50,9 +98,7 @@ export function PipelineSettingsModal({
   const isEditing = !!pipeline;
 
   const [name, setName] = React.useState(pipeline?.name || "");
-  const [stages, setStages] = React.useState<string[]>(
-    pipeline?.stages && pipeline.stages.length > 0 ? [...pipeline.stages] : [...DEFAULT_STAGES],
-  );
+  const [stages, setStages] = React.useState<StageRow[]>(() => toStageRows(pipeline));
   const [useFilter, setUseFilter] = React.useState(
     !!(pipeline?.filters && pipeline.filters.length > 0),
   );
@@ -75,7 +121,9 @@ export function PipelineSettingsModal({
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const cleanStages = stages.map((s) => s.trim()).filter(Boolean);
+      const cleanStages = stages
+        .map((s) => ({ ...s, name: s.name.trim(), probability: clampPct(s.probability) }))
+        .filter((s) => s.name);
       if (!name.trim() || cleanStages.length === 0) {
         throw new Error("Pipeline name and at least one stage are required");
       }
@@ -115,12 +163,26 @@ export function PipelineSettingsModal({
     },
   });
 
-  const updateStage = (i: number, value: string) => {
-    const next = [...stages];
-    next[i] = value;
-    setStages(next);
+  const patchStage = (i: number, patch: Partial<StageRow>) => {
+    setStages((prev) => prev.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
   };
-  const addStage = () => setStages([...stages, ""]);
+  const setOutcome = (i: number, outcome: "open" | "won" | "lost") => {
+    // Won implies 100%, Lost implies 0% — still editable afterwards.
+    if (outcome === "won") patchStage(i, { isWon: true, isLost: false, probability: 100 });
+    else if (outcome === "lost") patchStage(i, { isWon: false, isLost: true, probability: 0 });
+    else patchStage(i, { isWon: false, isLost: false });
+  };
+  const addStage = () =>
+    setStages((prev) => [
+      ...prev,
+      {
+        name: "",
+        color: STAGE_COLORS[prev.length % STAGE_COLORS.length]!,
+        probability: 50,
+        isWon: false,
+        isLost: false,
+      },
+    ]);
   const removeStage = (i: number) => {
     if (stages.length <= 1) return;
     setStages(stages.filter((_, idx) => idx !== i));
@@ -186,6 +248,16 @@ export function PipelineSettingsModal({
               </button>
             </div>
 
+            {/* Column labels */}
+            <div className="hidden sm:flex items-center gap-1.5 px-2 mb-1 text-[9.5px] font-bold text-fg-muted uppercase tracking-wider">
+              <span className="w-5" />
+              <span className="w-5" />
+              <span className="flex-1">Stage name</span>
+              <span className="w-[76px] text-center">Win %</span>
+              <span className="w-[132px] text-center">Outcome</span>
+              <span className="w-[84px]" />
+            </div>
+
             <ul className="space-y-1.5">
               {stages.map((s, i) => (
                 <li
@@ -193,16 +265,65 @@ export function PipelineSettingsModal({
                   className="flex items-center gap-1.5 bg-bg-subtle border border-line-default rounded-md p-1.5 pl-2 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/15"
                 >
                   <GripVertical className="h-3.5 w-3.5 text-fg-muted shrink-0" />
-                  <span className="text-[10px] font-bold text-fg-muted tabular-nums w-5 text-center">
-                    {i + 1}
-                  </span>
+
+                  {/* Color swatch — cycles through the palette on click */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const idx = STAGE_COLORS.indexOf(s.color);
+                      patchStage(i, { color: STAGE_COLORS[(idx + 1) % STAGE_COLORS.length]! });
+                    }}
+                    className="h-5 w-5 rounded-full border-2 border-white ring-1 ring-line-strong shrink-0 transition-transform hover:scale-110"
+                    style={{ backgroundColor: s.color }}
+                    title="Click to change stage color"
+                  />
+
                   <input
                     type="text"
-                    value={s}
+                    value={s.name}
                     placeholder={`Stage ${i + 1}`}
-                    onChange={(e) => updateStage(i, e.target.value)}
-                    className="flex-1 bg-transparent border-0 text-[12.5px] text-fg-primary placeholder-fg-muted h-8 focus:outline-none focus:ring-0"
+                    onChange={(e) => patchStage(i, { name: e.target.value })}
+                    className="flex-1 min-w-0 bg-transparent border-0 text-[12.5px] text-fg-primary placeholder-fg-muted h-8 focus:outline-none focus:ring-0"
                   />
+
+                  {/* Per-stage default probability */}
+                  <div className="flex items-center gap-0.5 shrink-0 w-[76px] justify-center" title="Default win probability for deals entering this stage">
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={s.probability}
+                      onChange={(e) => patchStage(i, { probability: clampPct(Number(e.target.value)) })}
+                      className="w-12 h-7 bg-white border border-line-default focus:border-brand-500 text-[11.5px] font-semibold text-fg-primary text-center rounded focus:outline-none"
+                    />
+                    <span className="text-[10px] font-bold text-fg-muted">%</span>
+                  </div>
+
+                  {/* Outcome: Open / Won / Lost */}
+                  <div className="flex items-center rounded-md border border-line-default bg-white p-0.5 shrink-0" title="Deals in a Won/Lost stage count as closed">
+                    {(["open", "won", "lost"] as const).map((o) => {
+                      const active = o === "won" ? s.isWon : o === "lost" ? s.isLost : !s.isWon && !s.isLost;
+                      return (
+                        <button
+                          key={o}
+                          type="button"
+                          onClick={() => setOutcome(i, o)}
+                          className={`h-6 px-1.5 rounded text-[9.5px] font-bold uppercase tracking-wide transition-colors ${
+                            active
+                              ? o === "won"
+                                ? "bg-positive-50 text-positive-600"
+                                : o === "lost"
+                                  ? "bg-negative-50 text-negative-500"
+                                  : "bg-bg-muted text-fg-primary"
+                              : "text-fg-muted hover:text-fg-secondary"
+                          }`}
+                        >
+                          {o}
+                        </button>
+                      );
+                    })}
+                  </div>
+
                   <div className="flex items-center gap-0.5 shrink-0">
                     <button
                       type="button"
@@ -235,6 +356,12 @@ export function PipelineSettingsModal({
                 </li>
               ))}
             </ul>
+
+            <p className="text-[10.5px] text-fg-muted mt-2 leading-relaxed flex items-start gap-1">
+              <Sparkles className="h-3 w-3 text-brand-500 shrink-0 mt-px" />
+              Win % sets the default probability for deals entering each stage — it powers the
+              weighted revenue forecast. Reps can still override it per deal.
+            </p>
           </div>
 
           {/* Smart filter */}

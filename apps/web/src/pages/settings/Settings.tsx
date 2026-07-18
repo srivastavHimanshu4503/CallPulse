@@ -352,80 +352,59 @@ function TeamPanel(): React.JSX.Element {
 function BillingPanel(): React.JSX.Element {
   return (
     <div className="space-y-3">
-      {/* Big gradient plan card */}
-      <div
-        className="relative rounded-xl p-5 overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, #EEF2FF 0%, #FDF4FF 50%, #FFF1F2 100%)",
-          border: "1px solid rgba(139,92,246,0.2)",
-          boxShadow: "0 8px 30px -12px rgba(139,92,246,0.35)",
-        }}
-      >
-        <div className="absolute -top-8 -right-6 h-32 w-32 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(236,72,153,0.30)" }} />
-        <div className="absolute -bottom-10 -left-6 h-32 w-32 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(99,102,241,0.30)" }} />
-
-        <div className="relative">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div
-                className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider mb-2"
-                style={{ backgroundColor: "rgba(255,255,255,0.7)", color: "#4F46E5", boxShadow: "inset 0 0 0 1px rgba(99,102,241,0.35)" }}
-              >
-                <Sparkles className="h-3 w-3" />
-                Current plan
-              </div>
-              <div
-                className="text-[26px] font-bold tracking-tight bg-clip-text text-transparent"
-                style={{ backgroundImage: "linear-gradient(90deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)" }}
-              >
-                Business Pro
-              </div>
-              <p className="text-[12.5px] text-fg-secondary mt-1">
-                5,000 voice minutes · unlimited agents · 10+ languages
-              </p>
+      {/* Minimal plan card */}
+      <Card>
+        <div className="flex items-start justify-between gap-4 border-b border-line-subtle pb-4 mb-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider mb-2 bg-primary/10 text-primary">
+              <Sparkles className="h-3 w-3" />
+              Current plan
             </div>
-            <div className="text-right shrink-0">
-              <div className="text-[22px] font-bold text-fg-primary tabular-nums">₹4,999<span className="text-[13px] text-fg-muted font-normal">/mo</span></div>
-              <div className="text-[11px] text-fg-muted">Renews 12 Dec</div>
+            <div className="text-[20px] font-bold tracking-tight text-fg-primary">
+              Business Pro
             </div>
+            <p className="text-[12.5px] text-fg-secondary mt-1">
+              5,000 credits · unlimited agents · 10+ languages
+            </p>
           </div>
-
-          <div className="mt-4">
-            <div className="flex justify-between text-[11px] font-semibold mb-1.5">
-              <span className="text-fg-secondary">Voice quota</span>
-              <span className="text-fg-primary tabular-nums">4,850 / 5,000 min</span>
-            </div>
-            <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(15,23,42,0.06)" }}>
-              <div
-                className="h-full rounded-full"
-                style={{
-                  width: "97%",
-                  background: "linear-gradient(90deg, #6366F1 0%, #8B5CF6 45%, #EC4899 100%)",
-                  boxShadow: "0 0 12px rgba(139,92,246,0.55)",
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => toast.info("Top up coming soon.")}
-              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-white text-[12.5px] font-bold transition-all hover:brightness-110"
-              style={{ background: "linear-gradient(135deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)", boxShadow: "0 2px 8px -2px rgba(139,92,246,0.55)" }}
-            >
-              <CreditCard className="h-3.5 w-3.5" />
-              Top up credits
-            </button>
-            <AppButton variant="secondary" onClick={() => toast.info("Upgrade coming soon.")}>
-              Change plan
-            </AppButton>
-            <AppButton variant="ghost" onClick={() => toast.info("Invoices coming soon.")}>
-              View invoices →
-            </AppButton>
+          <div className="text-right shrink-0">
+            <div className="text-[22px] font-bold text-fg-primary tabular-nums">₹4,999<span className="text-[13px] text-fg-muted font-normal">/mo</span></div>
+            <div className="text-[11px] text-fg-muted">Renews 12 Dec</div>
           </div>
         </div>
-      </div>
+
+        <div>
+          <div className="flex justify-between text-[12.5px] font-semibold mb-1.5">
+            <span className="text-fg-secondary">Credits</span>
+            <span className="text-fg-primary tabular-nums">4,850 / 5,000</span>
+          </div>
+          <div className="h-2 rounded-full overflow-hidden bg-line-subtle">
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{ width: "97%" }}
+            />
+          </div>
+          <div className="mt-3 flex gap-4 text-[11px] text-fg-muted">
+            <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle"><span className="font-semibold text-fg-secondary">Voice call:</span> 10 credits / min</div>
+            <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle"><span className="font-semibold text-fg-secondary">SMS:</span> 2 credits / msg</div>
+          </div>
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <AppButton variant="primary" onClick={() => toast.info("Top up coming soon.")}>
+            <span className="flex items-center gap-1.5">
+              <CreditCard className="h-3.5 w-3.5" />
+              Top up credits
+            </span>
+          </AppButton>
+          <AppButton variant="secondary" onClick={() => toast.info("Upgrade coming soon.")}>
+            Change plan
+          </AppButton>
+          <AppButton variant="ghost" onClick={() => toast.info("Invoices coming soon.")}>
+            View invoices →
+          </AppButton>
+        </div>
+      </Card>
 
       <Card>
         <SectionHead title="Payment method" />

@@ -144,10 +144,11 @@ export class AgentsController {
         return;
       }
 
-      const { type, startDate, endDate, cursor, limit } = req.query;
+      const { type, extractionStatus, startDate, endDate, cursor, limit } = req.query;
 
       const filters = {
         type: type ? String(type) : undefined,
+        extractionStatus: extractionStatus ? String(extractionStatus) : undefined,
         startDate: startDate ? String(startDate) : undefined,
         endDate: endDate ? String(endDate) : undefined,
         cursor: cursor ? String(cursor) : undefined,
@@ -158,6 +159,23 @@ export class AgentsController {
       sendSuccess(res, result, 200);
     } catch (error: any) {
       sendError(res, getCleanErrorMessage(error), 500);
+    }
+  }
+
+  async deleteAgentLog(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = req.tenantId;
+      const { id, logId } = req.params;
+
+      if (!tenantId || !id || !logId) {
+        sendError(res, "Invalid request details", 400);
+        return;
+      }
+
+      await agentsService.deleteAgentLog(tenantId, id, logId);
+      sendSuccess(res, { message: "Log deleted successfully" }, 200);
+    } catch (error: any) {
+      sendError(res, getCleanErrorMessage(error), 400);
     }
   }
 

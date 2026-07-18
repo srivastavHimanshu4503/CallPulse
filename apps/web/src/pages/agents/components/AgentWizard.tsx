@@ -86,6 +86,19 @@ export function AgentWizard({
     editingAgent?.recordingConsent ?? true
   );
   const [isActive, setIsActive] = React.useState(editingAgent?.isActive ?? true);
+  
+  // Availability states
+  const [timeZone, setTimeZone] = React.useState(editingAgent?.timeZone || "Asia/Kolkata");
+  const [is24x7, setIs24x7] = React.useState(
+    editingAgent?.businessHours ? editingAgent.businessHours.is24x7 ?? true : true
+  );
+  const [startTime, setStartTime] = React.useState(
+    editingAgent?.businessHours?.startTime || "09:00"
+  );
+  const [endTime, setEndTime] = React.useState(
+    editingAgent?.businessHours?.endTime || "18:00"
+  );
+
 
   // STEP 3: Workflow Configuration States
   const [intakeEnabled, setIntakeEnabled] = React.useState(editingAgent?.intakeEnabled ?? false);
@@ -203,6 +216,8 @@ export function AgentWizard({
       smsTriggerCondition: smsEnabled ? smsTriggerCondition : null,
       smsTemplate: smsEnabled ? smsTemplate : null,
       smsAgentReply: smsEnabled ? smsAgentReply : null,
+      timeZone,
+      businessHours: { is24x7, startTime, endTime },
     };
     if (editingAgent) updateMutation.mutate(payload);
     else createMutation.mutate(payload);
@@ -383,6 +398,14 @@ export function AgentWizard({
                       setRecordingConsent={setRecordingConsent}
                       isActive={isActive}
                       setIsActive={setIsActive}
+                      timeZone={timeZone}
+                      setTimeZone={setTimeZone}
+                      is24x7={is24x7}
+                      setIs24x7={setIs24x7}
+                      startTime={startTime}
+                      setStartTime={setStartTime}
+                      endTime={endTime}
+                      setEndTime={setEndTime}
                       disabled={isFormLoading}
                     />
                   </div>
@@ -548,6 +571,14 @@ interface CompliancePanelProps {
   setRecordingConsent: (val: boolean) => void;
   isActive: boolean;
   setIsActive: (val: boolean) => void;
+  timeZone: string;
+  setTimeZone: (val: string) => void;
+  is24x7: boolean;
+  setIs24x7: (val: boolean) => void;
+  startTime: string;
+  setStartTime: (val: string) => void;
+  endTime: string;
+  setEndTime: (val: string) => void;
   disabled: boolean;
 }
 
@@ -560,6 +591,14 @@ function CompliancePanel({
   setRecordingConsent,
   isActive,
   setIsActive,
+  timeZone,
+  setTimeZone,
+  is24x7,
+  setIs24x7,
+  startTime,
+  setStartTime,
+  endTime,
+  setEndTime,
   disabled,
 }: CompliancePanelProps): React.JSX.Element {
   const switches = [
@@ -624,6 +663,76 @@ function CompliancePanel({
             disabled={disabled}
           />
         ))}
+      </div>
+
+      <div className="pt-4 border-t border-[#E5E5E5] space-y-4 mt-2">
+        <header>
+          <h3 className="text-[13px] font-semibold text-[#111111]">Availability & Time Zone</h3>
+          <p className="text-[11px] text-[#666666] mt-0.5">
+            When should this agent be active to receive calls?
+          </p>
+        </header>
+
+        <div className="space-y-4">
+          <SwitchRow
+            title="Available 24x7"
+            description="Agent is always online and ready to take calls."
+            checked={is24x7}
+            onChange={setIs24x7}
+            disabled={disabled}
+          />
+
+          {!is24x7 && (
+            <div className="flex items-center gap-3 bg-[#FAFAFA] p-3 rounded-[8px] border border-[#E5E5E5] animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex-1">
+                <label className="block text-[11px] font-semibold text-[#111111] mb-1">Start Time</label>
+                <input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  disabled={disabled}
+                  className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] h-9 px-3 w-full focus:outline-none"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-[11px] font-semibold text-[#111111] mb-1">End Time</label>
+                <input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  disabled={disabled}
+                  className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] h-9 px-3 w-full focus:outline-none"
+                />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-[12px] font-semibold text-[#111111] mb-1">
+              Time Zone
+            </label>
+            <select
+              value={timeZone}
+              onChange={(e) => setTimeZone(e.target.value)}
+              disabled={disabled}
+              className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] h-10 px-3 w-full focus:outline-none focus:ring-0"
+            >
+              <option value="Asia/Kolkata">India Standard Time (IST)</option>
+              <option value="America/New_York">Eastern Time (US & Canada)</option>
+              <option value="America/Chicago">Central Time (US & Canada)</option>
+              <option value="America/Denver">Mountain Time (US & Canada)</option>
+              <option value="America/Los_Angeles">Pacific Time (US & Canada)</option>
+              <option value="Europe/London">Greenwich Mean Time (London)</option>
+              <option value="Europe/Paris">Central European Time (Paris)</option>
+              <option value="Asia/Dubai">Gulf Standard Time (Dubai)</option>
+              <option value="Asia/Singapore">Singapore Standard Time</option>
+              <option value="Australia/Sydney">Australian Eastern Time (Sydney)</option>
+            </select>
+            <p className="text-[11px] text-[#999999] mt-1.5">
+              The time zone used for availability hours and bookings.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

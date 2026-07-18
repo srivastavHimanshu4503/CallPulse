@@ -4,6 +4,7 @@ export interface AgentFilters {
 
 export interface LogFilters {
   type?: string;
+  extractionStatus?: string;
   startDate?: string;
   endDate?: string;
   cursor?: string;

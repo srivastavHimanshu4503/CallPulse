@@ -1,7 +1,7 @@
 import { llm as agentsLLM } from "@livekit/agents";
 import type { APIConnectOptions } from "@livekit/agents";
 import { DEFAULT_API_CONNECT_OPTIONS } from "@livekit/agents";
-import { createLogger } from "../logger.js";
+import { createLogger } from "./logger.js";
 import type { LLMInstance } from "./types.js";
 
 /**

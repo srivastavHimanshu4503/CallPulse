@@ -18,6 +18,8 @@ import { getBlockDef, rid } from "./registry.js";
 import { BlockLibrary } from "./components/BlockLibrary.js";
 import { WorkflowCanvas } from "./components/WorkflowCanvas.js";
 import { BlockInspector } from "./components/BlockInspector.js";
+import { ConfirmModal } from "../../components/common/ConfirmModal.js";
+import { DeleteWorkflowModal } from "./components/DeleteWorkflowModal.js";
 
 /**
  * Workflow builder — 3-column layout.
@@ -41,6 +43,8 @@ export function WorkflowBuilder(): React.JSX.Element {
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [isTriggerSelected, setIsTriggerSelected] = React.useState(true);
   const [renaming, setRenaming] = React.useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = React.useState(false);
 
   React.useEffect(() => {
     if (fetched) {
@@ -154,9 +158,14 @@ export function WorkflowBuilder(): React.JSX.Element {
     setIsTriggerSelected(false);
   };
 
-  const handleAddInBranch = (parentId: string, branch: "then" | "else", afterId: string | null, type: string = "SEND_SMS") => {
+  const handleAddInBranch = (
+    parentId: string,
+    branch: "then" | "else",
+    afterId: string | null,
+    type?: string,
+  ) => {
     if (!wf) return;
-    const step = buildStep(type);
+    const step = buildStep(type || "SEND_SMS");
     if (!step) return;
     setWf({
       ...wf,
@@ -211,8 +220,11 @@ export function WorkflowBuilder(): React.JSX.Element {
           <button
             type="button"
             onClick={() => {
-              if (dirty && !window.confirm("Unsaved changes will be lost. Leave?")) return;
-              navigate("/workflows");
+              if (dirty) {
+                setShowLeaveConfirm(true);
+              } else {
+                navigate("/workflows");
+              }
             }}
             className="h-9 w-9 rounded-md border border-line-default bg-slate-50 hover:bg-slate-100 text-fg-secondary hover:text-fg-primary flex items-center justify-center"
             aria-label="Back"
@@ -233,7 +245,7 @@ export function WorkflowBuilder(): React.JSX.Element {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === "Escape") setRenaming(false);
                 }}
-                className="w-full max-w-md bg-white border border-line-default focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 text-[14px] font-semibold text-fg-primary rounded-md h-9 px-2.5 focus:outline-none"
+                className="w-full max-w-md bg-white border border-line-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 text-[14px] font-semibold text-fg-primary rounded-md h-9 px-2.5 focus:outline-none"
               />
             ) : (
               <button
@@ -241,7 +253,7 @@ export function WorkflowBuilder(): React.JSX.Element {
                 onClick={() => setRenaming(true)}
                 className="inline-flex items-center gap-2 text-left group"
               >
-                <Zap className="h-3.5 w-3.5 text-emerald-500" />
+                <Zap className="h-3.5 w-3.5 text-blue-500" />
                 <span className="text-[14px] font-semibold text-fg-primary truncate max-w-md group-hover:underline">
                   {wf.name}
                 </span>
@@ -259,7 +271,7 @@ export function WorkflowBuilder(): React.JSX.Element {
               </StatusPill>
             ) : (
               <span className="inline-flex items-center gap-1 text-[10.5px] text-fg-muted font-medium">
-                <Check className="h-3 w-3 text-emerald-500" />
+                <Check className="h-3 w-3 text-blue-500" />
                 Saved
               </span>
             )}
@@ -275,7 +287,7 @@ export function WorkflowBuilder(): React.JSX.Element {
                   checked={wf.isActive}
                   onChange={(e) => toggleActive.mutate(e.target.checked)}
                 />
-                <span className="w-9 h-5 bg-line-strong rounded-full peer-checked:bg-emerald-500 transition-colors" />
+                <span className="w-9 h-5 bg-line-strong rounded-full peer-checked:bg-blue-500 transition-colors" />
                 <span
                   className={`absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-line-default rounded-full shadow-card transition-transform ${
                     wf.isActive ? "translate-x-4" : "translate-x-0"
@@ -286,11 +298,7 @@ export function WorkflowBuilder(): React.JSX.Element {
 
             <button
               type="button"
-              onClick={() => {
-                if (window.confirm(`Delete "${wf.name}"? This can't be undone.`)) {
-                  remove.mutate();
-                }
-              }}
+              onClick={() => setIsDeleteOpen(true)}
               className="h-9 w-9 rounded-md border border-line-default bg-slate-50 hover:bg-rose-50 hover:border-rose-500/30 hover:text-rose-500 text-fg-secondary flex items-center justify-center transition-colors"
               aria-label="Delete workflow"
             >
@@ -301,7 +309,7 @@ export function WorkflowBuilder(): React.JSX.Element {
               variant="primary"
               onClick={() => saveMutation.mutate()}
               disabled={!dirty || saveMutation.isPending}
-              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-md text-[12px] font-semibold bg-emerald-500 hover:bg-emerald-600 text-white shadow-card border-none disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-md text-[12px] font-semibold bg-blue-500 hover:bg-blue-600 text-white shadow-card border-none disabled:opacity-50"
             >
               <Save className="h-3.5 w-3.5" />
               {saveMutation.isPending ? "Saving…" : "Save workflow"}
@@ -335,8 +343,8 @@ export function WorkflowBuilder(): React.JSX.Element {
               }}
               onChangeTriggerType={changeTriggerType}
               onAddStep={(afterId, type) => handleAddByType(afterId, type || "SEND_SMS")}
-              onAddStepBranch={(parentId, branch, afterId) =>
-                handleAddInBranch(parentId, branch, afterId, "SEND_SMS")
+              onAddStepBranch={(parentId, branch, afterId, type) =>
+                handleAddInBranch(parentId, branch, afterId, type)
               }
               onDeleteStep={(stepId) => deleteStep(stepId)}
             />
@@ -352,6 +360,26 @@ export function WorkflowBuilder(): React.JSX.Element {
             }}
           />
         </div>
+
+        {isDeleteOpen && (
+          <DeleteWorkflowModal
+            workflowName={wf.name}
+            runCount={wf.runCount}
+            isActive={wf.isActive}
+            isDeleting={remove.isPending}
+            onClose={() => setIsDeleteOpen(false)}
+            onConfirm={() => remove.mutate()}
+          />
+        )}
+
+        <ConfirmModal
+          isOpen={showLeaveConfirm}
+          title="Unsaved changes"
+          message="Unsaved changes will be lost. Are you sure you want to leave?"
+          confirmText="Leave"
+          onConfirm={() => navigate("/workflows")}
+          onClose={() => setShowLeaveConfirm(false)}
+        />
       </div>
     </PageWrapper>
   );

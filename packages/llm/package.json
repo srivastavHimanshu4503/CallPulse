@@ -1,0 +1,27 @@
+{
+  "name": "@antigravity/llm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@antigravity/types": "workspace:*",
+    "@antigravity/utils": "workspace:*",
+    "@antigravity/validators": "workspace:*",
+    "@antigravity/errors": "workspace:*",
+    "openai": "^4.28.0",
+    "zod": "^3.22.4",
+    "@livekit/agents": "1.5.1",
+    "@livekit/agents-plugin-openai": "^1.5.1",
+    "@livekit/agents-plugin-google": "^1.5.1",
+    "@livekit/agents-plugin-anthropic": "^1.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  }
+}

@@ -115,7 +115,10 @@ model Tenant {
   customFieldDefs   CustomFieldDefinition[]
   deals             Deal[]
   pipelines         Pipeline[]
+  pipelineStages    PipelineStage[]
+  dealStageHistory  DealStageHistory[]
   workflows         WorkflowDefinition[]
+  workflowFolders   WorkflowFolder[]
   workflowRuns      WorkflowRun[]
   aiAgents          AIAgent[]
   phoneNumbers      PhoneNumber[]
@@ -144,6 +147,7 @@ model User {
   deletedAt    DateTime?
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
+  deals  Deal[]
 
   @@unique([tenantId, email])
   @@map("users")
@@ -223,23 +227,74 @@ model CustomFieldValue {
 // DEAL — sales pipeline
 // ─────────────────────────────────────────────
 
+enum DealProbabilitySource {
+  AUTO
+  MANUAL
+}
+
+enum DealPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum DealHealth {
+  HEALTHY
+  NEEDS_ATTENTION
+  HIGH_RISK
+}
+
 model Deal {
-  id         String    @id @default(uuid())
+  id         String  @id @default(uuid())
   tenantId   String
   contactId  String
   pipelineId String?
+  stageId    String?
   title      String
-  value      Float
+  // `stage` holds the stage NAME and is kept in sync with `stageId`. Legacy
+  // consumers (Kanban board) read the name; new logic uses the relation.
   stage      String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  deletedAt  DateTime?
 
-  tenant     Tenant     @relation(fields: [tenantId], references: [id])
-  contact    Contact    @relation(fields: [contactId], references: [id])
-  pipeline   Pipeline?  @relation(fields: [pipelineId], references: [id])
-  activities Activity[]
+  // ── Financial ──
+  value             Float                 @default(0)
+  currency          String                @default("INR")
+  probability       Int                   @default(10)
+  probabilitySource DealProbabilitySource @default(AUTO)
+  weightedValue     Float                 @default(0)
+  expectedCloseDate DateTime?
+  actualCloseDate   DateTime?
 
+  // ── Status ──
+  priority       DealPriority @default(MEDIUM)
+  leadSource     String?
+  tags           String[]     @default([])
+  ownerId        String?
+  lastActivityAt DateTime?
+  nextFollowUpAt DateTime?
+
+  // ── AI ──
+  aiSummary        String?
+  aiHealth         DealHealth?
+  aiRiskScore      Int?
+  aiNextAction     String?
+  aiConfidence     Float?
+  lastAiAnalysisAt DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  tenant        Tenant             @relation(fields: [tenantId], references: [id])
+  contact       Contact            @relation(fields: [contactId], references: [id])
+  pipeline      Pipeline?          @relation(fields: [pipelineId], references: [id])
+  pipelineStage PipelineStage?     @relation(fields: [stageId], references: [id])
+  owner         User?              @relation(fields: [ownerId], references: [id])
+  activities    Activity[]
+  stageHistory  DealStageHistory[]
+
+  @@index([tenantId, pipelineId, stage])
+  @@index([tenantId, nextFollowUpAt])
   @@map("deals")
 }
 
@@ -247,15 +302,59 @@ model Pipeline {
   id        String   @id @default(uuid())
   tenantId  String
   name      String
+  // Legacy mirror of ordered stage names — kept in sync with `stageConfigs`
+  // so existing consumers keep working while they migrate to the relation.
   stages    String[]
   filters   Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
-  deals  Deal[]
+  tenant       Tenant          @relation(fields: [tenantId], references: [id])
+  deals        Deal[]
+  stageConfigs PipelineStage[]
 
   @@map("pipelines")
+}
+
+model PipelineStage {
+  id          String    @id @default(uuid())
+  tenantId    String
+  pipelineId  String
+  name        String
+  color       String    @default("#6366f1")
+  position    Int
+  probability Int       @default(10)
+  isWon       Boolean   @default(false)
+  isLost      Boolean   @default(false)
+  archivedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  deals    Deal[]
+
+  @@index([pipelineId, position])
+  @@map("pipeline_stages")
+}
+
+// Immutable record of every stage transition — powers stage history,
+// duration-in-stage metrics, and sales-cycle analytics.
+model DealStageHistory {
+  id          String   @id @default(uuid())
+  tenantId    String
+  dealId      String
+  fromStage   String?
+  toStage     String
+  changedById String?
+  comment     String?
+  changedAt   DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  deal   Deal   @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, changedAt])
+  @@map("deal_stage_history")
 }
 
 // ─────────────────────────────────────────────
@@ -306,16 +405,40 @@ model Note {
 model WorkflowDefinition {
   id          String   @id @default(uuid())
   tenantId    String
+  folderId    String?
   name        String
   triggerType String
   actions     Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  tenant Tenant        @relation(fields: [tenantId], references: [id])
+  tenant Tenant          @relation(fields: [tenantId], references: [id])
+  folder WorkflowFolder? @relation(fields: [folderId], references: [id])
   runs   WorkflowRun[]
 
+  @@index([tenantId, folderId])
   @@map("workflow_definitions")
+}
+
+// ─────────────────────────────────────────────
+// WORKFLOW FOLDER — nested organisation for workflows
+// ─────────────────────────────────────────────
+
+model WorkflowFolder {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant               @relation(fields: [tenantId], references: [id])
+  parent    WorkflowFolder?      @relation("FolderTree", fields: [parentId], references: [id])
+  children  WorkflowFolder[]     @relation("FolderTree")
+  workflows WorkflowDefinition[]
+
+  @@index([tenantId, parentId])
+  @@map("workflow_folders")
 }
 
 // ─────────────────────────────────────────────
@@ -372,6 +495,8 @@ model AIAgent {
   smsTriggerCondition String?
   smsTemplate         String?
   smsAgentReply       String?
+  businessHours       Json?
+  timeZone            String    @default("Asia/Kolkata")
   deletedAt           DateTime?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt

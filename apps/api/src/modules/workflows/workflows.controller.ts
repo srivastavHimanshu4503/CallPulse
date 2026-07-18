@@ -100,4 +100,51 @@ export class WorkflowsController {
       res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
     }
   }
+
+  /** Move a workflow into a folder (folderId=null → root). */
+  async move(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { id } = req.params;
+      const { folderId } = req.body as { folderId?: string | null };
+      if (!id) {
+        res.status(400).json({ success: false, data: null, error: "Workflow ID is required" });
+        return;
+      }
+      const data = await service.move(tenantId, id, folderId ?? null);
+      res.json({ success: true, data, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async bulkDelete(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { ids } = req.body as { ids?: string[] };
+      if (!Array.isArray(ids) || ids.length === 0) {
+        res.status(400).json({ success: false, data: null, error: "ids array required" });
+        return;
+      }
+      const result = await service.bulkDelete(tenantId, ids);
+      res.json({ success: true, data: result, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
+
+  async bulkMove(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = (req as any).tenantId;
+      const { ids, folderId } = req.body as { ids?: string[]; folderId?: string | null };
+      if (!Array.isArray(ids) || ids.length === 0) {
+        res.status(400).json({ success: false, data: null, error: "ids array required" });
+        return;
+      }
+      const result = await service.bulkMove(tenantId, ids, folderId ?? null);
+      res.json({ success: true, data: result, error: null });
+    } catch (err) {
+      res.status(500).json({ success: false, data: null, error: getCleanErrorMessage(err) });
+    }
+  }
 }

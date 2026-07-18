@@ -82,11 +82,54 @@ importers:
         specifier: ^5.3.3
         version: 5.9.3
 
+  apps/post-call-server:
+    dependencies:
+      '@antigravity/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@antigravity/errors':
+        specifier: workspace:*
+        version: link:../../packages/errors
+      '@antigravity/llm':
+        specifier: workspace:*
+        version: link:../../packages/llm
+      '@antigravity/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@antigravity/validators':
+        specifier: workspace:*
+        version: link:../../packages/validators
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.6.1
+      express:
+        specifier: ^4.18.2
+        version: 4.22.2
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
+    devDependencies:
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.25
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.19.41
+      tsx:
+        specifier: ^4.7.1
+        version: 4.22.3
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
   apps/voice-server:
     dependencies:
       '@antigravity/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@antigravity/llm':
+        specifier: workspace:*
+        version: link:../../packages/llm
       '@antigravity/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -97,7 +140,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/validators
       '@livekit/agents':
-        specifier: latest
+        specifier: 1.5.1
         version: 1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)
       '@livekit/agents-plugin-anthropic':
         specifier: ^1.5.1
@@ -276,6 +319,52 @@ importers:
       prisma:
         specifier: ^5.10.2
         version: 5.22.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
+  packages/errors:
+    devDependencies:
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
+  packages/llm:
+    dependencies:
+      '@antigravity/errors':
+        specifier: workspace:*
+        version: link:../errors
+      '@antigravity/types':
+        specifier: workspace:*
+        version: link:../types
+      '@antigravity/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@antigravity/validators':
+        specifier: workspace:*
+        version: link:../validators
+      '@livekit/agents':
+        specifier: 1.5.1
+        version: 1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)
+      '@livekit/agents-plugin-anthropic':
+        specifier: ^1.5.1
+        version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
+      '@livekit/agents-plugin-google':
+        specifier: ^1.5.1
+        version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)(ws@8.21.0)(zod@3.25.76)
+      '@livekit/agents-plugin-openai':
+        specifier: ^1.5.1
+        version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)(zod@3.25.76)
+      openai:
+        specifier: ^4.28.0
+        version: 4.104.0(ws@8.21.0)(zod@3.25.76)
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.19.41
       typescript:
         specifier: ^5.3.3
         version: 5.9.3

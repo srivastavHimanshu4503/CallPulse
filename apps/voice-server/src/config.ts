@@ -41,6 +41,9 @@ const envSchema = z.object({
   ENABLE_WHATSAPP: z.string().optional().transform(truthy),
   ENABLE_POST_CALL_TEMPORAL: z.string().optional().transform(truthy),
   ENABLE_MULTI_TENANT: z.string().optional().transform(truthy),
+
+  POST_CALL_SERVER_URL: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : "http://localhost:3002")),
+  POST_CALL_SERVER_SECRET: optionalString,
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -50,15 +53,7 @@ if (!parsed.success) {
 }
 const env = parsed.data;
 
-export type LLMProviderName = "openai" | "google" | "anthropic";
-
-export interface LLMProviderConfig {
-  provider: LLMProviderName;
-  apiKey: string;
-  model: string;
-  temperature: number;
-  maxTokens?: number;
-}
+import type { LLMProviderName, LLMProviderConfig } from "@antigravity/llm";
 
 const DEFAULT_MODELS: Record<LLMProviderName, string> = {
   openai: "gpt-4o-mini",
@@ -143,6 +138,15 @@ export const config = {
   llm: {
     primary: primaryLLM,
     fallbacks: fallbackLLMs,
+  },
+  postCallServer: {
+    // Full URL to the post-call-server /ingest endpoint. If unset, dispatch
+    // is skipped and the DB row still gets an `extractionStatus = PENDING`
+    // that a later reconciliation job can pick up.
+    ingestUrl: env.POST_CALL_SERVER_URL
+      ? env.POST_CALL_SERVER_URL.replace(/\/$/, "") + "/ingest"
+      : undefined,
+    sharedSecret: env.POST_CALL_SERVER_SECRET,
   },
   flags: {
     enableOutbound: env.ENABLE_OUTBOUND,

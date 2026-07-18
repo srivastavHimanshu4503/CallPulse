@@ -80,6 +80,8 @@ export function useTestCall(agentId: string): UseTestCallResult {
   const timerRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const agentLeftTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const agentJoinWatchdogRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryRef = React.useRef(0);
+  const startCallRef = React.useRef<((opts?: { isRetry?: boolean }) => Promise<void>) | null>(null);
 
   const cleanup = React.useCallback(async () => {
     tc("cleanup start");
@@ -104,9 +106,10 @@ export function useTestCall(agentId: string): UseTestCallResult {
     tc("cleanup done");
   }, [room]);
 
-  const startCall = React.useCallback(async () => {
+  const startCall = React.useCallback(async (opts?: { isRetry?: boolean }) => {
+    if (!opts?.isRetry) retryRef.current = 0;
     callStartRef.t0 = performance.now();
-    tc("startCall invoked", { agentId });
+    tc("startCall invoked", { agentId, isRetry: !!opts?.isRetry });
     setErrorMessage(undefined);
     setStatus("requesting-token");
 
@@ -132,16 +135,25 @@ export function useTestCall(agentId: string): UseTestCallResult {
       });
 
       // Watchdog: the LiveKit agent worker sometimes fails to spawn a job
-      // process before its init budget (heavy imports, DB warmup). Give it
-      // 15s to actually join our room; if nobody remote shows up we tear
-      // down and surface a clear error to the user instead of hanging.
+      // process before its init budget (heavy imports, DB warmup), and the
+      // agent's own room connect can take 20s+ on slow networks (observed
+      // in dev). Give it 30s to actually join our room; if nobody remote
+      // shows up we tear down and surface a clear error instead of hanging.
       agentJoinWatchdogRef.current = setTimeout(() => {
         if (room.remoteParticipants.size === 0) {
+          // One silent retry with a fresh room + dispatch before giving up —
+          // covers transient worker restarts and lost dispatches.
+          if (retryRef.current === 0) {
+            retryRef.current = 1;
+            tcWarn("agent didn't join within 30s — retrying with a fresh room");
+            void cleanup().then(() => startCallRef.current?.({ isRetry: true }));
+            return;
+          }
           setErrorMessage("The agent didn't answer. Please try again in a moment.");
           setStatus("error");
           void cleanup();
         }
-      }, 15000);
+      }, 30000);
 
       room.on(RoomEvent.ParticipantConnected, (participant) => {
         tc("ParticipantConnected", {
@@ -201,6 +213,8 @@ export function useTestCall(agentId: string): UseTestCallResult {
       await cleanup();
     }
   }, [agentId, cleanup, room]);
+
+  startCallRef.current = startCall;
 
   const endCall = React.useCallback(async () => {
     tc("endCall invoked (user hangup)");

@@ -141,95 +141,48 @@ export function Sidebar(): React.JSX.Element {
         <div className="space-y-0.5">{NAV.map(renderNavItem)}</div>
       </nav>
 
-      {/* Billing / Usage — rich gradient card */}
+      {/* Billing / Usage — minimal card */}
       <div className="border-t border-line-subtle p-3 shrink-0">
         {sidebarMinimized ? (
           <button
             type="button"
             onClick={() =>
-              toast.info("Workspace usage: 4,850 of 5,000 minutes remaining · Business Pro plan.")
+              toast.info("Workspace usage: 4,850 of 5,000 credits remaining · Business Pro plan.")
             }
-            className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all hover:brightness-110"
-            style={{
-              background:
-                "linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)",
-              boxShadow: "0 4px 12px -4px rgba(139,92,246,0.55)",
-              color: "#FFFFFF",
-            }}
+            className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all border border-line-default bg-white text-fg-primary hover:bg-bg-muted"
             title="Business Pro · 97% available"
           >
             <Zap className="h-[17px] w-[17px]" />
           </button>
         ) : (
-          <div
-            className="relative rounded-xl p-3 overflow-hidden"
-            style={{
-              background:
-                "linear-gradient(135deg, #EEF2FF 0%, #FDF4FF 55%, #FFF1F2 100%)",
-              boxShadow:
-                "0 1px 2px rgba(15,23,42,0.06), 0 8px 20px -12px rgba(99,102,241,0.35)",
-              border: "1px solid rgba(139,92,246,0.18)",
-            }}
-          >
-            {/* Decorative blur orbs */}
-            <div
-              className="absolute -top-6 -right-4 h-16 w-16 rounded-full blur-2xl pointer-events-none"
-              style={{ backgroundColor: "rgba(236,72,153,0.35)" }}
-            />
-            <div
-              className="absolute -bottom-6 -left-4 h-16 w-16 rounded-full blur-2xl pointer-events-none"
-              style={{ backgroundColor: "rgba(99,102,241,0.35)" }}
-            />
-
+          <div className="relative rounded-xl p-3 border border-line-default bg-white">
             <div className="relative">
               <div className="flex items-center justify-between mb-2">
-                <span
-                  className="text-[11px] font-bold uppercase tracking-wider bg-clip-text text-transparent"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(90deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)",
-                  }}
-                >
+                <span className="text-[11px] font-bold uppercase tracking-wider text-fg-primary">
                   Business Pro
                 </span>
                 <span
-                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide"
-                  style={{
-                    backgroundColor: "#F0FDF4",
-                    color: "#16A34A",
-                    boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.28)",
-                  }}
+                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-success-50 text-success-600 border border-success-200/50"
                 >
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: "#16A34A" }}
-                  />
+                  <span className="h-1.5 w-1.5 rounded-full bg-success-500" />
                   Active
                 </span>
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex justify-between text-[11px] font-medium">
-                  <span style={{ color: "#475569" }}>Voice quota</span>
-                  <span className="font-semibold" style={{ color: "#0F172A" }}>
+                  <span className="text-fg-secondary">Credits</span>
+                  <span className="font-semibold text-fg-primary">
                     4,850 / 5,000
                   </span>
                 </div>
-                <div
-                  className="h-2 w-full rounded-full overflow-hidden"
-                  style={{ backgroundColor: "rgba(15,23,42,0.06)" }}
-                >
+                <div className="h-2 w-full rounded-full overflow-hidden bg-line-subtle">
                   <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: "97%",
-                      background:
-                        "linear-gradient(90deg, #6366F1 0%, #8B5CF6 45%, #EC4899 100%)",
-                      boxShadow: "0 0 8px rgba(139,92,246,0.5)",
-                    }}
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: "97%" }}
                   />
                 </div>
-                <div className="flex justify-between text-[9.5px] font-semibold tracking-wide uppercase" style={{ color: "#94A3B8" }}>
+                <div className="flex justify-between text-[9.5px] font-semibold tracking-wide uppercase text-fg-muted">
                   <span>97% available</span>
                   <span>12d renewal</span>
                 </div>
@@ -238,12 +191,7 @@ export function Sidebar(): React.JSX.Element {
               <button
                 type="button"
                 onClick={() => toast.warning("Billing portal coming soon.")}
-                className="w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 text-white hover:brightness-110"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #4F46E5 0%, #8B5CF6 50%, #EC4899 100%)",
-                  boxShadow: "0 2px 8px -2px rgba(139,92,246,0.55)",
-                }}
+                className="w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 bg-white border border-line-default text-fg-primary hover:bg-bg-muted"
               >
                 <CreditCard className="h-3.5 w-3.5" />
                 Manage billing
