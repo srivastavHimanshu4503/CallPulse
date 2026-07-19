@@ -41,3 +41,5 @@ pnpm-debug.log*
 
 # Typesense local files
 /typesense-data/
+infrastructure/cdk.out/
+infrastructure/cdk.context.json
