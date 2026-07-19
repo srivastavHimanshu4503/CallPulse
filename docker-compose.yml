@@ -12,6 +12,27 @@ services:
       - typesense
     restart: unless-stopped
 
+  post-call-server:
+    build:
+      context: .
+      dockerfile: apps/post-call-server/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  voice-server:
+    build:
+      context: .
+      dockerfile: apps/voice-server/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - post-call-server
+    restart: unless-stopped
+
   postgres:
     image: postgres:16
     ports:
