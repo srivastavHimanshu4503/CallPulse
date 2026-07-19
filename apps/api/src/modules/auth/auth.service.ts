@@ -21,6 +21,15 @@ export class AuthService {
       throw new Error("Email address is already registered");
     }
 
+    // 1.b Check if phone number is already registered globally
+    const existingPhone = await db.phoneNumber.findFirst({
+      where: { phoneNumber: phone },
+    });
+
+    if (existingPhone) {
+      throw new Error("Phone number is already registered to another workspace");
+    }
+
     // 2. Hash password with bcrypt (rounds: 12)
     const passwordHash = await bcrypt.hash(password, 12);
 

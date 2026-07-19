@@ -60,6 +60,15 @@ export class ComputeStack extends cdk.Stack {
 
     role.addToPolicy(
       new iam.PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          `arn:aws:secretsmanager:${this.region}:${this.account}:secret:indiai/*`,
+        ],
+      })
+    );
+
+    role.addToPolicy(
+      new iam.PolicyStatement({
         actions: ["cloudwatch:PutMetricData", "logs:PutLogEvents", "logs:CreateLogStream"],
         resources: ["*"],
       })

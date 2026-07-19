@@ -56,6 +56,9 @@ export function getCleanErrorMessage(error: unknown): string {
     if (msg.includes("email")) {
       return "This email address is already in use by another workspace.";
     }
+    if (msg.includes("phoneNumber") || msg.includes("phone_numbers")) {
+      return "This phone number is already registered to another workspace.";
+    }
     if (msg.includes("slug") || msg.includes("Tenant")) {
       return "A business with this exact name already exists. Please try a different name.";
     }

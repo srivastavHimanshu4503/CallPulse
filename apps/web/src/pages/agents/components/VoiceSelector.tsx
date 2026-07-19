@@ -2,7 +2,7 @@ import * as React from "react";
 import { Search, Check, Play, Pause, Loader2, AudioLines, Star } from "lucide-react";
 import { api } from "../../../lib/axios.js";
 
-export const VOICE_LIBRARY = [
+const VOICE_LIBRARY = [
   // Sarvam bulbul:v3 voices
   { id: "sarvam:priya", name: "Priya", provider: "Sarvam AI", gender: "Female", accent: "Hinglish/Hindi Accent", description: "Warm, polite receptionist tone. Perfect for Indian SMB inbound queries." },
   { id: "sarvam:soham", name: "Aravind", provider: "Sarvam AI", gender: "Male", accent: "Indian English Accent", description: "Professional, authoritative corporate tone. Best for outbound B2B follow-ups." },

@@ -57,7 +57,7 @@ interface WorkflowSetupProps {
   disabled?: boolean;
 }
 
-export const COUNTRY_CODES = [
+const COUNTRY_CODES = [
   { code: "+91", label: "🇮🇳 +91" },
   { code: "+1", label: "🇺🇸 +1" },
   { code: "+44", label: "🇬🇧 +44" },

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { SerializedUser, SerializedTenant } from "@antigravity/types";
 import { api } from "../lib/axios.js";
+import { queryClient } from "../lib/queryClient.js";
 
 interface AuthState {
   user: SerializedUser | null;
@@ -37,6 +38,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isLoading: false,
 
   setAuth: (user, tenant, tokens) => {
+    // Clear any existing query cache from previous users
+    queryClient.clear();
+    
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("tenant", JSON.stringify(tenant));
     localStorage.setItem("accessToken", tokens.accessToken);
@@ -101,6 +105,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
     // Fire stateless logout in background
     api.post("/auth/logout").catch(() => {});
+    // Clear all React Query cache so old data doesn't persist across users
+    queryClient.clear();
   },
 
   refreshTokens: async () => {
