@@ -1,5 +1,6 @@
 import * as sarvam from "@livekit/agents-plugin-sarvam";
 import * as openai from "@livekit/agents-plugin-openai";
+import * as elevenlabs from "@livekit/agents-plugin-elevenlabs";
 import type { tts as agentsTTS } from "@livekit/agents";
 import { config } from "../config.js";
 import { createLogger } from "../logger.js";
@@ -39,13 +40,28 @@ const SARVAM_LEGACY_MAP: Record<string, string> = {
   "priya (indian female)": "priya",
 };
 
-const inferGender = (provider: "sarvam" | "openai", voiceId: string): "male" | "female" | "unknown" => {
+// ElevenLabs default premade voices offered in the VoiceSelector (IDs are
+// case-sensitive): Sarah, Matilda, Jessica, Bella, Alice / Brian, Eric,
+// George, Daniel, Chris.
+const ELEVENLABS_FEMALE = new Set([
+  "EXAVITQu4vr4xnSDxMaL", "XrExE9yKIg1WjnnlVkGX", "cgSgspJ2msm6clMCkdW9",
+  "hpp4J3VqNfWAUOO0d1Us", "Xb7hH8MSUJpSbSDYk0k2",
+]);
+const ELEVENLABS_MALE = new Set([
+  "nPczCjzI2devNBz1zQrb", "cjVigY5qzO86Huf0OWal", "JBFqnCBsd6RMkjVDRZzb",
+  "onwK4e9ZLuTAKqWW03F9", "iP95p4xoKVk53GoZ742B",
+]);
+
+const inferGender = (provider: "sarvam" | "openai" | "elevenlabs", voiceId: string): "male" | "female" | "unknown" => {
   if (provider === "sarvam") {
     if (SARVAM_FEMALE.has(voiceId)) return "female";
     if (SARVAM_MALE.has(voiceId)) return "male";
-  } else {
+  } else if (provider === "openai") {
     if (OPENAI_FEMALE.has(voiceId)) return "female";
     if (OPENAI_MALE.has(voiceId)) return "male";
+  } else if (provider === "elevenlabs") {
+    if (ELEVENLABS_FEMALE.has(voiceId)) return "female";
+    if (ELEVENLABS_MALE.has(voiceId)) return "male";
   }
   return "unknown";
 };
@@ -64,13 +80,13 @@ const DEFAULT_SARVAM_VOICE = "priya"; // female — matches DB column default.
  * default (`shubh`, male), which would otherwise be picked up silently and
  * present as "I selected a female voice but a male is speaking."
  */
-export const parseVoiceString = (voiceStr: string): { provider: "sarvam" | "openai"; voiceId: string } => {
+export const parseVoiceString = (voiceStr: string): { provider: "sarvam" | "openai" | "elevenlabs"; voiceId: string } => {
   const normalized = (voiceStr || "").toLowerCase().trim();
   if (!normalized) {
     return { provider: "sarvam", voiceId: DEFAULT_SARVAM_VOICE };
   }
 
-  let provider: "sarvam" | "openai" = "sarvam";
+  let provider: "sarvam" | "openai" | "elevenlabs" = "sarvam";
   let voiceId: string;
 
   if (normalized.startsWith("sarvam:")) {
@@ -79,6 +95,11 @@ export const parseVoiceString = (voiceStr: string): { provider: "sarvam" | "open
   } else if (normalized.startsWith("openai:")) {
     provider = "openai";
     voiceId = normalized.slice("openai:".length).trim();
+  } else if (normalized.startsWith("elevenlabs:")) {
+    // ElevenLabs voice IDs are case-sensitive — slice from the original
+    // string, not the lowercased copy.
+    provider = "elevenlabs";
+    voiceId = voiceStr.trim().slice("elevenlabs:".length).trim();
   } else if (OPENAI_FEMALE.has(normalized) || OPENAI_MALE.has(normalized)) {
     provider = "openai";
     voiceId = normalized;
@@ -132,6 +153,25 @@ export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
       model: "tts-1",
       voice: voiceId as any,
       speed: pace,
+    });
+  }
+
+  if (provider === "elevenlabs") {
+    if (!config.tts.elevenlabsApiKey) {
+      throw new Error("ELEVENLABS_API_KEY is required for the ElevenLabs TTS provider");
+    }
+    log.info("initializing tts provider", {
+      provider: "elevenlabs",
+      model: "eleven_turbo_v2_5",
+      voice: voiceId,
+      gender,
+      configuredVoice: opts.voice,
+    });
+    return new elevenlabs.TTS({
+      apiKey: config.tts.elevenlabsApiKey,
+      model: "eleven_turbo_v2_5",
+      voiceId,
+      language: opts.language.split("-")[0],
     });
   }
 

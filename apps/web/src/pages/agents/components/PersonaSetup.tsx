@@ -15,10 +15,8 @@ interface PersonaSetupProps {
   setTone: (val: "Friendly" | "Professional" | "Casual") => void;
   fallbackMessage: string;
   setFallbackMessage: (val: string) => void;
-  websiteUrl: string;
-  setWebsiteUrl: (val: string) => void;
-  businessInfo: string;
-  setBusinessInfo: (val: string) => void;
+  modelName: string;
+  setModelName: (val: string) => void;
   errors: Record<string, string>;
   disabled: boolean;
 }
@@ -29,6 +27,11 @@ const TONES = [
   { value: "Professional", icon: Briefcase, hint: "Formal & clear" },
   { value: "Casual", icon: Coffee, hint: "Relaxed & personal" },
 ] as const;
+
+const MODELS = [
+  { value: "gpt-4o", label: "GPT-4o (Fastest)" },
+  { value: "claude-3-5-sonnet-20240620", label: "Claude 3.5 Sonnet (Best Reasoning)" },
+];
 
 const GREETING_MAX = 240;
 const FALLBACK_MAX = 240;
@@ -47,10 +50,8 @@ export function PersonaSetup({
   setTone,
   fallbackMessage,
   setFallbackMessage,
-  websiteUrl,
-  setWebsiteUrl,
-  businessInfo,
-  setBusinessInfo,
+  modelName,
+  setModelName,
   errors,
   disabled,
 }: PersonaSetupProps): React.JSX.Element {
@@ -132,6 +133,26 @@ export function PersonaSetup({
             </div>
           </Field>
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="AI Model" required>
+            <div className="relative">
+              <select
+                value={modelName}
+                onChange={(e) => setModelName(e.target.value)}
+                disabled={disabled}
+                className="w-full h-10 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] pl-3 pr-9 focus:outline-none appearance-none"
+              >
+                {MODELS.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999] pointer-events-none" />
+            </div>
+          </Field>
+        </div>
       </SectionCard>
 
       {/* SCRIPT CARD */}
@@ -167,38 +188,6 @@ export function PersonaSetup({
             disabled={disabled}
             placeholder="I'll connect you with our team for this. One moment please."
             rows={3}
-            className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
-          />
-        </Field>
-      </SectionCard>
-
-      {/* KNOWLEDGE CARD */}
-      <SectionCard
-        title="Knowledge base"
-        description="Anchor the agent's answers to your business facts, pricing, and FAQs."
-      >
-        <Field label="Website URL" hint="We crawl this page to pull FAQs and services." error={errors.websiteUrl}>
-          <Input
-            type="text"
-            placeholder="https://yourbusiness.com"
-            value={websiteUrl}
-            onChange={(e) => setWebsiteUrl(e.target.value)}
-            error={errors.websiteUrl}
-            disabled={disabled}
-            className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 px-3 w-full shadow-none"
-          />
-        </Field>
-
-        <Field
-          label="Business FAQ / notes"
-          hint="Paste pricing, service list, hours, or common Q&A. Higher signal = fewer fallbacks."
-        >
-          <textarea
-            value={businessInfo}
-            onChange={(e) => setBusinessInfo(e.target.value)}
-            disabled={disabled}
-            placeholder="E.g. Pricing starts at ₹50L. Bandra listing. Open on weekends 10am–7pm..."
-            rows={5}
             className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
           />
         </Field>

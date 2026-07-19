@@ -38,6 +38,7 @@ export const PLAN_PRICE_INR: Record<PlanKey, number | null> = {
 export const CREDIT_COSTS = {
   VOICE_PER_MINUTE: 5,
   SMS: 10,
+  WHATSAPP: 5,
 } as const;
 
 /** Credits for a call of `durationSeconds` — per started minute, min 1 minute. */

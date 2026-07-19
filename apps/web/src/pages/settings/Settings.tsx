@@ -9,6 +9,7 @@ import {
   Toggle,
   Field,
   inputClass,
+  Segmented,
 } from "../../components/common/UI.tsx";
 import {
   User,
@@ -362,6 +363,7 @@ function BillingPanel(): React.JSX.Element {
   const { checkout, isPaying } = useRazorpayCheckout();
   const isPro = ent.plan !== "FREE";
   const [showPacks, setShowPacks] = React.useState(false);
+  const [historyTab, setHistoryTab] = React.useState<"history" | "invoices">("history");
 
   const { data: ledger = [] } = useQuery({
     queryKey: ["credit-ledger"],
@@ -428,10 +430,10 @@ function BillingPanel(): React.JSX.Element {
         </div>
 
         <div>
-          <div className="flex justify-between text-[12.5px] font-semibold mb-1.5 items-center">
+          <div className="flex items-center gap-2 text-[12.5px] font-semibold mb-1.5">
             <span className="text-fg-secondary flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-amber-500" />
-              Remaining credits
+              Remaining credits:
             </span>
             <span className="text-fg-primary tabular-nums text-[13px]">
               {ent.creditBalance}
@@ -443,9 +445,12 @@ function BillingPanel(): React.JSX.Element {
               style={{ width: `${pct}%` }}
             />
           </div>
-          <div className="mt-3 flex gap-4 text-[11px] text-fg-muted">
+          <div className="mt-3 flex gap-3 text-[11px] text-fg-muted flex-wrap">
             <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
               <span className="font-semibold text-fg-secondary">Voice call:</span> {CREDIT_COSTS.VOICE_PER_MINUTE} credits / min
+            </div>
+            <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
+              <span className="font-semibold text-fg-secondary">WhatsApp:</span> {CREDIT_COSTS.WHATSAPP} credits / msg
             </div>
             <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
               <span className="font-semibold text-fg-secondary">SMS:</span> {CREDIT_COSTS.SMS} credits / msg
@@ -497,67 +502,87 @@ function BillingPanel(): React.JSX.Element {
         )}
       </Card>
 
-      {/* Credit history */}
+      {/* Tabs for Credit History and Payments & Invoices */}
       <Card>
-        <SectionHead title="Credit history" hint="Every credit added or used, newest first." />
-        {ledger.length === 0 ? (
-          <div className="py-6 text-center text-[11.5px] text-fg-muted">No credit activity yet.</div>
-        ) : (
-          <ul className="divide-y divide-line-subtle -mx-1">
-            {ledger.map((row: any) => (
-              <li key={row.id} className="px-1 py-2 flex items-center justify-between text-[12px]">
-                <div>
-                  <span className="font-semibold text-fg-primary">
-                    {reasonLabel[row.reason] ?? row.reason}
-                  </span>
-                  {row.note && <span className="text-fg-muted ml-2">{row.note}</span>}
-                </div>
-                <div className="flex items-center gap-4">
-                  <span
-                    className={`font-bold tabular-nums ${row.delta >= 0 ? "text-positive-600" : "text-negative-500"}`}
-                  >
-                    {row.delta >= 0 ? "+" : ""}
-                    {row.delta}
-                  </span>
-                  <span className="text-[10.5px] text-fg-muted w-20 text-right">
-                    {formatTimeAgo(row.createdAt)}
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+        <div className="mb-4">
+          <Segmented
+            options={[
+              { value: "history", label: "Credit history" },
+              { value: "invoices", label: "Payments & invoices" },
+            ]}
+            value={historyTab}
+            onChange={(v) => setHistoryTab(v as "history" | "invoices")}
+          />
+        </div>
 
-      {/* Payments & invoices — the money audit trail */}
-      <Card>
-        <SectionHead
-          title="Payments & invoices"
-          hint="Every payment with its reference ID — use it for support or reconciliation."
-        />
-        {payments.length === 0 ? (
-          <div className="py-6 text-center text-[11.5px] text-fg-muted">No payments yet.</div>
-        ) : (
-          <ul className="divide-y divide-line-subtle -mx-1">
-            {payments.map((p: any) => (
-              <li key={p.id} className="px-1 py-2.5 flex items-center justify-between gap-3 text-[12px]">
-                <div className="min-w-0">
-                  <div className="font-semibold text-fg-primary">{p.description || p.product}</div>
-                  <div className="text-[10.5px] text-fg-muted font-mono truncate" title={p.paymentId}>
-                    {p.paymentId}
-                  </div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="font-bold text-fg-primary tabular-nums">
-                    ₹{(p.amountPaise / 100).toLocaleString("en-IN")}
-                  </div>
-                  <div className="text-[10.5px] text-fg-muted">
-                    {new Date(p.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+        {historyTab === "history" && (
+          <div>
+            <SectionHead title="Credit history" hint="Every credit added or used, newest first." />
+            {ledger.length === 0 ? (
+              <div className="py-6 text-center text-[11.5px] text-fg-muted">No credit activity yet.</div>
+            ) : (
+              <div className="max-h-[300px] overflow-y-auto pr-1">
+                <ul className="divide-y divide-line-subtle -mx-1">
+                  {ledger.map((row: any) => (
+                    <li key={row.id} className="px-1 py-2 flex items-center justify-between text-[12px]">
+                      <div>
+                        <span className="font-semibold text-fg-primary">
+                          {reasonLabel[row.reason] ?? row.reason}
+                        </span>
+                        {row.note && <span className="text-fg-muted ml-2">{row.note}</span>}
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span
+                          className={`font-bold tabular-nums ${row.delta >= 0 ? "text-positive-600" : "text-negative-500"}`}
+                        >
+                          {row.delta >= 0 ? "+" : ""}
+                          {row.delta}
+                        </span>
+                        <span className="text-[10.5px] text-fg-muted w-20 text-right">
+                          {formatTimeAgo(row.createdAt)}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {historyTab === "invoices" && (
+          <div>
+            <SectionHead
+              title="Payments & invoices"
+              hint="Every payment with its reference ID — use it for support or reconciliation."
+            />
+            {payments.length === 0 ? (
+              <div className="py-6 text-center text-[11.5px] text-fg-muted">No payments yet.</div>
+            ) : (
+              <div className="max-h-[300px] overflow-y-auto pr-1">
+                <ul className="divide-y divide-line-subtle -mx-1">
+                  {payments.map((p: any) => (
+                    <li key={p.id} className="px-1 py-2.5 flex items-center justify-between gap-3 text-[12px]">
+                      <div className="min-w-0">
+                        <div className="font-semibold text-fg-primary">{p.description || p.product}</div>
+                        <div className="text-[10.5px] text-fg-muted font-mono truncate" title={p.paymentId}>
+                          {p.paymentId}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-bold text-fg-primary tabular-nums">
+                          ₹{(p.amountPaise / 100).toLocaleString("en-IN")}
+                        </div>
+                        <div className="text-[10.5px] text-fg-muted">
+                          {new Date(p.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         )}
       </Card>
     </div>

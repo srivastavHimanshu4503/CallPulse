@@ -15,6 +15,7 @@ import {
   Zap,
   CreditCard,
   Code2,
+  CalendarDays,
 } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
 import { useUIStore } from "../../stores/ui.store.js";
@@ -34,6 +35,7 @@ const NAV: NavItem[] = [
   { name: "CRM", href: "/crm", icon: Users },
   { name: "Workflows", href: "/workflows", icon: Workflow },
   { name: "Widget", href: "/widget", icon: Code2 },
+  { name: "Calendar", href: "/calendar", icon: CalendarDays },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "Settings", href: "/settings", icon: Settings },

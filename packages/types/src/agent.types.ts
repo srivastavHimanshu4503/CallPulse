@@ -4,6 +4,18 @@ export interface AgentBusinessHours {
   endTime?: string;
 }
 
+export interface AgentBookingConfig {
+  triggerCondition: string;
+  provider: "google" | "calcom" | "link";
+  calendarLink: string;
+  meetingDurationMin: number;
+  workingHoursNote: string;
+  confirmationMessage: string;
+  /** Ask the caller for an email so the calendar invite reaches their inbox.
+   *  SMS confirmation is always sent regardless — email is best-effort. */
+  askEmail: boolean;
+}
+
 export interface SerializedAgent {
   id: string;
   name: string;
@@ -32,6 +44,20 @@ export interface SerializedAgent {
   smsAgentReply: string | null;
   whatsappEnabled: boolean;
   whatsappPrompt: string | null;
+  apiEnabled: boolean;
+  apiWorkflowId: string | null;
+  apiPrompt: string | null;
+  callTransferEnabled: boolean;
+  callTransferWorkflowId: string | null;
+  callTransferNumber: string | null;
+  callTransferCondition: string | null;
+  callTransferMessage: string | null;
+  callTransferFallbackNumber: string | null;
+  callTransferTimeoutSec: number;
+  callTransferNoAnswerAction: "take_message" | "offer_callback" | "end_politely";
+  callTransferStyle: "warm" | "instant";
+  bookingEnabled: boolean;
+  bookingConfig: AgentBookingConfig | null;
   timeZone: string;
   businessHours: AgentBusinessHours | null;
   callsToday: number;

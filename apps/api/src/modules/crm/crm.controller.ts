@@ -208,6 +208,7 @@ export class CrmController {
         title: parsed.data.title,
         startTime: new Date(parsed.data.startTime),
         endTime: new Date(parsed.data.endTime),
+        agentId: parsed.data.agentId,
       });
       res.status(201).json({ success: true, data, error: null });
     } catch (err) {

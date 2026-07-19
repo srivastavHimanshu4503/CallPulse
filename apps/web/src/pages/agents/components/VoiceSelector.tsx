@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Search, Check, Play, Pause, Loader2, AudioLines } from "lucide-react";
+import { Search, Check, Play, Pause, Loader2, AudioLines, Star } from "lucide-react";
 import { api } from "../../../lib/axios.js";
 
 export const VOICE_LIBRARY = [
@@ -22,8 +22,38 @@ export const VOICE_LIBRARY = [
   { id: "openai:sage", name: "Sage", provider: "OpenAI", gender: "Female", accent: "American Accent", description: "Calm, thoughtful, and professional voice." },
   { id: "openai:verse", name: "Verse", provider: "OpenAI", gender: "Male", accent: "American Accent", description: "Versatile, expressive, and conversational voice." },
   { id: "openai:marin", name: "Marin", provider: "OpenAI", gender: "Female", accent: "American Accent", description: "Relaxed, casual, and friendly tone." },
-  { id: "openai:cedar", name: "Cedar", provider: "OpenAI", gender: "Male", accent: "American Accent", description: "Warm, steady, and conversational tone." }
+  { id: "openai:cedar", name: "Cedar", provider: "OpenAI", gender: "Male", accent: "American Accent", description: "Warm, steady, and conversational tone." },
+
+  // ElevenLabs voices — default premade voices only: the free tier blocks
+  // library voices (incl. Indian-accent ones) over the API with HTTP 402.
+  // These are multilingual and speak Hindi/Hinglish via eleven_turbo_v2_5.
+  { id: "elevenlabs:EXAVITQu4vr4xnSDxMaL", name: "Sarah", provider: "ElevenLabs", gender: "Female", accent: "Hindi + English", description: "Mature, reassuring, and confident voice." },
+  { id: "elevenlabs:XrExE9yKIg1WjnnlVkGX", name: "Matilda", provider: "ElevenLabs", gender: "Female", accent: "Hindi + English", description: "Knowledgeable, professional, and upbeat." },
+  { id: "elevenlabs:cgSgspJ2msm6clMCkdW9", name: "Jessica", provider: "ElevenLabs", gender: "Female", accent: "Hindi + English", description: "Playful, bright, and warm voice." },
+  { id: "elevenlabs:hpp4J3VqNfWAUOO0d1Us", name: "Bella", provider: "ElevenLabs", gender: "Female", accent: "Hindi + English", description: "Professional, bright, and welcoming." },
+  { id: "elevenlabs:Xb7hH8MSUJpSbSDYk0k2", name: "Alice", provider: "ElevenLabs", gender: "Female", accent: "Hindi + English", description: "Clear and engaging, great for support." },
+  { id: "elevenlabs:nPczCjzI2devNBz1zQrb", name: "Brian", provider: "ElevenLabs", gender: "Male", accent: "Hindi + English", description: "Deep, resonant, and comforting voice." },
+  { id: "elevenlabs:cjVigY5qzO86Huf0OWal", name: "Eric", provider: "ElevenLabs", gender: "Male", accent: "Hindi + English", description: "Smooth and trustworthy tone." },
+  { id: "elevenlabs:JBFqnCBsd6RMkjVDRZzb", name: "George", provider: "ElevenLabs", gender: "Male", accent: "Hindi + English", description: "Warm, captivating storyteller voice." },
+  { id: "elevenlabs:onwK4e9ZLuTAKqWW03F9", name: "Daniel", provider: "ElevenLabs", gender: "Male", accent: "Hindi + English", description: "Steady, broadcast-style delivery." },
+  { id: "elevenlabs:iP95p4xoKVk53GoZ742B", name: "Chris", provider: "ElevenLabs", gender: "Male", accent: "Hindi + English", description: "Charming, casual, down-to-earth voice." }
 ];
+
+// Hand-picked voices pinned to the top of the grid — the best pick per
+// use-case for Indian callers (native Hindi first, then premium multilingual).
+const FEATURED_VOICES: { id: string; tag: string }[] = [
+  { id: "sarvam:priya", tag: "Most popular" },
+  { id: "sarvam:shubh", tag: "Best for Hindi" },
+  { id: "elevenlabs:EXAVITQu4vr4xnSDxMaL", tag: "Premium quality" },
+  { id: "elevenlabs:nPczCjzI2devNBz1zQrb", tag: "Deep & calm" },
+];
+
+const FEATURED_TAGS = new Map(FEATURED_VOICES.map((f) => [f.id, f.tag]));
+
+const featuredRank = (id: string): number => {
+  const i = FEATURED_VOICES.findIndex((f) => f.id === id);
+  return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+};
 
 interface VoiceSelectorProps {
   voice: string;
@@ -45,11 +75,13 @@ const normalizeVoiceId = (id: string): string => {
 
   const openaiVoices = ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "ash", "ballad", "coral", "sage", "verse", "marin", "cedar"];
   if (openaiVoices.includes(lower)) return `openai:${lower}`;
+  
+  if (lower.startsWith("elevenlabs:")) return id;
 
   return `sarvam:${id}`;
 };
 
-type ProviderTab = "All" | "Sarvam AI" | "OpenAI";
+type ProviderTab = "All" | "Sarvam AI" | "OpenAI" | "ElevenLabs";
 type GenderFilter = "All" | "Male" | "Female";
 
 export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSelectorProps): React.JSX.Element {
@@ -85,7 +117,7 @@ export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSele
         { responseType: "blob" }
       );
 
-      const blob = new Blob([res.data], { type: provider === "openai" ? "audio/mpeg" : "audio/wav" });
+      const blob = new Blob([res.data], { type: provider === "openai" || provider === "elevenlabs" ? "audio/mpeg" : "audio/wav" });
       const url = URL.createObjectURL(blob);
 
       if (audioRef.current) audioRef.current.pause();
@@ -118,13 +150,14 @@ export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSele
     const matchesGender = selectedGender === "All" || v.gender === selectedGender;
     const matchesProvider = selectedProvider === "All" || v.provider === selectedProvider;
     return matchesSearch && matchesGender && matchesProvider;
-  });
+  }).sort((a, b) => featuredRank(a.id) - featuredRank(b.id));
 
   const counts = React.useMemo(() => {
     return {
       All: VOICE_LIBRARY.length,
       "Sarvam AI": VOICE_LIBRARY.filter((v) => v.provider === "Sarvam AI").length,
       OpenAI: VOICE_LIBRARY.filter((v) => v.provider === "OpenAI").length,
+      ElevenLabs: VOICE_LIBRARY.filter((v) => v.provider === "ElevenLabs").length,
     };
   }, []);
 
@@ -151,7 +184,7 @@ export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSele
 
       {/* Provider tabs */}
       <div className="flex items-center gap-1 border-b border-[#E5E5E5] -mx-1 px-1 overflow-x-auto">
-        {(["All", "Sarvam AI", "OpenAI"] as ProviderTab[]).map((p) => {
+        {(["All", "Sarvam AI", "OpenAI", "ElevenLabs"] as ProviderTab[]).map((p) => {
           const active = selectedProvider === p;
           return (
             <button
@@ -224,6 +257,7 @@ export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSele
               const isSelected = v.id === activeVoiceId;
               const isPlaying = playingVoiceId === v.id;
               const isLoading = loadingVoiceId === v.id;
+              const featuredTag = FEATURED_TAGS.get(v.id);
 
               return (
                 <button
@@ -234,14 +268,21 @@ export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSele
                   className={`text-left p-3.5 rounded-[8px] border transition-all relative ${
                     isSelected
                       ? "bg-[#EFF6FF]/50 border-[#2563EB] ring-1 ring-[#2563EB]/20"
-                      : "bg-white border-[#E5E5E5] hover:border-[#2563EB]/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.04)]"
+                      : featuredTag
+                        ? "bg-gradient-to-br from-white to-[#F5F3FF]/70 border-[#7C3AED]/25 hover:border-[#7C3AED]/50 hover:shadow-[0_2px_10px_rgba(124,58,237,0.08)]"
+                        : "bg-white border-[#E5E5E5] hover:border-[#2563EB]/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.04)]"
                   }`}
                 >
-                  {isSelected && (
+                  {isSelected ? (
                     <span className="absolute top-2.5 right-2.5 h-5 w-5 rounded-full bg-[#2563EB] text-white flex items-center justify-center">
                       <Check className="h-3 w-3" strokeWidth={3.5} />
                     </span>
-                  )}
+                  ) : featuredTag ? (
+                    <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-0.5 text-[8px] font-semibold text-[#7C3AED] bg-[#F5F3FF] border border-[#7C3AED]/15 rounded-full px-1.5 py-[2px] leading-none">
+                      <Star className="h-2 w-2 fill-current shrink-0" />
+                      {featuredTag}
+                    </span>
+                  ) : null}
 
                   <div className="flex items-start gap-3">
                     <PlayButton
@@ -251,7 +292,7 @@ export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSele
                       disabled={disabled}
                     />
 
-                    <div className="min-w-0 flex-1 pr-6">
+                    <div className={`min-w-0 flex-1 ${featuredTag && !isSelected ? "pr-16" : "pr-6"}`}>
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-sm font-semibold text-[#111111]">{v.name}</span>
                         <span

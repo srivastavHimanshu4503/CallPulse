@@ -35,6 +35,31 @@ export const createAgentSchema = z.object({
   smsAgentReply: z.string().optional().nullable(),
   whatsappEnabled: z.boolean().optional().default(false),
   whatsappPrompt: z.string().optional().nullable(),
+  apiEnabled: z.boolean().optional().default(false),
+  apiWorkflowId: z.string().optional().nullable(),
+  apiPrompt: z.string().optional().nullable(),
+  callTransferEnabled: z.boolean().optional().default(false),
+  callTransferWorkflowId: z.string().optional().nullable(),
+  callTransferNumber: z.string().optional().nullable(),
+  callTransferCondition: z.string().optional().nullable(),
+  callTransferMessage: z.string().optional().nullable(),
+  callTransferFallbackNumber: z.string().optional().nullable(),
+  callTransferTimeoutSec: z.coerce.number().int().min(10).max(60).optional().default(25),
+  callTransferNoAnswerAction: z.enum(["take_message", "offer_callback", "end_politely"]).optional().default("take_message"),
+  callTransferStyle: z.enum(["warm", "instant"]).optional().default("warm"),
+  bookingEnabled: z.boolean().optional().default(false),
+  bookingConfig: z
+    .object({
+      triggerCondition: z.string(),
+      provider: z.enum(["google", "calcom", "link"]),
+      calendarLink: z.string(),
+      meetingDurationMin: z.coerce.number().int().positive(),
+      workingHoursNote: z.string(),
+      confirmationMessage: z.string(),
+      askEmail: z.boolean().optional().default(false),
+    })
+    .optional()
+    .nullable(),
   businessHours: z.any().optional().nullable(),
   timeZone: z.string().default("Asia/Kolkata").optional(),
 });

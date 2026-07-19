@@ -13,7 +13,7 @@ import {
   Phone,
   PhoneCall,
   AlertCircle,
-  Settings,
+  Pencil,
   Activity,
   Trash2,
   Radio,
@@ -62,25 +62,9 @@ function initialsOf(name: string): string {
   return parts.map((p) => p[0]!.toUpperCase()).join("") || "IA";
 }
 
-const LANG_HEX: Record<string, { bg: string; fg: string }> = {
-  Hindi:    { bg: "#FFEDD5", fg: "#C2410C" },
-  Hinglish: { bg: "#FFE4E6", fg: "#BE123C" },
-  English:  { bg: "#EFF6FF", fg: "#1D4ED8" },
-  Marathi:  { bg: "#EDE9FE", fg: "#6D28D9" },
-  Tamil:    { bg: "#D1FAE5", fg: "#047857" },
-  Telugu:   { bg: "#FCE7F3", fg: "#BE185D" },
-  Bengali:  { bg: "#FFE4E6", fg: "#BE123C" },
-  Gujarati: { bg: "#FEF3C7", fg: "#B45309" },
-  Kannada:  { bg: "#DCFCE7", fg: "#166534" },
-};
-
 function LanguagePill({ language }: { language: string }): React.JSX.Element {
-  const c = LANG_HEX[language] || { bg: "#F1F5F9", fg: "#475569" };
   return (
-    <span
-      className="inline-flex items-center gap-0.5 px-1.5 py-[1px] rounded text-[10px] font-semibold"
-      style={{ backgroundColor: c.bg, color: c.fg }}
-    >
+    <span className="inline-flex items-center gap-0.5 px-1.5 py-[1px] rounded text-[10px] font-semibold bg-bg-subtle text-fg-secondary border border-line-subtle">
       {language}
     </span>
   );
@@ -504,15 +488,9 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
 
   return (
     <div
-      className="group relative rounded-xl border bg-white overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
+      className="group relative rounded-xl border bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-line-strong transition-all duration-200 flex flex-col h-full"
       style={{ borderColor: "#E5E7EB" }}
     >
-      {/* Decorative blurred background blob */}
-      <div 
-        className="absolute -top-10 -right-10 w-24 h-24 rounded-full opacity-20 blur-2xl pointer-events-none transition-opacity group-hover:opacity-40"
-        style={{ backgroundColor: c.from }}
-      />
-      
       {/* Top Header Section */}
       <div className="p-4 pb-0 flex items-start justify-between relative">
         <div className="flex items-center gap-3 min-w-0">
@@ -565,19 +543,13 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         <div className="flex items-center gap-1.5 flex-wrap mt-1 mb-4">
           <LanguagePill language={agent.language} />
           {agent.intakeEnabled && (
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors"
-              style={{ backgroundColor: c.soft, color: c.softText }}
-            >
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-bg-subtle text-fg-secondary border border-line-subtle">
               <ClipboardList className="h-3 w-3" />
               Intake
             </span>
           )}
           {agent.smsEnabled && (
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors"
-              style={{ backgroundColor: c.soft, color: c.softText }}
-            >
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-bg-subtle text-fg-secondary border border-line-subtle">
               <MessageSquareText className="h-3 w-3" />
               SMS
             </span>
@@ -585,21 +557,12 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         </div>
 
         {/* WhatsApp Bot row — a first-class channel control, not a chip */}
-        <div
-          className={[
-            "flex items-center justify-between rounded-lg border px-2.5 py-2 mb-3 transition-colors",
-            agent.whatsappEnabled
-              ? "bg-emerald-50/70 border-emerald-200"
-              : "bg-bg-subtle border-line-subtle",
-          ].join(" ")}
-        >
+        <div className="flex items-center justify-between rounded-lg border bg-bg-subtle border-line-subtle px-2.5 py-2 mb-3 transition-colors">
           <div className="flex items-center gap-1.5 min-w-0">
             <MessageCircle
               className={`h-3.5 w-3.5 shrink-0 ${agent.whatsappEnabled ? "text-emerald-600" : "text-fg-muted"}`}
             />
-            <span
-              className={`text-[11px] font-bold ${agent.whatsappEnabled ? "text-emerald-800" : "text-fg-secondary"}`}
-            >
+            <span className="text-[11px] font-bold text-fg-secondary">
               WhatsApp Bot
             </span>
             <span
@@ -682,10 +645,9 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
           type="button"
           onClick={(e) => { e.stopPropagation(); onTest(); }}
           disabled={!agent.isActive}
-          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed group/btn hover:brightness-110"
-          style={{ backgroundColor: agent.isActive ? c.soft : "#F1F5F9", color: agent.isActive ? c.from : "#94A3B8" }}
+          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-white border border-line-default hover:bg-bg-subtle hover:text-fg-primary transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <PhoneCall className="h-3.5 w-3.5 transition-transform group-hover/btn:scale-110" />
+          <PhoneCall className="h-3.5 w-3.5" />
           Test Call
         </button>
         <button
@@ -699,11 +661,10 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onConfigure(); }}
-          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
-          style={{ background: gradient }}
+          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] shadow-sm transition-all"
         >
-          <Settings className="h-3.5 w-3.5" />
-          Config
+          <Pencil className="h-3.5 w-3.5" />
+          Edit
         </button>
       </div>
     </div>
@@ -1203,11 +1164,10 @@ function RowActionsCompact({ agent, onTest, onConfigure, onLogs, onDelete }: Row
       <button
         type="button"
         onClick={onConfigure}
-        className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-bold text-white transition-all hover:brightness-110"
-        style={{ background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)" }}
+        className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] transition-all"
       >
-        <Settings className="h-3 w-3" />
-        Configure
+        <Pencil className="h-3 w-3" />
+        Edit
       </button>
       <ActionMenu
         items={[

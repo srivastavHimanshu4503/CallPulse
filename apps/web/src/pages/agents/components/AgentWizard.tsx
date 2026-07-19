@@ -7,18 +7,18 @@ import { PersonaSetup } from "./PersonaSetup.js";
 import { VoiceSelector } from "./VoiceSelector.js";
 import { TelephonySetup } from "./TelephonySetup.js";
 import { WorkflowSetup } from "./WorkflowSetup.js";
+import { KnowledgeBaseSetup } from "./KnowledgeBaseSetup.js";
 import {
   UserRound,
   Waves,
   Workflow,
-  ArrowLeft,
-  ArrowRight,
-  Check,
+  BookOpen,
+  PhoneCall,
   Rocket,
   Loader2,
   ChevronLeft,
 } from "lucide-react";
-import type { SerializedAgent } from "@antigravity/types";
+import type { SerializedAgent, AgentBookingConfig } from "@antigravity/types";
 
 interface AgentWizardProps {
   editingAgent: SerializedAgent | null;
@@ -28,26 +28,35 @@ interface AgentWizardProps {
   workflows: any[];
 }
 
-const STEPS = [
+const TABS = [
   {
-    num: 1,
-    title: "Persona",
-    subtitle: "Identity, tone & knowledge",
+    id: "general",
+    title: "General",
     icon: UserRound,
   },
   {
-    num: 2,
-    title: "Voice & Number",
-    subtitle: "Pick a voice and phone number",
+    id: "knowledge",
+    title: "Knowledge Base",
+    icon: BookOpen,
+  },
+  {
+    id: "voice",
+    title: "Voice Library",
     icon: Waves,
   },
   {
-    num: 3,
+    id: "phone",
+    title: "Phone & Limits",
+    icon: PhoneCall,
+  },
+  {
+    id: "workflows",
     title: "Workflows",
-    subtitle: "Intake & SMS automations",
     icon: Workflow,
   },
 ] as const;
+
+type TabId = typeof TABS[number]["id"];
 
 export function AgentWizard({
   editingAgent,
@@ -57,7 +66,7 @@ export function AgentWizard({
   workflows,
 }: AgentWizardProps): React.JSX.Element {
   const queryClient = useQueryClient();
-  const [step, setStep] = React.useState(1);
+  const [activeTab, setActiveTab] = React.useState<TabId>("general");
 
   // STEP 1: Basic Profile States
   const [name, setName] = React.useState(editingAgent?.name || "");
@@ -72,6 +81,11 @@ export function AgentWizard({
   const [fallbackMessage, setFallbackMessage] = React.useState(
     editingAgent?.fallbackMessage || "I'll connect you with our team for this. One moment please."
   );
+  const [modelName, setModelName] = React.useState(
+    (editingAgent as any)?.modelName || "gpt-4o"
+  );
+  
+  // STEP 1.5: Knowledge Base States
   const [businessInfo, setBusinessInfo] = React.useState(editingAgent?.businessInfo || "");
   const [websiteUrl, setWebsiteUrl] = React.useState(editingAgent?.websiteUrl || "");
 
@@ -118,8 +132,22 @@ export function AgentWizard({
   const [smsTemplate, setSmsTemplate] = React.useState(editingAgent?.smsTemplate || "");
   const [smsAgentReply, setSmsAgentReply] = React.useState(editingAgent?.smsAgentReply || "");
 
-  const [whatsappEnabled, setWhatsappEnabled] = React.useState(editingAgent?.whatsappEnabled ?? false);
-  const [whatsappPrompt, setWhatsappPrompt] = React.useState(editingAgent?.whatsappPrompt || "");
+  const [apiEnabled, setApiEnabled] = React.useState(editingAgent?.apiEnabled ?? false);
+  const [apiWorkflowId, setApiWorkflowId] = React.useState<string | null>(editingAgent?.apiWorkflowId || null);
+  const [apiPrompt, setApiPrompt] = React.useState(editingAgent?.apiPrompt || "");
+
+  const [callTransferEnabled, setCallTransferEnabled] = React.useState(editingAgent?.callTransferEnabled ?? false);
+  const [callTransferWorkflowId, setCallTransferWorkflowId] = React.useState<string | null>(editingAgent?.callTransferWorkflowId || null);
+  const [callTransferNumber, setCallTransferNumber] = React.useState(editingAgent?.callTransferNumber || "");
+  const [callTransferCondition, setCallTransferCondition] = React.useState(editingAgent?.callTransferCondition || "");
+  const [callTransferMessage, setCallTransferMessage] = React.useState(editingAgent?.callTransferMessage || "");
+  const [callTransferFallbackNumber, setCallTransferFallbackNumber] = React.useState(editingAgent?.callTransferFallbackNumber || "");
+  const [callTransferTimeoutSec, setCallTransferTimeoutSec] = React.useState(editingAgent?.callTransferTimeoutSec ?? 25);
+  const [callTransferNoAnswerAction, setCallTransferNoAnswerAction] = React.useState<"take_message" | "offer_callback" | "end_politely">(editingAgent?.callTransferNoAnswerAction ?? "take_message");
+  const [callTransferStyle, setCallTransferStyle] = React.useState<"warm" | "instant">(editingAgent?.callTransferStyle ?? "warm");
+
+  const [bookingEnabled, setBookingEnabled] = React.useState(editingAgent?.bookingEnabled ?? false);
+  const [bookingConfig, setBookingConfig] = React.useState<AgentBookingConfig | null>(editingAgent?.bookingConfig ?? null);
 
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
@@ -161,40 +189,103 @@ export function AgentWizard({
 
   const isFormLoading = createMutation.isPending || updateMutation.isPending;
 
-  const validateStep = (currStep: number): boolean => {
+  const validateAll = (): boolean => {
     const errs: Record<string, string> = {};
-    if (currStep === 1) {
-      if (!name.trim()) errs.name = "Agent name is required";
-      if (!role.trim()) errs.role = "Role is required";
-      if (!greetingMessage.trim()) errs.greetingMessage = "Greeting prompt is required";
-      if (!fallbackMessage.trim()) errs.fallbackMessage = "Fallback prompt is required";
-      if (websiteUrl && !websiteUrl.startsWith("http://") && !websiteUrl.startsWith("https://")) {
-        errs.websiteUrl = "Valid website starting with http/https is required";
-      }
+    if (!name.trim()) errs.name = "Agent name is required";
+    if (!role.trim()) errs.role = "Role is required";
+    if (!greetingMessage.trim()) errs.greetingMessage = "Greeting prompt is required";
+    if (!fallbackMessage.trim()) errs.fallbackMessage = "Fallback prompt is required";
+    if (websiteUrl && !websiteUrl.startsWith("http://") && !websiteUrl.startsWith("https://")) {
+      errs.websiteUrl = "Valid website starting with http/https is required";
     }
-    if (currStep === 2) {
-      // Phone number is optional, no validation required
-    }
+
+    const workflowError = validateWorkflows();
+    if (workflowError) errs.workflows = workflowError;
+
     setErrors(errs);
-    return Object.keys(errs).length === 0;
+
+    if (Object.keys(errs).length > 0) {
+      if (errs.name || errs.role || errs.greetingMessage || errs.fallbackMessage) {
+        setActiveTab("general");
+      } else if (errs.websiteUrl) {
+        setActiveTab("knowledge");
+      } else if (errs.workflows) {
+        setActiveTab("workflows");
+        toast.error(errs.workflows);
+      }
+      return false;
+    }
+
+    return true;
   };
 
-  const handleNext = () => {
-    if (validateStep(step)) setStep((s) => s + 1);
-  };
-  const handleBack = () => setStep((s) => s - 1);
-  const handleGoToStep = (target: number) => {
-    if (target === step) return;
-    if (target < step) {
-      setStep(target);
-      return;
+  /** Returns the first problem in any ENABLED workflow, or null when all valid. */
+  const validateWorkflows = (): string | null => {
+    const parseList = (s: string): any[] => {
+      try {
+        const p = JSON.parse(s);
+        return Array.isArray(p) ? p : [];
+      } catch {
+        return [];
+      }
+    };
+
+    if (intakeEnabled) {
+      const list = parseList(intakePrompt);
+      if (list.length === 0) return "Lead intake: add at least one scenario";
+      for (let i = 0; i < list.length; i++) {
+        if (!list[i]?.triggerName?.trim()) return `Intake scenario ${i + 1}: scenario name is required`;
+        if (!(list[i]?.questions || []).some((q: string) => q?.trim()))
+          return `Intake scenario ${i + 1}: add at least one question`;
+      }
     }
-    // Only allow forward jump if all in-between steps validate
-    for (let s = step; s < target; s++) {
-      if (!validateStep(s)) return;
+
+    if (smsEnabled) {
+      const list = parseList(smsTemplate);
+      if (list.length === 0) return "SMS: add at least one scenario";
+      for (let i = 0; i < list.length; i++) {
+        if (!list[i]?.triggerCondition?.trim()) return `SMS scenario ${i + 1}: trigger condition is required`;
+        if (!list[i]?.smsTemplate?.trim()) return `SMS scenario ${i + 1}: SMS message is required`;
+        if (!list[i]?.agentReply?.trim()) return `SMS scenario ${i + 1}: agent's verbal confirmation is required`;
+      }
     }
-    setStep(target);
+
+    if (apiEnabled) {
+      const list = parseList(apiPrompt);
+      if (list.length === 0) return "API & webhooks: add at least one scenario";
+      for (let i = 0; i < list.length; i++) {
+        if (!list[i]?.triggerCondition?.trim()) return `API scenario ${i + 1}: trigger condition is required`;
+        if (!/^https?:\/\/\S+$/.test((list[i]?.url || "").trim()))
+          return `API scenario ${i + 1}: enter a valid webhook URL starting with https://`;
+        if (!list[i]?.agentReply?.trim()) return `API scenario ${i + 1}: agent reply is required`;
+      }
+    }
+
+    if (callTransferEnabled) {
+      if (!callTransferCondition.trim()) return "Call transfer: transfer condition is required";
+      const primary = callTransferNumber.replace(/[\s-]/g, "");
+      if (!/^\+\d{8,15}$/.test(primary))
+        return "Call transfer: enter a valid phone number (country code + 6–12 digits)";
+      const fallback = callTransferFallbackNumber.replace(/[\s-]/g, "");
+      if (fallback && !/^\+\d{8,15}$/.test(fallback))
+        return "Call transfer: fallback number is invalid";
+      if (fallback && fallback === primary)
+        return "Call transfer: fallback number must be different from the primary number";
+    }
+
+    if (bookingEnabled) {
+      if (!bookingConfig?.triggerCondition?.trim()) return "Calendar booking: trigger condition is required";
+      const link = (bookingConfig?.calendarLink || "").trim();
+      if (!link) return "Calendar booking: calendar link / ID is required";
+      if (bookingConfig?.provider !== "google" && !/^https?:\/\/\S+$/.test(link))
+        return "Calendar booking: booking link must start with https://";
+      if (bookingConfig?.provider === "google" && !/^https?:\/\/\S+$/.test(link) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(link))
+        return "Calendar booking: enter a calendar email ID or a booking-page link";
+    }
+
+    return null;
   };
+
 
   const buildPayload = () => ({
       name,
@@ -220,14 +311,27 @@ export function AgentWizard({
       smsTriggerCondition: smsEnabled ? smsTriggerCondition : null,
       smsTemplate: smsEnabled ? smsTemplate : null,
       smsAgentReply: smsEnabled ? smsAgentReply : null,
-      whatsappEnabled,
-      whatsappPrompt: whatsappEnabled ? whatsappPrompt : null,
+      apiEnabled,
+      apiWorkflowId: apiEnabled ? apiWorkflowId : null,
+      apiPrompt: apiEnabled ? apiPrompt : null,
+      callTransferEnabled,
+      callTransferWorkflowId: callTransferEnabled ? callTransferWorkflowId : null,
+      callTransferNumber: callTransferEnabled ? callTransferNumber : null,
+      callTransferCondition: callTransferEnabled ? callTransferCondition : null,
+      callTransferMessage: callTransferEnabled ? callTransferMessage : null,
+      callTransferFallbackNumber: callTransferEnabled ? (callTransferFallbackNumber || null) : null,
+      callTransferTimeoutSec,
+      callTransferNoAnswerAction,
+      callTransferStyle,
+      bookingEnabled,
+      bookingConfig: bookingEnabled ? bookingConfig : null,
       timeZone,
       businessHours: { is24x7, startTime, endTime },
+      modelName,
   });
 
   const handleFinish = () => {
-    if (!validateStep(step)) return;
+    if (!validateAll()) return;
     const payload = buildPayload();
     if (effectiveAgentId) updateMutation.mutate(payload);
     else createMutation.mutate(payload);
@@ -236,9 +340,8 @@ export function AgentWizard({
   /** Create the agent now (used by number purchase); returns its id. */
   const ensureAgentExists = async (): Promise<string | null> => {
     if (effectiveAgentId) return effectiveAgentId;
-    if (!validateStep(1)) {
-      toast.error("Complete the agent basics first (name, role, greeting)");
-      setStep(1);
+    if (!validateAll()) {
+      toast.error("Complete the required fields first");
       return null;
     }
     try {
@@ -254,350 +357,238 @@ export function AgentWizard({
     }
   };
 
-  const activeStep = STEPS[step - 1]!;
-
   return (
     <div className="bg-white border border-[#E5E5E5] rounded-[8px] shadow-none flex flex-col font-sans h-full w-full overflow-hidden">
-      {/* TOP HEADER: Back + Title + Compact progress */}
-      <div className="shrink-0 h-14 border-b border-[#E5E5E5] bg-white flex items-center px-4 sm:px-5 gap-3">
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={isFormLoading}
-          className="flex items-center gap-1.5 text-[#666666] hover:text-[#111111] hover:bg-[#F7F7F7] rounded-[6px] px-2 py-1.5 text-xs font-semibold transition-colors focus:outline-none disabled:opacity-50"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Back
-        </button>
+      {/* TOP HEADER: Back + Title + Tabs */}
+      <div className="shrink-0 border-b border-[#E5E5E5] bg-white flex flex-col px-4 sm:px-5">
+        <div className="h-14 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isFormLoading}
+            className="flex items-center gap-1.5 text-[#666666] hover:text-[#111111] hover:bg-[#F7F7F7] rounded-[6px] px-2 py-1.5 text-xs font-semibold transition-colors focus:outline-none disabled:opacity-50"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </button>
 
-        <span className="h-5 w-[1px] bg-[#E5E5E5] shrink-0" />
+          <span className="h-5 w-[1px] bg-[#E5E5E5] shrink-0" />
 
-        <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-[#111111] tracking-tight truncate">
-            {editingAgent ? (
-              <>
-                <span className="text-[#666666] font-medium">Configure</span>
-                <span className="text-[#666666] mx-1.5">·</span>
-                <span>{editingAgent.name}</span>
-              </>
-            ) : (
-              "New agent"
-            )}
-          </h2>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-sm font-semibold text-[#111111] tracking-tight truncate">
+              {editingAgent ? (
+                <>
+                  <span className="text-[#666666] font-medium">Configure</span>
+                  <span className="text-[#666666] mx-1.5">·</span>
+                  <span>{editingAgent.name}</span>
+                </>
+              ) : (
+                "New agent"
+              )}
+            </h2>
+          </div>
         </div>
-
-        <MiniStepper currentStep={step} onSelect={handleGoToStep} />
+        
+        {/* TAB NAVIGATION */}
+        <div className="flex items-center gap-6 mt-1">
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 pb-3 px-1 border-b-2 text-[13px] font-semibold transition-colors ${
+                  isActive
+                    ? "border-[#2563EB] text-[#2563EB]"
+                    : "border-transparent text-[#666666] hover:text-[#111111]"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {tab.title}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* BODY: Left rail + Content */}
-      <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* LEFT RAIL — steps */}
-        <aside className="hidden md:flex md:w-[228px] lg:w-[248px] shrink-0 border-r border-[#E5E5E5] bg-[#FAFAFA] flex-col p-3 overflow-y-auto">
-          <nav className="space-y-1">
-            {STEPS.map((s) => {
-              const isCompleted = step > s.num;
-              const isActive = step === s.num;
-              const isClickable = s.num < step;
-              const Icon = s.icon;
-
-              return (
-                <button
-                  key={s.num}
-                  type="button"
-                  onClick={() => isClickable && handleGoToStep(s.num)}
-                  disabled={!isClickable && !isActive}
-                  className={`w-full text-left flex items-start gap-2.5 rounded-[6px] px-2.5 py-2.5 transition-colors ${
-                    isActive
-                      ? "bg-white border border-[#2563EB]/20 shadow-[0_1px_2px_rgba(37,99,235,0.06)]"
-                      : isClickable
-                        ? "hover:bg-white/70 border border-transparent cursor-pointer"
-                        : "border border-transparent cursor-default"
-                  }`}
-                >
-                  <span
-                    className={`h-7 w-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
-                      isActive
-                        ? "bg-[#2563EB] text-white"
-                        : isCompleted
-                          ? "bg-[#16A34A] text-white"
-                          : "bg-white border border-[#E5E5E5] text-[#999999]"
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                    ) : (
-                      <Icon className="h-3.5 w-3.5" />
-                    )}
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span
-                      className={`block text-[11px] font-bold uppercase tracking-wider ${
-                        isActive
-                          ? "text-[#2563EB]"
-                          : isCompleted
-                            ? "text-[#16A34A]"
-                            : "text-[#666666]"
-                      }`}
-                    >
-                      Step {s.num}
-                    </span>
-                    <span
-                      className={`block text-[13px] font-semibold mt-0.5 leading-tight ${
-                        isActive ? "text-[#111111]" : "text-[#111111]"
-                      }`}
-                    >
-                      {s.title}
-                    </span>
-                    <span className="block text-[11px] text-[#666666] mt-0.5 leading-tight">
-                      {s.subtitle}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
-        </aside>
-
-        {/* MAIN CONTENT */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {/* Mobile step selector — visible < md */}
-          <div className="md:hidden shrink-0 border-b border-[#E5E5E5] bg-white px-4 py-2.5">
-            <label className="block text-[10px] font-bold text-[#666666] uppercase tracking-wider mb-1">
-              Step {step} of {STEPS.length}
-            </label>
-            <select
-              value={step}
-              onChange={(e) => handleGoToStep(Number(e.target.value))}
-              className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] px-2 focus:outline-none"
-            >
-              {STEPS.map((s) => (
-                <option key={s.num} value={s.num} disabled={s.num > step}>
-                  {s.num}. {s.title}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Scrollable form area */}
-          <div className="flex-1 overflow-y-auto bg-[#FAFAFA]/40">
-            <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-5 sm:py-6">
-              <div className="space-y-5">
-                {step === 1 && (
-                  <PersonaSetup
-                    name={name}
-                    setName={setName}
-                    role={role}
-                    setRole={setRole}
-                    language={language}
-                    setLanguage={setLanguage}
-                    greetingMessage={greetingMessage}
-                    setGreetingMessage={setGreetingMessage}
-                    tone={tone}
-                    setTone={setTone}
-                    fallbackMessage={fallbackMessage}
-                    setFallbackMessage={setFallbackMessage}
-                    websiteUrl={websiteUrl}
-                    setWebsiteUrl={setWebsiteUrl}
-                    businessInfo={businessInfo}
-                    setBusinessInfo={setBusinessInfo}
-                    errors={errors}
-                    disabled={isFormLoading}
-                  />
-                )}
-
-                {step === 2 && (
-                  <div className="space-y-5 animate-in fade-in duration-200">
-                    <VoiceSelector
-                      voice={voice}
-                      setVoice={setVoice}
-                      language={language}
-                      disabled={isFormLoading}
-                    />
-                    <TelephonySetup
-                      agentId={effectiveAgentId}
-                      onEnsureAgent={ensureAgentExists}
-                      phoneNumberId={phoneNumberId}
-                      setPhoneNumberId={setPhoneNumberId}
-                      phoneNumbers={phoneNumbers}
-                      refetchPhoneNumbers={refetchPhoneNumbers}
-                      disabled={isFormLoading}
-                    />
-                    <CompliancePanel
-                      maxDuration={maxDuration}
-                      setMaxDuration={setMaxDuration}
-                      dndCompliance={dndCompliance}
-                      setDndCompliance={setDndCompliance}
-                      recordingConsent={recordingConsent}
-                      setRecordingConsent={setRecordingConsent}
-                      isActive={isActive}
-                      setIsActive={setIsActive}
-                      timeZone={timeZone}
-                      setTimeZone={setTimeZone}
-                      is24x7={is24x7}
-                      setIs24x7={setIs24x7}
-                      startTime={startTime}
-                      setStartTime={setStartTime}
-                      endTime={endTime}
-                      setEndTime={setEndTime}
-                      disabled={isFormLoading}
-                    />
-                  </div>
-                )}
-
-                {step === 3 && (
-                  <div className="animate-in fade-in duration-200">
-                    <WorkflowSetup
-                      workflows={workflows}
-                      intakeWorkflowId={intakeWorkflowId}
-                      setIntakeWorkflowId={setIntakeWorkflowId}
-                      smsWorkflowId={smsWorkflowId}
-                      setSmsWorkflowId={setSmsWorkflowId}
-                      intakeEnabled={intakeEnabled}
-                      setIntakeEnabled={setIntakeEnabled}
-                      setIntakeFields={setIntakeFields}
-                      intakePrompt={intakePrompt}
-                      setIntakePrompt={setIntakePrompt}
-                      smsEnabled={smsEnabled}
-                      setSmsEnabled={setSmsEnabled}
-                      smsTriggerCondition={smsTriggerCondition}
-                      setSmsTriggerCondition={setSmsTriggerCondition}
-                      smsTemplate={smsTemplate}
-                      setSmsTemplate={setSmsTemplate}
-                      smsAgentReply={smsAgentReply}
-                      setSmsAgentReply={setSmsAgentReply}
-                      whatsappEnabled={whatsappEnabled}
-                      setWhatsappEnabled={setWhatsappEnabled}
-                      whatsappPrompt={whatsappPrompt}
-                      setWhatsappPrompt={setWhatsappPrompt}
-                      disabled={isFormLoading}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* STICKY FOOTER */}
-          <div className="shrink-0 border-t border-[#E5E5E5] bg-white">
-            <div className="px-4 sm:px-6 py-2.5 flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 sm:justify-between">
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={onClose}
+      {/* BODY */}
+      <div className="flex-1 flex flex-col overflow-hidden min-h-0 bg-[#FAFAFA]/40">
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-5 sm:py-6">
+            <div className="space-y-5">
+              {activeTab === "general" && (
+                <PersonaSetup
+                  name={name}
+                  setName={setName}
+                  role={role}
+                  setRole={setRole}
+                  language={language}
+                  setLanguage={setLanguage}
+                  greetingMessage={greetingMessage}
+                  setGreetingMessage={setGreetingMessage}
+                  tone={tone}
+                  setTone={setTone}
+                  fallbackMessage={fallbackMessage}
+                  setFallbackMessage={setFallbackMessage}
+                  modelName={modelName}
+                  setModelName={setModelName}
+                  errors={errors}
                   disabled={isFormLoading}
-                  className="border border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-3.5 rounded-[6px] shadow-none"
-                >
-                  Cancel
-                </Button>
-                <span className="hidden sm:inline text-[11px] text-[#999999] font-medium">
-                  Step {step} of {STEPS.length} · {activeStep.title}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2 justify-end">
-                {step > 1 && (
-                  <Button
-                    variant="secondary"
-                    onClick={handleBack}
-                    disabled={isFormLoading}
-                    className="border border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-3 rounded-[6px] flex items-center gap-1.5 shadow-none"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" /> Back
-                  </Button>
-                )}
-
-                {step < STEPS.length ? (
-                  <Button
-                    variant="primary"
-                    onClick={handleNext}
-                    className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8] flex items-center gap-1.5 border-none shadow-none"
-                  >
-                    Continue <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                ) : (
-                  <Button
-                    variant="primary"
-                    onClick={handleFinish}
-                    disabled={isFormLoading}
-                    className="bg-[#16A34A] hover:bg-[#15803D] text-white font-semibold text-xs h-9 px-4 rounded-[6px] flex items-center gap-2 border-none shadow-none disabled:opacity-70"
-                  >
-                    {isFormLoading ? (
-                      <>
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        {editingAgent ? "Saving..." : "Launching..."}
-                      </>
-                    ) : (
-                      <>
-                        <Rocket className="h-3.5 w-3.5" />
-                        {editingAgent ? "Save changes" : "Launch agent"}
-                      </>
-                    )}
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------------- Mini Stepper (top-right of header) ---------------- */
-
-interface MiniStepperProps {
-  currentStep: number;
-  onSelect: (n: number) => void;
-}
-
-function MiniStepper({ currentStep, onSelect }: MiniStepperProps): React.JSX.Element {
-  return (
-    <div className="flex items-center gap-1.5 shrink-0">
-      <span className="hidden sm:inline text-[10px] font-bold text-[#666666] uppercase tracking-wider mr-1 tabular-nums">
-        {currentStep}/{STEPS.length}
-      </span>
-      <ol className="flex items-center">
-        {STEPS.map((s, idx) => {
-          const isCompleted = currentStep > s.num;
-          const isActive = currentStep === s.num;
-          const isClickable = s.num < currentStep;
-          return (
-            <React.Fragment key={s.num}>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => isClickable && onSelect(s.num)}
-                  disabled={!isClickable}
-                  title={s.title}
-                  aria-label={`Step ${s.num}: ${s.title}`}
-                  className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-all ${
-                    isActive
-                      ? "bg-[#2563EB] text-white ring-2 ring-[#2563EB]/20"
-                      : isCompleted
-                        ? "bg-[#16A34A] text-white cursor-pointer hover:bg-[#15803D]"
-                        : "bg-white border border-[#E5E5E5] text-[#999999]"
-                  }`}
-                >
-                  {isCompleted ? <Check className="h-3 w-3" strokeWidth={3} /> : s.num}
-                </button>
-              </li>
-              {idx < STEPS.length - 1 && (
-                <li
-                  className={`w-4 sm:w-6 h-[2px] transition-colors ${
-                    currentStep > s.num ? "bg-[#16A34A]" : "bg-[#E5E5E5]"
-                  }`}
-                  aria-hidden
                 />
               )}
-            </React.Fragment>
-          );
-        })}
-      </ol>
+
+              {activeTab === "knowledge" && (
+                <KnowledgeBaseSetup
+                  websiteUrl={websiteUrl}
+                  setWebsiteUrl={setWebsiteUrl}
+                  businessInfo={businessInfo}
+                  setBusinessInfo={setBusinessInfo}
+                  errors={errors}
+                  disabled={isFormLoading}
+                />
+              )}
+
+              {activeTab === "voice" && (
+                <div className="space-y-5 animate-in fade-in duration-200">
+                  <VoiceSelector
+                    voice={voice}
+                    setVoice={setVoice}
+                    language={language}
+                    disabled={isFormLoading}
+                  />
+                </div>
+              )}
+
+              {activeTab === "phone" && (
+                <div className="space-y-5 animate-in fade-in duration-200">
+                  <TelephonySetup
+                    agentId={effectiveAgentId}
+                    onEnsureAgent={ensureAgentExists}
+                    phoneNumberId={phoneNumberId}
+                    setPhoneNumberId={setPhoneNumberId}
+                    phoneNumbers={phoneNumbers}
+                    refetchPhoneNumbers={refetchPhoneNumbers}
+                    disabled={isFormLoading}
+                  />
+                  <CompliancePanel
+                    maxDuration={maxDuration}
+                    setMaxDuration={setMaxDuration}
+                    dndCompliance={dndCompliance}
+                    setDndCompliance={setDndCompliance}
+                    recordingConsent={recordingConsent}
+                    setRecordingConsent={setRecordingConsent}
+                    isActive={isActive}
+                    setIsActive={setIsActive}
+                    timeZone={timeZone}
+                    setTimeZone={setTimeZone}
+                    is24x7={is24x7}
+                    setIs24x7={setIs24x7}
+                    startTime={startTime}
+                    setStartTime={setStartTime}
+                    endTime={endTime}
+                    setEndTime={setEndTime}
+                    disabled={isFormLoading}
+                  />
+                </div>
+              )}
+
+              {activeTab === "workflows" && (
+                <div className="animate-in fade-in duration-200">
+                  <WorkflowSetup
+                    workflows={workflows}
+                    intakeWorkflowId={intakeWorkflowId}
+                    setIntakeWorkflowId={setIntakeWorkflowId}
+                    smsWorkflowId={smsWorkflowId}
+                    setSmsWorkflowId={setSmsWorkflowId}
+                    intakeEnabled={intakeEnabled}
+                    setIntakeEnabled={setIntakeEnabled}
+                    setIntakeFields={setIntakeFields}
+                    intakePrompt={intakePrompt}
+                    setIntakePrompt={setIntakePrompt}
+                    smsEnabled={smsEnabled}
+                    setSmsEnabled={setSmsEnabled}
+                    smsTriggerCondition={smsTriggerCondition}
+                    setSmsTriggerCondition={setSmsTriggerCondition}
+                    smsTemplate={smsTemplate}
+                    setSmsTemplate={setSmsTemplate}
+                    smsAgentReply={smsAgentReply}
+                    setSmsAgentReply={setSmsAgentReply}
+                    apiEnabled={apiEnabled}
+                    setApiEnabled={setApiEnabled}
+                    apiWorkflowId={apiWorkflowId}
+                    setApiWorkflowId={setApiWorkflowId}
+                    apiPrompt={apiPrompt}
+                    setApiPrompt={setApiPrompt}
+                    callTransferEnabled={callTransferEnabled}
+                    setCallTransferEnabled={setCallTransferEnabled}
+                    callTransferWorkflowId={callTransferWorkflowId}
+                    setCallTransferWorkflowId={setCallTransferWorkflowId}
+                    callTransferNumber={callTransferNumber}
+                    setCallTransferNumber={setCallTransferNumber}
+                    callTransferCondition={callTransferCondition}
+                    setCallTransferCondition={setCallTransferCondition}
+                    callTransferMessage={callTransferMessage}
+                    setCallTransferMessage={setCallTransferMessage}
+                    callTransferFallbackNumber={callTransferFallbackNumber}
+                    setCallTransferFallbackNumber={setCallTransferFallbackNumber}
+                    callTransferTimeoutSec={callTransferTimeoutSec}
+                    setCallTransferTimeoutSec={setCallTransferTimeoutSec}
+                    callTransferNoAnswerAction={callTransferNoAnswerAction}
+                    setCallTransferNoAnswerAction={setCallTransferNoAnswerAction}
+                    callTransferStyle={callTransferStyle}
+                    setCallTransferStyle={setCallTransferStyle}
+                    bookingEnabled={bookingEnabled}
+                    setBookingEnabled={setBookingEnabled}
+                    bookingConfig={bookingConfig}
+                    setBookingConfig={setBookingConfig}
+                    disabled={isFormLoading}
+                  />
+                </div>
+              )}
+              </div>
+            </div>
+          </div>
+
+        {/* STICKY FOOTER */}
+        <div className="shrink-0 border-t border-[#E5E5E5] bg-white">
+          <div className="px-4 sm:px-6 py-3 flex items-center justify-between">
+            <Button
+              variant="secondary"
+              onClick={onClose}
+              disabled={isFormLoading}
+              className="border border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px] shadow-none"
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="primary"
+              onClick={handleFinish}
+              disabled={isFormLoading}
+              className="bg-[#16A34A] hover:bg-[#15803D] text-white font-semibold text-xs h-9 px-5 rounded-[6px] flex items-center gap-2 border-none shadow-none disabled:opacity-70"
+            >
+              {isFormLoading ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  {editingAgent ? "Saving..." : "Launching..."}
+                </>
+              ) : (
+                <>
+                  <Rocket className="h-3.5 w-3.5" />
+                  {editingAgent ? "Save changes" : "Launch agent"}
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-/* ---------------- Compliance Panel ---------------- */
+
 
 interface CompliancePanelProps {
   maxDuration: number;

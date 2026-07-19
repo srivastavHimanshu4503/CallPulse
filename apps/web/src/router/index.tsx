@@ -23,6 +23,7 @@ const Widget = React.lazy(() => import("../pages/widget/Widget.js"));
 const Analytics = React.lazy(() => import("../pages/analytics/Analytics.js"));
 const Notifications = React.lazy(() => import("../pages/notifications/Notifications.js"));
 const Settings = React.lazy(() => import("../pages/settings/Settings.js"));
+const Calendar = React.lazy(() => import("../pages/calendar/Calendar.js"));
 
 interface AuthGuardProps {
   children: React.JSX.Element;
@@ -187,6 +188,16 @@ export function AppRouter(): React.JSX.Element {
           element={
             <AuthGuard>
               <Settings />
+            </AuthGuard>
+          }
+        />
+
+        {/* Protected Calendar Route */}
+        <Route
+          path="/calendar"
+          element={
+            <AuthGuard>
+              <Calendar />
             </AuthGuard>
           }
         />

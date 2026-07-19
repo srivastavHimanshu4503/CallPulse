@@ -225,8 +225,9 @@ model User {
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
-  deals  Deal[]
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  deals    Deal[]
+  bookings Booking[]
 
   @@unique([tenantId, email])
   @@map("users")
@@ -442,18 +443,24 @@ model DealStageHistory {
 // ─────────────────────────────────────────────
 
 model Booking {
-  id        String   @id @default(uuid())
-  tenantId  String
-  contactId String
-  title     String
-  startTime DateTime
-  endTime   DateTime
-  status    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  tenantId   String
+  contactId  String
+  title      String
+  startTime  DateTime
+  endTime    DateTime
+  status     String
+  agentId    String?
+  assigneeId String?
+  ccEmails   String[] @default([])
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   tenant     Tenant     @relation(fields: [tenantId], references: [id])
   contact    Contact    @relation(fields: [contactId], references: [id])
+  agent      AIAgent?   @relation(fields: [agentId], references: [id])
+  assignee   User?      @relation(fields: [assigneeId], references: [id])
   activities Activity[]
 
   @@map("bookings")
@@ -548,45 +555,60 @@ model WorkflowRun {
 // ─────────────────────────────────────────────
 
 model AIAgent {
-  id                  String    @id @default(uuid())
-  tenantId            String
-  name                String
-  role                String    @default("Support")
-  language            String    @default("Hinglish")
-  greetingMessage     String    @default("Namaste! Main aapki kaise help kar sakti hoon?")
-  tone                String    @default("Friendly")
-  fallbackMessage     String    @default("I'll connect you with our team for this. One moment please.")
-  businessInfo        String?
-  websiteUrl          String?
-  maxDuration         Int       @default(10)
-  dndCompliance       Boolean   @default(true)
-  recordingConsent    Boolean   @default(true)
-  isActive            Boolean   @default(true)
-  systemPrompt        String
-  modelName           String
-  voice               String    @default("Priya (Indian Female)")
-  intakeWorkflowId    String?
-  smsWorkflowId       String?
-  phoneNumberId       String?
-  intakeEnabled       Boolean   @default(false)
-  intakeFields        String[]  @default([])
-  intakePrompt        String?
-  smsEnabled          Boolean   @default(false)
-  smsTriggerCondition String?
-  smsTemplate         String?
-  smsAgentReply       String?
-  whatsappEnabled     Boolean   @default(false)
-  whatsappPrompt      String?
-  businessHours       Json?
-  timeZone            String    @default("Asia/Kolkata")
-  deletedAt           DateTime?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                         String    @id @default(uuid())
+  tenantId                   String
+  name                       String
+  role                       String    @default("Support")
+  language                   String    @default("Hinglish")
+  greetingMessage            String    @default("Namaste! Main aapki kaise help kar sakti hoon?")
+  tone                       String    @default("Friendly")
+  fallbackMessage            String    @default("I'll connect you with our team for this. One moment please.")
+  businessInfo               String?
+  websiteUrl                 String?
+  maxDuration                Int       @default(10)
+  dndCompliance              Boolean   @default(true)
+  recordingConsent           Boolean   @default(true)
+  isActive                   Boolean   @default(true)
+  systemPrompt               String
+  modelName                  String
+  voice                      String    @default("Priya (Indian Female)")
+  intakeWorkflowId           String?
+  smsWorkflowId              String?
+  phoneNumberId              String?
+  intakeEnabled              Boolean   @default(false)
+  intakeFields               String[]  @default([])
+  intakePrompt               String?
+  smsEnabled                 Boolean   @default(false)
+  smsTriggerCondition        String?
+  smsTemplate                String?
+  smsAgentReply              String?
+  whatsappEnabled            Boolean   @default(false)
+  whatsappPrompt             String?
+  apiEnabled                 Boolean   @default(false)
+  apiWorkflowId              String?
+  apiPrompt                  String?
+  callTransferEnabled        Boolean   @default(false)
+  callTransferWorkflowId     String?
+  callTransferNumber         String?
+  callTransferCondition      String?
+  callTransferMessage        String?
+  callTransferFallbackNumber String?
+  callTransferTimeoutSec     Int       @default(25)
+  callTransferNoAnswerAction String    @default("take_message")
+  callTransferStyle          String    @default("warm")
+  bookingEnabled             Boolean   @default(false)
+  bookingConfig              Json?
+  businessHours              Json?
+  timeZone                   String    @default("Asia/Kolkata")
+  deletedAt                  DateTime?
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
 
   tenant            Tenant             @relation(fields: [tenantId], references: [id])
   communicationLogs CommunicationLog[]
   knowledgeBases    KnowledgeBase[]
   chatSessions      ChatSession[]
+  bookings          Booking[]
 
   @@map("ai_agents")
 }

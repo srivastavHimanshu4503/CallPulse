@@ -111,6 +111,20 @@ export class AgentsService {
       smsAgentReply: agent.smsAgentReply,
       whatsappEnabled: agent.whatsappEnabled,
       whatsappPrompt: agent.whatsappPrompt,
+      apiEnabled: agent.apiEnabled,
+      apiWorkflowId: agent.apiWorkflowId,
+      apiPrompt: agent.apiPrompt,
+      callTransferEnabled: agent.callTransferEnabled,
+      callTransferWorkflowId: agent.callTransferWorkflowId,
+      callTransferNumber: agent.callTransferNumber,
+      callTransferCondition: agent.callTransferCondition,
+      callTransferMessage: agent.callTransferMessage,
+      callTransferFallbackNumber: agent.callTransferFallbackNumber,
+      callTransferTimeoutSec: agent.callTransferTimeoutSec,
+      callTransferNoAnswerAction: agent.callTransferNoAnswerAction as SerializedAgent["callTransferNoAnswerAction"],
+      callTransferStyle: agent.callTransferStyle as SerializedAgent["callTransferStyle"],
+      bookingEnabled: agent.bookingEnabled,
+      bookingConfig: (agent.bookingConfig as SerializedAgent["bookingConfig"]) ?? null,
       timeZone: agent.timeZone,
       businessHours: (agent.businessHours as SerializedAgent["businessHours"]) ?? null,
       callsToday: callsTodayCount,
@@ -177,6 +191,20 @@ export class AgentsService {
       smsAgentReply,
       whatsappEnabled,
       whatsappPrompt,
+      apiEnabled,
+      apiWorkflowId,
+      apiPrompt,
+      callTransferEnabled,
+      callTransferWorkflowId,
+      callTransferNumber,
+      callTransferCondition,
+      callTransferMessage,
+      callTransferFallbackNumber,
+      callTransferTimeoutSec,
+      callTransferNoAnswerAction,
+      callTransferStyle,
+      bookingEnabled,
+      bookingConfig,
       timeZone,
       businessHours,
     } = data;
@@ -211,6 +239,20 @@ export class AgentsService {
           smsAgentReply: smsAgentReply || null,
           whatsappEnabled: whatsappEnabled ?? false,
           whatsappPrompt: whatsappPrompt || null,
+          apiEnabled: apiEnabled ?? false,
+          apiWorkflowId: apiWorkflowId || null,
+          apiPrompt: apiPrompt || null,
+          callTransferEnabled: callTransferEnabled ?? false,
+          callTransferWorkflowId: callTransferWorkflowId || null,
+          callTransferNumber: callTransferNumber || null,
+          callTransferCondition: callTransferCondition || null,
+          callTransferMessage: callTransferMessage || null,
+          callTransferFallbackNumber: callTransferFallbackNumber || null,
+          callTransferTimeoutSec: callTransferTimeoutSec ?? 25,
+          callTransferNoAnswerAction: callTransferNoAnswerAction ?? "take_message",
+          callTransferStyle: callTransferStyle ?? "warm",
+          bookingEnabled: bookingEnabled ?? false,
+          bookingConfig: bookingConfig ?? undefined,
           timeZone: timeZone ?? "Asia/Kolkata",
           businessHours: businessHours ?? undefined,
           systemPrompt: `You are a helpful ${tone} AI assistant named ${name} specializing in a ${role} role. Greeting: ${greetingMessage}`,
@@ -361,6 +403,20 @@ export class AgentsService {
       smsAgentReply,
       whatsappEnabled,
       whatsappPrompt,
+      apiEnabled,
+      apiWorkflowId,
+      apiPrompt,
+      callTransferEnabled,
+      callTransferWorkflowId,
+      callTransferNumber,
+      callTransferCondition,
+      callTransferMessage,
+      callTransferFallbackNumber,
+      callTransferTimeoutSec,
+      callTransferNoAnswerAction,
+      callTransferStyle,
+      bookingEnabled,
+      bookingConfig,
       timeZone,
       businessHours,
     } = data;
@@ -396,6 +452,20 @@ export class AgentsService {
           smsAgentReply: smsAgentReply !== undefined ? smsAgentReply : undefined,
           whatsappEnabled: whatsappEnabled !== undefined ? whatsappEnabled : undefined,
           whatsappPrompt: whatsappPrompt !== undefined ? whatsappPrompt : undefined,
+          apiEnabled: apiEnabled !== undefined ? apiEnabled : undefined,
+          apiWorkflowId: apiWorkflowId !== undefined ? apiWorkflowId : undefined,
+          apiPrompt: apiPrompt !== undefined ? apiPrompt : undefined,
+          callTransferEnabled: callTransferEnabled !== undefined ? callTransferEnabled : undefined,
+          callTransferWorkflowId: callTransferWorkflowId !== undefined ? callTransferWorkflowId : undefined,
+          callTransferNumber: callTransferNumber !== undefined ? callTransferNumber : undefined,
+          callTransferCondition: callTransferCondition !== undefined ? callTransferCondition : undefined,
+          callTransferMessage: callTransferMessage !== undefined ? callTransferMessage : undefined,
+          callTransferFallbackNumber: callTransferFallbackNumber !== undefined ? callTransferFallbackNumber : undefined,
+          callTransferTimeoutSec: callTransferTimeoutSec !== undefined ? callTransferTimeoutSec : undefined,
+          callTransferNoAnswerAction: callTransferNoAnswerAction !== undefined ? callTransferNoAnswerAction : undefined,
+          callTransferStyle: callTransferStyle !== undefined ? callTransferStyle : undefined,
+          bookingEnabled: bookingEnabled !== undefined ? bookingEnabled : undefined,
+          bookingConfig: bookingConfig !== undefined ? (bookingConfig ?? undefined) : undefined,
           timeZone: timeZone !== undefined ? timeZone : undefined,
           businessHours: businessHours !== undefined ? businessHours : undefined,
           systemPrompt: `You are a helpful ${tone || existing.tone} AI assistant named ${name || existing.name} specializing in a ${role || existing.role} role. Greeting: ${greetingMessage || existing.greetingMessage}`,
@@ -617,10 +687,14 @@ export class AgentsService {
     if (speaker === "aditi") speaker = "ritu";
     if (speaker === "deepika") speaker = "kavitha";
 
-    // Determine voice gender for correct Hindi/Hinglish grammatical endings
+    // Determine voice gender for correct Hindi/Hinglish grammatical endings.
+    // The last five are ElevenLabs Sarah, Matilda, Jessica, Bella, Alice
+    // (voice IDs lowercased to match voiceKey).
     const femaleVoices = [
       "priya", "aditi", "ritu", "deepika", "kavitha",
-      "alloy", "shimmer", "coral", "sage", "marin"
+      "alloy", "shimmer", "coral", "sage", "marin",
+      "exavitqu4vr4xnsdxmal", "xrexe9ykig1wjnnlvkgx", "cgsgspj2msm6clmckdw9",
+      "hpp4j3vqnfwauoo0d1us", "xb7hh8msujpsbsdyk0k2"
     ];
     const isFemale = femaleVoices.includes(voiceKey);
 
@@ -691,6 +765,30 @@ export class AgentsService {
       const base64 = data.audios?.[0];
       if (!base64) throw new Error("No audio returned from Sarvam AI");
       return Buffer.from(base64, "base64");
+    } else if (provider === "elevenlabs") {
+      const apiKey = process.env.ELEVENLABS_API_KEY;
+      if (!apiKey) throw new Error("ELEVENLABS_API_KEY is not configured on the API server");
+
+      // ElevenLabs voice IDs are case-sensitive — use the un-lowercased form.
+      const elevenVoiceId = encodeURIComponent(cleanVoice.trim());
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elevenVoiceId}`, {
+        method: "POST",
+        headers: {
+          "xi-api-key": apiKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model_id: "eleven_turbo_v2_5",
+          text: testText,
+          language_code: agentLang.startsWith("en") ? "en" : "hi",
+        }),
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`ElevenLabs TTS preview failed: ${err}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      return Buffer.from(arrayBuffer);
     } else {
       throw new Error(`Unsupported voice provider: ${provider}`);
     }

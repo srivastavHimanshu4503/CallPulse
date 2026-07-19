@@ -62,12 +62,12 @@ export class DashboardController {
         where: { tenantId, type: "CALL", createdAt: { gte: yesterday, lt: today } },
       });
 
-      // 3. Outbound SMS sent this week
-      const smsSentThisWeek = await db.communicationLog.count({
-        where: { tenantId, type: "SMS", createdAt: { gte: thisWeekStart } },
+      // 3. WhatsApp messages this week
+      const whatsappThisWeek = await db.communicationLog.count({
+        where: { tenantId, type: "WHATSAPP", createdAt: { gte: thisWeekStart } },
       });
-      const smsSentLastWeek = await db.communicationLog.count({
-        where: { tenantId, type: "SMS", createdAt: { gte: lastWeekStart, lt: thisWeekStart } },
+      const whatsappLastWeek = await db.communicationLog.count({
+        where: { tenantId, type: "WHATSAPP", createdAt: { gte: lastWeekStart, lt: thisWeekStart } },
       });
 
       // 4. Open deals count
@@ -131,8 +131,8 @@ export class DashboardController {
         totalContactsDelta: calcDelta(contactsCapturedThisWeek, contactsCapturedLastWeek),
         callsHandledToday,
         callsHandledTodayDelta: calcDelta(callsHandledToday, callsHandledYesterday),
-        smsSentThisWeek,
-        smsSentThisWeekDelta: calcDelta(smsSentThisWeek, smsSentLastWeek),
+        whatsappThisWeek,
+        whatsappThisWeekDelta: calcDelta(whatsappThisWeek, whatsappLastWeek),
         openDeals,
         appointments: appointmentsThisWeek,
         appointmentsDelta: calcDelta(appointmentsThisWeek, appointmentsLastWeek),
@@ -387,8 +387,8 @@ export class DashboardController {
         stats: {
           calls: kpis.calls,
           callsDelta: calcDelta(kpis.calls, kpis.prevCalls),
-          smsSent: kpis.smsSent,
-          smsSentDelta: calcDelta(kpis.smsSent, kpis.prevSms),
+          whatsapp: kpis.whatsapp,
+          whatsappDelta: calcDelta(kpis.whatsapp, kpis.prevWhatsapp),
           conv: kpis.conv,
           convDelta: calcDelta(kpis.conv, kpis.prevConv),
           duration: kpis.avgDuration

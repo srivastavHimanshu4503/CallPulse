@@ -169,6 +169,9 @@ importers:
       '@livekit/agents-plugin-deepgram':
         specifier: ^1.5.1
         version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
+      '@livekit/agents-plugin-elevenlabs':
+        specifier: ^1.5.3
+        version: 1.5.3(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
       '@livekit/agents-plugin-google':
         specifier: ^1.5.1
         version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)(ws@8.21.0)(zod@3.25.76)
@@ -1070,6 +1073,12 @@ packages:
     resolution: {integrity: sha512-izj9bhmOQzGxSfLdzXBC41LBqUHCCzztcVkwGqTA5fdXA0WpBSqSV0twmifXa7BJb5vD6blzTIyJlfTGgc2+aw==}
     peerDependencies:
       '@livekit/agents': 1.5.1
+      '@livekit/rtc-node': ^0.13.31
+
+  '@livekit/agents-plugin-elevenlabs@1.5.3':
+    resolution: {integrity: sha512-6wAXjqgn33q63IegNRjujHJp6VSZlIadNR0NCKq0ojaCwwaAnafun47O20XDCX3eRz2vp1Pmcf7awJmZx2NvaA==}
+    peerDependencies:
+      '@livekit/agents': 1.5.3
       '@livekit/rtc-node': ^0.13.31
 
   '@livekit/agents-plugin-google@1.5.1':
@@ -3826,6 +3835,16 @@ snapshots:
   '@livekit/agents-plugin-deepgram@1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)':
     dependencies:
       '@livekit/agents': 1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)
+      '@livekit/rtc-node': 0.13.31
+      ws: 8.21.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@livekit/agents-plugin-elevenlabs@1.5.3(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)':
+    dependencies:
+      '@livekit/agents': 1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)
+      '@livekit/mutex': 1.1.1
       '@livekit/rtc-node': 0.13.31
       ws: 8.21.0
     transitivePeerDependencies:

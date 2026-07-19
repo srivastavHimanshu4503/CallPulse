@@ -3271,10 +3271,12 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     deals: number
+    bookings: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     deals?: boolean | UserCountOutputTypeCountDealsArgs
+    bookings?: boolean | UserCountOutputTypeCountBookingsArgs
   }
 
   // Custom InputTypes
@@ -3293,6 +3295,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountDealsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DealWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountBookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BookingWhereInput
   }
 
 
@@ -3704,12 +3713,14 @@ export namespace Prisma {
     communicationLogs: number
     knowledgeBases: number
     chatSessions: number
+    bookings: number
   }
 
   export type AIAgentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     communicationLogs?: boolean | AIAgentCountOutputTypeCountCommunicationLogsArgs
     knowledgeBases?: boolean | AIAgentCountOutputTypeCountKnowledgeBasesArgs
     chatSessions?: boolean | AIAgentCountOutputTypeCountChatSessionsArgs
+    bookings?: boolean | AIAgentCountOutputTypeCountBookingsArgs
   }
 
   // Custom InputTypes
@@ -3742,6 +3753,13 @@ export namespace Prisma {
    */
   export type AIAgentCountOutputTypeCountChatSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ChatSessionWhereInput
+  }
+
+  /**
+   * AIAgentCountOutputType without action
+   */
+  export type AIAgentCountOutputTypeCountBookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BookingWhereInput
   }
 
 
@@ -8601,6 +8619,7 @@ export namespace Prisma {
     deletedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     deals?: boolean | User$dealsArgs<ExtArgs>
+    bookings?: boolean | User$bookingsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8632,6 +8651,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     deals?: boolean | User$dealsArgs<ExtArgs>
+    bookings?: boolean | User$bookingsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8643,6 +8663,7 @@ export namespace Prisma {
     objects: {
       tenant: Prisma.$TenantPayload<ExtArgs>
       deals: Prisma.$DealPayload<ExtArgs>[]
+      bookings: Prisma.$BookingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9020,6 +9041,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     deals<T extends User$dealsArgs<ExtArgs> = {}>(args?: Subset<T, User$dealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DealPayload<ExtArgs>, T, "findMany"> | Null>
+    bookings<T extends User$bookingsArgs<ExtArgs> = {}>(args?: Subset<T, User$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9393,6 +9415,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DealScalarFieldEnum | DealScalarFieldEnum[]
+  }
+
+  /**
+   * User.bookings
+   */
+  export type User$bookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Booking
+     */
+    select?: BookingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BookingInclude<ExtArgs> | null
+    where?: BookingWhereInput
+    orderBy?: BookingOrderByWithRelationInput | BookingOrderByWithRelationInput[]
+    cursor?: BookingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BookingScalarFieldEnum | BookingScalarFieldEnum[]
   }
 
   /**
@@ -17054,6 +17096,9 @@ export namespace Prisma {
     startTime: Date | null
     endTime: Date | null
     status: string | null
+    agentId: string | null
+    assigneeId: string | null
+    notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17066,6 +17111,9 @@ export namespace Prisma {
     startTime: Date | null
     endTime: Date | null
     status: string | null
+    agentId: string | null
+    assigneeId: string | null
+    notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17078,6 +17126,10 @@ export namespace Prisma {
     startTime: number
     endTime: number
     status: number
+    agentId: number
+    assigneeId: number
+    ccEmails: number
+    notes: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -17092,6 +17144,9 @@ export namespace Prisma {
     startTime?: true
     endTime?: true
     status?: true
+    agentId?: true
+    assigneeId?: true
+    notes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17104,6 +17159,9 @@ export namespace Prisma {
     startTime?: true
     endTime?: true
     status?: true
+    agentId?: true
+    assigneeId?: true
+    notes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17116,6 +17174,10 @@ export namespace Prisma {
     startTime?: true
     endTime?: true
     status?: true
+    agentId?: true
+    assigneeId?: true
+    ccEmails?: true
+    notes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -17201,6 +17263,10 @@ export namespace Prisma {
     startTime: Date
     endTime: Date
     status: string
+    agentId: string | null
+    assigneeId: string | null
+    ccEmails: string[]
+    notes: string | null
     createdAt: Date
     updatedAt: Date
     _count: BookingCountAggregateOutputType | null
@@ -17230,10 +17296,16 @@ export namespace Prisma {
     startTime?: boolean
     endTime?: boolean
     status?: boolean
+    agentId?: boolean
+    assigneeId?: boolean
+    ccEmails?: boolean
+    notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | Booking$agentArgs<ExtArgs>
+    assignee?: boolean | Booking$assigneeArgs<ExtArgs>
     activities?: boolean | Booking$activitiesArgs<ExtArgs>
     _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
@@ -17246,10 +17318,16 @@ export namespace Prisma {
     startTime?: boolean
     endTime?: boolean
     status?: boolean
+    agentId?: boolean
+    assigneeId?: boolean
+    ccEmails?: boolean
+    notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | Booking$agentArgs<ExtArgs>
+    assignee?: boolean | Booking$assigneeArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
 
   export type BookingSelectScalar = {
@@ -17260,6 +17338,10 @@ export namespace Prisma {
     startTime?: boolean
     endTime?: boolean
     status?: boolean
+    agentId?: boolean
+    assigneeId?: boolean
+    ccEmails?: boolean
+    notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -17267,12 +17349,16 @@ export namespace Prisma {
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | Booking$agentArgs<ExtArgs>
+    assignee?: boolean | Booking$assigneeArgs<ExtArgs>
     activities?: boolean | Booking$activitiesArgs<ExtArgs>
     _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BookingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     contact?: boolean | ContactDefaultArgs<ExtArgs>
+    agent?: boolean | Booking$agentArgs<ExtArgs>
+    assignee?: boolean | Booking$assigneeArgs<ExtArgs>
   }
 
   export type $BookingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17280,6 +17366,8 @@ export namespace Prisma {
     objects: {
       tenant: Prisma.$TenantPayload<ExtArgs>
       contact: Prisma.$ContactPayload<ExtArgs>
+      agent: Prisma.$AIAgentPayload<ExtArgs> | null
+      assignee: Prisma.$UserPayload<ExtArgs> | null
       activities: Prisma.$ActivityPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -17290,6 +17378,10 @@ export namespace Prisma {
       startTime: Date
       endTime: Date
       status: string
+      agentId: string | null
+      assigneeId: string | null
+      ccEmails: string[]
+      notes: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["booking"]>
@@ -17658,6 +17750,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     contact<T extends ContactDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContactDefaultArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    agent<T extends Booking$agentArgs<ExtArgs> = {}>(args?: Subset<T, Booking$agentArgs<ExtArgs>>): Prisma__AIAgentClient<$Result.GetResult<Prisma.$AIAgentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    assignee<T extends Booking$assigneeArgs<ExtArgs> = {}>(args?: Subset<T, Booking$assigneeArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     activities<T extends Booking$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, Booking$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -17695,6 +17789,10 @@ export namespace Prisma {
     readonly startTime: FieldRef<"Booking", 'DateTime'>
     readonly endTime: FieldRef<"Booking", 'DateTime'>
     readonly status: FieldRef<"Booking", 'String'>
+    readonly agentId: FieldRef<"Booking", 'String'>
+    readonly assigneeId: FieldRef<"Booking", 'String'>
+    readonly ccEmails: FieldRef<"Booking", 'String[]'>
+    readonly notes: FieldRef<"Booking", 'String'>
     readonly createdAt: FieldRef<"Booking", 'DateTime'>
     readonly updatedAt: FieldRef<"Booking", 'DateTime'>
   }
@@ -18012,6 +18110,36 @@ export namespace Prisma {
      * Filter which Bookings to delete
      */
     where?: BookingWhereInput
+  }
+
+  /**
+   * Booking.agent
+   */
+  export type Booking$agentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AIAgent
+     */
+    select?: AIAgentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AIAgentInclude<ExtArgs> | null
+    where?: AIAgentWhereInput
+  }
+
+  /**
+   * Booking.assignee
+   */
+  export type Booking$assigneeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -22093,10 +22221,12 @@ export namespace Prisma {
 
   export type AIAgentAvgAggregateOutputType = {
     maxDuration: number | null
+    callTransferTimeoutSec: number | null
   }
 
   export type AIAgentSumAggregateOutputType = {
     maxDuration: number | null
+    callTransferTimeoutSec: number | null
   }
 
   export type AIAgentMinAggregateOutputType = {
@@ -22128,6 +22258,19 @@ export namespace Prisma {
     smsAgentReply: string | null
     whatsappEnabled: boolean | null
     whatsappPrompt: string | null
+    apiEnabled: boolean | null
+    apiWorkflowId: string | null
+    apiPrompt: string | null
+    callTransferEnabled: boolean | null
+    callTransferWorkflowId: string | null
+    callTransferNumber: string | null
+    callTransferCondition: string | null
+    callTransferMessage: string | null
+    callTransferFallbackNumber: string | null
+    callTransferTimeoutSec: number | null
+    callTransferNoAnswerAction: string | null
+    callTransferStyle: string | null
+    bookingEnabled: boolean | null
     timeZone: string | null
     deletedAt: Date | null
     createdAt: Date | null
@@ -22163,6 +22306,19 @@ export namespace Prisma {
     smsAgentReply: string | null
     whatsappEnabled: boolean | null
     whatsappPrompt: string | null
+    apiEnabled: boolean | null
+    apiWorkflowId: string | null
+    apiPrompt: string | null
+    callTransferEnabled: boolean | null
+    callTransferWorkflowId: string | null
+    callTransferNumber: string | null
+    callTransferCondition: string | null
+    callTransferMessage: string | null
+    callTransferFallbackNumber: string | null
+    callTransferTimeoutSec: number | null
+    callTransferNoAnswerAction: string | null
+    callTransferStyle: string | null
+    bookingEnabled: boolean | null
     timeZone: string | null
     deletedAt: Date | null
     createdAt: Date | null
@@ -22199,6 +22355,20 @@ export namespace Prisma {
     smsAgentReply: number
     whatsappEnabled: number
     whatsappPrompt: number
+    apiEnabled: number
+    apiWorkflowId: number
+    apiPrompt: number
+    callTransferEnabled: number
+    callTransferWorkflowId: number
+    callTransferNumber: number
+    callTransferCondition: number
+    callTransferMessage: number
+    callTransferFallbackNumber: number
+    callTransferTimeoutSec: number
+    callTransferNoAnswerAction: number
+    callTransferStyle: number
+    bookingEnabled: number
+    bookingConfig: number
     businessHours: number
     timeZone: number
     deletedAt: number
@@ -22210,10 +22380,12 @@ export namespace Prisma {
 
   export type AIAgentAvgAggregateInputType = {
     maxDuration?: true
+    callTransferTimeoutSec?: true
   }
 
   export type AIAgentSumAggregateInputType = {
     maxDuration?: true
+    callTransferTimeoutSec?: true
   }
 
   export type AIAgentMinAggregateInputType = {
@@ -22245,6 +22417,19 @@ export namespace Prisma {
     smsAgentReply?: true
     whatsappEnabled?: true
     whatsappPrompt?: true
+    apiEnabled?: true
+    apiWorkflowId?: true
+    apiPrompt?: true
+    callTransferEnabled?: true
+    callTransferWorkflowId?: true
+    callTransferNumber?: true
+    callTransferCondition?: true
+    callTransferMessage?: true
+    callTransferFallbackNumber?: true
+    callTransferTimeoutSec?: true
+    callTransferNoAnswerAction?: true
+    callTransferStyle?: true
+    bookingEnabled?: true
     timeZone?: true
     deletedAt?: true
     createdAt?: true
@@ -22280,6 +22465,19 @@ export namespace Prisma {
     smsAgentReply?: true
     whatsappEnabled?: true
     whatsappPrompt?: true
+    apiEnabled?: true
+    apiWorkflowId?: true
+    apiPrompt?: true
+    callTransferEnabled?: true
+    callTransferWorkflowId?: true
+    callTransferNumber?: true
+    callTransferCondition?: true
+    callTransferMessage?: true
+    callTransferFallbackNumber?: true
+    callTransferTimeoutSec?: true
+    callTransferNoAnswerAction?: true
+    callTransferStyle?: true
+    bookingEnabled?: true
     timeZone?: true
     deletedAt?: true
     createdAt?: true
@@ -22316,6 +22514,20 @@ export namespace Prisma {
     smsAgentReply?: true
     whatsappEnabled?: true
     whatsappPrompt?: true
+    apiEnabled?: true
+    apiWorkflowId?: true
+    apiPrompt?: true
+    callTransferEnabled?: true
+    callTransferWorkflowId?: true
+    callTransferNumber?: true
+    callTransferCondition?: true
+    callTransferMessage?: true
+    callTransferFallbackNumber?: true
+    callTransferTimeoutSec?: true
+    callTransferNoAnswerAction?: true
+    callTransferStyle?: true
+    bookingEnabled?: true
+    bookingConfig?: true
     businessHours?: true
     timeZone?: true
     deletedAt?: true
@@ -22440,6 +22652,20 @@ export namespace Prisma {
     smsAgentReply: string | null
     whatsappEnabled: boolean
     whatsappPrompt: string | null
+    apiEnabled: boolean
+    apiWorkflowId: string | null
+    apiPrompt: string | null
+    callTransferEnabled: boolean
+    callTransferWorkflowId: string | null
+    callTransferNumber: string | null
+    callTransferCondition: string | null
+    callTransferMessage: string | null
+    callTransferFallbackNumber: string | null
+    callTransferTimeoutSec: number
+    callTransferNoAnswerAction: string
+    callTransferStyle: string
+    bookingEnabled: boolean
+    bookingConfig: JsonValue | null
     businessHours: JsonValue | null
     timeZone: string
     deletedAt: Date | null
@@ -22496,6 +22722,20 @@ export namespace Prisma {
     smsAgentReply?: boolean
     whatsappEnabled?: boolean
     whatsappPrompt?: boolean
+    apiEnabled?: boolean
+    apiWorkflowId?: boolean
+    apiPrompt?: boolean
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: boolean
+    callTransferNumber?: boolean
+    callTransferCondition?: boolean
+    callTransferMessage?: boolean
+    callTransferFallbackNumber?: boolean
+    callTransferTimeoutSec?: boolean
+    callTransferNoAnswerAction?: boolean
+    callTransferStyle?: boolean
+    bookingEnabled?: boolean
+    bookingConfig?: boolean
     businessHours?: boolean
     timeZone?: boolean
     deletedAt?: boolean
@@ -22505,6 +22745,7 @@ export namespace Prisma {
     communicationLogs?: boolean | AIAgent$communicationLogsArgs<ExtArgs>
     knowledgeBases?: boolean | AIAgent$knowledgeBasesArgs<ExtArgs>
     chatSessions?: boolean | AIAgent$chatSessionsArgs<ExtArgs>
+    bookings?: boolean | AIAgent$bookingsArgs<ExtArgs>
     _count?: boolean | AIAgentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["aIAgent"]>
 
@@ -22538,6 +22779,20 @@ export namespace Prisma {
     smsAgentReply?: boolean
     whatsappEnabled?: boolean
     whatsappPrompt?: boolean
+    apiEnabled?: boolean
+    apiWorkflowId?: boolean
+    apiPrompt?: boolean
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: boolean
+    callTransferNumber?: boolean
+    callTransferCondition?: boolean
+    callTransferMessage?: boolean
+    callTransferFallbackNumber?: boolean
+    callTransferTimeoutSec?: boolean
+    callTransferNoAnswerAction?: boolean
+    callTransferStyle?: boolean
+    bookingEnabled?: boolean
+    bookingConfig?: boolean
     businessHours?: boolean
     timeZone?: boolean
     deletedAt?: boolean
@@ -22576,6 +22831,20 @@ export namespace Prisma {
     smsAgentReply?: boolean
     whatsappEnabled?: boolean
     whatsappPrompt?: boolean
+    apiEnabled?: boolean
+    apiWorkflowId?: boolean
+    apiPrompt?: boolean
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: boolean
+    callTransferNumber?: boolean
+    callTransferCondition?: boolean
+    callTransferMessage?: boolean
+    callTransferFallbackNumber?: boolean
+    callTransferTimeoutSec?: boolean
+    callTransferNoAnswerAction?: boolean
+    callTransferStyle?: boolean
+    bookingEnabled?: boolean
+    bookingConfig?: boolean
     businessHours?: boolean
     timeZone?: boolean
     deletedAt?: boolean
@@ -22588,6 +22857,7 @@ export namespace Prisma {
     communicationLogs?: boolean | AIAgent$communicationLogsArgs<ExtArgs>
     knowledgeBases?: boolean | AIAgent$knowledgeBasesArgs<ExtArgs>
     chatSessions?: boolean | AIAgent$chatSessionsArgs<ExtArgs>
+    bookings?: boolean | AIAgent$bookingsArgs<ExtArgs>
     _count?: boolean | AIAgentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AIAgentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22601,6 +22871,7 @@ export namespace Prisma {
       communicationLogs: Prisma.$CommunicationLogPayload<ExtArgs>[]
       knowledgeBases: Prisma.$KnowledgeBasePayload<ExtArgs>[]
       chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
+      bookings: Prisma.$BookingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -22632,6 +22903,20 @@ export namespace Prisma {
       smsAgentReply: string | null
       whatsappEnabled: boolean
       whatsappPrompt: string | null
+      apiEnabled: boolean
+      apiWorkflowId: string | null
+      apiPrompt: string | null
+      callTransferEnabled: boolean
+      callTransferWorkflowId: string | null
+      callTransferNumber: string | null
+      callTransferCondition: string | null
+      callTransferMessage: string | null
+      callTransferFallbackNumber: string | null
+      callTransferTimeoutSec: number
+      callTransferNoAnswerAction: string
+      callTransferStyle: string
+      bookingEnabled: boolean
+      bookingConfig: Prisma.JsonValue | null
       businessHours: Prisma.JsonValue | null
       timeZone: string
       deletedAt: Date | null
@@ -23005,6 +23290,7 @@ export namespace Prisma {
     communicationLogs<T extends AIAgent$communicationLogsArgs<ExtArgs> = {}>(args?: Subset<T, AIAgent$communicationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunicationLogPayload<ExtArgs>, T, "findMany"> | Null>
     knowledgeBases<T extends AIAgent$knowledgeBasesArgs<ExtArgs> = {}>(args?: Subset<T, AIAgent$knowledgeBasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeBasePayload<ExtArgs>, T, "findMany"> | Null>
     chatSessions<T extends AIAgent$chatSessionsArgs<ExtArgs> = {}>(args?: Subset<T, AIAgent$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany"> | Null>
+    bookings<T extends AIAgent$bookingsArgs<ExtArgs> = {}>(args?: Subset<T, AIAgent$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23063,6 +23349,20 @@ export namespace Prisma {
     readonly smsAgentReply: FieldRef<"AIAgent", 'String'>
     readonly whatsappEnabled: FieldRef<"AIAgent", 'Boolean'>
     readonly whatsappPrompt: FieldRef<"AIAgent", 'String'>
+    readonly apiEnabled: FieldRef<"AIAgent", 'Boolean'>
+    readonly apiWorkflowId: FieldRef<"AIAgent", 'String'>
+    readonly apiPrompt: FieldRef<"AIAgent", 'String'>
+    readonly callTransferEnabled: FieldRef<"AIAgent", 'Boolean'>
+    readonly callTransferWorkflowId: FieldRef<"AIAgent", 'String'>
+    readonly callTransferNumber: FieldRef<"AIAgent", 'String'>
+    readonly callTransferCondition: FieldRef<"AIAgent", 'String'>
+    readonly callTransferMessage: FieldRef<"AIAgent", 'String'>
+    readonly callTransferFallbackNumber: FieldRef<"AIAgent", 'String'>
+    readonly callTransferTimeoutSec: FieldRef<"AIAgent", 'Int'>
+    readonly callTransferNoAnswerAction: FieldRef<"AIAgent", 'String'>
+    readonly callTransferStyle: FieldRef<"AIAgent", 'String'>
+    readonly bookingEnabled: FieldRef<"AIAgent", 'Boolean'>
+    readonly bookingConfig: FieldRef<"AIAgent", 'Json'>
     readonly businessHours: FieldRef<"AIAgent", 'Json'>
     readonly timeZone: FieldRef<"AIAgent", 'String'>
     readonly deletedAt: FieldRef<"AIAgent", 'DateTime'>
@@ -23443,6 +23743,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChatSessionScalarFieldEnum | ChatSessionScalarFieldEnum[]
+  }
+
+  /**
+   * AIAgent.bookings
+   */
+  export type AIAgent$bookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Booking
+     */
+    select?: BookingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BookingInclude<ExtArgs> | null
+    where?: BookingWhereInput
+    orderBy?: BookingOrderByWithRelationInput | BookingOrderByWithRelationInput[]
+    cursor?: BookingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BookingScalarFieldEnum | BookingScalarFieldEnum[]
   }
 
   /**
@@ -30017,6 +30337,10 @@ export namespace Prisma {
     startTime: 'startTime',
     endTime: 'endTime',
     status: 'status',
+    agentId: 'agentId',
+    assigneeId: 'assigneeId',
+    ccEmails: 'ccEmails',
+    notes: 'notes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -30106,6 +30430,20 @@ export namespace Prisma {
     smsAgentReply: 'smsAgentReply',
     whatsappEnabled: 'whatsappEnabled',
     whatsappPrompt: 'whatsappPrompt',
+    apiEnabled: 'apiEnabled',
+    apiWorkflowId: 'apiWorkflowId',
+    apiPrompt: 'apiPrompt',
+    callTransferEnabled: 'callTransferEnabled',
+    callTransferWorkflowId: 'callTransferWorkflowId',
+    callTransferNumber: 'callTransferNumber',
+    callTransferCondition: 'callTransferCondition',
+    callTransferMessage: 'callTransferMessage',
+    callTransferFallbackNumber: 'callTransferFallbackNumber',
+    callTransferTimeoutSec: 'callTransferTimeoutSec',
+    callTransferNoAnswerAction: 'callTransferNoAnswerAction',
+    callTransferStyle: 'callTransferStyle',
+    bookingEnabled: 'bookingEnabled',
+    bookingConfig: 'bookingConfig',
     businessHours: 'businessHours',
     timeZone: 'timeZone',
     deletedAt: 'deletedAt',
@@ -31001,6 +31339,7 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     deals?: DealListRelationFilter
+    bookings?: BookingListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -31015,6 +31354,7 @@ export namespace Prisma {
     deletedAt?: SortOrderInput | SortOrder
     tenant?: TenantOrderByWithRelationInput
     deals?: DealOrderByRelationAggregateInput
+    bookings?: BookingOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -31033,6 +31373,7 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     deals?: DealListRelationFilter
+    bookings?: BookingListRelationFilter
   }, "id" | "tenantId_email">
 
   export type UserOrderByWithAggregationInput = {
@@ -31772,10 +32113,16 @@ export namespace Prisma {
     startTime?: DateTimeFilter<"Booking"> | Date | string
     endTime?: DateTimeFilter<"Booking"> | Date | string
     status?: StringFilter<"Booking"> | string
+    agentId?: StringNullableFilter<"Booking"> | string | null
+    assigneeId?: StringNullableFilter<"Booking"> | string | null
+    ccEmails?: StringNullableListFilter<"Booking">
+    notes?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
+    agent?: XOR<AIAgentNullableRelationFilter, AIAgentWhereInput> | null
+    assignee?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     activities?: ActivityListRelationFilter
   }
 
@@ -31787,10 +32134,16 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     status?: SortOrder
+    agentId?: SortOrderInput | SortOrder
+    assigneeId?: SortOrderInput | SortOrder
+    ccEmails?: SortOrder
+    notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tenant?: TenantOrderByWithRelationInput
     contact?: ContactOrderByWithRelationInput
+    agent?: AIAgentOrderByWithRelationInput
+    assignee?: UserOrderByWithRelationInput
     activities?: ActivityOrderByRelationAggregateInput
   }
 
@@ -31805,10 +32158,16 @@ export namespace Prisma {
     startTime?: DateTimeFilter<"Booking"> | Date | string
     endTime?: DateTimeFilter<"Booking"> | Date | string
     status?: StringFilter<"Booking"> | string
+    agentId?: StringNullableFilter<"Booking"> | string | null
+    assigneeId?: StringNullableFilter<"Booking"> | string | null
+    ccEmails?: StringNullableListFilter<"Booking">
+    notes?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     contact?: XOR<ContactRelationFilter, ContactWhereInput>
+    agent?: XOR<AIAgentNullableRelationFilter, AIAgentWhereInput> | null
+    assignee?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     activities?: ActivityListRelationFilter
   }, "id">
 
@@ -31820,6 +32179,10 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     status?: SortOrder
+    agentId?: SortOrderInput | SortOrder
+    assigneeId?: SortOrderInput | SortOrder
+    ccEmails?: SortOrder
+    notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BookingCountOrderByAggregateInput
@@ -31838,6 +32201,10 @@ export namespace Prisma {
     startTime?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     endTime?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     status?: StringWithAggregatesFilter<"Booking"> | string
+    agentId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    assigneeId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    ccEmails?: StringNullableListFilter<"Booking">
+    notes?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
   }
@@ -32165,6 +32532,20 @@ export namespace Prisma {
     smsAgentReply?: StringNullableFilter<"AIAgent"> | string | null
     whatsappEnabled?: BoolFilter<"AIAgent"> | boolean
     whatsappPrompt?: StringNullableFilter<"AIAgent"> | string | null
+    apiEnabled?: BoolFilter<"AIAgent"> | boolean
+    apiWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
+    apiPrompt?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferEnabled?: BoolFilter<"AIAgent"> | boolean
+    callTransferWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferNumber?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferCondition?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferMessage?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferFallbackNumber?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferTimeoutSec?: IntFilter<"AIAgent"> | number
+    callTransferNoAnswerAction?: StringFilter<"AIAgent"> | string
+    callTransferStyle?: StringFilter<"AIAgent"> | string
+    bookingEnabled?: BoolFilter<"AIAgent"> | boolean
+    bookingConfig?: JsonNullableFilter<"AIAgent">
     businessHours?: JsonNullableFilter<"AIAgent">
     timeZone?: StringFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableFilter<"AIAgent"> | Date | string | null
@@ -32174,6 +32555,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogListRelationFilter
     knowledgeBases?: KnowledgeBaseListRelationFilter
     chatSessions?: ChatSessionListRelationFilter
+    bookings?: BookingListRelationFilter
   }
 
   export type AIAgentOrderByWithRelationInput = {
@@ -32206,6 +32588,20 @@ export namespace Prisma {
     smsAgentReply?: SortOrderInput | SortOrder
     whatsappEnabled?: SortOrder
     whatsappPrompt?: SortOrderInput | SortOrder
+    apiEnabled?: SortOrder
+    apiWorkflowId?: SortOrderInput | SortOrder
+    apiPrompt?: SortOrderInput | SortOrder
+    callTransferEnabled?: SortOrder
+    callTransferWorkflowId?: SortOrderInput | SortOrder
+    callTransferNumber?: SortOrderInput | SortOrder
+    callTransferCondition?: SortOrderInput | SortOrder
+    callTransferMessage?: SortOrderInput | SortOrder
+    callTransferFallbackNumber?: SortOrderInput | SortOrder
+    callTransferTimeoutSec?: SortOrder
+    callTransferNoAnswerAction?: SortOrder
+    callTransferStyle?: SortOrder
+    bookingEnabled?: SortOrder
+    bookingConfig?: SortOrderInput | SortOrder
     businessHours?: SortOrderInput | SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -32215,6 +32611,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogOrderByRelationAggregateInput
     knowledgeBases?: KnowledgeBaseOrderByRelationAggregateInput
     chatSessions?: ChatSessionOrderByRelationAggregateInput
+    bookings?: BookingOrderByRelationAggregateInput
   }
 
   export type AIAgentWhereUniqueInput = Prisma.AtLeast<{
@@ -32250,6 +32647,20 @@ export namespace Prisma {
     smsAgentReply?: StringNullableFilter<"AIAgent"> | string | null
     whatsappEnabled?: BoolFilter<"AIAgent"> | boolean
     whatsappPrompt?: StringNullableFilter<"AIAgent"> | string | null
+    apiEnabled?: BoolFilter<"AIAgent"> | boolean
+    apiWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
+    apiPrompt?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferEnabled?: BoolFilter<"AIAgent"> | boolean
+    callTransferWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferNumber?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferCondition?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferMessage?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferFallbackNumber?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferTimeoutSec?: IntFilter<"AIAgent"> | number
+    callTransferNoAnswerAction?: StringFilter<"AIAgent"> | string
+    callTransferStyle?: StringFilter<"AIAgent"> | string
+    bookingEnabled?: BoolFilter<"AIAgent"> | boolean
+    bookingConfig?: JsonNullableFilter<"AIAgent">
     businessHours?: JsonNullableFilter<"AIAgent">
     timeZone?: StringFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableFilter<"AIAgent"> | Date | string | null
@@ -32259,6 +32670,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogListRelationFilter
     knowledgeBases?: KnowledgeBaseListRelationFilter
     chatSessions?: ChatSessionListRelationFilter
+    bookings?: BookingListRelationFilter
   }, "id">
 
   export type AIAgentOrderByWithAggregationInput = {
@@ -32291,6 +32703,20 @@ export namespace Prisma {
     smsAgentReply?: SortOrderInput | SortOrder
     whatsappEnabled?: SortOrder
     whatsappPrompt?: SortOrderInput | SortOrder
+    apiEnabled?: SortOrder
+    apiWorkflowId?: SortOrderInput | SortOrder
+    apiPrompt?: SortOrderInput | SortOrder
+    callTransferEnabled?: SortOrder
+    callTransferWorkflowId?: SortOrderInput | SortOrder
+    callTransferNumber?: SortOrderInput | SortOrder
+    callTransferCondition?: SortOrderInput | SortOrder
+    callTransferMessage?: SortOrderInput | SortOrder
+    callTransferFallbackNumber?: SortOrderInput | SortOrder
+    callTransferTimeoutSec?: SortOrder
+    callTransferNoAnswerAction?: SortOrder
+    callTransferStyle?: SortOrder
+    bookingEnabled?: SortOrder
+    bookingConfig?: SortOrderInput | SortOrder
     businessHours?: SortOrderInput | SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -32336,6 +32762,20 @@ export namespace Prisma {
     smsAgentReply?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     whatsappEnabled?: BoolWithAggregatesFilter<"AIAgent"> | boolean
     whatsappPrompt?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    apiEnabled?: BoolWithAggregatesFilter<"AIAgent"> | boolean
+    apiWorkflowId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    apiPrompt?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    callTransferEnabled?: BoolWithAggregatesFilter<"AIAgent"> | boolean
+    callTransferWorkflowId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    callTransferNumber?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    callTransferCondition?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    callTransferMessage?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    callTransferFallbackNumber?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
+    callTransferTimeoutSec?: IntWithAggregatesFilter<"AIAgent"> | number
+    callTransferNoAnswerAction?: StringWithAggregatesFilter<"AIAgent"> | string
+    callTransferStyle?: StringWithAggregatesFilter<"AIAgent"> | string
+    bookingEnabled?: BoolWithAggregatesFilter<"AIAgent"> | boolean
+    bookingConfig?: JsonNullableWithAggregatesFilter<"AIAgent">
     businessHours?: JsonNullableWithAggregatesFilter<"AIAgent">
     timeZone?: StringWithAggregatesFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"AIAgent"> | Date | string | null
@@ -33407,6 +33847,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     tenant: TenantCreateNestedOneWithoutUsersInput
     deals?: DealCreateNestedManyWithoutOwnerInput
+    bookings?: BookingCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -33420,6 +33861,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     deals?: DealUncheckedCreateNestedManyWithoutOwnerInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUpdateInput = {
@@ -33433,6 +33875,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
     deals?: DealUpdateManyWithoutOwnerNestedInput
+    bookings?: BookingUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -33446,6 +33889,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deals?: DealUncheckedUpdateManyWithoutOwnerNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -34262,10 +34706,14 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
     contact: ContactCreateNestedOneWithoutBookingsInput
+    agent?: AIAgentCreateNestedOneWithoutBookingsInput
+    assignee?: UserCreateNestedOneWithoutBookingsInput
     activities?: ActivityCreateNestedManyWithoutBookingInput
   }
 
@@ -34277,6 +34725,10 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    agentId?: string | null
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -34288,10 +34740,14 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
     contact?: ContactUpdateOneRequiredWithoutBookingsNestedInput
+    agent?: AIAgentUpdateOneWithoutBookingsNestedInput
+    assignee?: UserUpdateOneWithoutBookingsNestedInput
     activities?: ActivityUpdateManyWithoutBookingNestedInput
   }
 
@@ -34303,6 +34759,10 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -34316,6 +34776,10 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    agentId?: string | null
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -34326,6 +34790,8 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -34338,6 +34804,10 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -34667,6 +35137,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -34676,6 +35160,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
+    bookings?: BookingCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateInput = {
@@ -34708,6 +35193,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -34716,6 +35215,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUpdateInput = {
@@ -34747,6 +35247,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34756,6 +35270,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateInput = {
@@ -34788,6 +35303,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34796,6 +35325,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentCreateManyInput = {
@@ -34828,6 +35358,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -34864,6 +35408,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34901,6 +35459,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36843,6 +37415,11 @@ export namespace Prisma {
     changedAt?: SortOrder
   }
 
+  export type AIAgentNullableRelationFilter = {
+    is?: AIAgentWhereInput | null
+    isNot?: AIAgentWhereInput | null
+  }
+
   export type BookingCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
@@ -36851,6 +37428,10 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     status?: SortOrder
+    agentId?: SortOrder
+    assigneeId?: SortOrder
+    ccEmails?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -36863,6 +37444,9 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     status?: SortOrder
+    agentId?: SortOrder
+    assigneeId?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -36875,6 +37459,9 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     status?: SortOrder
+    agentId?: SortOrder
+    assigneeId?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -37084,6 +37671,20 @@ export namespace Prisma {
     smsAgentReply?: SortOrder
     whatsappEnabled?: SortOrder
     whatsappPrompt?: SortOrder
+    apiEnabled?: SortOrder
+    apiWorkflowId?: SortOrder
+    apiPrompt?: SortOrder
+    callTransferEnabled?: SortOrder
+    callTransferWorkflowId?: SortOrder
+    callTransferNumber?: SortOrder
+    callTransferCondition?: SortOrder
+    callTransferMessage?: SortOrder
+    callTransferFallbackNumber?: SortOrder
+    callTransferTimeoutSec?: SortOrder
+    callTransferNoAnswerAction?: SortOrder
+    callTransferStyle?: SortOrder
+    bookingEnabled?: SortOrder
+    bookingConfig?: SortOrder
     businessHours?: SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrder
@@ -37093,6 +37694,7 @@ export namespace Prisma {
 
   export type AIAgentAvgOrderByAggregateInput = {
     maxDuration?: SortOrder
+    callTransferTimeoutSec?: SortOrder
   }
 
   export type AIAgentMaxOrderByAggregateInput = {
@@ -37124,6 +37726,19 @@ export namespace Prisma {
     smsAgentReply?: SortOrder
     whatsappEnabled?: SortOrder
     whatsappPrompt?: SortOrder
+    apiEnabled?: SortOrder
+    apiWorkflowId?: SortOrder
+    apiPrompt?: SortOrder
+    callTransferEnabled?: SortOrder
+    callTransferWorkflowId?: SortOrder
+    callTransferNumber?: SortOrder
+    callTransferCondition?: SortOrder
+    callTransferMessage?: SortOrder
+    callTransferFallbackNumber?: SortOrder
+    callTransferTimeoutSec?: SortOrder
+    callTransferNoAnswerAction?: SortOrder
+    callTransferStyle?: SortOrder
+    bookingEnabled?: SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
@@ -37159,6 +37774,19 @@ export namespace Prisma {
     smsAgentReply?: SortOrder
     whatsappEnabled?: SortOrder
     whatsappPrompt?: SortOrder
+    apiEnabled?: SortOrder
+    apiWorkflowId?: SortOrder
+    apiPrompt?: SortOrder
+    callTransferEnabled?: SortOrder
+    callTransferWorkflowId?: SortOrder
+    callTransferNumber?: SortOrder
+    callTransferCondition?: SortOrder
+    callTransferMessage?: SortOrder
+    callTransferFallbackNumber?: SortOrder
+    callTransferTimeoutSec?: SortOrder
+    callTransferNoAnswerAction?: SortOrder
+    callTransferStyle?: SortOrder
+    bookingEnabled?: SortOrder
     timeZone?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
@@ -37167,6 +37795,7 @@ export namespace Prisma {
 
   export type AIAgentSumOrderByAggregateInput = {
     maxDuration?: SortOrder
+    callTransferTimeoutSec?: SortOrder
   }
 
   export type EnumPhoneNumberKindFilter<$PrismaModel = never> = {
@@ -38589,11 +39218,25 @@ export namespace Prisma {
     connect?: DealWhereUniqueInput | DealWhereUniqueInput[]
   }
 
+  export type BookingCreateNestedManyWithoutAssigneeInput = {
+    create?: XOR<BookingCreateWithoutAssigneeInput, BookingUncheckedCreateWithoutAssigneeInput> | BookingCreateWithoutAssigneeInput[] | BookingUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAssigneeInput | BookingCreateOrConnectWithoutAssigneeInput[]
+    createMany?: BookingCreateManyAssigneeInputEnvelope
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+  }
+
   export type DealUncheckedCreateNestedManyWithoutOwnerInput = {
     create?: XOR<DealCreateWithoutOwnerInput, DealUncheckedCreateWithoutOwnerInput> | DealCreateWithoutOwnerInput[] | DealUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: DealCreateOrConnectWithoutOwnerInput | DealCreateOrConnectWithoutOwnerInput[]
     createMany?: DealCreateManyOwnerInputEnvelope
     connect?: DealWhereUniqueInput | DealWhereUniqueInput[]
+  }
+
+  export type BookingUncheckedCreateNestedManyWithoutAssigneeInput = {
+    create?: XOR<BookingCreateWithoutAssigneeInput, BookingUncheckedCreateWithoutAssigneeInput> | BookingCreateWithoutAssigneeInput[] | BookingUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAssigneeInput | BookingCreateOrConnectWithoutAssigneeInput[]
+    createMany?: BookingCreateManyAssigneeInputEnvelope
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
   }
 
   export type TenantUpdateOneRequiredWithoutUsersNestedInput = {
@@ -38618,6 +39261,20 @@ export namespace Prisma {
     deleteMany?: DealScalarWhereInput | DealScalarWhereInput[]
   }
 
+  export type BookingUpdateManyWithoutAssigneeNestedInput = {
+    create?: XOR<BookingCreateWithoutAssigneeInput, BookingUncheckedCreateWithoutAssigneeInput> | BookingCreateWithoutAssigneeInput[] | BookingUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAssigneeInput | BookingCreateOrConnectWithoutAssigneeInput[]
+    upsert?: BookingUpsertWithWhereUniqueWithoutAssigneeInput | BookingUpsertWithWhereUniqueWithoutAssigneeInput[]
+    createMany?: BookingCreateManyAssigneeInputEnvelope
+    set?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    disconnect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    delete?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    update?: BookingUpdateWithWhereUniqueWithoutAssigneeInput | BookingUpdateWithWhereUniqueWithoutAssigneeInput[]
+    updateMany?: BookingUpdateManyWithWhereWithoutAssigneeInput | BookingUpdateManyWithWhereWithoutAssigneeInput[]
+    deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
+  }
+
   export type DealUncheckedUpdateManyWithoutOwnerNestedInput = {
     create?: XOR<DealCreateWithoutOwnerInput, DealUncheckedCreateWithoutOwnerInput> | DealCreateWithoutOwnerInput[] | DealUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: DealCreateOrConnectWithoutOwnerInput | DealCreateOrConnectWithoutOwnerInput[]
@@ -38630,6 +39287,20 @@ export namespace Prisma {
     update?: DealUpdateWithWhereUniqueWithoutOwnerInput | DealUpdateWithWhereUniqueWithoutOwnerInput[]
     updateMany?: DealUpdateManyWithWhereWithoutOwnerInput | DealUpdateManyWithWhereWithoutOwnerInput[]
     deleteMany?: DealScalarWhereInput | DealScalarWhereInput[]
+  }
+
+  export type BookingUncheckedUpdateManyWithoutAssigneeNestedInput = {
+    create?: XOR<BookingCreateWithoutAssigneeInput, BookingUncheckedCreateWithoutAssigneeInput> | BookingCreateWithoutAssigneeInput[] | BookingUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAssigneeInput | BookingCreateOrConnectWithoutAssigneeInput[]
+    upsert?: BookingUpsertWithWhereUniqueWithoutAssigneeInput | BookingUpsertWithWhereUniqueWithoutAssigneeInput[]
+    createMany?: BookingCreateManyAssigneeInputEnvelope
+    set?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    disconnect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    delete?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    update?: BookingUpdateWithWhereUniqueWithoutAssigneeInput | BookingUpdateWithWhereUniqueWithoutAssigneeInput[]
+    updateMany?: BookingUpdateManyWithWhereWithoutAssigneeInput | BookingUpdateManyWithWhereWithoutAssigneeInput[]
+    deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
   }
 
   export type ContactCreateemailsInput = {
@@ -39477,6 +40148,10 @@ export namespace Prisma {
     update?: XOR<XOR<DealUpdateToOneWithWhereWithoutStageHistoryInput, DealUpdateWithoutStageHistoryInput>, DealUncheckedUpdateWithoutStageHistoryInput>
   }
 
+  export type BookingCreateccEmailsInput = {
+    set: string[]
+  }
+
   export type TenantCreateNestedOneWithoutBookingsInput = {
     create?: XOR<TenantCreateWithoutBookingsInput, TenantUncheckedCreateWithoutBookingsInput>
     connectOrCreate?: TenantCreateOrConnectWithoutBookingsInput
@@ -39487,6 +40162,18 @@ export namespace Prisma {
     create?: XOR<ContactCreateWithoutBookingsInput, ContactUncheckedCreateWithoutBookingsInput>
     connectOrCreate?: ContactCreateOrConnectWithoutBookingsInput
     connect?: ContactWhereUniqueInput
+  }
+
+  export type AIAgentCreateNestedOneWithoutBookingsInput = {
+    create?: XOR<AIAgentCreateWithoutBookingsInput, AIAgentUncheckedCreateWithoutBookingsInput>
+    connectOrCreate?: AIAgentCreateOrConnectWithoutBookingsInput
+    connect?: AIAgentWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutBookingsInput = {
+    create?: XOR<UserCreateWithoutBookingsInput, UserUncheckedCreateWithoutBookingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBookingsInput
+    connect?: UserWhereUniqueInput
   }
 
   export type ActivityCreateNestedManyWithoutBookingInput = {
@@ -39503,6 +40190,11 @@ export namespace Prisma {
     connect?: ActivityWhereUniqueInput | ActivityWhereUniqueInput[]
   }
 
+  export type BookingUpdateccEmailsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
   export type TenantUpdateOneRequiredWithoutBookingsNestedInput = {
     create?: XOR<TenantCreateWithoutBookingsInput, TenantUncheckedCreateWithoutBookingsInput>
     connectOrCreate?: TenantCreateOrConnectWithoutBookingsInput
@@ -39517,6 +40209,26 @@ export namespace Prisma {
     upsert?: ContactUpsertWithoutBookingsInput
     connect?: ContactWhereUniqueInput
     update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutBookingsInput, ContactUpdateWithoutBookingsInput>, ContactUncheckedUpdateWithoutBookingsInput>
+  }
+
+  export type AIAgentUpdateOneWithoutBookingsNestedInput = {
+    create?: XOR<AIAgentCreateWithoutBookingsInput, AIAgentUncheckedCreateWithoutBookingsInput>
+    connectOrCreate?: AIAgentCreateOrConnectWithoutBookingsInput
+    upsert?: AIAgentUpsertWithoutBookingsInput
+    disconnect?: AIAgentWhereInput | boolean
+    delete?: AIAgentWhereInput | boolean
+    connect?: AIAgentWhereUniqueInput
+    update?: XOR<XOR<AIAgentUpdateToOneWithWhereWithoutBookingsInput, AIAgentUpdateWithoutBookingsInput>, AIAgentUncheckedUpdateWithoutBookingsInput>
+  }
+
+  export type UserUpdateOneWithoutBookingsNestedInput = {
+    create?: XOR<UserCreateWithoutBookingsInput, UserUncheckedCreateWithoutBookingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBookingsInput
+    upsert?: UserUpsertWithoutBookingsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBookingsInput, UserUpdateWithoutBookingsInput>, UserUncheckedUpdateWithoutBookingsInput>
   }
 
   export type ActivityUpdateManyWithoutBookingNestedInput = {
@@ -39946,6 +40658,13 @@ export namespace Prisma {
     connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
   }
 
+  export type BookingCreateNestedManyWithoutAgentInput = {
+    create?: XOR<BookingCreateWithoutAgentInput, BookingUncheckedCreateWithoutAgentInput> | BookingCreateWithoutAgentInput[] | BookingUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAgentInput | BookingCreateOrConnectWithoutAgentInput[]
+    createMany?: BookingCreateManyAgentInputEnvelope
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+  }
+
   export type CommunicationLogUncheckedCreateNestedManyWithoutAgentInput = {
     create?: XOR<CommunicationLogCreateWithoutAgentInput, CommunicationLogUncheckedCreateWithoutAgentInput> | CommunicationLogCreateWithoutAgentInput[] | CommunicationLogUncheckedCreateWithoutAgentInput[]
     connectOrCreate?: CommunicationLogCreateOrConnectWithoutAgentInput | CommunicationLogCreateOrConnectWithoutAgentInput[]
@@ -39965,6 +40684,13 @@ export namespace Prisma {
     connectOrCreate?: ChatSessionCreateOrConnectWithoutAgentInput | ChatSessionCreateOrConnectWithoutAgentInput[]
     createMany?: ChatSessionCreateManyAgentInputEnvelope
     connect?: ChatSessionWhereUniqueInput | ChatSessionWhereUniqueInput[]
+  }
+
+  export type BookingUncheckedCreateNestedManyWithoutAgentInput = {
+    create?: XOR<BookingCreateWithoutAgentInput, BookingUncheckedCreateWithoutAgentInput> | BookingCreateWithoutAgentInput[] | BookingUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAgentInput | BookingCreateOrConnectWithoutAgentInput[]
+    createMany?: BookingCreateManyAgentInputEnvelope
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
   }
 
   export type AIAgentUpdateintakeFieldsInput = {
@@ -40022,6 +40748,20 @@ export namespace Prisma {
     deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
   }
 
+  export type BookingUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<BookingCreateWithoutAgentInput, BookingUncheckedCreateWithoutAgentInput> | BookingCreateWithoutAgentInput[] | BookingUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAgentInput | BookingCreateOrConnectWithoutAgentInput[]
+    upsert?: BookingUpsertWithWhereUniqueWithoutAgentInput | BookingUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: BookingCreateManyAgentInputEnvelope
+    set?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    disconnect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    delete?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    update?: BookingUpdateWithWhereUniqueWithoutAgentInput | BookingUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: BookingUpdateManyWithWhereWithoutAgentInput | BookingUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
+  }
+
   export type CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput = {
     create?: XOR<CommunicationLogCreateWithoutAgentInput, CommunicationLogUncheckedCreateWithoutAgentInput> | CommunicationLogCreateWithoutAgentInput[] | CommunicationLogUncheckedCreateWithoutAgentInput[]
     connectOrCreate?: CommunicationLogCreateOrConnectWithoutAgentInput | CommunicationLogCreateOrConnectWithoutAgentInput[]
@@ -40062,6 +40802,20 @@ export namespace Prisma {
     update?: ChatSessionUpdateWithWhereUniqueWithoutAgentInput | ChatSessionUpdateWithWhereUniqueWithoutAgentInput[]
     updateMany?: ChatSessionUpdateManyWithWhereWithoutAgentInput | ChatSessionUpdateManyWithWhereWithoutAgentInput[]
     deleteMany?: ChatSessionScalarWhereInput | ChatSessionScalarWhereInput[]
+  }
+
+  export type BookingUncheckedUpdateManyWithoutAgentNestedInput = {
+    create?: XOR<BookingCreateWithoutAgentInput, BookingUncheckedCreateWithoutAgentInput> | BookingCreateWithoutAgentInput[] | BookingUncheckedCreateWithoutAgentInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutAgentInput | BookingCreateOrConnectWithoutAgentInput[]
+    upsert?: BookingUpsertWithWhereUniqueWithoutAgentInput | BookingUpsertWithWhereUniqueWithoutAgentInput[]
+    createMany?: BookingCreateManyAgentInputEnvelope
+    set?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    disconnect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    delete?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    update?: BookingUpdateWithWhereUniqueWithoutAgentInput | BookingUpdateWithWhereUniqueWithoutAgentInput[]
+    updateMany?: BookingUpdateManyWithWhereWithoutAgentInput | BookingUpdateManyWithWhereWithoutAgentInput[]
+    deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
   }
 
   export type TenantCreateNestedOneWithoutPhoneNumbersInput = {
@@ -41052,6 +41806,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     deals?: DealCreateNestedManyWithoutOwnerInput
+    bookings?: BookingCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUncheckedCreateWithoutTenantInput = {
@@ -41064,6 +41819,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     deals?: DealUncheckedCreateNestedManyWithoutOwnerInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserCreateOrConnectWithoutTenantInput = {
@@ -41457,6 +42213,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -41465,6 +42235,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
+    bookings?: BookingCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateWithoutTenantInput = {
@@ -41496,6 +42267,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -41504,6 +42289,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentCreateOrConnectWithoutTenantInput = {
@@ -41732,9 +42518,13 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     contact: ContactCreateNestedOneWithoutBookingsInput
+    agent?: AIAgentCreateNestedOneWithoutBookingsInput
+    assignee?: UserCreateNestedOneWithoutBookingsInput
     activities?: ActivityCreateNestedManyWithoutBookingInput
   }
 
@@ -41745,6 +42535,10 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    agentId?: string | null
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -42252,6 +43046,20 @@ export namespace Prisma {
     smsAgentReply?: StringNullableFilter<"AIAgent"> | string | null
     whatsappEnabled?: BoolFilter<"AIAgent"> | boolean
     whatsappPrompt?: StringNullableFilter<"AIAgent"> | string | null
+    apiEnabled?: BoolFilter<"AIAgent"> | boolean
+    apiWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
+    apiPrompt?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferEnabled?: BoolFilter<"AIAgent"> | boolean
+    callTransferWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferNumber?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferCondition?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferMessage?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferFallbackNumber?: StringNullableFilter<"AIAgent"> | string | null
+    callTransferTimeoutSec?: IntFilter<"AIAgent"> | number
+    callTransferNoAnswerAction?: StringFilter<"AIAgent"> | string
+    callTransferStyle?: StringFilter<"AIAgent"> | string
+    bookingEnabled?: BoolFilter<"AIAgent"> | boolean
+    bookingConfig?: JsonNullableFilter<"AIAgent">
     businessHours?: JsonNullableFilter<"AIAgent">
     timeZone?: StringFilter<"AIAgent"> | string
     deletedAt?: DateTimeNullableFilter<"AIAgent"> | Date | string | null
@@ -42463,6 +43271,10 @@ export namespace Prisma {
     startTime?: DateTimeFilter<"Booking"> | Date | string
     endTime?: DateTimeFilter<"Booking"> | Date | string
     status?: StringFilter<"Booking"> | string
+    agentId?: StringNullableFilter<"Booking"> | string | null
+    assigneeId?: StringNullableFilter<"Booking"> | string | null
+    ccEmails?: StringNullableListFilter<"Booking">
+    notes?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
   }
@@ -43252,6 +44064,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BookingCreateWithoutAssigneeInput = {
+    id?: string
+    title: string
+    startTime: Date | string
+    endTime: Date | string
+    status: string
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutBookingsInput
+    contact: ContactCreateNestedOneWithoutBookingsInput
+    agent?: AIAgentCreateNestedOneWithoutBookingsInput
+    activities?: ActivityCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingUncheckedCreateWithoutAssigneeInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    title: string
+    startTime: Date | string
+    endTime: Date | string
+    status: string
+    agentId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingCreateOrConnectWithoutAssigneeInput = {
+    where: BookingWhereUniqueInput
+    create: XOR<BookingCreateWithoutAssigneeInput, BookingUncheckedCreateWithoutAssigneeInput>
+  }
+
+  export type BookingCreateManyAssigneeInputEnvelope = {
+    data: BookingCreateManyAssigneeInput | BookingCreateManyAssigneeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TenantUpsertWithoutUsersInput = {
     update: XOR<TenantUpdateWithoutUsersInput, TenantUncheckedUpdateWithoutUsersInput>
     create: XOR<TenantCreateWithoutUsersInput, TenantUncheckedCreateWithoutUsersInput>
@@ -43353,6 +44207,22 @@ export namespace Prisma {
   export type DealUpdateManyWithWhereWithoutOwnerInput = {
     where: DealScalarWhereInput
     data: XOR<DealUpdateManyMutationInput, DealUncheckedUpdateManyWithoutOwnerInput>
+  }
+
+  export type BookingUpsertWithWhereUniqueWithoutAssigneeInput = {
+    where: BookingWhereUniqueInput
+    update: XOR<BookingUpdateWithoutAssigneeInput, BookingUncheckedUpdateWithoutAssigneeInput>
+    create: XOR<BookingCreateWithoutAssigneeInput, BookingUncheckedCreateWithoutAssigneeInput>
+  }
+
+  export type BookingUpdateWithWhereUniqueWithoutAssigneeInput = {
+    where: BookingWhereUniqueInput
+    data: XOR<BookingUpdateWithoutAssigneeInput, BookingUncheckedUpdateWithoutAssigneeInput>
+  }
+
+  export type BookingUpdateManyWithWhereWithoutAssigneeInput = {
+    where: BookingScalarWhereInput
+    data: XOR<BookingUpdateManyMutationInput, BookingUncheckedUpdateManyWithoutAssigneeInput>
   }
 
   export type TenantCreateWithoutContactsInput = {
@@ -43554,9 +44424,13 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
+    agent?: AIAgentCreateNestedOneWithoutBookingsInput
+    assignee?: UserCreateNestedOneWithoutBookingsInput
     activities?: ActivityCreateNestedManyWithoutBookingInput
   }
 
@@ -43567,6 +44441,10 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    agentId?: string | null
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -44540,6 +45418,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     tenant: TenantCreateNestedOneWithoutUsersInput
+    bookings?: BookingCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUncheckedCreateWithoutDealsInput = {
@@ -44552,6 +45431,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    bookings?: BookingUncheckedCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserCreateOrConnectWithoutDealsInput = {
@@ -44860,6 +45740,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
+    bookings?: BookingUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDealsInput = {
@@ -44872,6 +45753,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bookings?: BookingUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type ActivityUpsertWithWhereUniqueWithoutDealInput = {
@@ -45980,6 +46862,150 @@ export namespace Prisma {
     create: XOR<ContactCreateWithoutBookingsInput, ContactUncheckedCreateWithoutBookingsInput>
   }
 
+  export type AIAgentCreateWithoutBookingsInput = {
+    id?: string
+    name: string
+    role?: string
+    language?: string
+    greetingMessage?: string
+    tone?: string
+    fallbackMessage?: string
+    businessInfo?: string | null
+    websiteUrl?: string | null
+    maxDuration?: number
+    dndCompliance?: boolean
+    recordingConsent?: boolean
+    isActive?: boolean
+    systemPrompt: string
+    modelName: string
+    voice?: string
+    intakeWorkflowId?: string | null
+    smsWorkflowId?: string | null
+    phoneNumberId?: string | null
+    intakeEnabled?: boolean
+    intakeFields?: AIAgentCreateintakeFieldsInput | string[]
+    intakePrompt?: string | null
+    smsEnabled?: boolean
+    smsTriggerCondition?: string | null
+    smsTemplate?: string | null
+    smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: string
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutAiAgentsInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
+    knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
+  }
+
+  export type AIAgentUncheckedCreateWithoutBookingsInput = {
+    id?: string
+    tenantId: string
+    name: string
+    role?: string
+    language?: string
+    greetingMessage?: string
+    tone?: string
+    fallbackMessage?: string
+    businessInfo?: string | null
+    websiteUrl?: string | null
+    maxDuration?: number
+    dndCompliance?: boolean
+    recordingConsent?: boolean
+    isActive?: boolean
+    systemPrompt: string
+    modelName: string
+    voice?: string
+    intakeWorkflowId?: string | null
+    smsWorkflowId?: string | null
+    phoneNumberId?: string | null
+    intakeEnabled?: boolean
+    intakeFields?: AIAgentCreateintakeFieldsInput | string[]
+    intakePrompt?: string | null
+    smsEnabled?: boolean
+    smsTriggerCondition?: string | null
+    smsTemplate?: string | null
+    smsAgentReply?: string | null
+    whatsappEnabled?: boolean
+    whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: string
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
+    knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
+  }
+
+  export type AIAgentCreateOrConnectWithoutBookingsInput = {
+    where: AIAgentWhereUniqueInput
+    create: XOR<AIAgentCreateWithoutBookingsInput, AIAgentUncheckedCreateWithoutBookingsInput>
+  }
+
+  export type UserCreateWithoutBookingsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    role: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    tenant: TenantCreateNestedOneWithoutUsersInput
+    deals?: DealCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserUncheckedCreateWithoutBookingsInput = {
+    id?: string
+    tenantId: string
+    email: string
+    passwordHash: string
+    name: string
+    role: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    deals?: DealUncheckedCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserCreateOrConnectWithoutBookingsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutBookingsInput, UserUncheckedCreateWithoutBookingsInput>
+  }
+
   export type ActivityCreateWithoutBookingInput = {
     id?: string
     type: $Enums.ActivityType
@@ -46154,6 +47180,162 @@ export namespace Prisma {
     activities?: ActivityUncheckedUpdateManyWithoutContactNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutContactNestedInput
     chatSessions?: ChatSessionUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type AIAgentUpsertWithoutBookingsInput = {
+    update: XOR<AIAgentUpdateWithoutBookingsInput, AIAgentUncheckedUpdateWithoutBookingsInput>
+    create: XOR<AIAgentCreateWithoutBookingsInput, AIAgentUncheckedCreateWithoutBookingsInput>
+    where?: AIAgentWhereInput
+  }
+
+  export type AIAgentUpdateToOneWithWhereWithoutBookingsInput = {
+    where?: AIAgentWhereInput
+    data: XOR<AIAgentUpdateWithoutBookingsInput, AIAgentUncheckedUpdateWithoutBookingsInput>
+  }
+
+  export type AIAgentUpdateWithoutBookingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
+    greetingMessage?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    fallbackMessage?: StringFieldUpdateOperationsInput | string
+    businessInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    maxDuration?: IntFieldUpdateOperationsInput | number
+    dndCompliance?: BoolFieldUpdateOperationsInput | boolean
+    recordingConsent?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    systemPrompt?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    voice?: StringFieldUpdateOperationsInput | string
+    intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeEnabled?: BoolFieldUpdateOperationsInput | boolean
+    intakeFields?: AIAgentUpdateintakeFieldsInput | string[]
+    intakePrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    smsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
+    smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
+    knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
+  }
+
+  export type AIAgentUncheckedUpdateWithoutBookingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    language?: StringFieldUpdateOperationsInput | string
+    greetingMessage?: StringFieldUpdateOperationsInput | string
+    tone?: StringFieldUpdateOperationsInput | string
+    fallbackMessage?: StringFieldUpdateOperationsInput | string
+    businessInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    maxDuration?: IntFieldUpdateOperationsInput | number
+    dndCompliance?: BoolFieldUpdateOperationsInput | boolean
+    recordingConsent?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    systemPrompt?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    voice?: StringFieldUpdateOperationsInput | string
+    intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeEnabled?: BoolFieldUpdateOperationsInput | boolean
+    intakeFields?: AIAgentUpdateintakeFieldsInput | string[]
+    intakePrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    smsEnabled?: BoolFieldUpdateOperationsInput | boolean
+    smsTriggerCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    smsTemplate?: NullableStringFieldUpdateOperationsInput | string | null
+    smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
+    whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    timeZone?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
+    knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
+  }
+
+  export type UserUpsertWithoutBookingsInput = {
+    update: XOR<UserUpdateWithoutBookingsInput, UserUncheckedUpdateWithoutBookingsInput>
+    create: XOR<UserCreateWithoutBookingsInput, UserUncheckedCreateWithoutBookingsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutBookingsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutBookingsInput, UserUncheckedUpdateWithoutBookingsInput>
+  }
+
+  export type UserUpdateWithoutBookingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
+    deals?: DealUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutBookingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deals?: DealUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type ActivityUpsertWithWhereUniqueWithoutBookingInput = {
@@ -47667,6 +48849,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BookingCreateWithoutAgentInput = {
+    id?: string
+    title: string
+    startTime: Date | string
+    endTime: Date | string
+    status: string
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutBookingsInput
+    contact: ContactCreateNestedOneWithoutBookingsInput
+    assignee?: UserCreateNestedOneWithoutBookingsInput
+    activities?: ActivityCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingUncheckedCreateWithoutAgentInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    title: string
+    startTime: Date | string
+    endTime: Date | string
+    status: string
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingCreateOrConnectWithoutAgentInput = {
+    where: BookingWhereUniqueInput
+    create: XOR<BookingCreateWithoutAgentInput, BookingUncheckedCreateWithoutAgentInput>
+  }
+
+  export type BookingCreateManyAgentInputEnvelope = {
+    data: BookingCreateManyAgentInput | BookingCreateManyAgentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TenantUpsertWithoutAiAgentsInput = {
     update: XOR<TenantUpdateWithoutAiAgentsInput, TenantUncheckedUpdateWithoutAiAgentsInput>
     create: XOR<TenantCreateWithoutAiAgentsInput, TenantUncheckedCreateWithoutAiAgentsInput>
@@ -47800,6 +49024,22 @@ export namespace Prisma {
   export type ChatSessionUpdateManyWithWhereWithoutAgentInput = {
     where: ChatSessionScalarWhereInput
     data: XOR<ChatSessionUpdateManyMutationInput, ChatSessionUncheckedUpdateManyWithoutAgentInput>
+  }
+
+  export type BookingUpsertWithWhereUniqueWithoutAgentInput = {
+    where: BookingWhereUniqueInput
+    update: XOR<BookingUpdateWithoutAgentInput, BookingUncheckedUpdateWithoutAgentInput>
+    create: XOR<BookingCreateWithoutAgentInput, BookingUncheckedCreateWithoutAgentInput>
+  }
+
+  export type BookingUpdateWithWhereUniqueWithoutAgentInput = {
+    where: BookingWhereUniqueInput
+    data: XOR<BookingUpdateWithoutAgentInput, BookingUncheckedUpdateWithoutAgentInput>
+  }
+
+  export type BookingUpdateManyWithWhereWithoutAgentInput = {
+    where: BookingScalarWhereInput
+    data: XOR<BookingUpdateManyMutationInput, BookingUncheckedUpdateManyWithoutAgentInput>
   }
 
   export type TenantCreateWithoutPhoneNumbersInput = {
@@ -48080,6 +49320,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -48088,6 +49342,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutAiAgentsInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
+    bookings?: BookingCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateWithoutKnowledgeBasesInput = {
@@ -48120,6 +49375,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -48127,6 +49396,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentCreateOrConnectWithoutKnowledgeBasesInput = {
@@ -48261,6 +49531,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48269,6 +49553,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateWithoutKnowledgeBasesInput = {
@@ -48301,6 +49586,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48308,6 +49607,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type TenantCreateWithoutCommunicationLogsInput = {
@@ -48461,6 +49761,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -48469,6 +49783,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutAiAgentsInput
     knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionCreateNestedManyWithoutAgentInput
+    bookings?: BookingCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateWithoutCommunicationLogsInput = {
@@ -48501,6 +49816,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -48508,6 +49837,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
     chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutAgentInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentCreateOrConnectWithoutCommunicationLogsInput = {
@@ -48797,6 +50127,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48805,6 +50149,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
     knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -48837,6 +50182,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48844,6 +50203,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type WorkflowRunUpsertWithoutCommunicationLogsInput = {
@@ -49091,6 +50451,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -49099,6 +50473,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutAiAgentsInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseCreateNestedManyWithoutAgentInput
+    bookings?: BookingCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentUncheckedCreateWithoutChatSessionsInput = {
@@ -49131,6 +50506,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -49138,6 +50527,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutAgentInput
     knowledgeBases?: KnowledgeBaseUncheckedCreateNestedManyWithoutAgentInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAgentInput
   }
 
   export type AIAgentCreateOrConnectWithoutChatSessionsInput = {
@@ -49387,6 +50777,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49395,6 +50799,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutAiAgentsNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateWithoutChatSessionsInput = {
@@ -49427,6 +50832,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49434,6 +50853,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type CommunicationLogUpsertWithWhereUniqueWithoutSessionInput = {
@@ -49714,10 +51134,14 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
     contact: ContactCreateNestedOneWithoutBookingsInput
+    agent?: AIAgentCreateNestedOneWithoutBookingsInput
+    assignee?: UserCreateNestedOneWithoutBookingsInput
   }
 
   export type BookingUncheckedCreateWithoutActivitiesInput = {
@@ -49728,6 +51152,10 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    agentId?: string | null
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -50086,10 +51514,14 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
     contact?: ContactUpdateOneRequiredWithoutBookingsNestedInput
+    agent?: AIAgentUpdateOneWithoutBookingsNestedInput
+    assignee?: UserUpdateOneWithoutBookingsNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutActivitiesInput = {
@@ -50100,6 +51532,10 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -50321,6 +51757,20 @@ export namespace Prisma {
     smsAgentReply?: string | null
     whatsappEnabled?: boolean
     whatsappPrompt?: string | null
+    apiEnabled?: boolean
+    apiWorkflowId?: string | null
+    apiPrompt?: string | null
+    callTransferEnabled?: boolean
+    callTransferWorkflowId?: string | null
+    callTransferNumber?: string | null
+    callTransferCondition?: string | null
+    callTransferMessage?: string | null
+    callTransferFallbackNumber?: string | null
+    callTransferTimeoutSec?: number
+    callTransferNoAnswerAction?: string
+    callTransferStyle?: string
+    bookingEnabled?: boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: string
     deletedAt?: Date | string | null
@@ -50412,6 +51862,10 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    agentId?: string | null
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -50457,6 +51911,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deals?: DealUpdateManyWithoutOwnerNestedInput
+    bookings?: BookingUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTenantInput = {
@@ -50469,6 +51924,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deals?: DealUncheckedUpdateManyWithoutOwnerNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutTenantInput = {
@@ -50886,6 +52342,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50894,6 +52364,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateWithoutTenantInput = {
@@ -50925,6 +52396,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50933,6 +52418,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutAgentNestedInput
     knowledgeBases?: KnowledgeBaseUncheckedUpdateManyWithoutAgentNestedInput
     chatSessions?: ChatSessionUncheckedUpdateManyWithoutAgentNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAgentNestedInput
   }
 
   export type AIAgentUncheckedUpdateManyWithoutTenantInput = {
@@ -50964,6 +52450,20 @@ export namespace Prisma {
     smsAgentReply?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappEnabled?: BoolFieldUpdateOperationsInput | boolean
     whatsappPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    apiEnabled?: BoolFieldUpdateOperationsInput | boolean
+    apiWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    apiPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferEnabled?: BoolFieldUpdateOperationsInput | boolean
+    callTransferWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferCondition?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferFallbackNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    callTransferTimeoutSec?: IntFieldUpdateOperationsInput | number
+    callTransferNoAnswerAction?: StringFieldUpdateOperationsInput | string
+    callTransferStyle?: StringFieldUpdateOperationsInput | string
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingConfig?: NullableJsonNullValueInput | InputJsonValue
     businessHours?: NullableJsonNullValueInput | InputJsonValue
     timeZone?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51214,9 +52714,13 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contact?: ContactUpdateOneRequiredWithoutBookingsNestedInput
+    agent?: AIAgentUpdateOneWithoutBookingsNestedInput
+    assignee?: UserUpdateOneWithoutBookingsNestedInput
     activities?: ActivityUpdateManyWithoutBookingNestedInput
   }
 
@@ -51227,6 +52731,10 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -51239,6 +52747,10 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51367,6 +52879,21 @@ export namespace Prisma {
     deletedAt?: Date | string | null
   }
 
+  export type BookingCreateManyAssigneeInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    title: string
+    startTime: Date | string
+    endTime: Date | string
+    status: string
+    agentId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type DealUpdateWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -51464,6 +52991,53 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type BookingUpdateWithoutAssigneeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
+    contact?: ContactUpdateOneRequiredWithoutBookingsNestedInput
+    agent?: AIAgentUpdateOneWithoutBookingsNestedInput
+    activities?: ActivityUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateWithoutAssigneeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateManyWithoutAssigneeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CustomFieldValueCreateManyContactInput = {
     id?: string
     tenantId: string
@@ -51515,6 +53089,10 @@ export namespace Prisma {
     startTime: Date | string
     endTime: Date | string
     status: string
+    agentId?: string | null
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -51728,9 +53306,13 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
+    agent?: AIAgentUpdateOneWithoutBookingsNestedInput
+    assignee?: UserUpdateOneWithoutBookingsNestedInput
     activities?: ActivityUpdateManyWithoutBookingNestedInput
   }
 
@@ -51741,6 +53323,10 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -51753,6 +53339,10 @@ export namespace Prisma {
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -52914,6 +54504,21 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type BookingCreateManyAgentInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    title: string
+    startTime: Date | string
+    endTime: Date | string
+    status: string
+    assigneeId?: string | null
+    ccEmails?: BookingCreateccEmailsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type CommunicationLogUpdateWithoutAgentInput = {
     id?: StringFieldUpdateOperationsInput | string
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53072,6 +54677,53 @@ export namespace Prisma {
     processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dealId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BookingUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
+    contact?: ContactUpdateOneRequiredWithoutBookingsNestedInput
+    assignee?: UserUpdateOneWithoutBookingsNestedInput
+    activities?: ActivityUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateManyWithoutAgentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ccEmails?: BookingUpdateccEmailsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ActivityCreateManyCommLogInput = {

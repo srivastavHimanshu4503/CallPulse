@@ -69,6 +69,7 @@ export const createBookingSchema = z.object({
   title: z.string().min(1, "Booking title is required"),
   startTime: z.string().datetime("Invalid start time date string"),
   endTime: z.string().datetime("Invalid end time date string"),
+  agentId: z.string().optional(),
 });
 
 export type CreateContactInput = z.infer<typeof createContactSchema>;

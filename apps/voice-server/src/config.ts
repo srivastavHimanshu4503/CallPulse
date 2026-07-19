@@ -26,6 +26,7 @@ const envSchema = z.object({
   SARVAM_API_KEY: optionalString,
   DEEPGRAM_API_KEY: optionalString,
   OPENAI_API_KEY: optionalString,
+  ELEVENLABS_API_KEY: optionalString,
   GEMINI_API_KEY: optionalString,
   ANTHROPIC_API_KEY: optionalString,
 
@@ -134,6 +135,7 @@ export const config = {
   tts: {
     sarvamApiKey: env.SARVAM_API_KEY,
     openaiApiKey: env.OPENAI_API_KEY,
+    elevenlabsApiKey: env.ELEVENLABS_API_KEY,
   },
   llm: {
     primary: primaryLLM,

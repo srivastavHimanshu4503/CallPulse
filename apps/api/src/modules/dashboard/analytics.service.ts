@@ -165,7 +165,7 @@ export async function getKpis(tenantId: string, agentId: string, range: DateRang
   const curr = { gte: range.start, lte: range.end };
   const prev = { gte: range.prevStart, lt: range.start };
 
-  const [currAgg, prevAgg, currSms, prevSms, currLeads, prevLeads] = await Promise.all([
+  const [currAgg, prevAgg, currWhatsapp, prevWhatsapp, currLeads, prevLeads] = await Promise.all([
     db.communicationLog.aggregate({
       where: { ...base, type: "CALL", occurredAt: curr },
       _count: { id: true },
@@ -177,8 +177,8 @@ export async function getKpis(tenantId: string, agentId: string, range: DateRang
       _count: { id: true },
       _sum: { duration: true },
     }),
-    db.communicationLog.count({ where: { ...base, type: "SMS", occurredAt: curr } }),
-    db.communicationLog.count({ where: { ...base, type: "SMS", occurredAt: prev } }),
+    db.communicationLog.count({ where: { ...base, type: "WHATSAPP", occurredAt: curr } }),
+    db.communicationLog.count({ where: { ...base, type: "WHATSAPP", occurredAt: prev } }),
     db.communicationLog.count({
       where: { ...base, type: "CALL", occurredAt: curr, sentimentScore: { gte: 70 } },
     }),
@@ -197,8 +197,8 @@ export async function getKpis(tenantId: string, agentId: string, range: DateRang
   return {
     calls,
     prevCalls,
-    smsSent: currSms,
-    prevSms,
+    whatsapp: currWhatsapp,
+    prevWhatsapp,
     leads: currLeads,
     conv: calls ? Math.round((currLeads / calls) * 100) : 0,
     prevConv: prevCalls ? Math.round((prevLeads / prevCalls) * 100) : 0,

@@ -30,6 +30,8 @@ export interface Booking {
   startTime: string;
   endTime: string;
   status: string;
+  ccEmails: string[];
+  notes: string | null;
   createdAt: string;
   updatedAt: string;
 }

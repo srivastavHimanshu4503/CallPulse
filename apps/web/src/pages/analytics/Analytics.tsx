@@ -300,7 +300,7 @@ export function Analytics(): React.JSX.Element {
 
   const stats = analyticsData?.stats || {
     calls: 0, callsDelta: { pct: 0, direction: "up" },
-    smsSent: 0, smsSentDelta: { pct: 0, direction: "up" },
+    whatsapp: 0, whatsappDelta: { pct: 0, direction: "up" },
     conv: 0, convDelta: { pct: 0, direction: "up" },
     duration: "0s", durationDelta: { pct: 0, direction: "up" },
     minutes: 0, rating: "0.0", daily: [], sentiment: [], funnel: []
@@ -326,12 +326,12 @@ export function Analytics(): React.JSX.Element {
       hint: "vs previous period",
     },
     {
-      label: "SMS Sent",
-      value: stats.smsSent,
-      delta: stats.smsSentDelta,
+      label: "WhatsApp messages",
+      value: stats.whatsapp,
+      delta: stats.whatsappDelta,
       tone: "attention" as const,
       icon: MessageSquare,
-      hint: "Text messages your AI sent",
+      hint: "sent & received",
     },
     {
       label: "Calls that became leads",

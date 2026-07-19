@@ -990,7 +990,7 @@ export class CrmService {
   async createBooking(
     tenantId: string,
     contactId: string,
-    data: { title: string; startTime: Date; endTime: Date },
+    data: { title: string; startTime: Date; endTime: Date; agentId?: string },
   ): Promise<Booking> {
     return db.$transaction(async (tx: any) => {
       const created = await tx.booking.create({
@@ -1001,6 +1001,7 @@ export class CrmService {
           startTime: data.startTime,
           endTime: data.endTime,
           status: "CONFIRMED",
+          agentId: data.agentId,
         },
       });
       await tx.activity.create({
@@ -1021,6 +1022,8 @@ export class CrmService {
         startTime: created.startTime.toISOString(),
         endTime: created.endTime.toISOString(),
         status: created.status,
+        ccEmails: created.ccEmails ?? [],
+        notes: created.notes ?? null,
         createdAt: created.createdAt.toISOString(),
         updatedAt: created.updatedAt.toISOString(),
       };
