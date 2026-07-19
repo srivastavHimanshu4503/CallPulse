@@ -65,6 +65,18 @@ const shape = (ctx: AgentContext): AgentPersonaConfig => ({
     fields: ctx.agent.intakeFields,
     prompt: ctx.agent.intakePrompt ?? undefined,
   },
+  transfer:
+    ctx.agent.callTransferEnabled && ctx.agent.callTransferNumber
+      ? {
+          number: ctx.agent.callTransferNumber,
+          condition: ctx.agent.callTransferCondition,
+          message: ctx.agent.callTransferMessage,
+          fallbackNumber: ctx.agent.callTransferFallbackNumber,
+          timeoutSec: ctx.agent.callTransferTimeoutSec,
+          noAnswerAction: ctx.agent.callTransferNoAnswerAction,
+          style: ctx.agent.callTransferStyle === "instant" ? "instant" : "warm",
+        }
+      : null,
   ids: {
     agentId: ctx.agent.id,
     tenantId: ctx.agent.tenantId,

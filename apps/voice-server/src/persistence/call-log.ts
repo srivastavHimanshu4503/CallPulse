@@ -80,6 +80,7 @@ export const persistCallLog = async (input: PersistCallLogInput): Promise<Persis
       })) as any,
       provider: isBrowser ? "livekit-browser" : "livekit-sip",
       providerRef: input.callSid,
+      metadata: input.metadata as any,
       occurredAt: input.startedAt,
     });
   } catch (err) {

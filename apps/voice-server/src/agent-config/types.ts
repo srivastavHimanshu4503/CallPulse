@@ -31,6 +31,13 @@ export interface AgentPersonaConfig {
     prompt?: string;
   };
 
+  /**
+   * Call-transfer workflow. Null when the agent has transfer disabled or no
+   * destination number — in that case the transfer tool is never registered
+   * and the prompt carries no transfer rules.
+   */
+  transfer: TransferConfig | null;
+
   /** Identifiers threaded through downstream calls (logging, tools). */
   ids: {
     agentId: string;
@@ -42,6 +49,23 @@ export interface AgentPersonaConfig {
 export interface KnowledgeBaseEntry {
   name: string;
   content: string;
+}
+
+export interface TransferConfig {
+  /** Destination number in E.164 — comes ONLY from the agent config, never from the LLM. */
+  number: string;
+  /** Human-written trigger condition, injected verbatim into the prompt. */
+  condition: string | null;
+  /** Line the agent speaks before a warm transfer. */
+  message: string | null;
+  /** Secondary number tried when the primary doesn't answer. */
+  fallbackNumber: string | null;
+  /** Ring timeout for the transfer target, in seconds. */
+  timeoutSec: number;
+  /** What to do when nobody answers: take_message | offer_callback | end_politely. */
+  noAnswerAction: string;
+  /** "warm" announces the transfer message first; "instant" redirects immediately. */
+  style: "warm" | "instant";
 }
 
 /**

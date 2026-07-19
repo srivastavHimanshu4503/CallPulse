@@ -44,6 +44,21 @@ export const finalizeExtraction = async (
   }
 ): Promise<void> => {
   try {
+    // Merge — never replace — the metadata JSON: it already carries keys
+    // written by the voice server (transfer outcome, dialedNumber, room)
+    // that billing and the UI read later.
+    let metadata: Record<string, unknown> | undefined;
+    if (result.errors && result.errors.length > 0) {
+      const existing = await db.communicationLog.findUnique({
+        where: { id: logId },
+        select: { metadata: true },
+      });
+      metadata = {
+        ...((existing?.metadata as Record<string, unknown> | null) ?? {}),
+        extractionErrors: result.errors,
+      };
+    }
+
     await db.communicationLog.updateMany({
       where: { id: logId },
       data: {
@@ -53,10 +68,7 @@ export const finalizeExtraction = async (
             ? (result.extractedFields as any)
             : undefined,
         sentimentScore: typeof result.leadScore === "number" ? result.leadScore : undefined,
-        metadata:
-          result.errors && result.errors.length > 0
-            ? ({ extractionErrors: result.errors } as any)
-            : undefined,
+        metadata: metadata as any,
       },
     });
   } catch (err) {

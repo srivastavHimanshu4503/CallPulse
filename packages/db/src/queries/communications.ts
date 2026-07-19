@@ -20,6 +20,7 @@ export const logCall = async (input: {
   transcriptJson?: Prisma.InputJsonValue;
   provider?: string;
   providerRef?: string;
+  metadata?: Prisma.InputJsonValue;
   occurredAt: Date;
 }): Promise<CommunicationLog> => {
   // The CommunicationLog is the record of the call; the Activity row is what
@@ -40,9 +41,13 @@ export const logCall = async (input: {
         transcriptJson: input.transcriptJson,
         provider: input.provider,
         providerRef: input.providerRef,
+        metadata: input.metadata,
         occurredAt: input.occurredAt,
       },
     });
+
+    const transferred = !!(input.metadata as { transfer?: { initiated?: boolean } } | undefined)
+      ?.transfer?.initiated;
 
     await tx.activity.create({
       data: {
@@ -50,7 +55,7 @@ export const logCall = async (input: {
         contactId: input.contactId,
         type: input.direction === "INBOUND" ? "CALL_INBOUND" : "CALL_OUTBOUND",
         direction: input.direction,
-        summary: `${input.direction === "INBOUND" ? "Inbound" : "Outbound"} call · ${formatDuration(input.durationSeconds)}`,
+        summary: `${input.direction === "INBOUND" ? "Inbound" : "Outbound"} call · ${formatDuration(input.durationSeconds)}${transferred ? " · transferred" : ""}`,
         commLogId: row.id,
         occurredAt: input.occurredAt,
       },

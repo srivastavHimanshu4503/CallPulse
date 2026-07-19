@@ -18,7 +18,6 @@ import {
   Trash2,
   Radio,
   Search,
-  Clock,
   MessageSquareText,
   MessageCircle,
   ClipboardList,
@@ -252,13 +251,12 @@ export function Agents(): React.JSX.Element {
           className="rounded-lg border bg-white flex items-center gap-3 px-3 py-2 mb-3 overflow-x-auto"
           style={{ borderColor: "#E5E7EB" }}
         >
-          <InlineStat icon={Users}       label="Agents"       value={stats.total.toString()}        tint={{ bg: "#EFF6FF", fg: "#2563EB" }} />
+          <InlineStat icon={Users} label="Agents" value={stats.total.toString()} tint={{ bg: "#EFF6FF", fg: "#2563EB" }} />
           <Divider />
-          <InlineStat icon={Radio}       label="Live now"     value={stats.active.toString()}       tint={{ bg: "#ECFDF5", fg: "#059669" }} />
+          <InlineStat icon={Radio} label="Live now" value={stats.active.toString()} tint={{ bg: "#ECFDF5", fg: "#059669" }} />
           <Divider />
-          <InlineStat icon={PhoneCall}   label="Calls today"  value={stats.callsToday.toString()}   tint={{ bg: "#FEF3C7", fg: "#B45309" }} />
+          <InlineStat icon={PhoneCall} label="Calls today" value={stats.callsToday.toString()} tint={{ bg: "#FEF3C7", fg: "#B45309" }} />
           <Divider />
-          <InlineStat icon={Clock}       label="Avg handle"   value={formatDuration(stats.avgDuration)} tint={{ bg: "#FDF2F8", fg: "#BE185D" }} />
         </div>
       )}
 
@@ -516,11 +514,11 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         {/* Actions (Toggle & Delete) */}
         <div className="flex items-center gap-1 shrink-0">
           <label className="relative inline-flex items-center cursor-pointer" title="Toggle active status">
-            <input 
-              type="checkbox" 
-              className="sr-only peer" 
-              checked={agent.isActive} 
-              onChange={(e) => onToggleActive(e.target.checked)} 
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              checked={agent.isActive}
+              onChange={(e) => onToggleActive(e.target.checked)}
               disabled={isToggling}
             />
             <div className="w-8 h-4 bg-line-default peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-line-default after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-positive-500" />
@@ -566,9 +564,8 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
               WhatsApp Bot
             </span>
             <span
-              className={`text-[9px] font-bold uppercase tracking-wide px-1.5 py-px rounded ${
-                agent.whatsappEnabled ? "bg-emerald-100 text-emerald-700" : "bg-bg-muted text-fg-muted"
-              }`}
+              className={`text-[9px] font-bold uppercase tracking-wide px-1.5 py-px rounded ${agent.whatsappEnabled ? "bg-emerald-100 text-emerald-700" : "bg-bg-muted text-fg-muted"
+                }`}
             >
               {agent.whatsappEnabled ? "On" : "Off"}
             </span>
@@ -610,31 +607,31 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-2 mt-auto">
           <div className="rounded-lg border border-line-subtle bg-bg-subtle p-2 flex flex-col justify-center">
-             <div className="flex items-center gap-1 text-[10px] text-fg-muted font-semibold uppercase tracking-wider mb-1">
-               <Phone className="h-3 w-3" /> Number
-             </div>
-             {agent.phoneNumberId ? (
-               <span className="text-[12px] font-bold text-fg-primary truncate">{agent.phoneNumber}</span>
-             ) : (
-               <button
-                 type="button"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   onBuyNumber();
-                 }}
-                 className="text-[11px] font-bold text-brand-600 hover:text-brand-700 text-left"
-               >
-                 + Get number
-               </button>
-             )}
+            <div className="flex items-center gap-1 text-[10px] text-fg-muted font-semibold uppercase tracking-wider mb-1">
+              <Phone className="h-3 w-3" /> Number
+            </div>
+            {agent.phoneNumberId ? (
+              <span className="text-[12px] font-bold text-fg-primary truncate">{agent.phoneNumber}</span>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onBuyNumber();
+                }}
+                className="text-[11px] font-bold text-brand-600 hover:text-brand-700 text-left"
+              >
+                + Get number
+              </button>
+            )}
           </div>
           <div className="rounded-lg border border-line-subtle bg-bg-subtle p-2 flex flex-col justify-center">
-             <div className="flex items-center gap-1 text-[10px] text-fg-muted font-semibold uppercase tracking-wider mb-1">
-               <Activity className="h-3 w-3" /> Today
-             </div>
-             <div className="flex items-center gap-2">
-               <span className="text-[12px] font-bold text-fg-primary truncate">{agent.callsToday || 0} calls</span>
-             </div>
+            <div className="flex items-center gap-1 text-[10px] text-fg-muted font-semibold uppercase tracking-wider mb-1">
+              <Activity className="h-3 w-3" /> Today
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[12px] font-bold text-fg-primary truncate">{agent.callsToday || 0} calls</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1052,10 +1049,10 @@ function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMo
             style={
               active
                 ? {
-                    backgroundColor: "#2563EB",
-                    color: "#FFFFFF",
-                    boxShadow: "0 1px 2px rgba(37,99,235,0.35), 0 1px 3px rgba(0,0,0,0.08)",
-                  }
+                  backgroundColor: "#2563EB",
+                  color: "#FFFFFF",
+                  boxShadow: "0 1px 2px rgba(37,99,235,0.35), 0 1px 3px rgba(0,0,0,0.08)",
+                }
                 : { backgroundColor: "transparent", color: "#475569" }
             }
           >

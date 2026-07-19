@@ -1,6 +1,6 @@
 import { defineAgent, voice, type JobContext, type JobProcess } from "@livekit/agents";
 import { RoomEvent } from "@livekit/rtc-node";
-import { RoomServiceClient } from "livekit-server-sdk";
+import { RoomServiceClient, SipClient } from "livekit-server-sdk";
 import { db, getCreditBalance } from "@antigravity/db";
 
 import { config } from "../config.js";
@@ -129,6 +129,9 @@ export default defineAgent({
     // Which of our numbers the caller dialed — stored in session metadata so
     // the post-call pipeline can find this call's Twilio recording.
     let resolvedDialedNumber: string | null = null;
+    // LiveKit identity of the caller's SIP participant — the handle
+    // `transferSipParticipant` needs to REFER the caller to a human phone.
+    let sipParticipantIdentity: string | null = null;
 
     // Test calls from the web app pass agentId via room metadata. Real SIP
     // calls resolve the agent by WHICH of our numbers was dialed — LiveKit
@@ -149,6 +152,7 @@ export default defineAgent({
       const attrs = (participant.attributes ?? {}) as Record<string, string>;
       const dialed = attrs["sip.trunkPhoneNumber"] || dialedNumber;
       if (attrs["sip.phoneNumber"]) callerNumber = attrs["sip.phoneNumber"];
+      sipParticipantIdentity = participant.identity || null;
 
       if (!dialed) {
         callLog.error("no dialed number in SIP attributes and none configured — aborting call");
@@ -226,10 +230,9 @@ export default defineAgent({
     await connectPromise;
     callLog.info("participant connected", { agent: persona.agentName, tenant: persona.businessName });
 
-    // Twilio provider retained only for feature-flagged fallback; the primary
-    // hangup path is `RoomServiceClient.deleteRoom`, which drops SIP + browser
-    // participants uniformly. Deleting the room triggers LiveKit-SIP to tear
-    // down the Twilio trunk leg automatically — no Twilio REST call needed.
+    // Twilio provider retained only for feature-flagged fallback; hangups use
+    // `RoomServiceClient.deleteRoom` and transfers use SIP REFER via
+    // LiveKit's SipClient — neither needs Twilio REST from the agent.
     void (config.twilio.isConfigured ? new TwilioTelephonyProvider() : undefined);
 
     let hangupRequested = false;
@@ -312,6 +315,149 @@ export default defineAgent({
       }, 900);
     };
 
+    // Speaking handle for code paths that run before/outside an LLM turn
+    // (transfer announcements, apologies). Bound to the real AgentSession
+    // right after it is constructed below; tools only execute mid-call, long
+    // after the binding happens.
+    let sayLine: (text: string) => void = () => {};
+
+    let transferRequested = false;
+    // Like the hangup grace, but longer: a transfer in the opening seconds of
+    // a call is always a misfire (the condition can't have been met AND
+    // confirmed that fast).
+    const TRANSFER_GRACE_MS = 10_000;
+
+    /**
+     * Redirect the caller to the configured human number. Returns a status
+     * string the LLM can act on — every failure path keeps the caller on the
+     * line with the AI rather than dropping the call.
+     */
+    const transferCall = async (reason: string): Promise<string> => {
+      const transfer = persona.transfer;
+      if (!transfer) return "Call transfer is not available for this agent.";
+      const elapsed = Date.now() - callStartedAt;
+      if (elapsed < TRANSFER_GRACE_MS) {
+        callLog.warn("transfer_call ignored — inside grace period", { reason, elapsedMs: elapsed });
+        return "Too early in the call to transfer. Keep helping the caller and transfer later if they still need it.";
+      }
+      if (hangupRequested) return "The call is already ending — do not transfer.";
+      if (transferRequested) return "A transfer is already in progress. Do not say anything else.";
+      transferRequested = true;
+
+      const announce =
+        transfer.message?.trim() ||
+        "Main aapko humari team se connect kar raha hoon, ek moment please.";
+
+      if (callSource === "browser") {
+        // Test calls have no Twilio leg — simulate the handoff so the whole
+        // flow (condition → confirmation → announcement → tagged log) can be
+        // exercised from the dashboard without dialing a real phone.
+        session.status = "transferred";
+        session.metadata.transfer = {
+          initiated: true,
+          simulated: true,
+          to: transfer.number,
+          style: transfer.style,
+          reason,
+          at: new Date().toISOString(),
+        };
+        callLog.warn("transfer simulated (browser test call)", { to: transfer.number, reason });
+        sayLine(announce);
+        setTimeout(() => void endCall("simulated transfer (test call)"), 4_000);
+        return "Transfer simulated (this is a test call): the announcement is being spoken and the call will end. Do not say anything else.";
+      }
+
+      const failureAdvice =
+        "Transfer failed — nobody on the team could be reached. Apologize briefly in one short line and offer to take the caller's name and number for a callback instead.";
+
+      if (!config.livekit.isConfigured || !sipParticipantIdentity) {
+        transferRequested = false;
+        callLog.error("transfer unavailable — missing LiveKit creds or SIP participant identity", {
+          livekitConfigured: config.livekit.isConfigured,
+          sipParticipantIdentity,
+        });
+        return failureAdvice;
+      }
+
+      const tagTransfer = (to: string, status: string, extra?: Record<string, unknown>) => {
+        session.metadata.transfer = {
+          initiated: true,
+          to,
+          style: transfer.style,
+          reason,
+          at: new Date().toISOString(),
+          // The sweeper finds the Twilio transfer leg (caller → target) by
+          // these two numbers + the timestamp, and bills that leg's duration.
+          callerNumber,
+          status,
+          ...extra,
+        };
+      };
+
+      if (transfer.style === "warm") {
+        sayLine(announce);
+        // Rough TTS estimate so the announcement finishes before ringing starts.
+        await new Promise((r) => setTimeout(r, Math.min(7_000, 1_500 + announce.length * 70)));
+      }
+
+      // SIP REFER through LiveKit: Twilio (Elastic SIP Trunking with
+      // transferMode enable-all) dials the human and bridges the caller. The
+      // promise resolves only when the target ANSWERS; on no-answer/busy it
+      // rejects and the caller is still in the room with us — so the fallback
+      // and the apology path never risk dropping the call.
+      const sipClient = new SipClient(
+        config.livekit.url!.replace(/^ws:\/\//, "http://").replace(/^wss:\/\//, "https://"),
+        config.livekit.apiKey!,
+        config.livekit.apiSecret!
+      );
+      const attemptTransfer = (to: string) =>
+        sipClient.transferSipParticipant(roomName, sipParticipantIdentity!, `tel:${to}`, {
+          playDialtone: true,
+          ringingTimeout: transfer.timeoutSec,
+        });
+
+      const targets = [transfer.number, transfer.fallbackNumber].filter(
+        (n): n is string => !!n
+      );
+      const transferComplete = (target: string): string => {
+        session.status = "transferred";
+        tagTransfer(target, "answered", { answeredAt: new Date().toISOString() });
+        callLog.warn("transfer answered — caller bridged to team", { to: target });
+        return "Transfer complete — the caller is now connected to the team. Do not say anything else.";
+      };
+
+      for (const target of targets) {
+        try {
+          tagTransfer(target, "dialing");
+          callLog.info("transferring caller via SIP REFER", { to: target });
+          await attemptTransfer(target);
+          return transferComplete(target);
+        } catch (err) {
+          callLog.warn("transfer attempt reported an error", {
+            to: target,
+            message: (err as Error).message,
+          });
+          // Twilio sometimes executes the REFER even though LiveKit reports
+          // an error (observed: the transfer leg was created ~2s AFTER a
+          // rejection). If the caller leaves the room right after the
+          // "failure", the handoff actually happened — trust the room state
+          // over the RPC result.
+          await new Promise((r) => setTimeout(r, 4_000));
+          if (hangupRequested) {
+            callLog.warn("caller left the room after transfer attempt — treating as answered", {
+              to: target,
+            });
+            return transferComplete(target);
+          }
+        }
+      }
+
+      // Nobody answered — the caller is still on the line with the AI.
+      tagTransfer(targets[targets.length - 1] ?? transfer.number, "failed");
+      transferRequested = false;
+      return failureAdvice;
+    };
+
     const systemPrompt = buildSystemPrompt(persona);
 
     const tools = buildTools({
@@ -322,6 +468,8 @@ export default defineAgent({
       agentId: persona.ids.agentId,
       workflowTrigger: new WorkflowTriggerStub(),
       endCall,
+      transfer: persona.transfer,
+      transferCall,
     });
 
     const ttsOptions: TTSBuildOptions = {
@@ -375,6 +523,14 @@ export default defineAgent({
         preemptiveGeneration: { enabled: true, preemptiveTts: false, maxSpeechDuration: 10000 },
       },
     });
+
+    sayLine = (text: string) => {
+      try {
+        agentSession.say(text, { allowInterruptions: false, addToChatCtx: true });
+      } catch (err) {
+        callLog.warn("sayLine failed", { message: (err as Error)?.message });
+      }
+    };
 
     // Tracks whether the *caller* has already said a clear goodbye. The
     // next transition of the agent from `speaking` → `listening` (i.e. the
@@ -500,6 +656,10 @@ export default defineAgent({
     // At 30s of silence the agent prompts once; at 45s it hangs up.
     const idleTimer = setInterval(() => {
       if (hangupRequested) return;
+      // A transfer attempt looks like silence to the idle clock (the agent is
+      // "listening" while the target's phone rings, up to 60s) — don't prompt
+      // or hang up mid-ring.
+      if (transferRequested) return;
       if (idleWindowStart === null) return; // agent isn't in a listening window
       const idleFor = Date.now() - idleWindowStart;
       if (idleFor >= IDLE_HANGUP_MS) {
@@ -520,13 +680,24 @@ export default defineAgent({
 
     // Hard max-duration cap with a 10s buffer past the persona's configured
     // maximum. Even if every other safety net misses, we don't leave a call
-    // running indefinitely on the LiveKit-SIP meter.
+    // running indefinitely on the LiveKit-SIP meter. The cap only governs the
+    // AI leg — once a transfer succeeds the room is gone and Twilio's own
+    // call limits bound the human conversation (billed by the sweeper).
     const maxDurationMs = Math.max(60_000, persona.maxDurationMinutes * 60_000 + 10_000);
-    const maxDurationTimer = setTimeout(() => {
+    const enforceMaxDuration = () => {
       if (hangupRequested) return;
+      if (transferRequested) {
+        // Mid-transfer: dropping the room now would cut the caller off while
+        // the team's phone is ringing. Re-check shortly; if the transfer
+        // failed and the conversation resumed, the cap then applies.
+        callLog.info("max duration reached during transfer attempt — deferring hangup");
+        maxDurationTimer = setTimeout(enforceMaxDuration, 30_000);
+        return;
+      }
       callLog.warn("max duration reached — forcing hangup", { maxDurationMs });
       void endCall("max duration reached");
-    }, maxDurationMs);
+    };
+    let maxDurationTimer = setTimeout(enforceMaxDuration, maxDurationMs);
 
     // Caller-hangs-up path. LiveKit fires `ParticipantDisconnected` when the
     // remote SIP or browser participant leaves. `closeOnDisconnect: true` on

@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Plus, ClipboardList, MessageSquareText, Webhook, PhoneForwarded, CalendarDays, ChevronDown } from "lucide-react";
+import { Plus, ClipboardList, MessageSquareText, Webhook, PhoneForwarded, CalendarDays, ChevronDown, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { useEntitlements } from "../../../hooks/useEntitlements.js";
 import type { AgentBookingConfig } from "@antigravity/types";
 import { IntakeScenario, IntakeScenarioCard } from "./IntakeScenarioCard.js";
 import { SmsScenario, SmsScenarioCard } from "./SmsScenarioCard.js";
@@ -124,6 +125,9 @@ export function WorkflowSetup({
   setBookingConfig,
   disabled,
 }: WorkflowSetupProps): React.JSX.Element {
+  const { plan } = useEntitlements();
+  const isFree = plan === "FREE";
+
   const [intakeScenarios, setIntakeScenarios] = React.useState<IntakeScenario[]>(() => {
     try {
       if (intakePrompt) {
@@ -396,6 +400,7 @@ export function WorkflowSetup({
         setEnabled={setApiEnabled}
         countBadge={apiEnabled ? `${apiScenarios.length} scenario${apiScenarios.length > 1 ? "s" : ""}` : undefined}
         disabled={disabled}
+        gated={isFree}
       >
         <div className="space-y-3">
           {apiScenarios.map((sc, idx) => (
@@ -427,6 +432,7 @@ export function WorkflowSetup({
         enabled={callTransferEnabled}
         setEnabled={setCallTransferEnabled}
         disabled={disabled}
+        gated={isFree}
       >
         <div className="space-y-4">
           <div>
@@ -536,11 +542,12 @@ export function WorkflowSetup({
       {/* CALENDAR BOOKING */}
       <FeatureBlock
         icon={CalendarDays}
-        title="Calendar booking"
-        description="Let the agent book appointments, demos, or site visits directly on your calendar during the call."
+        title="Calendar bookings"
+        description="Let AI book appointments directly into your calendar during the call."
         enabled={bookingEnabled}
         setEnabled={setBookingEnabled}
         disabled={disabled}
+        gated={isFree}
       >
         <div className="space-y-4">
           <div>
@@ -722,6 +729,7 @@ interface FeatureBlockProps {
   setEnabled: (v: boolean) => void;
   countBadge?: string;
   disabled?: boolean;
+  gated?: boolean;
   children: React.ReactNode;
 }
 
@@ -733,17 +741,10 @@ function FeatureBlock({
   setEnabled,
   countBadge,
   disabled,
+  gated,
   children,
 }: FeatureBlockProps): React.JSX.Element {
-  const [isExpanded, setIsExpanded] = React.useState(enabled);
-
-  React.useEffect(() => {
-    if (enabled) {
-      setIsExpanded(true);
-    } else {
-      setIsExpanded(false);
-    }
-  }, [enabled]);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
     <section
@@ -771,7 +772,13 @@ function FeatureBlock({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-sm font-semibold text-[#111111]">{title}</h3>
-            {countBadge && (
+            {gated && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-amber-50 border border-amber-200 text-amber-700 px-2 py-0.5 rounded-full">
+                <Lock className="h-2.5 w-2.5" />
+                Pro
+              </span>
+            )}
+            {!gated && countBadge && (
               <span className="text-[10px] font-bold uppercase tracking-wider bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] px-2 py-0.5 rounded-full">
                 {countBadge}
               </span>
@@ -782,20 +789,30 @@ function FeatureBlock({
         
         <div className="flex items-center gap-4 shrink-0 mt-0.5">
           <label 
-            className="relative inline-flex items-center cursor-pointer select-none"
-            onClick={(e) => e.stopPropagation()}
+            className={`relative inline-flex items-center select-none ${gated ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (gated) {
+                e.preventDefault();
+                toast.error(`Upgrade to Pro to unlock ${title.toLowerCase()}.`);
+              }
+            }}
           >
             <input
               type="checkbox"
-              checked={enabled}
-              onChange={(e) => setEnabled(e.target.checked)}
-              disabled={disabled}
+              checked={gated ? false : enabled}
+              onChange={(e) => {
+                if (gated) return;
+                setEnabled(e.target.checked);
+                if (e.target.checked) setIsExpanded(true);
+              }}
+              disabled={disabled || gated}
               className="sr-only peer"
             />
             <span className="w-[36px] h-[20px] bg-[#E5E5E5] rounded-full peer-checked:bg-[#2563EB] transition-colors" />
             <span
               className={`absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-[#E5E5E5] rounded-full shadow-sm transition-transform ${
-                enabled ? "translate-x-4" : "translate-x-0"
+                !gated && enabled ? "translate-x-4" : "translate-x-0"
               }`}
             />
           </label>

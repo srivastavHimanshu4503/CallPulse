@@ -39,6 +39,38 @@ const renderIntakeRules = (agent: AgentPersonaConfig): string => {
 };
 
 /**
+ * Rendered ONLY when the agent has a transfer number configured. Mirrors the
+ * conservative structure of "# ENDING THE CALL": a false transfer drops the
+ * caller onto a ringing phone, which is worse than staying on the line, so
+ * the rules are strict — condition met, then explicit confirmation, then tool.
+ */
+const renderTransferRules = (agent: AgentPersonaConfig): string => {
+  if (!agent.transfer) return "";
+  const condition =
+    agent.transfer.condition?.trim() ||
+    "the caller explicitly asks to speak to a human, the owner, or a team member";
+  return `
+# CALL TRANSFER
+You can transfer this call to a real team member's phone using the \`transfer_call\` tool. A wrong transfer dials a real phone and takes the caller away from you — be VERY conservative.
+
+Transfer ONLY when this condition is met: ${condition}
+
+Two ways a transfer becomes confirmed:
+1. EXPLICIT REQUEST. The caller directly asks to speak to a human/owner/team ("sir se baat karni hai", "kisi aadmi se baat karao", "manager ko do") — their request IS the confirmation. Invoke \`transfer_call\` with \`userConfirmed: true\` IMMEDIATELY. Do NOT ask "kya main aapko connect kar doon?" — asking for confirmation after an explicit request annoys the caller.
+2. YOU PROPOSE IT. The condition is met but the caller has not directly asked (e.g. they are frustrated or the issue needs a human). Ask ONE short confirmation question ("Kya main aapko humari team se connect kar doon?"), WAIT for a clear yes, then invoke \`transfer_call\` with \`userConfirmed: true\`.
+
+Either way: do NOT speak your own "connecting you" line — the system announces the transfer for you. Just invoke the tool.
+
+HARD RULES:
+- NEVER invoke \`transfer_call\` when the condition above is not met — not for jokes, banter, frustration you can still handle, or questions you cannot answer (offer a callback for those instead, bucket 2 rules apply).
+- NEVER claim you are transferring or have transferred without actually invoking the tool. Saying "main aapko connect kar raha hoon" WITHOUT invoking the tool leaves the caller stranded.
+- NEVER invoke the tool just because the call is long or you are unsure what to say.
+- If the caller declines the confirmation ("nahi, aap hi bata do"), continue helping them yourself. Do not offer the transfer again unless they ask.
+- If the tool returns a failure message, apologize once in one short line and offer to take their name and number for a callback instead. Do not retry the transfer in the same turn.
+`;
+};
+
+/**
  * Build the LLM system prompt. Structured as a decision tree so the model
  * never confuses "on-topic but unknown" (KB is empty) with "off-topic"
  * (unrelated request). Refusing a legitimate business question is a much
@@ -186,7 +218,7 @@ Important: "What services do you provide?", "How much does X cost?", "Are you av
 
 # INTAKE
 ${renderIntakeRules(agent)}
-
+${renderTransferRules(agent)}
 # ENDING THE CALL
 End the call ONLY when the caller says an unambiguous farewell word. Be VERY conservative — a false hangup is much worse than staying on the line.
 

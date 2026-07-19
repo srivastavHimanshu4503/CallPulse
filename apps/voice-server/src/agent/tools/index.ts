@@ -2,6 +2,7 @@ import { llm } from "@livekit/agents";
 import { z } from "zod";
 import { createLogger } from "../../logger.js";
 import type { IWorkflowTrigger } from "../../workflows/interface.js";
+import type { TransferConfig } from "../../agent-config/types.js";
 
 const log = createLogger("tools");
 
@@ -14,6 +15,14 @@ export interface ToolContext {
   workflowTrigger: IWorkflowTrigger;
   /** Called by the `end_call` tool to hang up the call cleanly. */
   endCall: (reason: string) => Promise<void>;
+  /**
+   * Transfer workflow config — when absent, the `transfer_call` tool is not
+   * registered at all, so agents without transfer can never invoke it.
+   * The destination number lives in this config, never in LLM arguments.
+   */
+  transfer?: TransferConfig | null;
+  /** Redirects the caller to the configured human number. Returns a status string for the LLM. */
+  transferCall?: (reason: string) => Promise<string>;
 }
 
 /**
@@ -21,7 +30,7 @@ export interface ToolContext {
  * they close over the current context (callSid, tenantId, endCall handle).
  */
 export const buildTools = (ctx: ToolContext) => {
-  return {
+  const tools: Record<string, ReturnType<typeof llm.tool>> = {
     collect_callback_details: llm.tool({
       description:
         "Save the caller's name and callback number when they explicitly want a human to call them back or when the current query cannot be resolved on the call. Do NOT invoke this unless the caller has clearly opted into a callback.",
@@ -68,4 +77,40 @@ export const buildTools = (ctx: ToolContext) => {
       },
     }),
   };
+
+  if (ctx.transfer && ctx.transferCall) {
+    const transferCall = ctx.transferCall;
+    tools.transfer_call = llm.tool({
+      description:
+        "Transfer this call to a human team member's real phone. THIS TOOL DIALS A REAL PHONE NUMBER — invoking it wrongly hangs up on the caller. Invoke ONLY when the transfer condition in your instructions is clearly met AND the caller has either (a) explicitly asked to speak to a human/owner/team in their own words, or (b) clearly said yes to your confirmation question. NEVER invoke for jokes, banter, mild frustration, ambiguous requests, or because you cannot answer a question (offer a callback for that instead). IMPORTANT: NEVER output text like '[type transfer_call]' in your response — invoke the actual function.",
+      parameters: z.object({
+        reason: z
+          .string()
+          .describe(
+            "One short phrase quoting what the caller asked for, e.g. 'caller asked to speak to the owner about a bulk order'."
+          ),
+        userConfirmed: z
+          .boolean()
+          .describe(
+            "true ONLY if the caller explicitly asked to speak to a human in their own words, OR clearly agreed after you asked them. Never guess true."
+          ),
+      }),
+      execute: async (args) => {
+        if (!args.userConfirmed) {
+          log.warn("transfer_call blocked — userConfirmed=false", {
+            callSid: ctx.callSid,
+            reason: args.reason,
+          });
+          return "Do NOT transfer yet. First ask the caller to confirm they want to be connected to the team, and only invoke transfer_call again after they clearly say yes.";
+        }
+        log.warn("transfer_call TOOL FIRED", {
+          callSid: ctx.callSid,
+          reason: args.reason,
+        });
+        return transferCall(args.reason);
+      },
+    });
+  }
+
+  return tools;
 };

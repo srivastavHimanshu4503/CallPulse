@@ -5,6 +5,7 @@ import { config } from "./config.js";
 import { createLogger } from "./logger.js";
 import { runPostCallPipeline } from "./jobs/pipeline.js";
 import { startChatSessionSweeper } from "./jobs/chat-session-sweeper.js";
+import { startTransferReconciliation } from "./jobs/transfer-reconciliation.js";
 import type { PostCallJob } from "./jobs/types.js";
 import { createQueue } from "./queue/factory.js";
 import { createIngestRouter } from "./routes/ingest.js";
@@ -45,6 +46,7 @@ const httpServer = app.listen(config.server.port, () => {
 });
 
 const chatSweeper = startChatSessionSweeper();
+const transferSweeper = startTransferReconciliation();
 
 const gracefulShutdown = async (signal: string) => {
   log.info("shutdown signal received", { signal });
@@ -56,6 +58,7 @@ const gracefulShutdown = async (signal: string) => {
 
   try {
     clearInterval(chatSweeper);
+    clearInterval(transferSweeper);
     await queue.close();
     await db.$disconnect();
   } catch (err) {

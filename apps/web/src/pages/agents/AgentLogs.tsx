@@ -7,7 +7,7 @@ import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { ConfirmModal } from "../../components/common/ConfirmModal.js";
 import { formatDateTime, formatTime } from "@antigravity/utils";
 import { api } from "../../lib/axios.js";
-import { ArrowLeft, Search, Filter, Phone, PhoneCall, MessageSquare, MessageCircle, Trash2, ShieldCheck, Sparkles, User, FileText, PhoneIncoming, PhoneOutgoing, Activity, X } from "lucide-react";
+import { ArrowLeft, Search, Filter, Phone, PhoneCall, PhoneForwarded, MessageSquare, MessageCircle, Trash2, ShieldCheck, Sparkles, User, FileText, PhoneIncoming, PhoneOutgoing, Activity, X } from "lucide-react";
 import type { SerializedAgent } from "@antigravity/types";
 import { toast } from "sonner";
 import { computeLeadScore } from "../../components/ui-ext/index.js";
@@ -368,6 +368,17 @@ export function AgentLogs(): React.JSX.Element {
             </div>
           );
         })}
+        
+        {selectedLog?.metadata?.transfer?.initiated && (
+          <div className="flex w-full mb-6 justify-center">
+            <div className="bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full border border-slate-200 shadow-sm flex items-center gap-1.5">
+              <PhoneForwarded className="h-3 w-3" />
+              {selectedLog.metadata.transfer.status === "failed" 
+                ? `Call transfer to ${selectedLog.metadata.transfer.to} failed or was unanswered.` 
+                : `Call transferred to ${selectedLog.metadata.transfer.to}`}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -648,7 +659,23 @@ export function AgentLogs(): React.JSX.Element {
                       {selectedLog.duration && (
                         <>
                           <span className="text-border text-xs">|</span>
-                          <span className="text-xs font-medium text-text-secondary">{selectedLog.duration}s</span>
+                          <span className="text-xs font-medium text-text-secondary">
+                            {selectedLog.metadata?.transfer?.initiated ? `AI ${selectedLog.duration}s` : `${selectedLog.duration}s`}
+                          </span>
+                        </>
+                      )}
+                      {selectedLog.metadata?.transfer?.initiated && (
+                        <>
+                          <span className="text-border text-xs">|</span>
+                          <span className="text-xs font-medium text-text-secondary flex items-center gap-1">
+                            <PhoneForwarded className="h-3 w-3" />
+                            {selectedLog.metadata.transfer.status === "failed"
+                              ? `Transfer to ${selectedLog.metadata.transfer.to} not answered`
+                              : `Transferred → ${selectedLog.metadata.transfer.to}`}
+                            {Number(selectedLog.metadata.transfer.durationSeconds) > 0 &&
+                              ` · ${selectedLog.metadata.transfer.durationSeconds}s`}
+                            {selectedLog.metadata.transfer.simulated && " (test)"}
+                          </span>
                         </>
                       )}
                     </div>
