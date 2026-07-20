@@ -18,6 +18,20 @@ git push main ──────────────▶  EC2 dev box (t3.sma
 - **Secrets:** `.env` on the box is written from Secrets Manager `indiai/dev/env` (ap-south-1) on every deploy. To change env vars, edit the secret, then redeploy.
 - **The box never builds images.** t3.small (2 GB) can only run them. Images are built on a dev Mac and pushed to ECR (`docker-compose.deploy.yml` overrides `build:` with ECR `image:` refs).
 
+## Daily commands (cheat sheet)
+
+```bash
+./scripts/deploy-dev.sh api            # deploy: rebuild api image + deploy to box
+./scripts/deploy-dev.sh                # deploy config-only change (no rebuild)
+./scripts/logs-dev.sh voice-server     # live logs in terminal (Ctrl+C to stop)
+bash scripts/db-tunnel-dev.sh          # DB tunnel — then connect your Postgres app:
+                                       #   localhost:5433, db indiai, user postgres,
+                                       #   password = POSTGRES_PASSWORD in indiai/dev/env secret
+```
+
+Logs are also in AWS console: CloudWatch → Log groups → `/indiai/dev` (Mumbai).
+The DB tunnel is per-session: run it each time, keep the terminal open while browsing.
+
 ## Deploying a code change (manual, current)
 
 ```bash
