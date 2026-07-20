@@ -1,3 +1,4 @@
 api.deskbuddy.in {
+	log
 	reverse_proxy api:3000
 }
