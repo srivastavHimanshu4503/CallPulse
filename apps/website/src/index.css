@@ -1,0 +1,214 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Anchor targets clear the sticky nav */
+section[id] {
+  scroll-margin-top: 88px;
+}
+
+/* Subtle engineering-grid backdrop, faded out radially */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(15, 23, 42, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 0%, black 30%, transparent 80%);
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 0%, black 30%, transparent 80%);
+}
+
+.bg-grid-dark {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 75%);
+}
+
+/* Brand gradient headline text */
+.text-gradient-brand {
+  background: linear-gradient(100deg, #1d4ed8 0%, #2563eb 45%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Continuous marquee (pairs with a duplicated track) */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse 38s linear infinite;
+}
+
+.marquee-mask:hover .animate-marquee,
+.marquee-mask:hover .animate-marquee-reverse {
+  animation-play-state: paused;
+}
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+/* Voice waveform bars */
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+.wave-bar {
+  animation: wave 0.9s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Expanding ring pulse (incoming call) */
+@keyframes ring-pulse {
+  0% { transform: scale(0.6); opacity: 0.55; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.ring-pulse {
+  animation: ring-pulse 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* Gentle float for decorative cards */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+.animate-floaty {
+  animation: floaty 5s ease-in-out infinite;
+}
+
+.animate-floaty-slow {
+  animation: floaty 7s ease-in-out infinite;
+}
+
+/* Shine sweep on primary buttons */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.btn-shine:hover::after {
+  transform: translateX(130%);
+}
+
+/* Rotating conic border for the highlighted pricing card */
+@keyframes border-spin {
+  to { transform: rotate(360deg); }
+}
+
+.card-glow-border {
+  position: relative;
+  border-radius: 14px;
+  padding: 1.5px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.card-glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  z-index: -1;
+  background: conic-gradient(
+    from 0deg,
+    #2563eb,
+    #93c5fd,
+    #dbeafe,
+    #2563eb,
+    #93c5fd,
+    #2563eb
+  );
+  animation: border-spin 6s linear infinite;
+}
+
+/* Mouse-tracking spotlight surface (set --spot-x/--spot-y from JS) */
+.spotlight {
+  position: relative;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    480px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(37, 99, 235, 0.08),
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Slow drifting glow blobs */
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -24px) scale(1.08); }
+  66% { transform: translate(-22px, 18px) scale(0.95); }
+}
+
+.animate-drift {
+  animation: drift 16s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-marquee-reverse,
+  .wave-bar,
+  .ring-pulse,
+  .animate-floaty,
+  .animate-floaty-slow,
+  .animate-drift,
+  .card-glow-border::before {
+    animation: none;
+  }
+  .btn-shine::after {
+    display: none;
+  }
+}
