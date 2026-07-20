@@ -104,7 +104,7 @@ const BUSINESS_TYPES = [
 
 const TESTIMONIAL = {
   quote:
-    "Indi AI answers every call in Marathi and Hindi. My salon never misses a booking now — even at 11 PM.",
+    "DeskBuddy answers every call in Marathi and Hindi. My salon never misses a booking now — even at 11 PM.",
   author: "Priya Deshmukh",
   role: "Owner, Glow Studio · Pune",
   initials: "PD",
@@ -505,7 +505,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
         </div>
 
         <div className="px-6 sm:px-10 pb-5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#999999]">
-          <div>© {new Date().getFullYear()} Indi AI · Made in India</div>
+          <div>© {new Date().getFullYear()} DeskBuddy · Made in India</div>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:text-[#111111] transition-colors">Privacy</a>
             <a href="#" className="hover:text-[#111111] transition-colors">Terms</a>

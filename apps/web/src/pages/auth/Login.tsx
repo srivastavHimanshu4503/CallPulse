@@ -137,7 +137,7 @@ export function Login(): React.JSX.Element {
         </form>
 
         <div className="mt-8 text-center text-[13.5px] text-[#666666]">
-          New to Indi AI?{" "}
+          New to DeskBuddy?{" "}
           <Link to="/register" className="text-[#111111] font-bold hover:text-brand-600 transition-colors">
             Create a business account
           </Link>

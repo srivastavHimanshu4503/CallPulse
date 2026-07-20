@@ -42,9 +42,9 @@ const VOICE_LIBRARY = [
 // Hand-picked voices pinned to the top of the grid — the best pick per
 // use-case for Indian callers (native Hindi first, then premium multilingual).
 const FEATURED_VOICES: { id: string; tag: string }[] = [
-  { id: "sarvam:priya", tag: "Most popular" },
+  { id: "sarvam:priya", tag: "Hindi native" },
   { id: "sarvam:shubh", tag: "Best for Hindi" },
-  { id: "elevenlabs:EXAVITQu4vr4xnSDxMaL", tag: "Premium quality" },
+  { id: "elevenlabs:EXAVITQu4vr4xnSDxMaL", tag: "Default · Most popular" },
   { id: "elevenlabs:nPczCjzI2devNBz1zQrb", tag: "Deep & calm" },
 ];
 
@@ -63,7 +63,7 @@ interface VoiceSelectorProps {
 }
 
 const normalizeVoiceId = (id: string): string => {
-  if (!id) return "sarvam:priya";
+  if (!id) return "elevenlabs:EXAVITQu4vr4xnSDxMaL";
   const lower = id.toLowerCase();
   if (lower.startsWith("sarvam:") || lower.startsWith("openai:")) return id;
 

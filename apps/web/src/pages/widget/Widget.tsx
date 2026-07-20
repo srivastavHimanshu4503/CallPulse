@@ -477,7 +477,7 @@ export function Widget(): React.JSX.Element {
   const templateMeta = TEMPLATE_META[template];
   const TemplateBody = TEMPLATE_BODY[template];
 
-  const embedJs = `<!-- Indi AI widget · ${tenant?.name || "workspace"} -->
+  const embedJs = `<!-- DeskBuddy widget · ${tenant?.name || "workspace"} -->
 <script async src="https://widget.indi.ai/v1/loader.js"
   data-widget-id="${WIDGET_ID}"
   data-agent="${agent}"

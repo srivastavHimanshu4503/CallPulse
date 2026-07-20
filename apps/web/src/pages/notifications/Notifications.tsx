@@ -66,7 +66,7 @@ const CHANNEL_META: Record<ChannelKey, {
   email: {
     name: "Email",
     icon: Mail,
-    hint: "Sent from notify@indi.ai (SPF verified)",
+    hint: "Sent from notify@deskbuddy.in (SPF verified)",
     tint: "bg-brand-500",
     tintText: "text-white",
     soft: "bg-brand-50",
@@ -111,11 +111,11 @@ const DEFAULT_TEMPLATES: Record<EventKey, {
   slack: string;
 }> = {
   call_ended: {
-    emailSubject: "[Indi AI] Call ended — {{contact_name}}",
+    emailSubject: "[DeskBuddy] Call ended — {{contact_name}}",
     email:
       "Hi {{owner_name}},\n\n{{contact_name}} just spoke with {{agent_name}} for {{duration}}.\n\nSummary: {{summary}}\n\nOutcome: {{outcome}}\nView the full transcript: {{transcript_url}}",
     sms:
-      "Indi AI: {{contact_name}} · {{duration}} · {{outcome}}. Details: {{short_url}}",
+      "DeskBuddy: {{contact_name}} · {{duration}} · {{outcome}}. Details: {{short_url}}",
     slack:
       ":telephone_receiver: *Call ended* — {{contact_name}} spoke with {{agent_name}} for {{duration}}.\n> {{summary}}\n<{{transcript_url}}|View transcript>",
   },
@@ -187,7 +187,7 @@ function EmailPreview({ subject, body }: { subject: string; body: string }): Rea
           </div>
           <div className="min-w-0">
             <div className="text-[11px] font-semibold text-fg-primary truncate">
-              Indi AI <span className="text-fg-muted font-normal">&lt;notify@indi.ai&gt;</span>
+              DeskBuddy <span className="text-fg-muted font-normal">&lt;notify@deskbuddy.in&gt;</span>
             </div>
             <div className="text-[10px] text-fg-muted truncate">
               to yogendra@myaifrontdesk.com
@@ -231,7 +231,7 @@ function SmsPreview({ body }: { body: string }): React.JSX.Element {
           <div className="border-y border-line-subtle bg-bg-subtle px-3 py-2 flex items-center gap-2">
             <span className="text-[9.5px] text-brand-500">‹ Messages</span>
             <div className="flex-1 text-center">
-              <div className="text-[10.5px] font-semibold text-fg-primary">Indi AI</div>
+              <div className="text-[10.5px] font-semibold text-fg-primary">DeskBuddy</div>
               <div className="text-[8.5px] text-fg-muted">+91 8000 123 456</div>
             </div>
             <span className="w-4" />
@@ -274,7 +274,7 @@ function SlackPreview({ body }: { body: string }): React.JSX.Element {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[11.5px] font-bold text-fg-primary">Indi AI</span>
+              <span className="text-[11.5px] font-bold text-fg-primary">DeskBuddy</span>
               <span className="text-[9px] font-semibold px-1 py-0.5 rounded bg-slate-100 text-slate-600 uppercase tracking-wider">APP</span>
               <span className="text-[9.5px] text-fg-muted">9:41 AM</span>
             </div>

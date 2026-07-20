@@ -50,7 +50,7 @@ export function useRazorpayCheckout() {
           order_id: session.orderId,
           amount: session.amount,
           currency: session.currency,
-          name: "IndiAI",
+          name: "DeskBuddy",
           description,
           theme: { color: "#2563EB" },
           handler: async (response: any) => {

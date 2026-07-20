@@ -342,7 +342,7 @@ export function Register(): React.JSX.Element {
               </div>
             </div>
             <h2 className="text-[24px] font-bold text-[#111111] mb-2 tracking-tight">
-              Welcome to Indi AI, {name.split(" ")[0]}!
+              Welcome to DeskBuddy, {name.split(" ")[0]}!
             </h2>
             <p className="text-[13.5px] text-[#666666] leading-relaxed max-w-sm mx-auto mb-8">
               Your business workspace is ready and your AI receptionist is being configured right now.

@@ -5,6 +5,9 @@ import type { LogFilters } from "./agents.types.js";
 import { createTestCallCredentials, type TestCallCredentials } from "../../config/livekit.js";
 import { PLAN_AGENT_LIMITS } from "@antigravity/types";
 import { ensureWhatsAppSender } from "../whatsapp/whatsapp-sender.service.js";
+import { generateChatReply } from "@antigravity/llm";
+import { env } from "../../config/env.js";
+import { logger } from "../../utils/logger.js";
 
 type AIAgent = NonNullable<Awaited<ReturnType<typeof db.aIAgent.findFirst>>>;
 
@@ -28,6 +31,64 @@ const registerWhatsAppSenderInBackground = (agent: AIAgent, tenantId: string): v
     await ensureWhatsAppSender(phone.phoneNumber, tenant?.name || agent.name);
   })().catch(() => {
     /* logged inside ensureWhatsAppSender */
+  });
+};
+
+/**
+ * New tenants have no knowledge base, so a fresh agent would answer calls with
+ * zero business context. Generate a starter KB from the tenant's signup info
+ * with one LLM call. Fire-and-forget: agent creation must never fail or slow
+ * down because of an LLM hiccup — worst case the agent starts without a KB,
+ * same as before.
+ */
+const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantId: string): void => {
+  const log = logger.child({ module: "agents-default-kb" });
+  void (async () => {
+    if (!env.OPENAI_API_KEY) return;
+    const tenant = await db.tenant.findUnique({
+      where: { id: tenantId },
+      select: { name: true, businessType: true, teamSize: true, websiteUrl: true },
+    });
+    if (!tenant) return;
+
+    const businessFacts = [
+      `Business name: ${tenant.name}`,
+      tenant.businessType ? `Business type: ${tenant.businessType}` : null,
+      tenant.teamSize ? `Team size: ${tenant.teamSize}` : null,
+      tenant.websiteUrl || agent.websiteUrl ? `Website: ${agent.websiteUrl || tenant.websiteUrl}` : null,
+      agent.businessInfo ? `Owner-provided business info: ${agent.businessInfo}` : null,
+      `AI receptionist name: ${agent.name}, role: ${agent.role}, language: ${agent.language}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const content = await generateChatReply(
+      {
+        provider: "openai",
+        apiKey: env.OPENAI_API_KEY,
+        model: "gpt-4o-mini",
+        temperature: 0.4,
+        maxTokens: 900,
+      },
+      "You write starter knowledge bases for AI phone receptionists of Indian small businesses. " +
+        "From the business facts given, write a concise knowledge base the receptionist can rely on during calls: " +
+        "a short business overview, likely services/offerings for this business type, typical customer questions with sensible answers, " +
+        "and how the receptionist should handle bookings, pricing questions (never invent exact prices — offer a callback), and business hours (assume standard Indian hours unless stated). " +
+        "Plain text with simple section headings. No preamble, no markdown symbols other than headings.",
+      [{ role: "user", content: businessFacts }],
+    );
+
+    await db.knowledgeBase.create({
+      data: {
+        tenantId,
+        agentId: agent.id,
+        name: `${agent.name} Starter Knowledge Base`,
+        content,
+      },
+    });
+    log.info("default knowledge base generated", { agentId: agent.id });
+  })().catch((err) => {
+    log.warn("default knowledge base generation failed", { agentId: agent.id, err: String(err) });
   });
 };
 
@@ -226,7 +287,7 @@ export class AgentsService {
           dndCompliance: dndCompliance ?? true,
           recordingConsent: recordingConsent ?? true,
           isActive: isActive ?? true,
-          voice: voice || "Priya (Indian Female)",
+          voice: voice || "elevenlabs:EXAVITQu4vr4xnSDxMaL",
           intakeWorkflowId: intakeWorkflowId || null,
           smsWorkflowId: smsWorkflowId || null,
           phoneNumberId: phoneNumberId || null,
@@ -276,6 +337,7 @@ export class AgentsService {
     });
 
     registerWhatsAppSenderInBackground(agent, tenantId);
+    generateDefaultKnowledgeBaseInBackground(agent, tenantId);
     return this.serializeAgent(agent, tenantId);
   }
 
