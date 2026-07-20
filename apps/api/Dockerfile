@@ -1,31 +1,26 @@
 FROM node:20-slim
 WORKDIR /app
 
-# Install OpenSSL for Prisma
+# OpenSSL for Prisma engines
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
-# Copy workspace files
+# Copy workspace manifests first for layer caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/ ./packages/
 
-# Install dependencies
 RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile
 
-# Build shared packages first
-RUN pnpm --filter @antigravity/types build || true
-RUN pnpm --filter @antigravity/validators build || true
-RUN pnpm --filter @antigravity/config build || true
+# Prisma engines are platform-specific: the committed client was generated on
+# macOS, so regenerate INSIDE the image (the schema lives in packages/db).
+RUN pnpm --filter @antigravity/db exec prisma generate
 
-# Copy API source
 COPY apps/api/ ./apps/api/
 
-# Generate Prisma client
-RUN pnpm --filter api exec prisma generate
-
-# Build API
-RUN pnpm --filter api build
+# Build the app AND all its workspace dependencies in topological order.
+# No `|| true` — a compile failure must fail the image build.
+RUN pnpm --filter "@antigravity/api..." build
 
 EXPOSE 3000
-CMD ["pnpm", "--filter", "api", "start"]
+CMD ["pnpm", "--filter", "@antigravity/api", "start"]

@@ -1,0 +1,11 @@
+# Never bake local secrets, installs, or build output into images —
+# everything below is either regenerated inside the image or must stay out.
+**/node_modules
+**/dist
+**/.env
+**/.env.*
+.git
+infrastructure/cdk.out
+**/cdk.out
+apps/web/build
+**/.DS_Store
