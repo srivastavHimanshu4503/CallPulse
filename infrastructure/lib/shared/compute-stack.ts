@@ -61,7 +61,8 @@ export class ComputeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["secretsmanager:GetSecretValue"],
         resources: [
-          `arn:aws:secretsmanager:${this.region}:${this.account}:secret:indiai/*`,
+          // Any region: env secrets live in ap-south-1, github-token in us-east-1
+          `arn:aws:secretsmanager:*:${this.account}:secret:indiai/*`,
         ],
       })
     );
@@ -125,6 +126,9 @@ export class ComputeStack extends cdk.Stack {
       "npm install -g pnpm",
       "mkdir -p /app",
       "cd /app",
+      // Private repo: authenticate via a credential helper that fetches the
+      // token from Secrets Manager at pull time (never persisted to disk).
+      `git config --global credential.helper '!f() { echo "username=x-access-token"; echo "password=$(aws secretsmanager get-secret-value --secret-id indiai/github-token --region us-east-1 --query SecretString --output text)"; }; f'`,
       "git clone https://github.com/yogendraft21/IndiAi.git indiAi || true",
       "cd indiAi",
       "echo 'UserData initial setup done! Ready for pipeline commands.' > /var/log/userdata_antigravity.log"
