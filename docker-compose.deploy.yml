@@ -1,17 +1,80 @@
 # Override for EC2 deploys: use prebuilt ECR images instead of building on
 # the box (the instance is too small to build them). Usage:
 #   docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+#
+# Also adds: CloudWatch log shipping (group /indiai/dev, one stream per
+# service; `docker logs` keeps working via Docker's dual-logging cache) and
+# self-healing for the voice-server (healthcheck + autoheal restart).
 services:
   api:
     image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/api:${IMAGE_TAG:-latest}
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1
+        awslogs-group: /indiai/dev
+        awslogs-stream: api
 
   post-call-server:
     image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/post-call-server:${IMAGE_TAG:-latest}
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1
+        awslogs-group: /indiai/dev
+        awslogs-stream: post-call-server
 
   voice-server:
     image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/voice-server:${IMAGE_TAG:-latest}
+    # The LiveKit worker's WebSocket can die silently (zombie connection: no
+    # error, no reconnect, dispatches lost). The SDK health server on :8081
+    # returns 503 in that state; autoheal restarts us when Docker marks the
+    # container unhealthy.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8081/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    labels:
+      - autoheal=true
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1
+        awslogs-group: /indiai/dev
+        awslogs-stream: voice-server
 
-  # HTTPS termination for api.deskbuddy.in (auto Let's Encrypt certs)
+  autoheal:
+    image: willfarrell/autoheal:latest
+    restart: unless-stopped
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  postgres:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1
+        awslogs-group: /indiai/dev
+        awslogs-stream: postgres
+
+  typesense:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1
+        awslogs-group: /indiai/dev
+        awslogs-stream: typesense
+
   caddy:
     image: caddy:2
     ports:
@@ -23,6 +86,12 @@ services:
     depends_on:
       - api
     restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1
+        awslogs-group: /indiai/dev
+        awslogs-stream: caddy
 
 volumes:
   caddydata:

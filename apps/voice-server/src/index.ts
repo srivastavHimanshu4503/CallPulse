@@ -83,6 +83,11 @@ if (agentsPkg && config.livekit.isConfigured) {
         // Keep 2 child processes warm and idle so an incoming job can be
         // handed to a ready worker instead of paying the cold-start tax.
         numIdleProcesses: 2,
+        // Fixed port for the SDK's built-in health server: GET / returns 200
+        // when the worker is registered with LiveKit and 503 when the
+        // WebSocket has silently died (observed zombie connections in dev).
+        // Docker's healthcheck probes this so autoheal can restart us.
+        port: 8081,
       })
     );
     worker
