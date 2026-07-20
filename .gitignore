@@ -43,3 +43,5 @@ pnpm-debug.log*
 /typesense-data/
 infrastructure/cdk.out/
 infrastructure/cdk.context.json
+.gstack/
+.claude/
