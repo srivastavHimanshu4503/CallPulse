@@ -10,3 +10,19 @@ services:
 
   voice-server:
     image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/voice-server:${IMAGE_TAG:-latest}
+
+  # HTTPS termination for api.deskbuddy.in (auto Let's Encrypt certs)
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  caddydata:
