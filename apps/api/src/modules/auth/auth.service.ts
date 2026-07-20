@@ -7,6 +7,7 @@ import { generateBusinessSlug } from "@antigravity/utils";
 import type { RegisterInput, LoginInput, ResetPasswordInput } from "@antigravity/validators";
 import type { AuthResponseData, AuthTokens } from "@antigravity/types";
 import { PLAN_CREDITS } from "@antigravity/types";
+import { generateDefaultKnowledgeBaseInBackground } from "../agents/agents.service.js";
 
 export class AuthService {
   async register(data: RegisterInput): Promise<AuthResponseData> {
@@ -104,8 +105,12 @@ export class AuthService {
         });
       }
 
-      return { tenant, user };
+      return { tenant, user, aiAgent };
     });
+
+    // Starter knowledge base for the auto-created agent — fire-and-forget so
+    // signup latency is unaffected.
+    generateDefaultKnowledgeBaseInBackground(result.aiAgent, result.tenant.id);
 
     // 5. Generate tokens
     const tokens = generateTokens(

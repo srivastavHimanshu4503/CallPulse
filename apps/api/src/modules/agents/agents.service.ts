@@ -41,7 +41,7 @@ const registerWhatsAppSenderInBackground = (agent: AIAgent, tenantId: string): v
  * down because of an LLM hiccup — worst case the agent starts without a KB,
  * same as before.
  */
-const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantId: string): void => {
+export const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantId: string): void => {
   const log = logger.child({ module: "agents-default-kb" });
   void (async () => {
     if (!env.OPENAI_API_KEY) return;
