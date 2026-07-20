@@ -21,6 +21,10 @@ aws ecr get-login-password --region "$REGION" |
 
 $COMPOSE pull
 $COMPOSE up -d --remove-orphans
+# Caddyfile is a single-file bind mount: git pull replaces the inode and the
+# running container keeps the stale one, so config edits silently no-op.
+# Recreating is cheap (~2s) and deterministic.
+$COMPOSE up -d --force-recreate caddy
 docker image prune -f
 
 sleep 15
