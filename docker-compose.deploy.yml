@@ -1,0 +1,12 @@
+# Override for EC2 deploys: use prebuilt ECR images instead of building on
+# the box (the instance is too small to build them). Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+services:
+  api:
+    image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/api:${IMAGE_TAG:-latest}
+
+  post-call-server:
+    image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/post-call-server:${IMAGE_TAG:-latest}
+
+  voice-server:
+    image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/voice-server:${IMAGE_TAG:-latest}

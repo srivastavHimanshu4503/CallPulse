@@ -4,7 +4,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import { Construct } from "constructs";
-import { BaseStackProps, Stage } from "../common-constructs/types";
+import { BaseStackProps } from "../common-constructs/types";
 
 export interface ComputeStackProps extends BaseStackProps {
   vpc: ec2.IVpc;
@@ -24,7 +24,6 @@ export class ComputeStack extends cdk.Stack {
     super(scope, id, props);
 
     const env = props.deployEnv;
-    const isProd = env === Stage.prod;
 
     const role = new iam.Role(this, "InstanceRole", {
       assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
@@ -67,6 +66,20 @@ export class ComputeStack extends cdk.Stack {
       })
     );
 
+    // Deploys pull prebuilt images from ECR instead of building on the box
+    // (t3.small cannot build these images).
+    role.addToPolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchCheckLayerAvailability",
+        ],
+        resources: ["*"],
+      })
+    );
+
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ["cloudwatch:PutMetricData", "logs:PutLogEvents", "logs:CreateLogStream"],
@@ -74,9 +87,7 @@ export class ComputeStack extends cdk.Stack {
       })
     );
 
-    const instanceType = isProd
-      ? ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL)
-      : ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO);
+    const instanceType = ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL);
 
     this.instance = new ec2.Instance(this, "ServerInstance", {
       vpc: props.vpc,
@@ -88,8 +99,9 @@ export class ComputeStack extends cdk.Stack {
       blockDevices: [
         {
           deviceName: "/dev/xvda",
-          volume: ec2.BlockDeviceVolume.ebs(isProd ? 20 : 10, {
+          volume: ec2.BlockDeviceVolume.ebs(30, {
             encrypted: true,
+            volumeType: ec2.EbsDeviceVolumeType.GP3,
           }),
         },
       ],
@@ -119,8 +131,10 @@ export class ComputeStack extends cdk.Stack {
     );
     this.instance.addUserData(userData.render());
 
+    // Per-env name: dev and prod stacks live in the same account/region, so a
+    // shared name would collide on the second deploy.
     new ssm.StringParameter(this, "Ec2InstanceIdParameter", {
-      parameterName: "/indiai/ec2-instance-id",
+      parameterName: `/indiai/${env}/ec2-instance-id`,
       stringValue: this.instance.instanceId,
       description: "Instance ID of the active Antigravity EC2 application node",
     });
