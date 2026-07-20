@@ -162,16 +162,25 @@ export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
     }
     log.info("initializing tts provider", {
       provider: "elevenlabs",
-      model: "eleven_turbo_v2_5",
+      model: "eleven_flash_v2_5",
       voice: voiceId,
       gender,
       configuredVoice: opts.voice,
     });
     return new elevenlabs.TTS({
       apiKey: config.tts.elevenlabsApiKey,
-      model: "eleven_turbo_v2_5",
+      // flash_v2_5 halves time-to-first-byte vs turbo (~75ms model latency)
+      // with near-identical quality — the single biggest latency lever here.
+      model: "eleven_flash_v2_5",
       voiceId,
       language: opts.language.split("-")[0],
+      // Default delivery was reported as rushed for Hinglish callers; 0.93
+      // slows articulation slightly without sounding sluggish.
+      voiceSettings: {
+        speed: 0.93,
+        stability: 0.5,
+        similarity_boost: 0.75,
+      },
     });
   }
 

@@ -18,6 +18,11 @@ services:
       dockerfile: apps/post-call-server/Dockerfile
     env_file:
       - .env
+    environment:
+      # The shared .env sets PORT=3000 (for the api), which silently moved
+      # this server off :3002 — voice-server's ingest dispatch then failed,
+      # taking down extraction, recordings, and credit billing with it.
+      PORT: "3002"
     depends_on:
       - postgres
     restart: unless-stopped

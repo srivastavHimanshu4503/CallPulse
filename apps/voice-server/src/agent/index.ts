@@ -520,7 +520,12 @@ export default defineAgent({
           minWords: 2,
           minDuration: 500,
         },
-        preemptiveGeneration: { enabled: true, preemptiveTts: false, maxSpeechDuration: 10000 },
+        // preemptiveTts synthesizes the reply while the user is still
+        // finishing their turn, cutting ~300-500ms off perceived response
+        // latency. If the final transcript changes the reply, the SDK
+        // discards the preemptive audio, so worst case costs a few TTS
+        // characters — not correctness.
+        preemptiveGeneration: { enabled: true, preemptiveTts: true, maxSpeechDuration: 10000 },
       },
     });
 
