@@ -341,6 +341,27 @@ export class AgentsService {
     return this.serializeAgent(agent, tenantId);
   }
 
+  async getAgentKnowledge(tenantId: string, agentId: string) {
+    return db.knowledgeBase.findMany({
+      where: { tenantId, agentId },
+      orderBy: { updatedAt: "desc" },
+      select: { id: true, name: true, content: true, updatedAt: true },
+    });
+  }
+
+  async updateAgentKnowledge(tenantId: string, agentId: string, kbId: string, content: string) {
+    const kb = await db.knowledgeBase.findFirst({
+      where: { id: kbId, tenantId, agentId },
+      select: { id: true },
+    });
+    if (!kb) return null;
+    return db.knowledgeBase.update({
+      where: { id: kbId },
+      data: { content },
+      select: { id: true, name: true, content: true, updatedAt: true },
+    });
+  }
+
   async getAgentById(tenantId: string, id: string): Promise<SerializedAgent | null> {
     const agent = await db.aIAgent.findFirst({
       where: {

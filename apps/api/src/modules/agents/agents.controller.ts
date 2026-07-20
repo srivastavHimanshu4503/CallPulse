@@ -66,6 +66,41 @@ export class AgentsController {
     }
   }
 
+  async getAgentKnowledge(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = req.tenantId;
+      const { id } = req.params;
+      if (!tenantId || !id) {
+        sendError(res, "Invalid request details", 400);
+        return;
+      }
+      const result = await agentsService.getAgentKnowledge(tenantId, id);
+      sendSuccess(res, result, 200);
+    } catch (error: any) {
+      sendError(res, getCleanErrorMessage(error), 500);
+    }
+  }
+
+  async updateAgentKnowledge(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = req.tenantId;
+      const { id, kbId } = req.params;
+      const { content } = req.body ?? {};
+      if (!tenantId || !id || !kbId || typeof content !== "string") {
+        sendError(res, "Invalid request details", 400);
+        return;
+      }
+      const result = await agentsService.updateAgentKnowledge(tenantId, id, kbId, content);
+      if (!result) {
+        sendError(res, "Knowledge base not found", 404);
+        return;
+      }
+      sendSuccess(res, result, 200);
+    } catch (error: any) {
+      sendError(res, getCleanErrorMessage(error), 500);
+    }
+  }
+
   async createTestCallToken(req: Request, res: Response): Promise<void> {
     try {
       const tenantId = req.tenantId;

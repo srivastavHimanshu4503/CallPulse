@@ -1,8 +1,18 @@
 import * as React from "react";
 import { Input } from "@antigravity/ui";
-import { Info, UploadCloud, Link as LinkIcon, FileText } from "lucide-react";
+import { Info, UploadCloud, Link as LinkIcon, FileText, RefreshCw } from "lucide-react";
+import { api } from "../../../lib/axios.js";
+
+interface StoredKnowledgeBase {
+  id: string;
+  name: string;
+  content: string | null;
+  updatedAt: string;
+}
 
 interface KnowledgeBaseSetupProps {
+  /** When editing an existing agent, its stored knowledge bases are shown. */
+  agentId?: string;
   websiteUrl: string;
   setWebsiteUrl: (val: string) => void;
   businessInfo: string;
@@ -12,6 +22,7 @@ interface KnowledgeBaseSetupProps {
 }
 
 export function KnowledgeBaseSetup({
+  agentId,
   websiteUrl,
   setWebsiteUrl,
   businessInfo,
@@ -21,6 +32,7 @@ export function KnowledgeBaseSetup({
 }: KnowledgeBaseSetupProps): React.JSX.Element {
   return (
     <div className="space-y-5 animate-in fade-in duration-200 font-sans">
+      {agentId && <StoredKnowledgeSection agentId={agentId} disabled={disabled} />}
       <SectionCard
         title="Knowledge base sources"
         description="Anchor the agent's answers to your business facts, pricing, FAQs, and documents."
@@ -69,6 +81,101 @@ export function KnowledgeBaseSetup({
         </Field>
       </SectionCard>
     </div>
+  );
+}
+
+function StoredKnowledgeSection({
+  agentId,
+  disabled,
+}: {
+  agentId: string;
+  disabled: boolean;
+}): React.JSX.Element {
+  const [kbs, setKbs] = React.useState<StoredKnowledgeBase[] | null>(null);
+  const [drafts, setDrafts] = React.useState<Record<string, string>>({});
+  const [savingId, setSavingId] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const load = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/agents/${agentId}/knowledge`);
+      const list: StoredKnowledgeBase[] = res.data?.data ?? [];
+      setKbs(list);
+      setDrafts(Object.fromEntries(list.map((kb) => [kb.id, kb.content ?? ""])));
+    } catch {
+      setKbs([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [agentId]);
+
+  React.useEffect(() => {
+    void load();
+  }, [load]);
+
+  const save = async (kbId: string) => {
+    setSavingId(kbId);
+    try {
+      await api.put(`/agents/${agentId}/knowledge/${kbId}`, { content: drafts[kbId] ?? "" });
+      setKbs((prev) =>
+        prev?.map((kb) => (kb.id === kbId ? { ...kb, content: drafts[kbId] ?? "" } : kb)) ?? null,
+      );
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  return (
+    <SectionCard
+      title="Agent knowledge base"
+      description="What your agent already knows. A starter knowledge base is generated automatically from your business details — edit it any time."
+    >
+      {kbs === null || loading ? (
+        <p className="text-[12px] text-[#666666]">Loading knowledge base…</p>
+      ) : kbs.length === 0 ? (
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[12px] text-[#666666] leading-relaxed">
+            Your starter knowledge base is still being generated — this usually takes a few
+            seconds after the agent is created.
+          </p>
+          <button
+            type="button"
+            onClick={() => void load()}
+            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] shrink-0"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Refresh
+          </button>
+        </div>
+      ) : (
+        kbs.map((kb) => {
+          const dirty = (drafts[kb.id] ?? "") !== (kb.content ?? "");
+          return (
+            <div key={kb.id}>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-[12px] font-semibold text-[#111111]">{kb.name}</label>
+                <button
+                  type="button"
+                  disabled={disabled || !dirty || savingId === kb.id}
+                  onClick={() => void save(kb.id)}
+                  className="text-[12px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] disabled:text-[#999999]"
+                >
+                  {savingId === kb.id ? "Saving…" : dirty ? "Save" : "Saved"}
+                </button>
+              </div>
+              <textarea
+                value={drafts[kb.id] ?? ""}
+                onChange={(e) => setDrafts((d) => ({ ...d, [kb.id]: e.target.value }))}
+                disabled={disabled}
+                rows={10}
+                className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] p-3 focus:outline-none leading-relaxed resize-y"
+              />
+            </div>
+          );
+        })
+      )}
+    </SectionCard>
   );
 }
 

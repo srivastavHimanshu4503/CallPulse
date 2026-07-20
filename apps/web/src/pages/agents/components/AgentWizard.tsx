@@ -441,6 +441,7 @@ export function AgentWizard({
 
               {activeTab === "knowledge" && (
                 <KnowledgeBaseSetup
+                  agentId={editingAgent?.id}
                   websiteUrl={websiteUrl}
                   setWebsiteUrl={setWebsiteUrl}
                   businessInfo={businessInfo}

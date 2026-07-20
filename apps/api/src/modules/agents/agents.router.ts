@@ -20,6 +20,8 @@ router.get("/:id", controller.getAgentById);
 router.put("/:id", controller.updateAgent);
 router.delete("/:id", controller.deleteAgent);
 router.get("/:id/logs", controller.getAgentLogs);
+router.get("/:id/knowledge", controller.getAgentKnowledge);
+router.put("/:id/knowledge/:kbId", controller.updateAgentKnowledge);
 router.delete("/:id/logs/:logId", controller.deleteAgentLog);
 router.post("/:id/test-call/token", controller.createTestCallToken);
 
