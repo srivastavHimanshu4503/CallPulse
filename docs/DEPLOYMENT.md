@@ -11,8 +11,9 @@ git push main ──────────────▶  EC2 dev box (t3.sma
 ```
 
 - **Account/profile:** AWS account `512438352667`, CLI profile `indiai`
-- **Dev box:** instance id in SSM param `/indiai/dev/ec2-instance-id` (ap-south-1).
-  Public IP changes on stop/start. API: `http://<public-ip>:3000/api/v1/health`
+- **Dev box:** instance id in SSM param `/indiai/dev/ec2-instance-id` (ap-south-1),
+  Elastic IP `15.207.7.17` (permanent). API: `https://api.deskbuddy.in/api/v1/health`
+  (Caddy container terminates TLS, auto Let's Encrypt; DNS at the deskbuddy.in registrar)
 - **No SSH** — all access via SSM (`aws ssm start-session --target <instance-id> --profile indiai --region ap-south-1`)
 - **Secrets:** `.env` on the box is written from Secrets Manager `indiai/dev/env` (ap-south-1) on every deploy. To change env vars, edit the secret, then redeploy.
 - **The box never builds images.** t3.small (2 GB) can only run them. Images are built on a dev Mac and pushed to ECR (`docker-compose.deploy.yml` overrides `build:` with ECR `image:` refs).
