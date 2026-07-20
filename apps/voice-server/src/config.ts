@@ -56,8 +56,11 @@ const env = parsed.data;
 
 import type { LLMProviderName, LLMProviderConfig } from "@antigravity/llm";
 
+// gpt-4.1 (not mini): tenants paste knowledge bases in raw Devanagari /
+// Tamil / Telugu / Marathi, and mini-class models hallucinate against them
+// on live calls. TTFT is comparable to 4o-mini, so latency is unaffected.
 const DEFAULT_MODELS: Record<LLMProviderName, string> = {
-  openai: "gpt-4o-mini",
+  openai: "gpt-4.1",
   google: "gemini-2.5-flash",
   anthropic: "claude-3-5-haiku-20241022",
 };
