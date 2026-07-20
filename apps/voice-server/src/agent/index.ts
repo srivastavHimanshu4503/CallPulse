@@ -14,7 +14,7 @@ import { WorkflowTriggerStub } from "../workflows/stub.js";
 import { buildTools } from "./tools/index.js";
 import { createPipelineLLM } from "@antigravity/llm";
 import { createSTT } from "../stt/index.js";
-import { createTTS, type TTSBuildOptions } from "../tts/index.js";
+import { createTTS, getVoiceGender, type TTSBuildOptions } from "../tts/index.js";
 import { getAgentConfigProvider } from "../agent-config/index.js";
 import { TwilioTelephonyProvider } from "../telephony/twilio/provider.js";
 import { resolveLanguageCodes, type VoiceKey } from "../voices/config.js";
@@ -180,6 +180,9 @@ export default defineAgent({
 
     const languageKey = normalizeLanguage(persona.language);
     const langCodes = resolveLanguageCodes(languageKey);
+    // Drives gendered Hindi verb forms in the prompt AND the default
+    // transfer announcement — must match the TTS voice that actually speaks.
+    const voiceGender = getVoiceGender(persona.voice);
 
     callLog.info("persona resolved — using user-configured voice and language", {
       agentId: persona.ids.agentId,
@@ -191,6 +194,7 @@ export default defineAgent({
       sttCode: langCodes.stt,
       ttsCode: langCodes.tts,
       configuredVoice: persona.voice,
+      voiceGender,
       knowledgeBases: persona.knowledge.length,
       intakeEnabled: persona.intake.enabled,
       maxDurationMinutes: persona.maxDurationMinutes,
@@ -346,7 +350,9 @@ export default defineAgent({
 
       const announce =
         transfer.message?.trim() ||
-        "Main aapko humari team se connect kar raha hoon, ek moment please.";
+        (voiceGender === "male"
+          ? "Main aapko humari team se connect kar raha hoon, ek moment please."
+          : "Main aapko humari team se connect kar rahi hoon, ek moment please.");
 
       if (callSource === "browser") {
         // Test calls have no Twilio leg — simulate the handoff so the whole
@@ -458,7 +464,7 @@ export default defineAgent({
       return failureAdvice;
     };
 
-    const systemPrompt = buildSystemPrompt(persona);
+    const systemPrompt = buildSystemPrompt(persona, voiceGender);
 
     const tools = buildTools({
       callSid,
@@ -503,7 +509,12 @@ export default defineAgent({
         // signal arrives ~200ms before its FINAL_TRANSCRIPT, which caused
         // the "reply lands one turn late" bug when using "stt" mode.
         turnDetection: "vad",
-        endpointing: { mode: "fixed", minDelay: 300, maxDelay: 2500 },
+        // maxDelay caps how long we wait for Sarvam's FINAL_TRANSCRIPT after
+        // VAD says the caller stopped. Sarvam finals routinely lag END_SPEECH
+        // (see comment above), so the old 2500ms cap turned into a regular
+        // 2.5s dead-air stall before the LLM even started. 1500ms bounds the
+        // worst case; preemptive generation below covers transcript revisions.
+        endpointing: { mode: "fixed", minDelay: 300, maxDelay: 1500 },
         // Barge-in with matched thresholds from the reference production
         // system (Python `min_interruption_words=2`, which maps to
         // `min_duration = 0.2 + 0.15*sensitivity = 0.5s` in their v2
@@ -648,6 +659,33 @@ export default defineAgent({
 
     agentSession.on(voice.AgentSessionEventTypes.SpeechCreated, (ev: any) => {
       callLog.info("speech created", { source: ev?.source, userInitiated: ev?.userInitiated });
+    });
+
+    // Per-turn latency breakdown. "AI is lagging" is unfixable without knowing
+    // WHERE the time goes — these three metrics split every response into
+    // turn-close (VAD + STT final wait), LLM time-to-first-token, and TTS
+    // time-to-first-byte. Grep for "latency:" in call logs to diagnose.
+    agentSession.on(voice.AgentSessionEventTypes.MetricsCollected, (ev: any) => {
+      const m = ev?.metrics;
+      if (!m?.type) return;
+      if (m.type === "eou_metrics") {
+        callLog.info("latency: turn close", {
+          endOfUtteranceDelayMs: Math.round(m.endOfUtteranceDelayMs),
+          transcriptionDelayMs: Math.round(m.transcriptionDelayMs),
+        });
+      } else if (m.type === "llm_metrics") {
+        callLog.info("latency: llm", {
+          ttftMs: Math.round(m.ttftMs),
+          durationMs: Math.round(m.durationMs),
+          cancelled: m.cancelled,
+        });
+      } else if (m.type === "tts_metrics") {
+        callLog.info("latency: tts", {
+          ttfbMs: Math.round(m.ttfbMs),
+          durationMs: Math.round(m.durationMs),
+          cancelled: m.cancelled,
+        });
+      }
     });
 
     agentSession.on(voice.AgentSessionEventTypes.Error, (err: any) => {
@@ -863,9 +901,11 @@ export default defineAgent({
 // only the AI would use to *close* the call, not incidental "thanks" or
 // polite affirmations. Anchored on \b so "goodbye" matches but "goodbyes"
 // doesn't; explicit multi-word Hindi close phrases require the exact form
-// the prompt trains the model to produce.
+// the prompt trains the model to produce. "din shubh ho" / "have a … day"
+// are the closing lines the ENDING THE CALL section now trains; the legacy
+// "phir milte" forms stay so older cached prompts still trigger the net.
 const ASSISTANT_FAREWELL_RE =
-  /\b(?:goodbye|bye\s*bye|bye\.?\s*$|phir\s+milte|phir\s+baat\s+karenge|chalo\s+bye)\b/i;
+  /\b(?:goodbye|bye\s*bye|bye\.?\s*$|phir\s+milte|phir\s+baat\s+karenge|chalo\s+bye|(?:aapka\s+)?din\s+shubh\s+ho|have\s+a\s+(?:great|good|nice|wonderful|lovely)\s+day)\b/i;
 
 // User-side farewell — matches what the caller is likely to say. Broader
 // than the assistant regex because callers hedge ("okay thanks bye", "haan

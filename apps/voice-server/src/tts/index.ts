@@ -68,6 +68,22 @@ const inferGender = (provider: "sarvam" | "openai" | "elevenlabs", voiceId: stri
 
 const DEFAULT_SARVAM_VOICE = "priya"; // female — matches DB column default.
 
+// Global speaking-pace default. Callers reported the default delivery as
+// rushed for Hindi/Hinglish; 0.9 slows articulation slightly without
+// sounding sluggish. Applied uniformly across providers.
+const DEFAULT_PACE = 0.9;
+
+/**
+ * Gender of the configured voice, resolved the same way `createTTS` resolves
+ * the speaker. Used to render gender-correct Hindi first-person verb forms in
+ * the system prompt ("karti hoon" vs "karta hoon") — a female voice speaking
+ * masculine Hindi is an instant immersion-breaker.
+ */
+export const getVoiceGender = (voiceStr: string): "male" | "female" | "unknown" => {
+  const { provider, voiceId } = parseVoiceString(voiceStr);
+  return inferGender(provider, voiceId);
+};
+
 /**
  * Parse the voice identifier stored on the agent row into `(provider, voiceId)`.
  *
@@ -133,7 +149,7 @@ export const parseVoiceString = (voiceStr: string): { provider: "sarvam" | "open
  */
 export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
   const { provider, voiceId } = parseVoiceString(opts.voice);
-  const pace = opts.pace ?? 1.0;
+  const pace = opts.pace ?? DEFAULT_PACE;
   const gender = inferGender(provider, voiceId);
 
   if (provider === "openai") {
@@ -162,22 +178,22 @@ export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
     }
     log.info("initializing tts provider", {
       provider: "elevenlabs",
-      model: "eleven_flash_v2_5",
+      model: "eleven_turbo_v2_5",
       voice: voiceId,
       gender,
       configuredVoice: opts.voice,
+      speed: pace,
     });
     return new elevenlabs.TTS({
       apiKey: config.tts.elevenlabsApiKey,
-      // flash_v2_5 halves time-to-first-byte vs turbo (~75ms model latency)
-      // with near-identical quality — the single biggest latency lever here.
-      model: "eleven_flash_v2_5",
+      // turbo_v2_5, NOT flash_v2_5: flash's lower TTFB came with an audible
+      // quality drop ("voice is not clear") on Hindi calls. Turbo's ~250ms
+      // TTFB is inaudible next to STT+LLM time; clarity wins.
+      model: "eleven_turbo_v2_5",
       voiceId,
       language: opts.language.split("-")[0],
-      // Default delivery was reported as rushed for Hinglish callers; 0.93
-      // slows articulation slightly without sounding sluggish.
       voiceSettings: {
-        speed: 0.93,
+        speed: pace,
         stability: 0.5,
         similarity_boost: 0.75,
       },
