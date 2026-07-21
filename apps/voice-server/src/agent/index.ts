@@ -503,10 +503,12 @@ export default defineAgent({
       /* prewarm is best-effort */
     }
 
+    const sttInstance = createSTT({ language: langCodes.stt });
+
     const agent = new voice.Agent({
       instructions: systemPrompt,
       tools,
-      stt: createSTT({ language: langCodes.stt }),
+      stt: sttInstance,
       llm: pipelineLLM,
       tts: createTTS(ttsOptions),
     });
@@ -671,6 +673,16 @@ export default defineAgent({
 
     agentSession.on(voice.AgentSessionEventTypes.SpeechCreated, (ev: any) => {
       callLog.info("speech created", { source: ev?.source, userInitiated: ev?.userInitiated });
+    });
+
+    // The moment Silero VAD says the caller stopped (user speaking →
+    // listening), force Sarvam to finalize the transcript. Without this,
+    // Sarvam's own endpointing keeps every turn waiting ~700–1100ms for the
+    // final — the single largest chunk of dead air per turn.
+    agentSession.on(voice.AgentSessionEventTypes.UserStateChanged, (ev: any) => {
+      if (ev?.oldState === "speaking" && ev?.newState === "listening") {
+        sttInstance.flushActive();
+      }
     });
 
     // Per-turn latency breakdown. "AI is lagging" is unfixable without knowing

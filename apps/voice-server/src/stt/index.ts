@@ -20,6 +20,33 @@ export interface STTBuildOptions {
 }
 
 /**
+ * Sarvam STT that can be flushed from the outside. The agents core NEVER
+ * flushes the STT stream on VAD end-of-speech, so even with the websocket
+ * negotiated with `flush_signal=true`, Sarvam sits on the final transcript
+ * until its OWN endpoint detection fires — measured at 700–1100ms of dead
+ * air per turn. The voice pipeline calls `flushActive()` the moment Silero
+ * VAD reports the caller stopped, which makes the plugin send
+ * `{"type":"flush"}` and Sarvam finalize immediately.
+ */
+export class FlushableSarvamSTT extends sarvam.STT {
+  #active: agentsSTT.SpeechStream | null = null;
+
+  stream(options?: Parameters<sarvam.STT["stream"]>[0]): ReturnType<sarvam.STT["stream"]> {
+    const s = super.stream(options);
+    this.#active = s;
+    return s;
+  }
+
+  flushActive(): void {
+    try {
+      this.#active?.flush();
+    } catch {
+      /* stream may already be closed at call teardown — nothing to flush */
+    }
+  }
+}
+
+/**
  * Build the pipeline STT. Sarvam `saaras:v3` is used because:
  *   - it is native for Indian languages including Hinglish (`codemix` mode),
  *   - it streams partial + final transcripts over WebSocket, and
@@ -29,7 +56,7 @@ export interface STTBuildOptions {
  * actually understands code-switched Hindi/English) requires a paid Deepgram
  * plan. `nova-2` falls back to English-only recognition and butchers Hinglish.
  */
-export const createSTT = (opts: STTBuildOptions): agentsSTT.STT => {
+export const createSTT = (opts: STTBuildOptions): FlushableSarvamSTT => {
   if (!config.tts.sarvamApiKey) {
     throw new Error("SARVAM_API_KEY is required for the default STT provider");
   }
@@ -40,7 +67,7 @@ export const createSTT = (opts: STTBuildOptions): agentsSTT.STT => {
     language: opts.language,
     mode,
   });
-  return new sarvam.STT({
+  return new FlushableSarvamSTT({
     apiKey: config.tts.sarvamApiKey,
     model: "saaras:v3",
     languageCode: opts.language,
