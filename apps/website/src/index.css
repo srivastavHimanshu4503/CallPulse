@@ -194,6 +194,48 @@ section[id] {
   animation: drift 16s ease-in-out infinite;
 }
 
+/* ── Navbar accents ── */
+
+/* Animated multicolor hairline across the top of the navbar */
+@keyframes gradient-pan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.nav-hairline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, #2563eb, #8b5cf6, #ec4899, #f59e0b, #14b8a6, #2563eb);
+  background-size: 200% 100%;
+  animation: gradient-pan 8s linear infinite;
+}
+
+/* Gradient underline that slides in on nav-link hover */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #2563eb, #8b5cf6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
 /* ── Ambient shape animations (decor.tsx) ── */
 
 /* Bubbles / half-circles: clearly visible vertical wander */
@@ -277,6 +319,7 @@ section[id] {
   .animate-floaty,
   .animate-floaty-slow,
   .animate-drift,
+  .nav-hairline,
   .animate-float-soft,
   .animate-float-drift,
   .animate-orb-drift,

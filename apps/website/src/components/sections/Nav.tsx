@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "../common/Logo";
 import { EASE } from "../motion/primitives";
+import { Sparkle } from "../motion/decor";
 
 const LINKS = [
   { label: "How it works", href: "#how-it-works" },
@@ -34,9 +35,11 @@ export function Nav() {
           : "border-b border-transparent"
       }`}
     >
+      <span aria-hidden className="nav-hairline" />
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <a href="/" aria-label="DeskBuddy home">
+        <a href="/" aria-label="DeskBuddy home" className="relative">
           <Logo height={26} />
+          <Sparkle className="-top-1.5 -right-4" size={13} tone="amber" />
         </a>
 
         <div className="hidden md:flex items-center gap-7">
@@ -44,7 +47,7 @@ export function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="text-[13.5px] font-medium text-fg-secondary hover:text-fg-primary transition-colors"
+              className="nav-link text-[13.5px] font-medium text-fg-secondary hover:text-fg-primary transition-colors"
             >
               {l.label}
             </a>
@@ -60,7 +63,8 @@ export function Nav() {
           </a>
           <a
             href="https://app.deskbuddy.in/register"
-            className="text-[13.5px] font-semibold text-white bg-brand hover:bg-brand-600 rounded-[6px] px-4 py-2 transition-all hover:shadow-[0_6px_16px_-6px_rgba(37,99,235,0.5)]"
+            className="btn-shine text-[13.5px] font-semibold text-white rounded-[8px] px-4 py-2 transition-all shadow-[0_6px_18px_-6px_rgba(124,58,237,0.5)] hover:shadow-[0_8px_24px_-6px_rgba(124,58,237,0.65)] hover:-translate-y-px"
+            style={{ background: "linear-gradient(100deg, #2563eb, #7c3aed)" }}
           >
             Get started
           </a>
@@ -105,7 +109,8 @@ export function Nav() {
                 </a>
                 <a
                   href="https://app.deskbuddy.in/register"
-                  className="text-center text-[14px] font-semibold text-white bg-brand rounded-[6px] px-4 py-2.5"
+                  className="text-center text-[14px] font-semibold text-white rounded-[6px] px-4 py-2.5"
+                  style={{ background: "linear-gradient(100deg, #2563eb, #7c3aed)" }}
                 >
                   Get started
                 </a>
