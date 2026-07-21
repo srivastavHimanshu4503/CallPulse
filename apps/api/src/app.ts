@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import cors from "cors";
 import { errorMiddleware } from "./middleware/error.middleware.js";
+import { requestLoggerMiddleware } from "./middleware/request-logger.middleware.js";
 import { sendSuccess } from "./utils/response.js";
 import { authRouter } from "./modules/auth/auth.router.js";
 import { agentsRouter } from "./modules/agents/agents.router.js";
@@ -17,6 +18,7 @@ const app: Express = express();
 
 // Standard express middleware configurations
 app.use(cors({ origin: "*" })); // Configure strictly in production
+app.use(requestLoggerMiddleware);
 
 // Razorpay webhook needs the RAW request bytes for signature verification,
 // so it mounts BEFORE the global JSON parser.

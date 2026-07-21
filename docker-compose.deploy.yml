@@ -2,9 +2,11 @@
 # the box (the instance is too small to build them). Usage:
 #   docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 #
-# Also adds: CloudWatch log shipping (group /indiai/dev, one stream per
-# service; `docker logs` keeps working via Docker's dual-logging cache) and
-# self-healing for the voice-server (healthcheck + autoheal restart).
+# Also adds: CloudWatch log shipping for the 3 app servers only (group
+# /indiai/dev, one stream per service; `docker logs` keeps working via
+# Docker's dual-logging cache) and self-healing for the voice-server
+# (healthcheck + autoheal restart). Infra containers (caddy, postgres,
+# typesense) log locally only — check them with `docker logs` on the box.
 services:
   api:
     image: 512438352667.dkr.ecr.ap-south-1.amazonaws.com/indiai/api:${IMAGE_TAG:-latest}
@@ -59,22 +61,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  postgres:
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ap-south-1
-        awslogs-group: /indiai/dev
-        awslogs-stream: postgres
-
-  typesense:
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ap-south-1
-        awslogs-group: /indiai/dev
-        awslogs-stream: typesense
-
   caddy:
     image: caddy:2
     ports:
@@ -86,12 +72,6 @@ services:
     depends_on:
       - api
     restart: unless-stopped
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ap-south-1
-        awslogs-group: /indiai/dev
-        awslogs-stream: caddy
 
 volumes:
   caddydata:

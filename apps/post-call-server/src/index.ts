@@ -25,6 +25,18 @@ const app = express();
 // calls. Ship a comfortable ceiling but keep it bounded to reject abuse.
 app.use(express.json({ limit: "2mb" }));
 
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (req.path === "/health") return next();
+  const start = Date.now();
+  res.on("finish", () => {
+    const meta = { status: res.statusCode, ms: Date.now() - start };
+    const msg = `${req.method} ${req.originalUrl}`;
+    if (res.statusCode >= 400) log.warn(msg, meta);
+    else log.info(msg, meta);
+  });
+  next();
+});
+
 app.get("/health", (_req, res) => {
   res.json({
     status: "healthy",
