@@ -1,4 +1,4 @@
-import { defineAgent, voice, type JobContext, type JobProcess } from "@livekit/agents";
+import { defineAgent, llm as agentsLLM, voice, type JobContext, type JobProcess } from "@livekit/agents";
 import * as silero from "@livekit/agents-plugin-silero";
 import { RoomEvent } from "@livekit/rtc-node";
 import { RoomServiceClient, SipClient } from "livekit-server-sdk";
@@ -927,6 +927,32 @@ export default defineAgent({
       allowInterruptions: false,
       addToChatCtx: true,
     });
+
+    // Prompt-cache warmup while the greeting plays: one throwaway request
+    // with the REAL system prompt + tool schema makes the provider cache the
+    // multi-thousand-token prefix, so the first real user turn pays cached
+    // TTFT instead of full prompt processing. Same prefix is what matters —
+    // tools included, since they're part of the cached prompt. Failure is
+    // irrelevant; the call proceeds identically without the warm cache.
+    void (async () => {
+      const warmStart = Date.now();
+      try {
+        const warmCtx = agentsLLM.ChatContext.empty();
+        warmCtx.addMessage({ role: "system", content: systemPrompt });
+        warmCtx.addMessage({ role: "user", content: "hi" });
+        const stream = pipelineLLM.chat({ chatCtx: warmCtx, toolCtx: tools });
+        for await (const _chunk of stream) {
+          break; // first chunk proves the prefix is processed — stop paying for output
+        }
+        stream.close();
+        callLog.info("latency: llm cache warmup done", { ms: Date.now() - warmStart });
+      } catch (err) {
+        callLog.warn("llm cache warmup failed (non-fatal)", {
+          ms: Date.now() - warmStart,
+          message: (err as Error)?.message,
+        });
+      }
+    })();
   },
 });
 
