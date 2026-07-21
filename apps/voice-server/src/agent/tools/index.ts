@@ -33,7 +33,7 @@ export const buildTools = (ctx: ToolContext) => {
   const tools: Record<string, ReturnType<typeof llm.tool>> = {
     collect_callback_details: llm.tool({
       description:
-        "Save the caller's name and callback number when they explicitly want a human to call them back or when the current query cannot be resolved on the call. Do NOT invoke this unless the caller has clearly opted into a callback.",
+        "Save the caller's name and callback number for a human callback. Invoke ONLY after the caller has clearly opted into a callback.",
       parameters: z.object({
         name: z.string().describe("Caller's full name"),
         phone: z.string().describe("Callback phone number in E.164 format when possible"),
@@ -58,7 +58,7 @@ export const buildTools = (ctx: ToolContext) => {
 
     end_call: llm.tool({
       description:
-        "Hang up the phone call. THIS TOOL IS THE ONLY WAY TO ACTUALLY END THE CALL. Whenever your reply contains a closing farewell, you MUST invoke this tool in the same turn via function calling. Invoke when the caller has spoken an unambiguous farewell — one of: 'bye', 'bye bye', 'goodbye', 'thank you bye', 'thank you goodbye', 'thanks bye', 'okay thanks bye', 'okay bye', 'phir milte', 'phir baat karenge', 'chalo bye'. Note that a leading 'okay'/'ok'/'haan' before the farewell still counts as a farewell. Do NOT invoke for: bare single-word acks ('okay', 'haan', 'hmm', 'ji', 'yes', 'sure', 'ok') with no farewell word after them, 'thank you' alone, statements like 'that's all', 'I have to go', 'call me later', 'let me check', 'I'll think about it', or silence. Always say a short warm goodbye line first, then invoke this in the same turn. IMPORTANT: NEVER output text like '[type end_call]' in your response — you must invoke the actual function.",
+        "Hang up the phone call — the ONLY way to actually end it. Whenever your reply contains a closing farewell, invoke this in the SAME turn via function calling. Invoke only for the unambiguous farewells listed in your ENDING THE CALL instructions (a leading 'okay'/'haan' before the farewell still counts); never for bare acknowledgments, 'thank you' alone, or silence.",
       parameters: z.object({
         reason: z.string().describe(
           "One short phrase describing why the call is ending, e.g. 'caller said bye', 'query resolved and caller said thanks bye'."
@@ -82,7 +82,7 @@ export const buildTools = (ctx: ToolContext) => {
     const transferCall = ctx.transferCall;
     tools.transfer_call = llm.tool({
       description:
-        "Transfer this call to a human team member's real phone. THIS TOOL DIALS A REAL PHONE NUMBER — invoking it wrongly hangs up on the caller. Invoke ONLY when the transfer condition in your instructions is clearly met AND the caller has either (a) explicitly asked to speak to a human/owner/team in their own words, or (b) clearly said yes to your confirmation question. NEVER invoke for jokes, banter, mild frustration, ambiguous requests, or because you cannot answer a question (offer a callback for that instead). IMPORTANT: NEVER output text like '[type transfer_call]' in your response — invoke the actual function.",
+        "Transfer this call to a human team member's real phone. Dials a REAL number — invoke ONLY per the CALL TRANSFER rules in your instructions: condition met AND the caller explicitly asked for a human or clearly confirmed yes. Never for jokes, banter, or unanswerable questions (offer a callback instead).",
       parameters: z.object({
         reason: z
           .string()

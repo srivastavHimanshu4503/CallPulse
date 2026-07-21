@@ -83,11 +83,12 @@ export default defineAgent({
       // Instantiating the provider primes its module graph + Prisma client.
       agentConfigProvider;
       // Explicit Silero VAD: the plugin default of 550ms min-silence is the
-      // single biggest fixed cost in perceived response latency. 400ms still
-      // rides above natural intra-sentence pauses (~200-300ms) while cutting
-      // 150ms off EVERY turn. Loaded once per child process — the ONNX model
-      // load is too slow to do per-call.
-      proc.userData.vad = await silero.VAD.load({ minSilenceDuration: 400 });
+      // single biggest fixed cost in perceived response latency. 300ms sits
+      // right at the top of natural intra-sentence pauses (~200-300ms) —
+      // deliberate latency/barge-in tradeoff for the <1s target; revert to
+      // 400 if callers get cut off mid-sentence. Loaded once per child
+      // process — the ONNX model load is too slow to do per-call.
+      proc.userData.vad = await silero.VAD.load({ minSilenceDuration: 300 });
       log.info("child process prewarmed");
     } catch (err) {
       log.error("child process prewarm failed", { message: (err as Error)?.message });
@@ -515,7 +516,7 @@ export default defineAgent({
 
     const agentSession = new voice.AgentSession({
       useTtsAlignedTranscript: true,
-      // Prewarmed 400ms-min-silence Silero instance (see prewarm). Omitting
+      // Prewarmed 300ms-min-silence Silero instance (see prewarm). Omitting
       // this would make the SDK load its own VAD with the 550ms default.
       vad: ctx.proc.userData.vad as voice.AgentSessionOptions["vad"],
       turnHandling: {
