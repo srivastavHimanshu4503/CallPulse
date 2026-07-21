@@ -13,7 +13,7 @@ import { dispatchPostCall } from "../notifier/post-call.js";
 import { buildSystemPrompt } from "./prompt.js";
 import { WorkflowTriggerStub } from "../workflows/stub.js";
 import { buildTools } from "./tools/index.js";
-import { createPipelineLLM } from "@antigravity/llm";
+import { createLLM, createPipelineLLM } from "@antigravity/llm";
 import { createSTT } from "../stt/index.js";
 import { createTTS, getVoiceGender, type TTSBuildOptions } from "../tts/index.js";
 import { getAgentConfigProvider } from "../agent-config/index.js";
@@ -692,7 +692,8 @@ export default defineAgent({
           transcriptionDelayMs: Math.round(m.transcriptionDelayMs),
         });
       } else if (m.type === "llm_metrics") {
-        if (!m.cancelled) turnLlmTtftMs = Math.round(m.ttftMs);
+        // ttft -1 = stream produced no tokens (cancelled/errored) — not a turn.
+        if (!m.cancelled && m.ttftMs >= 0) turnLlmTtftMs = Math.round(m.ttftMs);
         callLog.info("latency: llm", {
           ttftMs: Math.round(m.ttftMs),
           durationMs: Math.round(m.durationMs),
@@ -934,17 +935,23 @@ export default defineAgent({
     // TTFT instead of full prompt processing. Same prefix is what matters —
     // tools included, since they're part of the cached prompt. Failure is
     // irrelevant; the call proceeds identically without the warm cache.
+    //
+    // Runs on a DEDICATED provider instance, never the session's pipelineLLM:
+    // the session subscribes to its LLM's metrics events, so a shared
+    // instance leaks the warmup's bogus ttft=-1 into the TURN TOTAL numbers.
     void (async () => {
       const warmStart = Date.now();
       try {
+        const warmupLLM = createLLM(config.llm.primary);
         const warmCtx = agentsLLM.ChatContext.empty();
         warmCtx.addMessage({ role: "system", content: systemPrompt });
         warmCtx.addMessage({ role: "user", content: "hi" });
-        const stream = pipelineLLM.chat({ chatCtx: warmCtx, toolCtx: tools });
+        const stream = warmupLLM.chat({ chatCtx: warmCtx, toolCtx: tools });
         for await (const _chunk of stream) {
           break; // first chunk proves the prefix is processed — stop paying for output
         }
         stream.close();
+        await warmupLLM.aclose();
         callLog.info("latency: llm cache warmup done", { ms: Date.now() - warmStart });
       } catch (err) {
         callLog.warn("llm cache warmup failed (non-fatal)", {

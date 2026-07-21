@@ -112,7 +112,10 @@ class FallbackLLMStream extends agentsLLM.LLMStream {
     super(parent, {
       chatCtx: args.chatCtx,
       toolCtx: args.toolCtx,
-      connOptions: args.connOptions!,
+      // The base LLMStream dereferences connOptions.maxRetry inside a timer —
+      // an undefined here surfaces as an UNHANDLED REJECTION long after
+      // chat() returned (observed killing the STT websocket mid-handshake).
+      connOptions: args.connOptions ?? DEFAULT_API_CONNECT_OPTIONS,
     });
     this.providers = providers;
     this.callArgs = args;
