@@ -1,5 +1,6 @@
 import { ArrowRight, Phone } from "lucide-react";
 import { Reveal } from "../motion/primitives";
+import { Bubble, Ring, SunRays } from "../motion/decor";
 
 export function FinalCTA() {
   return (
@@ -9,6 +10,12 @@ export function FinalCTA() {
         aria-hidden
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[360px] w-[680px] rounded-full bg-brand/20 blur-[110px]"
       />
+      {/* cool moonlight beams on the dark section */}
+      <SunRays className="left-1/2 -translate-x-1/3 top-0" warm={false} height={420} />
+      <Ring className="hidden md:block top-16 left-[10%]" size={120} tone="white" duration={14} />
+      <Ring className="hidden sm:block bottom-14 right-[8%]" size={70} tone="blue" delay={-4} />
+      <Bubble className="hidden sm:block top-1/3 right-[14%]" size={26} tone="white" delay={-2} />
+      <Bubble className="bottom-24 left-[18%]" size={16} tone="sky" delay={-6} />
 
       <div className="relative max-w-3xl mx-auto text-center">
         <Reveal>

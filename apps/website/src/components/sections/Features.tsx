@@ -12,6 +12,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
+import { Bubble, Dot, Ring } from "../motion/decor";
 import { SpotlightCard } from "../common/SpotlightCard";
 import { EASE, Stagger, StaggerItem } from "../motion/primitives";
 
@@ -83,8 +84,12 @@ function TransferVisual() {
 
 export function Features() {
   return (
-    <section id="features" className="bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto">
+    <section id="features" className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24">
+      <Ring className="hidden lg:block bottom-16 -left-12" size={160} tone="slate" duration={15} />
+      <Bubble className="hidden sm:block top-24 right-10" size={34} tone="blue" delay={-2} duration={10} />
+      <Bubble className="top-1/2 left-[4%]" size={14} tone="sky" delay={-6} />
+      <Dot className="hidden md:block bottom-32 right-[30%]" size={8} tone="amber" delay={-4} />
+      <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Features"
           title="A full front desk, not just a voice"

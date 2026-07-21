@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "../common/SectionHeading";
 import { EASE, Reveal } from "../motion/primitives";
+import { Bubble, Dot, Ring } from "../motion/decor";
 
 const LANGUAGES = [
   { name: "Hindi", greeting: "नमस्ते! मैं आपकी क्या मदद कर सकती हूँ?" },
@@ -30,6 +31,9 @@ export function Languages() {
         aria-hidden
         className="animate-drift absolute top-1/3 left-1/2 -translate-x-1/2 h-[380px] w-[680px] rounded-full bg-brand/[0.05] blur-[100px]"
       />
+      <Ring className="hidden md:block top-20 right-[10%]" size={95} tone="sky" delay={-3} />
+      <Bubble className="hidden sm:block bottom-24 left-[12%]" size={30} tone="blue" delay={-5} duration={10} />
+      <Dot className="top-1/3 left-[6%]" size={9} tone="amber" delay={-2} />
 
       <div className="relative max-w-3xl mx-auto text-center">
         <SectionHeading

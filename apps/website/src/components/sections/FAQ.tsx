@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { EASE, Reveal, Stagger, StaggerItem } from "../motion/primitives";
+import { Bubble, Ring } from "../motion/decor";
 
 const FAQS = [
   {
@@ -83,8 +84,10 @@ function Item({ q, a, index }: { q: string; a: string; index: number }) {
 
 export function FAQ() {
   return (
-    <section id="faq" className="bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24">
-      <div className="max-w-3xl mx-auto">
+    <section id="faq" className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24">
+      <Ring className="hidden lg:block top-24 right-[6%]" size={90} tone="slate" delay={-5} />
+      <Bubble className="hidden sm:block bottom-32 left-[8%]" size={24} tone="blue" delay={-3} />
+      <div className="relative max-w-3xl mx-auto">
         <Reveal className="text-center mb-12">
           <span className="inline-block text-[11px] font-semibold tracking-wide text-brand bg-bg-highlight rounded-full px-3.5 py-1.5 mb-5">
             FAQ

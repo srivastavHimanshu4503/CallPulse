@@ -18,6 +18,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { CountUp, EASE, SplitWords } from "../motion/primitives";
+import { Bubble, Dot, HalfCircle, Ring, SunRays } from "../motion/decor";
 
 /* ─────────────────── scripted live call ─────────────────── */
 
@@ -540,6 +541,18 @@ export function Hero() {
         className="animate-drift absolute top-24 -right-32 h-[480px] w-[480px] rounded-full bg-brand/[0.09] blur-[110px]"
         style={{ animationDelay: "-8s" }}
       />
+
+      {/* sunlight falling from the top edge */}
+      <SunRays className="left-1/2 -translate-x-[10%] top-0" />
+
+      {/* ambient shapes */}
+      <Ring className="hidden lg:block top-16 left-[44%]" size={150} tone="slate" duration={14} />
+      <Ring className="hidden sm:block bottom-24 left-8" size={72} tone="blue" delay={-4} />
+      <Bubble className="hidden sm:block top-36 left-14" size={26} tone="sky" delay={-2} />
+      <Bubble className="hidden lg:block bottom-40 right-10" size={48} tone="blue" delay={-6} duration={11} />
+      <Bubble className="top-24 right-[8%]" size={16} tone="amber" delay={-3} />
+      <Dot className="hidden lg:block top-[58%] left-[38%]" size={7} tone="amber" delay={-1} />
+      <HalfCircle className="hidden md:block -bottom-px left-[12%]" size={110} tone="sky" duration={13} />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 grid lg:grid-cols-[1.02fr_0.98fr] gap-14 lg:gap-16 items-center">
         <div className="text-center lg:text-left">

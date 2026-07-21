@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, Zap } from "lucide-react";
+import { Bubble, HalfCircle, Ring } from "../motion/decor";
 import {
   PLAN_PRICE_INR,
   PLAN_CREDITS,
@@ -120,8 +121,12 @@ function PlanCard({ p }: { p: (typeof PLANS)[number] }) {
 
 export function Pricing() {
   return (
-    <section id="pricing" className="bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto">
+    <section id="pricing" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
+      <Ring className="hidden md:block top-12 left-[8%]" size={110} tone="blue" delay={-2} />
+      <Bubble className="hidden sm:block bottom-40 right-6" size={28} tone="sky" delay={-4} />
+      <Bubble className="top-32 right-[16%]" size={14} tone="amber" delay={-1} />
+      <HalfCircle className="hidden lg:block -top-px left-[38%]" size={90} tone="slate" flip />
+      <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Pricing"
           title="Simple pricing, in rupees"

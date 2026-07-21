@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useRef } from "react";
+import { Dot, HalfCircle, SunRays } from "../motion/decor";
 
 const WORDS =
   "A missed call doesn't leave a voicemail. It books with your competitor. DeskBuddy makes sure that never happens again.".split(
@@ -38,8 +39,11 @@ export function Statement() {
   });
 
   return (
-    <section className="bg-bg-canvas px-4 sm:px-6 py-20 sm:py-28">
-      <div className="max-w-4xl mx-auto">
+    <section className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 py-20 sm:py-28">
+      <SunRays className="left-1/2 -translate-x-1/2 top-0" height={360} />
+      <Dot className="hidden sm:block top-1/4 left-[14%]" size={9} tone="amber" delay={-2} />
+      <HalfCircle className="hidden md:block -bottom-px right-[10%]" size={100} tone="sky" />
+      <div className="relative max-w-4xl mx-auto">
         <p
           ref={ref}
           className="text-[30px] sm:text-[44px] lg:text-[52px] font-extrabold tracking-tight leading-[1.18] text-center"

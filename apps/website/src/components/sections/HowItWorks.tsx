@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles, MonitorSmartphone, PhoneCall, Check, Play } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
 import { EASE, Stagger, StaggerItem } from "../motion/primitives";
+import { Bubble, HalfCircle, Ring } from "../motion/decor";
 
 function KbVisual() {
   return (
@@ -98,8 +99,12 @@ const STEPS = [
 export function HowItWorks() {
   const reduce = useReducedMotion();
   return (
-    <section id="how-it-works" className="bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto">
+    <section id="how-it-works" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
+      <Ring className="hidden md:block -top-10 right-[14%]" size={130} tone="blue" duration={13} />
+      <Bubble className="hidden sm:block top-1/3 left-6" size={30} tone="sky" delay={-3} />
+      <Bubble className="bottom-24 right-8" size={18} tone="amber" delay={-5} />
+      <HalfCircle className="hidden lg:block -bottom-px right-[20%]" size={96} tone="slate" />
+      <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="How it works"
           title="Live in under 10 minutes"
