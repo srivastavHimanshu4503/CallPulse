@@ -25,6 +25,10 @@ const envSchema = z.object({
 
   SARVAM_API_KEY: optionalString,
   DEEPGRAM_API_KEY: optionalString,
+  // "deepgram" routes Hindi/Hinglish/English agents to Deepgram nova-3
+  // (interim transcripts → preemptive LLM generation). Languages nova-3
+  // can't serve (Tamil, Telugu, Marathi, ...) stay on Sarvam either way.
+  STT_PROVIDER: z.enum(["sarvam", "deepgram"]).default("sarvam"),
   OPENAI_API_KEY: optionalString,
   ELEVENLABS_API_KEY: optionalString,
   GEMINI_API_KEY: optionalString,
@@ -171,6 +175,7 @@ export const config = {
     isConfigured: !!(env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_PHONE_NUMBER),
   },
   stt: {
+    provider: env.STT_PROVIDER,
     deepgramApiKey: env.DEEPGRAM_API_KEY,
   },
   tts: {

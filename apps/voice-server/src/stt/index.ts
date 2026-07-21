@@ -1,9 +1,14 @@
 import * as sarvam from "@livekit/agents-plugin-sarvam";
+import * as deepgram from "@livekit/agents-plugin-deepgram";
 import type { stt as agentsSTT } from "@livekit/agents";
 import { config } from "../config.js";
 import { createLogger } from "../logger.js";
 
 const log = createLogger("stt");
+
+/** Common shape the voice pipeline needs: an STT whose active stream can be
+ * force-finalized on VAD end-of-speech. */
+export type PipelineSTT = agentsSTT.STT & { flushActive(): void };
 
 export interface STTBuildOptions {
   /** Sarvam language code (BCP-47), e.g. `hi-IN`, `en-IN`. */
@@ -47,6 +52,43 @@ export class FlushableSarvamSTT extends sarvam.STT {
 }
 
 /**
+ * Deepgram STT with the same flushActive() surface. Deepgram's plugin ignores
+ * the base-class flush (no Finalize frame), but its own endpointing finalizes
+ * within tens of ms AND it streams interim transcripts — which is the whole
+ * point: interims let the SDK's preemptiveGeneration start the LLM while the
+ * caller is still finishing, hiding LLM TTFT inside the end-of-utterance
+ * window. Sarvam (finals only) can never do that.
+ */
+export class FlushableDeepgramSTT extends deepgram.STT {
+  #active: agentsSTT.SpeechStream | null = null;
+
+  stream(options?: Parameters<deepgram.STT["stream"]>[0]): ReturnType<deepgram.STT["stream"]> {
+    const s = super.stream(options);
+    this.#active = s;
+    return s;
+  }
+
+  flushActive(): void {
+    try {
+      this.#active?.flush();
+    } catch {
+      /* stream may already be closed at call teardown — nothing to flush */
+    }
+  }
+}
+
+/**
+ * Languages Deepgram nova-3 can serve. `multi` (nova-3 multilingual) covers
+ * Hindi + English code-switching — Hinglish. Everything else (Tamil, Telugu,
+ * Marathi, Bengali, ...) is NOT in nova-3 multilingual's language set and
+ * must stay on Sarvam regardless of the configured provider.
+ */
+const DEEPGRAM_LANGUAGE_MAP: Record<string, string> = {
+  "hi-IN": "multi",
+  "en-IN": "multi",
+};
+
+/**
  * Build the pipeline STT. Sarvam `saaras:v3` is used because:
  *   - it is native for Indian languages including Hinglish (`codemix` mode),
  *   - it streams partial + final transcripts over WebSocket, and
@@ -56,7 +98,34 @@ export class FlushableSarvamSTT extends sarvam.STT {
  * actually understands code-switched Hindi/English) requires a paid Deepgram
  * plan. `nova-2` falls back to English-only recognition and butchers Hinglish.
  */
-export const createSTT = (opts: STTBuildOptions): FlushableSarvamSTT => {
+export const createSTT = (opts: STTBuildOptions): PipelineSTT => {
+  const deepgramLanguage = DEEPGRAM_LANGUAGE_MAP[opts.language];
+  if (config.stt.provider === "deepgram" && config.stt.deepgramApiKey && deepgramLanguage) {
+    log.info("initializing stt provider", {
+      provider: "deepgram",
+      model: "nova-3",
+      language: deepgramLanguage,
+      requestedLanguage: opts.language,
+    });
+    return new FlushableDeepgramSTT({
+      apiKey: config.stt.deepgramApiKey,
+      model: "nova-3",
+      language: deepgramLanguage,
+      // Interim transcripts are the latency unlock — see FlushableDeepgramSTT.
+      interimResults: true,
+      // Voice pipeline consumes raw words; smart formatting turns "do hazaar"
+      // style spoken numbers into digits which is fine for the LLM, but
+      // punctuation helps sentence-level TTS phrasing downstream.
+      punctuate: true,
+      smartFormat: false,
+    });
+  }
+  if (config.stt.provider === "deepgram" && !deepgramLanguage) {
+    log.info("deepgram configured but language unsupported by nova-3 — using sarvam", {
+      language: opts.language,
+    });
+  }
+
   if (!config.tts.sarvamApiKey) {
     throw new Error("SARVAM_API_KEY is required for the default STT provider");
   }
