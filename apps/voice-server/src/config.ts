@@ -35,8 +35,15 @@ const envSchema = z.object({
   LLM_TEMPERATURE: z.coerce.number().min(0).max(2).default(0.6),
   LLM_MAX_TOKENS: z.coerce.number().int().positive().optional(),
   // OpenAI service tier for the primary LLM ("priority" = paid low-latency
-  // tier). Unset = standard tier.
+  // tier). Unset = standard tier. Ignored when Azure is configured.
   LLM_SERVICE_TIER: optionalString,
+  // Azure OpenAI (all three required to activate): serves the OpenAI models
+  // from an Indian Azure region — ~25ms RTT from the Mumbai box instead of
+  // ~280ms to api.openai.com. Applies to the openai provider only.
+  AZURE_OPENAI_API_KEY: optionalString,
+  AZURE_OPENAI_ENDPOINT: optionalString,
+  AZURE_OPENAI_DEPLOYMENT: optionalString,
+  AZURE_OPENAI_API_VERSION: optionalString,
   // Comma-separated list of fallback providers, e.g. "anthropic,google"
   LLM_FALLBACK_PROVIDERS: optionalString,
   LLM_FALLBACK_MODELS: optionalString,
@@ -82,10 +89,37 @@ const resolveApiKey = (provider: LLMProviderName): string | undefined => {
   }
 };
 
+const azureOpenAI =
+  env.AZURE_OPENAI_API_KEY && env.AZURE_OPENAI_ENDPOINT && env.AZURE_OPENAI_DEPLOYMENT
+    ? {
+        apiKey: env.AZURE_OPENAI_API_KEY,
+        endpoint: env.AZURE_OPENAI_ENDPOINT,
+        deployment: env.AZURE_OPENAI_DEPLOYMENT,
+        apiVersion: env.AZURE_OPENAI_API_VERSION,
+      }
+    : undefined;
+
 const buildLLMConfig = (
   provider: LLMProviderName,
   modelOverride: string | undefined
 ): LLMProviderConfig => {
+  // Azure replaces api.openai.com for the openai provider when configured.
+  // serviceTier is deliberately NOT set on Azure — the parameter is rejected
+  // there, and regional capacity is already latency-consistent.
+  if (provider === "openai" && azureOpenAI) {
+    return {
+      provider,
+      apiKey: azureOpenAI.apiKey,
+      model: modelOverride ?? DEFAULT_MODELS[provider],
+      temperature: env.LLM_TEMPERATURE,
+      maxTokens: env.LLM_MAX_TOKENS,
+      azure: {
+        endpoint: azureOpenAI.endpoint,
+        deployment: azureOpenAI.deployment,
+        apiVersion: azureOpenAI.apiVersion,
+      },
+    };
+  }
   const apiKey = resolveApiKey(provider);
   if (!apiKey) {
     throw new Error(`LLM provider "${provider}" is configured but ${API_KEY_ENV[provider]} is missing`);

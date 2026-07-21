@@ -13,6 +13,18 @@ export interface LLMProviderConfig {
    * phone call. Ignored by other providers.
    */
   serviceTier?: string;
+  /**
+   * OpenAI-only. When set, requests go to an Azure OpenAI resource instead
+   * of api.openai.com — used to serve the model from an Indian region
+   * (~25ms RTT from the Mumbai box vs ~280ms to OpenAI US). serviceTier is
+   * ignored on Azure (regional capacity is already latency-consistent, and
+   * Azure rejects the parameter).
+   */
+  azure?: {
+    endpoint: string;
+    deployment: string;
+    apiVersion?: string;
+  };
 }
 
 export type LLMInstance = agentsLLM.LLM;
