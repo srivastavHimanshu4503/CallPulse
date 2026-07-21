@@ -32,6 +32,7 @@ export interface SerializedAgent {
   isActive: boolean;
   phoneNumber: string;
   voice: string;
+  voiceSpeed: number | null;
   intakeWorkflowId: string | null;
   smsWorkflowId: string | null;
   phoneNumberId: string | null;

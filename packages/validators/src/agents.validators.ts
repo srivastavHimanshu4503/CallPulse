@@ -23,6 +23,9 @@ export const createAgentSchema = z.object({
   recordingConsent: z.boolean().default(true),
   isActive: z.boolean().default(true).optional(),
   voice: z.string().default("Priya (Indian Female)").optional(),
+  // 0.7–1.2 is the intersection of all providers' safe speed ranges
+  // (ElevenLabs hard-caps at [0.7, 1.2]). Null = per-provider default.
+  voiceSpeed: z.coerce.number().min(0.7).max(1.2).optional().nullable(),
   intakeWorkflowId: z.string().optional().nullable(),
   smsWorkflowId: z.string().optional().nullable(),
   phoneNumberId: z.string().optional().nullable(),

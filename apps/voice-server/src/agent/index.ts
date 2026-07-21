@@ -1,4 +1,5 @@
 import { defineAgent, voice, type JobContext, type JobProcess } from "@livekit/agents";
+import * as silero from "@livekit/agents-plugin-silero";
 import { RoomEvent } from "@livekit/rtc-node";
 import { RoomServiceClient, SipClient } from "livekit-server-sdk";
 import { db, getCreditBalance } from "@antigravity/db";
@@ -76,11 +77,17 @@ export default defineAgent({
    * `numIdleProcesses` of these warm so the DB pool + Prisma engine + provider
    * singleton are ready when a real call arrives.
    */
-  prewarm: async (_proc: JobProcess) => {
+  prewarm: async (proc: JobProcess) => {
     try {
       await db.$connect();
       // Instantiating the provider primes its module graph + Prisma client.
       agentConfigProvider;
+      // Explicit Silero VAD: the plugin default of 550ms min-silence is the
+      // single biggest fixed cost in perceived response latency. 400ms still
+      // rides above natural intra-sentence pauses (~200-300ms) while cutting
+      // 150ms off EVERY turn. Loaded once per child process — the ONNX model
+      // load is too slow to do per-call.
+      proc.userData.vad = await silero.VAD.load({ minSilenceDuration: 400 });
       log.info("child process prewarmed");
     } catch (err) {
       log.error("child process prewarm failed", { message: (err as Error)?.message });
@@ -194,6 +201,7 @@ export default defineAgent({
       sttCode: langCodes.stt,
       ttsCode: langCodes.tts,
       configuredVoice: persona.voice,
+      configuredVoiceSpeed: persona.voiceSpeed ?? "provider-default",
       voiceGender,
       knowledgeBases: persona.knowledge.length,
       intakeEnabled: persona.intake.enabled,
@@ -481,6 +489,7 @@ export default defineAgent({
     const ttsOptions: TTSBuildOptions = {
       voice: persona.voice,
       language: langCodes.tts,
+      pace: persona.voiceSpeed,
     };
 
     const pipelineLLM = createPipelineLLM({
@@ -504,6 +513,9 @@ export default defineAgent({
 
     const agentSession = new voice.AgentSession({
       useTtsAlignedTranscript: true,
+      // Prewarmed 400ms-min-silence Silero instance (see prewarm). Omitting
+      // this would make the SDK load its own VAD with the 550ms default.
+      vad: ctx.proc.userData.vad as voice.AgentSessionOptions["vad"],
       turnHandling: {
         // Silero VAD detects audio-level silence. Sarvam's own END_SPEECH
         // signal arrives ~200ms before its FINAL_TRANSCRIPT, which caused
@@ -512,9 +524,9 @@ export default defineAgent({
         // maxDelay caps how long we wait for Sarvam's FINAL_TRANSCRIPT after
         // VAD says the caller stopped. Sarvam finals routinely lag END_SPEECH
         // (see comment above), so the old 2500ms cap turned into a regular
-        // 2.5s dead-air stall before the LLM even started. 1500ms bounds the
+        // 2.5s dead-air stall before the LLM even started. 1200ms bounds the
         // worst case; preemptive generation below covers transcript revisions.
-        endpointing: { mode: "fixed", minDelay: 300, maxDelay: 1500 },
+        endpointing: { mode: "fixed", minDelay: 200, maxDelay: 1200 },
         // Barge-in with matched thresholds from the reference production
         // system (Python `min_interruption_words=2`, which maps to
         // `min_duration = 0.2 + 0.15*sensitivity = 0.5s` in their v2
@@ -665,15 +677,22 @@ export default defineAgent({
     // WHERE the time goes — these three metrics split every response into
     // turn-close (VAD + STT final wait), LLM time-to-first-token, and TTS
     // time-to-first-byte. Grep for "latency:" in call logs to diagnose.
+    // Rolling per-turn latency state: eou → llm ttft → tts ttfb arrive as
+    // separate metric events; when the tts one lands we emit ONE summary line
+    // with the full user-perceived breakdown for the turn.
+    let turnEouMs: number | null = null;
+    let turnLlmTtftMs: number | null = null;
     agentSession.on(voice.AgentSessionEventTypes.MetricsCollected, (ev: any) => {
       const m = ev?.metrics;
       if (!m?.type) return;
       if (m.type === "eou_metrics") {
+        turnEouMs = Math.round(m.endOfUtteranceDelayMs);
         callLog.info("latency: turn close", {
           endOfUtteranceDelayMs: Math.round(m.endOfUtteranceDelayMs),
           transcriptionDelayMs: Math.round(m.transcriptionDelayMs),
         });
       } else if (m.type === "llm_metrics") {
+        if (!m.cancelled) turnLlmTtftMs = Math.round(m.ttftMs);
         callLog.info("latency: llm", {
           ttftMs: Math.round(m.ttftMs),
           durationMs: Math.round(m.durationMs),
@@ -685,6 +704,20 @@ export default defineAgent({
           durationMs: Math.round(m.durationMs),
           cancelled: m.cancelled,
         });
+        // Summary: how long the caller waited in silence for this reply.
+        // eou (VAD close + STT final wait) + llm first token + tts first byte.
+        if (!m.cancelled && turnLlmTtftMs !== null) {
+          const eou = turnEouMs ?? 0;
+          const ttfb = Math.round(m.ttfbMs);
+          callLog.info("latency: TURN TOTAL", {
+            totalMs: eou + turnLlmTtftMs + ttfb,
+            eouMs: eou,
+            llmTtftMs: turnLlmTtftMs,
+            ttsTtfbMs: ttfb,
+          });
+          turnEouMs = null;
+          turnLlmTtftMs = null;
+        }
       }
     });
 

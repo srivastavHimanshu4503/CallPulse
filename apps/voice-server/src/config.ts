@@ -34,6 +34,9 @@ const envSchema = z.object({
   LLM_MODEL: optionalString,
   LLM_TEMPERATURE: z.coerce.number().min(0).max(2).default(0.6),
   LLM_MAX_TOKENS: z.coerce.number().int().positive().optional(),
+  // OpenAI service tier for the primary LLM ("priority" = paid low-latency
+  // tier). Unset = standard tier.
+  LLM_SERVICE_TIER: optionalString,
   // Comma-separated list of fallback providers, e.g. "anthropic,google"
   LLM_FALLBACK_PROVIDERS: optionalString,
   LLM_FALLBACK_MODELS: optionalString,
@@ -93,6 +96,7 @@ const buildLLMConfig = (
     model: modelOverride ?? DEFAULT_MODELS[provider],
     temperature: env.LLM_TEMPERATURE,
     maxTokens: env.LLM_MAX_TOKENS,
+    ...(provider === "openai" && env.LLM_SERVICE_TIER ? { serviceTier: env.LLM_SERVICE_TIER } : {}),
   };
 };
 

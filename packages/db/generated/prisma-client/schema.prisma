@@ -571,7 +571,11 @@ model AIAgent {
   isActive                   Boolean   @default(true)
   systemPrompt               String
   modelName                  String
-  voice                      String    @default("Priya (Indian Female)")
+  voice                      String    @default("elevenlabs:EXAVITQu4vr4xnSDxMaL")
+  // Speaking-speed multiplier. Null = per-provider default (providers pace
+  // the same nominal speed very differently, so a single global constant
+  // made Sarvam drag and ElevenLabs rush).
+  voiceSpeed                 Float?
   intakeWorkflowId           String?
   smsWorkflowId              String?
   phoneNumberId              String?

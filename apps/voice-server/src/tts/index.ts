@@ -68,10 +68,20 @@ const inferGender = (provider: "sarvam" | "openai" | "elevenlabs", voiceId: stri
 
 const DEFAULT_SARVAM_VOICE = "priya"; // female — matches DB column default.
 
-// Global speaking-pace default. Callers reported the default delivery as
-// rushed for Hindi/Hinglish; 0.9 slows articulation slightly without
-// sounding sluggish. Applied uniformly across providers.
-const DEFAULT_PACE = 0.9;
+// Per-provider speaking-pace defaults. Providers interpret the same nominal
+// multiplier very differently: the old global 0.9 made Sarvam bulbul drag
+// noticeably while ElevenLabs turbo still sounded rushed. Applied only when
+// the agent has no explicit voiceSpeed configured.
+const DEFAULT_PACE: Record<"sarvam" | "openai" | "elevenlabs", number> = {
+  sarvam: 1.0,
+  elevenlabs: 0.85,
+  openai: 1.0,
+};
+
+// Intersection of all providers' safe ranges (ElevenLabs hard-caps speed to
+// [0.7, 1.2]; out-of-range values 400). The UI enforces the same bounds but
+// the DB value is clamped here too so a hand-edited row can't break TTS.
+const clampPace = (pace: number): number => Math.min(1.2, Math.max(0.7, pace));
 
 /**
  * Gender of the configured voice, resolved the same way `createTTS` resolves
@@ -149,7 +159,7 @@ export const parseVoiceString = (voiceStr: string): { provider: "sarvam" | "open
  */
 export const createTTS = (opts: TTSBuildOptions): agentsTTS.TTS => {
   const { provider, voiceId } = parseVoiceString(opts.voice);
-  const pace = opts.pace ?? DEFAULT_PACE;
+  const pace = clampPace(opts.pace ?? DEFAULT_PACE[provider]);
   const gender = inferGender(provider, voiceId);
 
   if (provider === "openai") {

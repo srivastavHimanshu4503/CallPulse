@@ -19,6 +19,8 @@ export interface AgentPersonaConfig {
   systemPrompt?: string;
   /** Which voice profile to use for TTS. */
   voice: string;
+  /** Speaking-speed multiplier. Undefined = per-provider default. */
+  voiceSpeed?: number;
   /** Max call duration in minutes; the agent should wrap up before this. */
   maxDurationMinutes: number;
   /** Knowledge base content, concatenated into the system prompt. */

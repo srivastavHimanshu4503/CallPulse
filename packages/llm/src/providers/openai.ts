@@ -7,5 +7,6 @@ export const buildOpenAILLM: LLMFactory = (cfg) => {
     model: cfg.model,
     temperature: cfg.temperature,
     ...(cfg.maxTokens ? { maxCompletionTokens: cfg.maxTokens } : {}),
+    ...(cfg.serviceTier ? { serviceTier: cfg.serviceTier } : {}),
   });
 };

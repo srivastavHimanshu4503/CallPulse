@@ -367,6 +367,7 @@ exports.Prisma.AIAgentScalarFieldEnum = {
   systemPrompt: 'systemPrompt',
   modelName: 'modelName',
   voice: 'voice',
+  voiceSpeed: 'voiceSpeed',
   intakeWorkflowId: 'intakeWorkflowId',
   smsWorkflowId: 'smsWorkflowId',
   phoneNumberId: 'phoneNumberId',

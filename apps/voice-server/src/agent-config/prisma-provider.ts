@@ -55,6 +55,7 @@ const shape = (ctx: AgentContext): AgentPersonaConfig => ({
   fallbackMessage: ctx.agent.fallbackMessage,
   systemPrompt: ctx.agent.systemPrompt || undefined,
   voice: ctx.agent.voice,
+  voiceSpeed: ctx.agent.voiceSpeed ?? undefined,
   maxDurationMinutes: ctx.agent.maxDuration,
   knowledge: ctx.knowledgeBases.map((kb) => ({
     name: kb.name,

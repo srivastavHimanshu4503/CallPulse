@@ -22221,11 +22221,13 @@ export namespace Prisma {
 
   export type AIAgentAvgAggregateOutputType = {
     maxDuration: number | null
+    voiceSpeed: number | null
     callTransferTimeoutSec: number | null
   }
 
   export type AIAgentSumAggregateOutputType = {
     maxDuration: number | null
+    voiceSpeed: number | null
     callTransferTimeoutSec: number | null
   }
 
@@ -22247,6 +22249,7 @@ export namespace Prisma {
     systemPrompt: string | null
     modelName: string | null
     voice: string | null
+    voiceSpeed: number | null
     intakeWorkflowId: string | null
     smsWorkflowId: string | null
     phoneNumberId: string | null
@@ -22295,6 +22298,7 @@ export namespace Prisma {
     systemPrompt: string | null
     modelName: string | null
     voice: string | null
+    voiceSpeed: number | null
     intakeWorkflowId: string | null
     smsWorkflowId: string | null
     phoneNumberId: string | null
@@ -22343,6 +22347,7 @@ export namespace Prisma {
     systemPrompt: number
     modelName: number
     voice: number
+    voiceSpeed: number
     intakeWorkflowId: number
     smsWorkflowId: number
     phoneNumberId: number
@@ -22380,11 +22385,13 @@ export namespace Prisma {
 
   export type AIAgentAvgAggregateInputType = {
     maxDuration?: true
+    voiceSpeed?: true
     callTransferTimeoutSec?: true
   }
 
   export type AIAgentSumAggregateInputType = {
     maxDuration?: true
+    voiceSpeed?: true
     callTransferTimeoutSec?: true
   }
 
@@ -22406,6 +22413,7 @@ export namespace Prisma {
     systemPrompt?: true
     modelName?: true
     voice?: true
+    voiceSpeed?: true
     intakeWorkflowId?: true
     smsWorkflowId?: true
     phoneNumberId?: true
@@ -22454,6 +22462,7 @@ export namespace Prisma {
     systemPrompt?: true
     modelName?: true
     voice?: true
+    voiceSpeed?: true
     intakeWorkflowId?: true
     smsWorkflowId?: true
     phoneNumberId?: true
@@ -22502,6 +22511,7 @@ export namespace Prisma {
     systemPrompt?: true
     modelName?: true
     voice?: true
+    voiceSpeed?: true
     intakeWorkflowId?: true
     smsWorkflowId?: true
     phoneNumberId?: true
@@ -22640,6 +22650,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice: string
+    voiceSpeed: number | null
     intakeWorkflowId: string | null
     smsWorkflowId: string | null
     phoneNumberId: string | null
@@ -22710,6 +22721,7 @@ export namespace Prisma {
     systemPrompt?: boolean
     modelName?: boolean
     voice?: boolean
+    voiceSpeed?: boolean
     intakeWorkflowId?: boolean
     smsWorkflowId?: boolean
     phoneNumberId?: boolean
@@ -22767,6 +22779,7 @@ export namespace Prisma {
     systemPrompt?: boolean
     modelName?: boolean
     voice?: boolean
+    voiceSpeed?: boolean
     intakeWorkflowId?: boolean
     smsWorkflowId?: boolean
     phoneNumberId?: boolean
@@ -22819,6 +22832,7 @@ export namespace Prisma {
     systemPrompt?: boolean
     modelName?: boolean
     voice?: boolean
+    voiceSpeed?: boolean
     intakeWorkflowId?: boolean
     smsWorkflowId?: boolean
     phoneNumberId?: boolean
@@ -22891,6 +22905,7 @@ export namespace Prisma {
       systemPrompt: string
       modelName: string
       voice: string
+      voiceSpeed: number | null
       intakeWorkflowId: string | null
       smsWorkflowId: string | null
       phoneNumberId: string | null
@@ -23337,6 +23352,7 @@ export namespace Prisma {
     readonly systemPrompt: FieldRef<"AIAgent", 'String'>
     readonly modelName: FieldRef<"AIAgent", 'String'>
     readonly voice: FieldRef<"AIAgent", 'String'>
+    readonly voiceSpeed: FieldRef<"AIAgent", 'Float'>
     readonly intakeWorkflowId: FieldRef<"AIAgent", 'String'>
     readonly smsWorkflowId: FieldRef<"AIAgent", 'String'>
     readonly phoneNumberId: FieldRef<"AIAgent", 'String'>
@@ -30418,6 +30434,7 @@ export namespace Prisma {
     systemPrompt: 'systemPrompt',
     modelName: 'modelName',
     voice: 'voice',
+    voiceSpeed: 'voiceSpeed',
     intakeWorkflowId: 'intakeWorkflowId',
     smsWorkflowId: 'smsWorkflowId',
     phoneNumberId: 'phoneNumberId',
@@ -32520,6 +32537,7 @@ export namespace Prisma {
     systemPrompt?: StringFilter<"AIAgent"> | string
     modelName?: StringFilter<"AIAgent"> | string
     voice?: StringFilter<"AIAgent"> | string
+    voiceSpeed?: FloatNullableFilter<"AIAgent"> | number | null
     intakeWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableFilter<"AIAgent"> | string | null
@@ -32576,6 +32594,7 @@ export namespace Prisma {
     systemPrompt?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
+    voiceSpeed?: SortOrderInput | SortOrder
     intakeWorkflowId?: SortOrderInput | SortOrder
     smsWorkflowId?: SortOrderInput | SortOrder
     phoneNumberId?: SortOrderInput | SortOrder
@@ -32635,6 +32654,7 @@ export namespace Prisma {
     systemPrompt?: StringFilter<"AIAgent"> | string
     modelName?: StringFilter<"AIAgent"> | string
     voice?: StringFilter<"AIAgent"> | string
+    voiceSpeed?: FloatNullableFilter<"AIAgent"> | number | null
     intakeWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableFilter<"AIAgent"> | string | null
@@ -32691,6 +32711,7 @@ export namespace Prisma {
     systemPrompt?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
+    voiceSpeed?: SortOrderInput | SortOrder
     intakeWorkflowId?: SortOrderInput | SortOrder
     smsWorkflowId?: SortOrderInput | SortOrder
     phoneNumberId?: SortOrderInput | SortOrder
@@ -32750,6 +32771,7 @@ export namespace Prisma {
     systemPrompt?: StringWithAggregatesFilter<"AIAgent"> | string
     modelName?: StringWithAggregatesFilter<"AIAgent"> | string
     voice?: StringWithAggregatesFilter<"AIAgent"> | string
+    voiceSpeed?: FloatNullableWithAggregatesFilter<"AIAgent"> | number | null
     intakeWorkflowId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
@@ -35125,6 +35147,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -35181,6 +35204,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -35235,6 +35259,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35291,6 +35316,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35346,6 +35372,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -35396,6 +35423,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35447,6 +35475,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37659,6 +37688,7 @@ export namespace Prisma {
     systemPrompt?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
+    voiceSpeed?: SortOrder
     intakeWorkflowId?: SortOrder
     smsWorkflowId?: SortOrder
     phoneNumberId?: SortOrder
@@ -37694,6 +37724,7 @@ export namespace Prisma {
 
   export type AIAgentAvgOrderByAggregateInput = {
     maxDuration?: SortOrder
+    voiceSpeed?: SortOrder
     callTransferTimeoutSec?: SortOrder
   }
 
@@ -37715,6 +37746,7 @@ export namespace Prisma {
     systemPrompt?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
+    voiceSpeed?: SortOrder
     intakeWorkflowId?: SortOrder
     smsWorkflowId?: SortOrder
     phoneNumberId?: SortOrder
@@ -37763,6 +37795,7 @@ export namespace Prisma {
     systemPrompt?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
+    voiceSpeed?: SortOrder
     intakeWorkflowId?: SortOrder
     smsWorkflowId?: SortOrder
     phoneNumberId?: SortOrder
@@ -37795,6 +37828,7 @@ export namespace Prisma {
 
   export type AIAgentSumOrderByAggregateInput = {
     maxDuration?: SortOrder
+    voiceSpeed?: SortOrder
     callTransferTimeoutSec?: SortOrder
   }
 
@@ -42201,6 +42235,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -42255,6 +42290,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -43034,6 +43070,7 @@ export namespace Prisma {
     systemPrompt?: StringFilter<"AIAgent"> | string
     modelName?: StringFilter<"AIAgent"> | string
     voice?: StringFilter<"AIAgent"> | string
+    voiceSpeed?: FloatNullableFilter<"AIAgent"> | number | null
     intakeWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableFilter<"AIAgent"> | string | null
@@ -46879,6 +46916,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -46934,6 +46972,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -47210,6 +47249,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47265,6 +47305,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49308,6 +49349,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -49363,6 +49405,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -49519,6 +49562,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49574,6 +49618,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49749,6 +49794,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -49804,6 +49850,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -50115,6 +50162,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50170,6 +50218,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50439,6 +50488,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -50494,6 +50544,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -50765,6 +50816,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50820,6 +50872,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51745,6 +51798,7 @@ export namespace Prisma {
     systemPrompt: string
     modelName: string
     voice?: string
+    voiceSpeed?: number | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -52330,6 +52384,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52384,6 +52439,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52438,6 +52494,7 @@ export namespace Prisma {
     systemPrompt?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
+    voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null

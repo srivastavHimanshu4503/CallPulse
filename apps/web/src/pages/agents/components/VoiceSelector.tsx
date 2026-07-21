@@ -326,6 +326,58 @@ export function VoiceSelector({ voice, setVoice, language, disabled }: VoiceSele
   );
 }
 
+interface VoiceSpeedControlProps {
+  /** null = provider default speed */
+  value: number | null;
+  onChange: (val: number | null) => void;
+  disabled?: boolean;
+}
+
+export function VoiceSpeedControl({ value, onChange, disabled }: VoiceSpeedControlProps): React.JSX.Element {
+  const effective = value ?? 1.0;
+  return (
+    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 font-sans">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-semibold text-[#111111]">Speaking speed</h3>
+          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">
+            How fast the agent talks on calls. Default uses the recommended speed for the selected voice.
+          </p>
+        </div>
+        <span className="text-[11px] font-semibold text-[#2563EB] bg-[#EFF6FF] border border-[#2563EB]/15 rounded-full px-2.5 py-1 shrink-0">
+          {value === null ? "Default" : `${effective.toFixed(2)}×`}
+        </span>
+      </div>
+
+      <div className="mt-4 flex items-center gap-3">
+        <span className="text-[11px] font-medium text-[#999999] shrink-0">Slower</span>
+        <input
+          type="range"
+          min={0.7}
+          max={1.2}
+          step={0.05}
+          value={effective}
+          disabled={disabled}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="flex-1 accent-[#2563EB] h-1.5 cursor-pointer"
+        />
+        <span className="text-[11px] font-medium text-[#999999] shrink-0">Faster</span>
+      </div>
+
+      {value !== null && (
+        <button
+          type="button"
+          onClick={() => onChange(null)}
+          disabled={disabled}
+          className="mt-3 text-[11px] font-semibold text-[#666666] hover:text-[#2563EB] transition-colors"
+        >
+          Reset to default
+        </button>
+      )}
+    </section>
+  );
+}
+
 interface PlayButtonProps {
   onClick: (e: React.MouseEvent) => void;
   isPlaying: boolean;

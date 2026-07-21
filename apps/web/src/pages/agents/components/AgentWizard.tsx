@@ -4,7 +4,7 @@ import { api } from "../../../lib/axios.js";
 import { toast } from "sonner";
 import { Button } from "@antigravity/ui";
 import { PersonaSetup } from "./PersonaSetup.js";
-import { VoiceSelector } from "./VoiceSelector.js";
+import { VoiceSelector, VoiceSpeedControl } from "./VoiceSelector.js";
 import { TelephonySetup } from "./TelephonySetup.js";
 import { WorkflowSetup } from "./WorkflowSetup.js";
 import { KnowledgeBaseSetup } from "./KnowledgeBaseSetup.js";
@@ -91,6 +91,10 @@ export function AgentWizard({
 
   // STEP 2: Audio & Telephony States
   const [voice, setVoice] = React.useState(editingAgent?.voice || "priya");
+  // null = provider default speed
+  const [voiceSpeed, setVoiceSpeed] = React.useState<number | null>(
+    editingAgent?.voiceSpeed ?? null
+  );
   const [phoneNumberId, setPhoneNumberId] = React.useState<string | null>(
     editingAgent?.phoneNumberId || null
   );
@@ -301,6 +305,7 @@ export function AgentWizard({
       recordingConsent,
       isActive,
       voice,
+      voiceSpeed,
       intakeWorkflowId: intakeEnabled ? intakeWorkflowId : null,
       smsWorkflowId: smsEnabled ? smsWorkflowId : null,
       phoneNumberId,
@@ -457,6 +462,11 @@ export function AgentWizard({
                     voice={voice}
                     setVoice={setVoice}
                     language={language}
+                    disabled={isFormLoading}
+                  />
+                  <VoiceSpeedControl
+                    value={voiceSpeed}
+                    onChange={setVoiceSpeed}
                     disabled={isFormLoading}
                   />
                 </div>
