@@ -20,43 +20,67 @@ export class AntigravityPipelineStack extends cdk.Stack {
     );
 
     const sourceArtifact = new codepipeline.Artifact("SourceArtifact");
-    const buildArtifact = new codepipeline.Artifact("BuildArtifact");
+
+    const ecrRegion = "ap-south-1";
+    const ecrRegistry = `${this.account}.dkr.ecr.${ecrRegion}.amazonaws.com`;
+    const dockerApps = ["api", "voice-server", "post-call-server"];
 
     const buildProject = new codebuild.PipelineProject(this, "BuildProject", {
       projectName: "indiai-pipeline-build",
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         computeType: codebuild.ComputeType.SMALL,
+        privileged: true,
       },
       buildSpec: codebuild.BuildSpec.fromObject({
         version: "0.2",
+        env: {
+          variables: { DOCKER_BUILDKIT: "1" },
+        },
         phases: {
-          install: {
-            "runtime-versions": {
-              nodejs: "20",
-            },
-            commands: [
-              "npm install -g pnpm",
-            ],
-          },
           pre_build: {
             commands: [
-              "pnpm install --frozen-lockfile",
+              `aws ecr get-login-password --region ${ecrRegion} | docker login --username AWS --password-stdin ${ecrRegistry}`,
             ],
           },
           build: {
-            commands: [
-              "pnpm --filter api build || true",
-              "cd infrastructure && npx cdk synth -o ../cdk.out",
-            ],
+            // CodeBuild is x86_64, so images are native linux/amd64 (no buildx
+            // emulation). Inline cache makes unchanged layers near-instant.
+            commands: dockerApps.map(
+              (app) =>
+                `docker build -f apps/${app}/Dockerfile ` +
+                `--build-arg BUILDKIT_INLINE_CACHE=1 ` +
+                `--cache-from ${ecrRegistry}/indiai/${app}:latest ` +
+                `-t ${ecrRegistry}/indiai/${app}:latest . && ` +
+                `docker push ${ecrRegistry}/indiai/${app}:latest`
+            ),
           },
-        },
-        artifacts: {
-          "base-directory": "cdk.out",
-          files: ["**/*"],
         },
       }),
     });
+
+    buildProject.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["ecr:GetAuthorizationToken"],
+        resources: ["*"],
+      })
+    );
+    buildProject.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+        ],
+        resources: [
+          `arn:aws:ecr:${ecrRegion}:${this.account}:repository/indiai/*`,
+        ],
+      })
+    );
 
     const deployRole = new iam.Role(this, "PipelineDeployRole", {
       assumedBy: new iam.ServicePrincipal("codebuild.amazonaws.com"),
@@ -84,11 +108,15 @@ export class AntigravityPipelineStack extends cdk.Stack {
           version: "0.2",
           phases: {
             build: {
+              // `aws ssm wait command-executed` gives up after ~100s; the
+              // deploy (image pulls + health check) regularly takes longer,
+              // so poll get-command-invocation ourselves.
               commands: [
                 `INSTANCE_ID=$(aws ssm get-parameter --name /indiai/${env}/ec2-instance-id --region ap-south-1 --query Parameter.Value --output text)`,
-                `COMMAND_ID=$(aws ssm send-command --region ap-south-1 --instance-ids $INSTANCE_ID --document-name AWS-RunShellScript --parameters commands=["export HOME=/root","git config --global --add safe.directory /app/indiAi","git -C /app/indiAi pull origin main","bash /app/indiAi/scripts/deploy.sh ${env}"] --query Command.CommandId --output text)`,
-                "aws ssm wait command-executed --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1",
-                "aws ssm get-command-invocation --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1"
+                `COMMAND_ID=$(aws ssm send-command --region ap-south-1 --instance-ids $INSTANCE_ID --document-name AWS-RunShellScript --timeout-seconds 600 --parameters 'commands=["export HOME=/root","git config --global --add safe.directory /app/indiAi","git -C /app/indiAi pull origin main","bash /app/indiAi/scripts/deploy.sh ${env}"]' --query Command.CommandId --output text)`,
+                `STATUS=InProgress; while [ "$STATUS" = "InProgress" ] || [ "$STATUS" = "Pending" ] || [ "$STATUS" = "Delayed" ]; do sleep 10; STATUS=$(aws ssm get-command-invocation --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1 --query Status --output text); echo "deploy status: $STATUS"; done`,
+                `aws ssm get-command-invocation --command-id $COMMAND_ID --instance-id $INSTANCE_ID --region ap-south-1 --query '{Status:Status,Stdout:StandardOutputContent,Stderr:StandardErrorContent}' --output text`,
+                `test "$STATUS" = "Success"`,
               ],
             },
           },
@@ -126,7 +154,6 @@ export class AntigravityPipelineStack extends cdk.Stack {
           actionName: "CodeBuild_Build",
           project: buildProject,
           input: sourceArtifact,
-          outputs: [buildArtifact],
         }),
       ],
     });
@@ -137,7 +164,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
         new codepipeline_actions.CodeBuildAction({
           actionName: "SSM_Deploy_Dev",
           project: devDeployProject,
-          input: buildArtifact,
+          input: sourceArtifact,
         }),
       ],
     });
@@ -158,7 +185,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
         new codepipeline_actions.CodeBuildAction({
           actionName: "SSM_Deploy_Prod",
           project: prodDeployProject,
-          input: buildArtifact,
+          input: sourceArtifact,
         }),
       ],
     });
