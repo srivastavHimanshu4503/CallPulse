@@ -196,25 +196,55 @@ section[id] {
 
 /* ── Ambient shape animations (decor.tsx) ── */
 
-/* Bubbles / dots / half-circles: soft vertical wander */
+/* Bubbles / half-circles: clearly visible vertical wander */
 @keyframes float-soft {
   0%, 100% { translate: 0 0; }
-  50% { translate: 7px -16px; }
+  50% { translate: 10px -22px; }
 }
 
 .animate-float-soft {
-  animation: float-soft 9s ease-in-out infinite;
+  animation: float-soft 8s ease-in-out infinite;
 }
 
 /* Rings: wander plus a slow tilt */
 @keyframes float-drift {
   0%, 100% { translate: 0 0; rotate: 0deg; }
-  33% { translate: -10px -14px; rotate: 4deg; }
-  66% { translate: 8px 10px; rotate: -3deg; }
+  33% { translate: -14px -20px; rotate: 6deg; }
+  66% { translate: 12px 14px; rotate: -5deg; }
 }
 
 .animate-float-drift {
   animation: float-drift 12s ease-in-out infinite;
+}
+
+/* Large orbs: big slow drift */
+@keyframes orb-drift {
+  0%, 100% { translate: 0 0; scale: 1; }
+  33% { translate: 50px -40px; scale: 1.12; }
+  66% { translate: -40px 30px; scale: 0.92; }
+}
+
+.animate-orb-drift {
+  animation: orb-drift 18s ease-in-out infinite;
+}
+
+/* Dotted rings: constant slow rotation */
+@keyframes spin-slower {
+  to { rotate: 360deg; }
+}
+
+.animate-spin-slower {
+  animation: spin-slower 30s linear infinite;
+}
+
+/* Sparkles: twinkle in and out */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; scale: 0.55; rotate: 0deg; }
+  50% { opacity: 1; scale: 1; rotate: 18deg; }
+}
+
+.animate-twinkle {
+  animation: twinkle 3.6s ease-in-out infinite;
 }
 
 /* Sunlight beams: slow sway from the top edge + breathing glow */
@@ -249,6 +279,9 @@ section[id] {
   .animate-drift,
   .animate-float-soft,
   .animate-float-drift,
+  .animate-orb-drift,
+  .animate-spin-slower,
+  .animate-twinkle,
   .animate-rays-sway,
   .animate-rays-breathe,
   .card-glow-border::before {

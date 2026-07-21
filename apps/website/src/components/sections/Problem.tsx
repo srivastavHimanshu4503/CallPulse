@@ -1,6 +1,7 @@
 import { PhoneMissed, PhoneIncoming, Wallet, ArrowRight, X, Check } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
 import { Reveal, Stagger, StaggerItem } from "../motion/primitives";
+import { Bubble, Orb, Ring, Sparkle } from "../motion/decor";
 
 const BAD_OPTIONS = [
   {
@@ -28,8 +29,13 @@ const DESKBUDDY_WINS = [
 
 export function Problem() {
   return (
-    <section className="bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24 overflow-hidden">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24 overflow-hidden">
+      <Orb className="top-[-140px] right-[-120px]" size={420} tone="pink" opacity={0.15} />
+      <Ring className="hidden md:block bottom-20 left-[4%]" size={90} tone="sky" delay={-3} />
+      <Bubble className="hidden sm:block top-24 left-[10%]" size={26} tone="violet" delay={-4} />
+      <Bubble className="hidden md:block bottom-[30%] right-[5%]" size={18} tone="amber" delay={-2} />
+      <Sparkle className="hidden sm:block top-[40%] right-[14%]" size={18} tone="pink" delay={-1.5} />
+      <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="The problem"
           title="Every missed call is a customer you paid to lose"

@@ -12,7 +12,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
-import { Bubble, Dot, Ring } from "../motion/decor";
+import { Bubble, DottedRing, Orb, Ring, Sparkle } from "../motion/decor";
 import { SpotlightCard } from "../common/SpotlightCard";
 import { EASE, Stagger, StaggerItem } from "../motion/primitives";
 
@@ -85,10 +85,14 @@ function TransferVisual() {
 export function Features() {
   return (
     <section id="features" className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24">
-      <Ring className="hidden lg:block bottom-16 -left-12" size={160} tone="slate" duration={15} />
-      <Bubble className="hidden sm:block top-24 right-10" size={34} tone="blue" delay={-2} duration={10} />
-      <Bubble className="top-1/2 left-[4%]" size={14} tone="sky" delay={-6} />
-      <Dot className="hidden md:block bottom-32 right-[30%]" size={8} tone="amber" delay={-4} />
+      <Orb className="top-[-160px] left-[20%]" size={500} tone="violet" opacity={0.18} />
+      <Orb className="hidden md:block bottom-[-180px] right-[-120px]" size={460} tone="sky" opacity={0.22} delay={-6} />
+      <Ring className="hidden lg:block bottom-20 -left-10" size={150} tone="blue" duration={14} />
+      <DottedRing className="hidden md:block top-16 right-[4%]" size={130} tone="violet" duration={26} />
+      <Bubble className="hidden sm:block top-28 right-[12%]" size={38} tone="pink" delay={-2} duration={9} />
+      <Bubble className="top-1/2 left-[4%]" size={22} tone="teal" delay={-6} />
+      <Bubble className="hidden md:block bottom-28 right-[28%]" size={16} tone="amber" delay={-4} />
+      <Sparkle className="hidden sm:block top-[14%] left-[10%]" size={22} tone="violet" delay={-0.8} />
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Features"

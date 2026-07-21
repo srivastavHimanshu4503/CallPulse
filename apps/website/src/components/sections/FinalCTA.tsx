@@ -1,6 +1,6 @@
 import { ArrowRight, Phone } from "lucide-react";
 import { Reveal } from "../motion/primitives";
-import { Bubble, Ring, SunRays } from "../motion/decor";
+import { Bubble, DottedRing, Orb, Ring, Sparkle, SunRays } from "../motion/decor";
 
 export function FinalCTA() {
   return (
@@ -10,12 +10,17 @@ export function FinalCTA() {
         aria-hidden
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[360px] w-[680px] rounded-full bg-brand/20 blur-[110px]"
       />
-      {/* cool moonlight beams on the dark section */}
+      {/* glowing color + cool light beams on the dark section */}
+      <Orb className="top-[-160px] left-[5%]" size={420} tone="violet" opacity={0.35} />
+      <Orb className="bottom-[-180px] right-[0%]" size={460} tone="sky" opacity={0.3} delay={-9} />
       <SunRays className="left-1/2 -translate-x-1/3 top-0" warm={false} height={420} />
-      <Ring className="hidden md:block top-16 left-[10%]" size={120} tone="white" duration={14} />
-      <Ring className="hidden sm:block bottom-14 right-[8%]" size={70} tone="blue" delay={-4} />
-      <Bubble className="hidden sm:block top-1/3 right-[14%]" size={26} tone="white" delay={-2} />
-      <Bubble className="bottom-24 left-[18%]" size={16} tone="sky" delay={-6} />
+      <DottedRing className="hidden md:block top-16 left-[8%]" size={150} tone="white" opacity={0.4} />
+      <Ring className="hidden sm:block bottom-16 right-[8%]" size={80} tone="sky" delay={-4} />
+      <Bubble className="hidden sm:block top-1/3 right-[12%]" size={30} tone="violet" delay={-2} opacity={0.7} />
+      <Bubble className="hidden md:block bottom-24 left-[16%]" size={20} tone="sky" delay={-6} opacity={0.7} />
+      <Sparkle className="hidden sm:block top-[22%] right-[24%]" size={22} tone="white" />
+      <Sparkle className="top-[55%] left-[8%]" size={16} tone="sky" delay={-1.8} />
+      <Sparkle className="hidden md:block bottom-[18%] right-[35%]" size={14} tone="white" delay={-2.7} />
 
       <div className="relative max-w-3xl mx-auto text-center">
         <Reveal>

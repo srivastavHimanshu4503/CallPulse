@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, Zap } from "lucide-react";
-import { Bubble, HalfCircle, Ring } from "../motion/decor";
+import { Bubble, DottedRing, HalfCircle, Orb, Ring, Sparkle } from "../motion/decor";
 import {
   PLAN_PRICE_INR,
   PLAN_CREDITS,
@@ -122,10 +122,15 @@ function PlanCard({ p }: { p: (typeof PLANS)[number] }) {
 export function Pricing() {
   return (
     <section id="pricing" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
-      <Ring className="hidden md:block top-12 left-[8%]" size={110} tone="blue" delay={-2} />
-      <Bubble className="hidden sm:block bottom-40 right-6" size={28} tone="sky" delay={-4} />
-      <Bubble className="top-32 right-[16%]" size={14} tone="amber" delay={-1} />
-      <HalfCircle className="hidden lg:block -top-px left-[38%]" size={90} tone="slate" flip />
+      <Orb className="top-[-140px] right-[10%]" size={460} tone="amber" opacity={0.16} />
+      <Orb className="hidden md:block bottom-[-160px] -left-32" size={440} tone="blue" opacity={0.22} delay={-8} />
+      <Ring className="hidden md:block top-14 left-[7%]" size={110} tone="amber" delay={-2} />
+      <DottedRing className="hidden lg:block bottom-24 right-[3%]" size={140} tone="blue" duration={28} />
+      <Bubble className="hidden sm:block bottom-44 right-[8%]" size={32} tone="sky" delay={-4} />
+      <Bubble className="top-32 right-[16%]" size={18} tone="pink" delay={-1} />
+      <Bubble className="hidden md:block top-[55%] left-[3%]" size={24} tone="violet" delay={-6} />
+      <Sparkle className="hidden sm:block top-24 left-[24%]" size={20} tone="amber" delay={-2} />
+      <HalfCircle className="hidden lg:block -top-px left-[38%]" size={100} tone="pink" flip />
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Pricing"

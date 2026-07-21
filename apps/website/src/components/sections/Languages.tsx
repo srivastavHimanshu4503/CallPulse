@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "../common/SectionHeading";
 import { EASE, Reveal } from "../motion/primitives";
-import { Bubble, Dot, Ring } from "../motion/decor";
+import { Bubble, Orb, Ring, Sparkle } from "../motion/decor";
 
 const LANGUAGES = [
   { name: "Hindi", greeting: "नमस्ते! मैं आपकी क्या मदद कर सकती हूँ?" },
@@ -31,9 +31,15 @@ export function Languages() {
         aria-hidden
         className="animate-drift absolute top-1/3 left-1/2 -translate-x-1/2 h-[380px] w-[680px] rounded-full bg-brand/[0.05] blur-[100px]"
       />
-      <Ring className="hidden md:block top-20 right-[10%]" size={95} tone="sky" delay={-3} />
-      <Bubble className="hidden sm:block bottom-24 left-[12%]" size={30} tone="blue" delay={-5} duration={10} />
-      <Dot className="top-1/3 left-[6%]" size={9} tone="amber" delay={-2} />
+      {/* one bubble per language family — the multicolor section */}
+      <Orb className="top-[-120px] left-[-100px]" size={380} tone="pink" opacity={0.18} />
+      <Orb className="hidden md:block bottom-[-140px] right-[-80px]" size={400} tone="teal" opacity={0.2} delay={-10} />
+      <Ring className="hidden md:block top-20 right-[10%]" size={95} tone="pink" delay={-3} />
+      <Bubble className="hidden sm:block top-24 left-[8%]" size={36} tone="blue" delay={-5} duration={9} />
+      <Bubble className="hidden sm:block bottom-32 left-[16%]" size={26} tone="amber" delay={-2} />
+      <Bubble className="hidden md:block top-[40%] right-[5%]" size={30} tone="teal" delay={-7} />
+      <Bubble className="bottom-24 right-[18%]" size={18} tone="violet" delay={-4} />
+      <Sparkle className="hidden sm:block top-[30%] left-[20%]" size={22} tone="pink" delay={-1.4} />
 
       <div className="relative max-w-3xl mx-auto text-center">
         <SectionHeading

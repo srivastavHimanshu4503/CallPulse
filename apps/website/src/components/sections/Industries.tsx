@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Bubble, HalfCircle, Orb, Sparkle } from "../motion/decor";
 import {
   Scissors,
   Stethoscope,
@@ -70,8 +71,13 @@ export function Industries() {
   }, [paused]);
 
   return (
-    <section id="industries" className="bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24 overflow-hidden">
-      <div className="max-w-5xl mx-auto">
+    <section id="industries" className="relative bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24 overflow-hidden">
+      <Orb className="top-[-120px] left-[-100px]" size={400} tone="sky" opacity={0.2} />
+      <Bubble className="hidden sm:block top-20 right-[8%]" size={30} tone="teal" delay={-3} />
+      <Bubble className="hidden md:block bottom-32 left-[6%]" size={20} tone="pink" delay={-6} />
+      <Sparkle className="hidden sm:block top-[35%] left-[14%]" size={18} tone="sky" delay={-2.2} />
+      <HalfCircle className="hidden md:block -bottom-px left-[45%]" size={100} tone="amber" />
+      <div className="relative max-w-5xl mx-auto">
         <SectionHeading
           eyebrow="Industries"
           title="Built for businesses like yours"

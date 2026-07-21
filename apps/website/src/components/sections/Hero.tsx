@@ -18,7 +18,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { CountUp, EASE, SplitWords } from "../motion/primitives";
-import { Bubble, Dot, HalfCircle, Ring, SunRays } from "../motion/decor";
+import { Bubble, DottedRing, HalfCircle, Orb, Ring, Sparkle, SunRays } from "../motion/decor";
 
 /* ─────────────────── scripted live call ─────────────────── */
 
@@ -542,17 +542,26 @@ export function Hero() {
         style={{ animationDelay: "-8s" }}
       />
 
-      {/* sunlight falling from the top edge */}
-      <SunRays className="left-1/2 -translate-x-[10%] top-0" />
+      {/* vivid color wash */}
+      <Orb className="-top-40 -left-32" size={520} tone="blue" opacity={0.28} />
+      <Orb className="top-10 right-[-140px]" size={560} tone="violet" opacity={0.26} delay={-7} />
+      <Orb className="hidden md:block bottom-[-180px] left-[30%]" size={480} tone="pink" opacity={0.16} delay={-12} />
 
-      {/* ambient shapes */}
-      <Ring className="hidden lg:block top-16 left-[44%]" size={150} tone="slate" duration={14} />
-      <Ring className="hidden sm:block bottom-24 left-8" size={72} tone="blue" delay={-4} />
-      <Bubble className="hidden sm:block top-36 left-14" size={26} tone="sky" delay={-2} />
-      <Bubble className="hidden lg:block bottom-40 right-10" size={48} tone="blue" delay={-6} duration={11} />
-      <Bubble className="top-24 right-[8%]" size={16} tone="amber" delay={-3} />
-      <Dot className="hidden lg:block top-[58%] left-[38%]" size={7} tone="amber" delay={-1} />
-      <HalfCircle className="hidden md:block -bottom-px left-[12%]" size={110} tone="sky" duration={13} />
+      {/* sunlight falling across the hero */}
+      <SunRays className="left-[18%] top-0" />
+
+      {/* colored shapes */}
+      <DottedRing className="hidden lg:block -top-14 left-[42%]" size={190} tone="blue" />
+      <Ring className="hidden sm:block bottom-28 left-10" size={84} tone="violet" delay={-4} />
+      <Ring className="hidden lg:block top-[26%] right-[3%]" size={56} tone="amber" delay={-2} duration={10} />
+      <Bubble className="hidden sm:block top-32 left-[6%]" size={34} tone="sky" delay={-2} />
+      <Bubble className="hidden lg:block bottom-44 right-[4%]" size={52} tone="blue" delay={-6} duration={10} />
+      <Bubble className="top-20 right-[10%]" size={20} tone="amber" delay={-3} />
+      <Bubble className="hidden md:block top-[60%] left-[40%]" size={14} tone="pink" delay={-1} />
+      <Sparkle className="hidden sm:block top-[18%] left-[36%]" size={24} tone="amber" />
+      <Sparkle className="hidden lg:block bottom-36 left-[46%]" size={16} tone="blue" delay={-1.6} />
+      <Sparkle className="top-[46%] right-[6%]" size={18} tone="violet" delay={-2.4} />
+      <HalfCircle className="hidden md:block -bottom-px left-[12%]" size={130} tone="sky" duration={11} />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 grid lg:grid-cols-[1.02fr_0.98fr] gap-14 lg:gap-16 items-center">
         <div className="text-center lg:text-left">

@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { EASE, Reveal, Stagger, StaggerItem } from "../motion/primitives";
-import { Bubble, Ring } from "../motion/decor";
+import { Bubble, DottedRing, Orb, Sparkle } from "../motion/decor";
 
 const FAQS = [
   {
@@ -85,8 +85,11 @@ function Item({ q, a, index }: { q: string; a: string; index: number }) {
 export function FAQ() {
   return (
     <section id="faq" className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24">
-      <Ring className="hidden lg:block top-24 right-[6%]" size={90} tone="slate" delay={-5} />
-      <Bubble className="hidden sm:block bottom-32 left-[8%]" size={24} tone="blue" delay={-3} />
+      <Orb className="hidden md:block top-[10%] right-[-140px]" size={400} tone="blue" opacity={0.16} />
+      <DottedRing className="hidden lg:block top-24 right-[6%]" size={110} tone="violet" delay={-5} />
+      <Bubble className="hidden sm:block bottom-32 left-[8%]" size={28} tone="sky" delay={-3} />
+      <Bubble className="hidden md:block top-[30%] left-[4%]" size={16} tone="amber" delay={-6} />
+      <Sparkle className="hidden sm:block bottom-[20%] right-[12%]" size={18} tone="blue" delay={-2} />
       <div className="relative max-w-3xl mx-auto">
         <Reveal className="text-center mb-12">
           <span className="inline-block text-[11px] font-semibold tracking-wide text-brand bg-bg-highlight rounded-full px-3.5 py-1.5 mb-5">

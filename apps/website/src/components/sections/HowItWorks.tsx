@@ -2,7 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles, MonitorSmartphone, PhoneCall, Check, Play } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
 import { EASE, Stagger, StaggerItem } from "../motion/primitives";
-import { Bubble, HalfCircle, Ring } from "../motion/decor";
+import { Bubble, DottedRing, HalfCircle, Orb, Ring, Sparkle } from "../motion/decor";
 
 function KbVisual() {
   return (
@@ -100,10 +100,14 @@ export function HowItWorks() {
   const reduce = useReducedMotion();
   return (
     <section id="how-it-works" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
-      <Ring className="hidden md:block -top-10 right-[14%]" size={130} tone="blue" duration={13} />
-      <Bubble className="hidden sm:block top-1/3 left-6" size={30} tone="sky" delay={-3} />
-      <Bubble className="bottom-24 right-8" size={18} tone="amber" delay={-5} />
-      <HalfCircle className="hidden lg:block -bottom-px right-[20%]" size={96} tone="slate" />
+      <Orb className="-top-52 right-[-160px]" size={480} tone="teal" opacity={0.2} />
+      <Orb className="hidden md:block bottom-[-200px] -left-40" size={460} tone="blue" opacity={0.22} delay={-9} />
+      <DottedRing className="hidden md:block -top-12 right-[12%]" size={160} tone="teal" />
+      <Ring className="hidden sm:block top-1/3 left-6" size={64} tone="pink" delay={-3} />
+      <Bubble className="hidden sm:block top-[22%] left-[12%]" size={30} tone="violet" delay={-3} />
+      <Bubble className="bottom-24 right-10" size={24} tone="amber" delay={-5} />
+      <Sparkle className="hidden md:block top-[45%] right-[5%]" size={20} tone="teal" delay={-1.2} />
+      <HalfCircle className="hidden lg:block -bottom-px right-[22%]" size={110} tone="violet" />
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="How it works"
