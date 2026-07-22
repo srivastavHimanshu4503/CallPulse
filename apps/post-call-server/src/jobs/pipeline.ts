@@ -1,3 +1,4 @@
+import { db } from "@antigravity/db";
 import { getErrorMessage, toAppError } from "@antigravity/errors";
 import { createLogger } from "../logger.js";
 import { finalizeExtraction, markExtractionInProgress } from "../persistence/log-status.js";
@@ -60,6 +61,45 @@ export const runPostCallPipeline = (job: PostCallJob): Promise<void> =>
 export const runChatSessionPipeline = (job: PostCallJob): Promise<void> =>
   runPipeline(job, CHAT_HANDLERS);
 
+/**
+ * Explicit job claim: exactly one worker run owns a call's post-processing.
+ * The INSERT either wins (we own it) or loses — then only a DONE row is
+ * final; FAILED or stale PROCESSING rows (>10 min: a crashed run) may be
+ * reclaimed. Closes the retry-during-processing double-run window that
+ * activity-row idempotency checks could not.
+ */
+const RECLAIM_AFTER_MS = 10 * 60_000;
+
+const claimJob = async (logId: string): Promise<boolean> => {
+  try {
+    await db.postCallJobClaim.create({ data: { logId } });
+    return true;
+  } catch {
+    const existing = await db.postCallJobClaim.findUnique({ where: { logId } });
+    if (!existing || existing.status === "DONE") return false;
+    const stale =
+      existing.status === "FAILED" ||
+      Date.now() - existing.claimedAt.getTime() > RECLAIM_AFTER_MS;
+    if (!stale) return false;
+    await db.postCallJobClaim.update({
+      where: { logId },
+      data: { status: "PROCESSING", claimedAt: new Date(), finishedAt: null },
+    });
+    return true;
+  }
+};
+
+const settleClaim = async (logId: string, status: "DONE" | "FAILED"): Promise<void> => {
+  try {
+    await db.postCallJobClaim.update({
+      where: { logId },
+      data: { status, finishedAt: new Date() },
+    });
+  } catch (err) {
+    log.warn("failed to settle job claim", { logId, status, error: getErrorMessage(err) });
+  }
+};
+
 const runPipeline = async (job: PostCallJob, handlers: JobHandler[]): Promise<void> => {
   const started = Date.now();
   log.info("pipeline start", {
@@ -69,6 +109,11 @@ const runPipeline = async (job: PostCallJob, handlers: JobHandler[]): Promise<vo
     agentId: job.agentId,
     turnCount: job.transcript.length,
   });
+
+  if (!(await claimJob(job.logId))) {
+    log.info("job already claimed/processed — skipping duplicate run", { logId: job.logId });
+    return;
+  }
 
   await markExtractionInProgress(job.logId);
 
@@ -122,6 +167,7 @@ const runPipeline = async (job: PostCallJob, handlers: JobHandler[]): Promise<vo
     (!ctx.extractedFields || Object.keys(ctx.extractedFields).length === 0) &&
     ctx.leadScore === undefined;
   if (failures.length > 0 && producedNothing && failures.every((f) => f.retryable)) {
+    await settleClaim(job.logId, "FAILED"); // reclaimable by the retry
     throw toAppError(
       new Error(
         `pipeline produced no data; retryable failures: ${failures
@@ -130,4 +176,5 @@ const runPipeline = async (job: PostCallJob, handlers: JobHandler[]): Promise<vo
       )
     );
   }
+  await settleClaim(job.logId, "DONE");
 };

@@ -59,6 +59,16 @@ export type CustomFieldValue = $Result.DefaultSelection<Prisma.$CustomFieldValue
  */
 export type Deal = $Result.DefaultSelection<Prisma.$DealPayload>
 /**
+ * Model DealEvent
+ * 
+ */
+export type DealEvent = $Result.DefaultSelection<Prisma.$DealEventPayload>
+/**
+ * Model PostCallJobClaim
+ * 
+ */
+export type PostCallJobClaim = $Result.DefaultSelection<Prisma.$PostCallJobClaimPayload>
+/**
  * Model Pipeline
  * 
  */
@@ -593,6 +603,26 @@ export class PrismaClient<
     * ```
     */
   get deal(): Prisma.DealDelegate<ExtArgs>;
+
+  /**
+   * `prisma.dealEvent`: Exposes CRUD operations for the **DealEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DealEvents
+    * const dealEvents = await prisma.dealEvent.findMany()
+    * ```
+    */
+  get dealEvent(): Prisma.DealEventDelegate<ExtArgs>;
+
+  /**
+   * `prisma.postCallJobClaim`: Exposes CRUD operations for the **PostCallJobClaim** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PostCallJobClaims
+    * const postCallJobClaims = await prisma.postCallJobClaim.findMany()
+    * ```
+    */
+  get postCallJobClaim(): Prisma.PostCallJobClaimDelegate<ExtArgs>;
 
   /**
    * `prisma.pipeline`: Exposes CRUD operations for the **Pipeline** model.
@@ -1193,6 +1223,8 @@ export namespace Prisma {
     CustomFieldDefinition: 'CustomFieldDefinition',
     CustomFieldValue: 'CustomFieldValue',
     Deal: 'Deal',
+    DealEvent: 'DealEvent',
+    PostCallJobClaim: 'PostCallJobClaim',
     Pipeline: 'Pipeline',
     PipelineStage: 'PipelineStage',
     DealStageHistory: 'DealStageHistory',
@@ -1223,7 +1255,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp"
+      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "dealEvent" | "postCallJobClaim" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1854,6 +1886,146 @@ export namespace Prisma {
           count: {
             args: Prisma.DealCountArgs<ExtArgs>
             result: $Utils.Optional<DealCountAggregateOutputType> | number
+          }
+        }
+      }
+      DealEvent: {
+        payload: Prisma.$DealEventPayload<ExtArgs>
+        fields: Prisma.DealEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DealEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DealEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>
+          }
+          findFirst: {
+            args: Prisma.DealEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DealEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>
+          }
+          findMany: {
+            args: Prisma.DealEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>[]
+          }
+          create: {
+            args: Prisma.DealEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>
+          }
+          createMany: {
+            args: Prisma.DealEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DealEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>[]
+          }
+          delete: {
+            args: Prisma.DealEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>
+          }
+          update: {
+            args: Prisma.DealEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.DealEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DealEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.DealEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DealEventPayload>
+          }
+          aggregate: {
+            args: Prisma.DealEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDealEvent>
+          }
+          groupBy: {
+            args: Prisma.DealEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DealEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DealEventCountArgs<ExtArgs>
+            result: $Utils.Optional<DealEventCountAggregateOutputType> | number
+          }
+        }
+      }
+      PostCallJobClaim: {
+        payload: Prisma.$PostCallJobClaimPayload<ExtArgs>
+        fields: Prisma.PostCallJobClaimFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PostCallJobClaimFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PostCallJobClaimFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>
+          }
+          findFirst: {
+            args: Prisma.PostCallJobClaimFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PostCallJobClaimFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>
+          }
+          findMany: {
+            args: Prisma.PostCallJobClaimFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>[]
+          }
+          create: {
+            args: Prisma.PostCallJobClaimCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>
+          }
+          createMany: {
+            args: Prisma.PostCallJobClaimCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PostCallJobClaimCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>[]
+          }
+          delete: {
+            args: Prisma.PostCallJobClaimDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>
+          }
+          update: {
+            args: Prisma.PostCallJobClaimUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>
+          }
+          deleteMany: {
+            args: Prisma.PostCallJobClaimDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PostCallJobClaimUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.PostCallJobClaimUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostCallJobClaimPayload>
+          }
+          aggregate: {
+            args: Prisma.PostCallJobClaimAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePostCallJobClaim>
+          }
+          groupBy: {
+            args: Prisma.PostCallJobClaimGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PostCallJobClaimGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PostCallJobClaimCountArgs<ExtArgs>
+            result: $Utils.Optional<PostCallJobClaimCountAggregateOutputType> | number
           }
         }
       }
@@ -3428,11 +3600,13 @@ export namespace Prisma {
   export type DealCountOutputType = {
     activities: number
     stageHistory: number
+    events: number
   }
 
   export type DealCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     activities?: boolean | DealCountOutputTypeCountActivitiesArgs
     stageHistory?: boolean | DealCountOutputTypeCountStageHistoryArgs
+    events?: boolean | DealCountOutputTypeCountEventsArgs
   }
 
   // Custom InputTypes
@@ -3458,6 +3632,13 @@ export namespace Prisma {
    */
   export type DealCountOutputTypeCountStageHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DealStageHistoryWhereInput
+  }
+
+  /**
+   * DealCountOutputType without action
+   */
+  export type DealCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DealEventWhereInput
   }
 
 
@@ -13040,6 +13221,7 @@ export namespace Prisma {
     owner?: boolean | Deal$ownerArgs<ExtArgs>
     activities?: boolean | Deal$activitiesArgs<ExtArgs>
     stageHistory?: boolean | Deal$stageHistoryArgs<ExtArgs>
+    events?: boolean | Deal$eventsArgs<ExtArgs>
     _count?: boolean | DealCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["deal"]>
 
@@ -13120,6 +13302,7 @@ export namespace Prisma {
     owner?: boolean | Deal$ownerArgs<ExtArgs>
     activities?: boolean | Deal$activitiesArgs<ExtArgs>
     stageHistory?: boolean | Deal$stageHistoryArgs<ExtArgs>
+    events?: boolean | Deal$eventsArgs<ExtArgs>
     _count?: boolean | DealCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DealIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13140,6 +13323,7 @@ export namespace Prisma {
       owner: Prisma.$UserPayload<ExtArgs> | null
       activities: Prisma.$ActivityPayload<ExtArgs>[]
       stageHistory: Prisma.$DealStageHistoryPayload<ExtArgs>[]
+      events: Prisma.$DealEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -13542,6 +13726,7 @@ export namespace Prisma {
     owner<T extends Deal$ownerArgs<ExtArgs> = {}>(args?: Subset<T, Deal$ownerArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     activities<T extends Deal$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, Deal$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany"> | Null>
     stageHistory<T extends Deal$stageHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Deal$stageHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DealStageHistoryPayload<ExtArgs>, T, "findMany"> | Null>
+    events<T extends Deal$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Deal$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14003,6 +14188,26 @@ export namespace Prisma {
   }
 
   /**
+   * Deal.events
+   */
+  export type Deal$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    where?: DealEventWhereInput
+    orderBy?: DealEventOrderByWithRelationInput | DealEventOrderByWithRelationInput[]
+    cursor?: DealEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DealEventScalarFieldEnum | DealEventScalarFieldEnum[]
+  }
+
+  /**
    * Deal without action
    */
   export type DealDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14014,6 +14219,1845 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DealInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DealEvent
+   */
+
+  export type AggregateDealEvent = {
+    _count: DealEventCountAggregateOutputType | null
+    _min: DealEventMinAggregateOutputType | null
+    _max: DealEventMaxAggregateOutputType | null
+  }
+
+  export type DealEventMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    dealId: string | null
+    actor: string | null
+    eventType: string | null
+    commLogId: string | null
+    createdAt: Date | null
+  }
+
+  export type DealEventMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    dealId: string | null
+    actor: string | null
+    eventType: string | null
+    commLogId: string | null
+    createdAt: Date | null
+  }
+
+  export type DealEventCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    dealId: number
+    actor: number
+    eventType: number
+    commLogId: number
+    before: number
+    after: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DealEventMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    dealId?: true
+    actor?: true
+    eventType?: true
+    commLogId?: true
+    createdAt?: true
+  }
+
+  export type DealEventMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    dealId?: true
+    actor?: true
+    eventType?: true
+    commLogId?: true
+    createdAt?: true
+  }
+
+  export type DealEventCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    dealId?: true
+    actor?: true
+    eventType?: true
+    commLogId?: true
+    before?: true
+    after?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DealEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DealEvent to aggregate.
+     */
+    where?: DealEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DealEvents to fetch.
+     */
+    orderBy?: DealEventOrderByWithRelationInput | DealEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DealEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DealEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DealEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DealEvents
+    **/
+    _count?: true | DealEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DealEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DealEventMaxAggregateInputType
+  }
+
+  export type GetDealEventAggregateType<T extends DealEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateDealEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDealEvent[P]>
+      : GetScalarType<T[P], AggregateDealEvent[P]>
+  }
+
+
+
+
+  export type DealEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DealEventWhereInput
+    orderBy?: DealEventOrderByWithAggregationInput | DealEventOrderByWithAggregationInput[]
+    by: DealEventScalarFieldEnum[] | DealEventScalarFieldEnum
+    having?: DealEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DealEventCountAggregateInputType | true
+    _min?: DealEventMinAggregateInputType
+    _max?: DealEventMaxAggregateInputType
+  }
+
+  export type DealEventGroupByOutputType = {
+    id: string
+    tenantId: string
+    dealId: string
+    actor: string
+    eventType: string
+    commLogId: string | null
+    before: JsonValue | null
+    after: JsonValue | null
+    createdAt: Date
+    _count: DealEventCountAggregateOutputType | null
+    _min: DealEventMinAggregateOutputType | null
+    _max: DealEventMaxAggregateOutputType | null
+  }
+
+  type GetDealEventGroupByPayload<T extends DealEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DealEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DealEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DealEventGroupByOutputType[P]>
+            : GetScalarType<T[P], DealEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DealEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    dealId?: boolean
+    actor?: boolean
+    eventType?: boolean
+    commLogId?: boolean
+    before?: boolean
+    after?: boolean
+    createdAt?: boolean
+    deal?: boolean | DealDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dealEvent"]>
+
+  export type DealEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    dealId?: boolean
+    actor?: boolean
+    eventType?: boolean
+    commLogId?: boolean
+    before?: boolean
+    after?: boolean
+    createdAt?: boolean
+    deal?: boolean | DealDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dealEvent"]>
+
+  export type DealEventSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    dealId?: boolean
+    actor?: boolean
+    eventType?: boolean
+    commLogId?: boolean
+    before?: boolean
+    after?: boolean
+    createdAt?: boolean
+  }
+
+  export type DealEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deal?: boolean | DealDefaultArgs<ExtArgs>
+  }
+  export type DealEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deal?: boolean | DealDefaultArgs<ExtArgs>
+  }
+
+  export type $DealEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DealEvent"
+    objects: {
+      deal: Prisma.$DealPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      dealId: string
+      actor: string
+      eventType: string
+      commLogId: string | null
+      before: Prisma.JsonValue | null
+      after: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["dealEvent"]>
+    composites: {}
+  }
+
+  type DealEventGetPayload<S extends boolean | null | undefined | DealEventDefaultArgs> = $Result.GetResult<Prisma.$DealEventPayload, S>
+
+  type DealEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<DealEventFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: DealEventCountAggregateInputType | true
+    }
+
+  export interface DealEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DealEvent'], meta: { name: 'DealEvent' } }
+    /**
+     * Find zero or one DealEvent that matches the filter.
+     * @param {DealEventFindUniqueArgs} args - Arguments to find a DealEvent
+     * @example
+     * // Get one DealEvent
+     * const dealEvent = await prisma.dealEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DealEventFindUniqueArgs>(args: SelectSubset<T, DealEventFindUniqueArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one DealEvent that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {DealEventFindUniqueOrThrowArgs} args - Arguments to find a DealEvent
+     * @example
+     * // Get one DealEvent
+     * const dealEvent = await prisma.dealEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DealEventFindUniqueOrThrowArgs>(args: SelectSubset<T, DealEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first DealEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DealEventFindFirstArgs} args - Arguments to find a DealEvent
+     * @example
+     * // Get one DealEvent
+     * const dealEvent = await prisma.dealEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DealEventFindFirstArgs>(args?: SelectSubset<T, DealEventFindFirstArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first DealEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DealEventFindFirstOrThrowArgs} args - Arguments to find a DealEvent
+     * @example
+     * // Get one DealEvent
+     * const dealEvent = await prisma.dealEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DealEventFindFirstOrThrowArgs>(args?: SelectSubset<T, DealEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more DealEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DealEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DealEvents
+     * const dealEvents = await prisma.dealEvent.findMany()
+     * 
+     * // Get first 10 DealEvents
+     * const dealEvents = await prisma.dealEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const dealEventWithIdOnly = await prisma.dealEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DealEventFindManyArgs>(args?: SelectSubset<T, DealEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a DealEvent.
+     * @param {DealEventCreateArgs} args - Arguments to create a DealEvent.
+     * @example
+     * // Create one DealEvent
+     * const DealEvent = await prisma.dealEvent.create({
+     *   data: {
+     *     // ... data to create a DealEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends DealEventCreateArgs>(args: SelectSubset<T, DealEventCreateArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many DealEvents.
+     * @param {DealEventCreateManyArgs} args - Arguments to create many DealEvents.
+     * @example
+     * // Create many DealEvents
+     * const dealEvent = await prisma.dealEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DealEventCreateManyArgs>(args?: SelectSubset<T, DealEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DealEvents and returns the data saved in the database.
+     * @param {DealEventCreateManyAndReturnArgs} args - Arguments to create many DealEvents.
+     * @example
+     * // Create many DealEvents
+     * const dealEvent = await prisma.dealEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DealEvents and only return the `id`
+     * const dealEventWithIdOnly = await prisma.dealEvent.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DealEventCreateManyAndReturnArgs>(args?: SelectSubset<T, DealEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a DealEvent.
+     * @param {DealEventDeleteArgs} args - Arguments to delete one DealEvent.
+     * @example
+     * // Delete one DealEvent
+     * const DealEvent = await prisma.dealEvent.delete({
+     *   where: {
+     *     // ... filter to delete one DealEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DealEventDeleteArgs>(args: SelectSubset<T, DealEventDeleteArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one DealEvent.
+     * @param {DealEventUpdateArgs} args - Arguments to update one DealEvent.
+     * @example
+     * // Update one DealEvent
+     * const dealEvent = await prisma.dealEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DealEventUpdateArgs>(args: SelectSubset<T, DealEventUpdateArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more DealEvents.
+     * @param {DealEventDeleteManyArgs} args - Arguments to filter DealEvents to delete.
+     * @example
+     * // Delete a few DealEvents
+     * const { count } = await prisma.dealEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DealEventDeleteManyArgs>(args?: SelectSubset<T, DealEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DealEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DealEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DealEvents
+     * const dealEvent = await prisma.dealEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DealEventUpdateManyArgs>(args: SelectSubset<T, DealEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one DealEvent.
+     * @param {DealEventUpsertArgs} args - Arguments to update or create a DealEvent.
+     * @example
+     * // Update or create a DealEvent
+     * const dealEvent = await prisma.dealEvent.upsert({
+     *   create: {
+     *     // ... data to create a DealEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DealEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DealEventUpsertArgs>(args: SelectSubset<T, DealEventUpsertArgs<ExtArgs>>): Prisma__DealEventClient<$Result.GetResult<Prisma.$DealEventPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of DealEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DealEventCountArgs} args - Arguments to filter DealEvents to count.
+     * @example
+     * // Count the number of DealEvents
+     * const count = await prisma.dealEvent.count({
+     *   where: {
+     *     // ... the filter for the DealEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends DealEventCountArgs>(
+      args?: Subset<T, DealEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DealEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DealEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DealEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DealEventAggregateArgs>(args: Subset<T, DealEventAggregateArgs>): Prisma.PrismaPromise<GetDealEventAggregateType<T>>
+
+    /**
+     * Group by DealEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DealEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DealEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DealEventGroupByArgs['orderBy'] }
+        : { orderBy?: DealEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DealEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDealEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DealEvent model
+   */
+  readonly fields: DealEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DealEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DealEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    deal<T extends DealDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DealDefaultArgs<ExtArgs>>): Prisma__DealClient<$Result.GetResult<Prisma.$DealPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DealEvent model
+   */ 
+  interface DealEventFieldRefs {
+    readonly id: FieldRef<"DealEvent", 'String'>
+    readonly tenantId: FieldRef<"DealEvent", 'String'>
+    readonly dealId: FieldRef<"DealEvent", 'String'>
+    readonly actor: FieldRef<"DealEvent", 'String'>
+    readonly eventType: FieldRef<"DealEvent", 'String'>
+    readonly commLogId: FieldRef<"DealEvent", 'String'>
+    readonly before: FieldRef<"DealEvent", 'Json'>
+    readonly after: FieldRef<"DealEvent", 'Json'>
+    readonly createdAt: FieldRef<"DealEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DealEvent findUnique
+   */
+  export type DealEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * Filter, which DealEvent to fetch.
+     */
+    where: DealEventWhereUniqueInput
+  }
+
+  /**
+   * DealEvent findUniqueOrThrow
+   */
+  export type DealEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * Filter, which DealEvent to fetch.
+     */
+    where: DealEventWhereUniqueInput
+  }
+
+  /**
+   * DealEvent findFirst
+   */
+  export type DealEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * Filter, which DealEvent to fetch.
+     */
+    where?: DealEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DealEvents to fetch.
+     */
+    orderBy?: DealEventOrderByWithRelationInput | DealEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DealEvents.
+     */
+    cursor?: DealEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DealEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DealEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DealEvents.
+     */
+    distinct?: DealEventScalarFieldEnum | DealEventScalarFieldEnum[]
+  }
+
+  /**
+   * DealEvent findFirstOrThrow
+   */
+  export type DealEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * Filter, which DealEvent to fetch.
+     */
+    where?: DealEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DealEvents to fetch.
+     */
+    orderBy?: DealEventOrderByWithRelationInput | DealEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DealEvents.
+     */
+    cursor?: DealEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DealEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DealEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DealEvents.
+     */
+    distinct?: DealEventScalarFieldEnum | DealEventScalarFieldEnum[]
+  }
+
+  /**
+   * DealEvent findMany
+   */
+  export type DealEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * Filter, which DealEvents to fetch.
+     */
+    where?: DealEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DealEvents to fetch.
+     */
+    orderBy?: DealEventOrderByWithRelationInput | DealEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DealEvents.
+     */
+    cursor?: DealEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DealEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DealEvents.
+     */
+    skip?: number
+    distinct?: DealEventScalarFieldEnum | DealEventScalarFieldEnum[]
+  }
+
+  /**
+   * DealEvent create
+   */
+  export type DealEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DealEvent.
+     */
+    data: XOR<DealEventCreateInput, DealEventUncheckedCreateInput>
+  }
+
+  /**
+   * DealEvent createMany
+   */
+  export type DealEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DealEvents.
+     */
+    data: DealEventCreateManyInput | DealEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DealEvent createManyAndReturn
+   */
+  export type DealEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many DealEvents.
+     */
+    data: DealEventCreateManyInput | DealEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DealEvent update
+   */
+  export type DealEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DealEvent.
+     */
+    data: XOR<DealEventUpdateInput, DealEventUncheckedUpdateInput>
+    /**
+     * Choose, which DealEvent to update.
+     */
+    where: DealEventWhereUniqueInput
+  }
+
+  /**
+   * DealEvent updateMany
+   */
+  export type DealEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DealEvents.
+     */
+    data: XOR<DealEventUpdateManyMutationInput, DealEventUncheckedUpdateManyInput>
+    /**
+     * Filter which DealEvents to update
+     */
+    where?: DealEventWhereInput
+  }
+
+  /**
+   * DealEvent upsert
+   */
+  export type DealEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DealEvent to update in case it exists.
+     */
+    where: DealEventWhereUniqueInput
+    /**
+     * In case the DealEvent found by the `where` argument doesn't exist, create a new DealEvent with this data.
+     */
+    create: XOR<DealEventCreateInput, DealEventUncheckedCreateInput>
+    /**
+     * In case the DealEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DealEventUpdateInput, DealEventUncheckedUpdateInput>
+  }
+
+  /**
+   * DealEvent delete
+   */
+  export type DealEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+    /**
+     * Filter which DealEvent to delete.
+     */
+    where: DealEventWhereUniqueInput
+  }
+
+  /**
+   * DealEvent deleteMany
+   */
+  export type DealEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DealEvents to delete
+     */
+    where?: DealEventWhereInput
+  }
+
+  /**
+   * DealEvent without action
+   */
+  export type DealEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DealEvent
+     */
+    select?: DealEventSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DealEventInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PostCallJobClaim
+   */
+
+  export type AggregatePostCallJobClaim = {
+    _count: PostCallJobClaimCountAggregateOutputType | null
+    _min: PostCallJobClaimMinAggregateOutputType | null
+    _max: PostCallJobClaimMaxAggregateOutputType | null
+  }
+
+  export type PostCallJobClaimMinAggregateOutputType = {
+    logId: string | null
+    status: string | null
+    claimedAt: Date | null
+    finishedAt: Date | null
+  }
+
+  export type PostCallJobClaimMaxAggregateOutputType = {
+    logId: string | null
+    status: string | null
+    claimedAt: Date | null
+    finishedAt: Date | null
+  }
+
+  export type PostCallJobClaimCountAggregateOutputType = {
+    logId: number
+    status: number
+    claimedAt: number
+    finishedAt: number
+    _all: number
+  }
+
+
+  export type PostCallJobClaimMinAggregateInputType = {
+    logId?: true
+    status?: true
+    claimedAt?: true
+    finishedAt?: true
+  }
+
+  export type PostCallJobClaimMaxAggregateInputType = {
+    logId?: true
+    status?: true
+    claimedAt?: true
+    finishedAt?: true
+  }
+
+  export type PostCallJobClaimCountAggregateInputType = {
+    logId?: true
+    status?: true
+    claimedAt?: true
+    finishedAt?: true
+    _all?: true
+  }
+
+  export type PostCallJobClaimAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostCallJobClaim to aggregate.
+     */
+    where?: PostCallJobClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostCallJobClaims to fetch.
+     */
+    orderBy?: PostCallJobClaimOrderByWithRelationInput | PostCallJobClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PostCallJobClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostCallJobClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostCallJobClaims.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PostCallJobClaims
+    **/
+    _count?: true | PostCallJobClaimCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PostCallJobClaimMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PostCallJobClaimMaxAggregateInputType
+  }
+
+  export type GetPostCallJobClaimAggregateType<T extends PostCallJobClaimAggregateArgs> = {
+        [P in keyof T & keyof AggregatePostCallJobClaim]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePostCallJobClaim[P]>
+      : GetScalarType<T[P], AggregatePostCallJobClaim[P]>
+  }
+
+
+
+
+  export type PostCallJobClaimGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostCallJobClaimWhereInput
+    orderBy?: PostCallJobClaimOrderByWithAggregationInput | PostCallJobClaimOrderByWithAggregationInput[]
+    by: PostCallJobClaimScalarFieldEnum[] | PostCallJobClaimScalarFieldEnum
+    having?: PostCallJobClaimScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PostCallJobClaimCountAggregateInputType | true
+    _min?: PostCallJobClaimMinAggregateInputType
+    _max?: PostCallJobClaimMaxAggregateInputType
+  }
+
+  export type PostCallJobClaimGroupByOutputType = {
+    logId: string
+    status: string
+    claimedAt: Date
+    finishedAt: Date | null
+    _count: PostCallJobClaimCountAggregateOutputType | null
+    _min: PostCallJobClaimMinAggregateOutputType | null
+    _max: PostCallJobClaimMaxAggregateOutputType | null
+  }
+
+  type GetPostCallJobClaimGroupByPayload<T extends PostCallJobClaimGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PostCallJobClaimGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PostCallJobClaimGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PostCallJobClaimGroupByOutputType[P]>
+            : GetScalarType<T[P], PostCallJobClaimGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PostCallJobClaimSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    logId?: boolean
+    status?: boolean
+    claimedAt?: boolean
+    finishedAt?: boolean
+  }, ExtArgs["result"]["postCallJobClaim"]>
+
+  export type PostCallJobClaimSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    logId?: boolean
+    status?: boolean
+    claimedAt?: boolean
+    finishedAt?: boolean
+  }, ExtArgs["result"]["postCallJobClaim"]>
+
+  export type PostCallJobClaimSelectScalar = {
+    logId?: boolean
+    status?: boolean
+    claimedAt?: boolean
+    finishedAt?: boolean
+  }
+
+
+  export type $PostCallJobClaimPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PostCallJobClaim"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      logId: string
+      status: string
+      claimedAt: Date
+      finishedAt: Date | null
+    }, ExtArgs["result"]["postCallJobClaim"]>
+    composites: {}
+  }
+
+  type PostCallJobClaimGetPayload<S extends boolean | null | undefined | PostCallJobClaimDefaultArgs> = $Result.GetResult<Prisma.$PostCallJobClaimPayload, S>
+
+  type PostCallJobClaimCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<PostCallJobClaimFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: PostCallJobClaimCountAggregateInputType | true
+    }
+
+  export interface PostCallJobClaimDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PostCallJobClaim'], meta: { name: 'PostCallJobClaim' } }
+    /**
+     * Find zero or one PostCallJobClaim that matches the filter.
+     * @param {PostCallJobClaimFindUniqueArgs} args - Arguments to find a PostCallJobClaim
+     * @example
+     * // Get one PostCallJobClaim
+     * const postCallJobClaim = await prisma.postCallJobClaim.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PostCallJobClaimFindUniqueArgs>(args: SelectSubset<T, PostCallJobClaimFindUniqueArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one PostCallJobClaim that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {PostCallJobClaimFindUniqueOrThrowArgs} args - Arguments to find a PostCallJobClaim
+     * @example
+     * // Get one PostCallJobClaim
+     * const postCallJobClaim = await prisma.postCallJobClaim.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PostCallJobClaimFindUniqueOrThrowArgs>(args: SelectSubset<T, PostCallJobClaimFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first PostCallJobClaim that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCallJobClaimFindFirstArgs} args - Arguments to find a PostCallJobClaim
+     * @example
+     * // Get one PostCallJobClaim
+     * const postCallJobClaim = await prisma.postCallJobClaim.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PostCallJobClaimFindFirstArgs>(args?: SelectSubset<T, PostCallJobClaimFindFirstArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first PostCallJobClaim that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCallJobClaimFindFirstOrThrowArgs} args - Arguments to find a PostCallJobClaim
+     * @example
+     * // Get one PostCallJobClaim
+     * const postCallJobClaim = await prisma.postCallJobClaim.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PostCallJobClaimFindFirstOrThrowArgs>(args?: SelectSubset<T, PostCallJobClaimFindFirstOrThrowArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more PostCallJobClaims that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCallJobClaimFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PostCallJobClaims
+     * const postCallJobClaims = await prisma.postCallJobClaim.findMany()
+     * 
+     * // Get first 10 PostCallJobClaims
+     * const postCallJobClaims = await prisma.postCallJobClaim.findMany({ take: 10 })
+     * 
+     * // Only select the `logId`
+     * const postCallJobClaimWithLogIdOnly = await prisma.postCallJobClaim.findMany({ select: { logId: true } })
+     * 
+     */
+    findMany<T extends PostCallJobClaimFindManyArgs>(args?: SelectSubset<T, PostCallJobClaimFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a PostCallJobClaim.
+     * @param {PostCallJobClaimCreateArgs} args - Arguments to create a PostCallJobClaim.
+     * @example
+     * // Create one PostCallJobClaim
+     * const PostCallJobClaim = await prisma.postCallJobClaim.create({
+     *   data: {
+     *     // ... data to create a PostCallJobClaim
+     *   }
+     * })
+     * 
+     */
+    create<T extends PostCallJobClaimCreateArgs>(args: SelectSubset<T, PostCallJobClaimCreateArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many PostCallJobClaims.
+     * @param {PostCallJobClaimCreateManyArgs} args - Arguments to create many PostCallJobClaims.
+     * @example
+     * // Create many PostCallJobClaims
+     * const postCallJobClaim = await prisma.postCallJobClaim.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PostCallJobClaimCreateManyArgs>(args?: SelectSubset<T, PostCallJobClaimCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PostCallJobClaims and returns the data saved in the database.
+     * @param {PostCallJobClaimCreateManyAndReturnArgs} args - Arguments to create many PostCallJobClaims.
+     * @example
+     * // Create many PostCallJobClaims
+     * const postCallJobClaim = await prisma.postCallJobClaim.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PostCallJobClaims and only return the `logId`
+     * const postCallJobClaimWithLogIdOnly = await prisma.postCallJobClaim.createManyAndReturn({ 
+     *   select: { logId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PostCallJobClaimCreateManyAndReturnArgs>(args?: SelectSubset<T, PostCallJobClaimCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a PostCallJobClaim.
+     * @param {PostCallJobClaimDeleteArgs} args - Arguments to delete one PostCallJobClaim.
+     * @example
+     * // Delete one PostCallJobClaim
+     * const PostCallJobClaim = await prisma.postCallJobClaim.delete({
+     *   where: {
+     *     // ... filter to delete one PostCallJobClaim
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PostCallJobClaimDeleteArgs>(args: SelectSubset<T, PostCallJobClaimDeleteArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one PostCallJobClaim.
+     * @param {PostCallJobClaimUpdateArgs} args - Arguments to update one PostCallJobClaim.
+     * @example
+     * // Update one PostCallJobClaim
+     * const postCallJobClaim = await prisma.postCallJobClaim.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PostCallJobClaimUpdateArgs>(args: SelectSubset<T, PostCallJobClaimUpdateArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more PostCallJobClaims.
+     * @param {PostCallJobClaimDeleteManyArgs} args - Arguments to filter PostCallJobClaims to delete.
+     * @example
+     * // Delete a few PostCallJobClaims
+     * const { count } = await prisma.postCallJobClaim.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PostCallJobClaimDeleteManyArgs>(args?: SelectSubset<T, PostCallJobClaimDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PostCallJobClaims.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCallJobClaimUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PostCallJobClaims
+     * const postCallJobClaim = await prisma.postCallJobClaim.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PostCallJobClaimUpdateManyArgs>(args: SelectSubset<T, PostCallJobClaimUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one PostCallJobClaim.
+     * @param {PostCallJobClaimUpsertArgs} args - Arguments to update or create a PostCallJobClaim.
+     * @example
+     * // Update or create a PostCallJobClaim
+     * const postCallJobClaim = await prisma.postCallJobClaim.upsert({
+     *   create: {
+     *     // ... data to create a PostCallJobClaim
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PostCallJobClaim we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PostCallJobClaimUpsertArgs>(args: SelectSubset<T, PostCallJobClaimUpsertArgs<ExtArgs>>): Prisma__PostCallJobClaimClient<$Result.GetResult<Prisma.$PostCallJobClaimPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of PostCallJobClaims.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCallJobClaimCountArgs} args - Arguments to filter PostCallJobClaims to count.
+     * @example
+     * // Count the number of PostCallJobClaims
+     * const count = await prisma.postCallJobClaim.count({
+     *   where: {
+     *     // ... the filter for the PostCallJobClaims we want to count
+     *   }
+     * })
+    **/
+    count<T extends PostCallJobClaimCountArgs>(
+      args?: Subset<T, PostCallJobClaimCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PostCallJobClaimCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PostCallJobClaim.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCallJobClaimAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PostCallJobClaimAggregateArgs>(args: Subset<T, PostCallJobClaimAggregateArgs>): Prisma.PrismaPromise<GetPostCallJobClaimAggregateType<T>>
+
+    /**
+     * Group by PostCallJobClaim.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCallJobClaimGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PostCallJobClaimGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PostCallJobClaimGroupByArgs['orderBy'] }
+        : { orderBy?: PostCallJobClaimGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PostCallJobClaimGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostCallJobClaimGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PostCallJobClaim model
+   */
+  readonly fields: PostCallJobClaimFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PostCallJobClaim.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PostCallJobClaimClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PostCallJobClaim model
+   */ 
+  interface PostCallJobClaimFieldRefs {
+    readonly logId: FieldRef<"PostCallJobClaim", 'String'>
+    readonly status: FieldRef<"PostCallJobClaim", 'String'>
+    readonly claimedAt: FieldRef<"PostCallJobClaim", 'DateTime'>
+    readonly finishedAt: FieldRef<"PostCallJobClaim", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PostCallJobClaim findUnique
+   */
+  export type PostCallJobClaimFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * Filter, which PostCallJobClaim to fetch.
+     */
+    where: PostCallJobClaimWhereUniqueInput
+  }
+
+  /**
+   * PostCallJobClaim findUniqueOrThrow
+   */
+  export type PostCallJobClaimFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * Filter, which PostCallJobClaim to fetch.
+     */
+    where: PostCallJobClaimWhereUniqueInput
+  }
+
+  /**
+   * PostCallJobClaim findFirst
+   */
+  export type PostCallJobClaimFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * Filter, which PostCallJobClaim to fetch.
+     */
+    where?: PostCallJobClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostCallJobClaims to fetch.
+     */
+    orderBy?: PostCallJobClaimOrderByWithRelationInput | PostCallJobClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostCallJobClaims.
+     */
+    cursor?: PostCallJobClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostCallJobClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostCallJobClaims.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostCallJobClaims.
+     */
+    distinct?: PostCallJobClaimScalarFieldEnum | PostCallJobClaimScalarFieldEnum[]
+  }
+
+  /**
+   * PostCallJobClaim findFirstOrThrow
+   */
+  export type PostCallJobClaimFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * Filter, which PostCallJobClaim to fetch.
+     */
+    where?: PostCallJobClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostCallJobClaims to fetch.
+     */
+    orderBy?: PostCallJobClaimOrderByWithRelationInput | PostCallJobClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostCallJobClaims.
+     */
+    cursor?: PostCallJobClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostCallJobClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostCallJobClaims.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostCallJobClaims.
+     */
+    distinct?: PostCallJobClaimScalarFieldEnum | PostCallJobClaimScalarFieldEnum[]
+  }
+
+  /**
+   * PostCallJobClaim findMany
+   */
+  export type PostCallJobClaimFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * Filter, which PostCallJobClaims to fetch.
+     */
+    where?: PostCallJobClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostCallJobClaims to fetch.
+     */
+    orderBy?: PostCallJobClaimOrderByWithRelationInput | PostCallJobClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PostCallJobClaims.
+     */
+    cursor?: PostCallJobClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostCallJobClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostCallJobClaims.
+     */
+    skip?: number
+    distinct?: PostCallJobClaimScalarFieldEnum | PostCallJobClaimScalarFieldEnum[]
+  }
+
+  /**
+   * PostCallJobClaim create
+   */
+  export type PostCallJobClaimCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * The data needed to create a PostCallJobClaim.
+     */
+    data: XOR<PostCallJobClaimCreateInput, PostCallJobClaimUncheckedCreateInput>
+  }
+
+  /**
+   * PostCallJobClaim createMany
+   */
+  export type PostCallJobClaimCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PostCallJobClaims.
+     */
+    data: PostCallJobClaimCreateManyInput | PostCallJobClaimCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PostCallJobClaim createManyAndReturn
+   */
+  export type PostCallJobClaimCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many PostCallJobClaims.
+     */
+    data: PostCallJobClaimCreateManyInput | PostCallJobClaimCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PostCallJobClaim update
+   */
+  export type PostCallJobClaimUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * The data needed to update a PostCallJobClaim.
+     */
+    data: XOR<PostCallJobClaimUpdateInput, PostCallJobClaimUncheckedUpdateInput>
+    /**
+     * Choose, which PostCallJobClaim to update.
+     */
+    where: PostCallJobClaimWhereUniqueInput
+  }
+
+  /**
+   * PostCallJobClaim updateMany
+   */
+  export type PostCallJobClaimUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PostCallJobClaims.
+     */
+    data: XOR<PostCallJobClaimUpdateManyMutationInput, PostCallJobClaimUncheckedUpdateManyInput>
+    /**
+     * Filter which PostCallJobClaims to update
+     */
+    where?: PostCallJobClaimWhereInput
+  }
+
+  /**
+   * PostCallJobClaim upsert
+   */
+  export type PostCallJobClaimUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * The filter to search for the PostCallJobClaim to update in case it exists.
+     */
+    where: PostCallJobClaimWhereUniqueInput
+    /**
+     * In case the PostCallJobClaim found by the `where` argument doesn't exist, create a new PostCallJobClaim with this data.
+     */
+    create: XOR<PostCallJobClaimCreateInput, PostCallJobClaimUncheckedCreateInput>
+    /**
+     * In case the PostCallJobClaim was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PostCallJobClaimUpdateInput, PostCallJobClaimUncheckedUpdateInput>
+  }
+
+  /**
+   * PostCallJobClaim delete
+   */
+  export type PostCallJobClaimDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
+    /**
+     * Filter which PostCallJobClaim to delete.
+     */
+    where: PostCallJobClaimWhereUniqueInput
+  }
+
+  /**
+   * PostCallJobClaim deleteMany
+   */
+  export type PostCallJobClaimDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostCallJobClaims to delete
+     */
+    where?: PostCallJobClaimWhereInput
+  }
+
+  /**
+   * PostCallJobClaim without action
+   */
+  export type PostCallJobClaimDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCallJobClaim
+     */
+    select?: PostCallJobClaimSelect<ExtArgs> | null
   }
 
 
@@ -30328,6 +32372,31 @@ export namespace Prisma {
   export type DealScalarFieldEnum = (typeof DealScalarFieldEnum)[keyof typeof DealScalarFieldEnum]
 
 
+  export const DealEventScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    dealId: 'dealId',
+    actor: 'actor',
+    eventType: 'eventType',
+    commLogId: 'commLogId',
+    before: 'before',
+    after: 'after',
+    createdAt: 'createdAt'
+  };
+
+  export type DealEventScalarFieldEnum = (typeof DealEventScalarFieldEnum)[keyof typeof DealEventScalarFieldEnum]
+
+
+  export const PostCallJobClaimScalarFieldEnum: {
+    logId: 'logId',
+    status: 'status',
+    claimedAt: 'claimedAt',
+    finishedAt: 'finishedAt'
+  };
+
+  export type PostCallJobClaimScalarFieldEnum = (typeof PostCallJobClaimScalarFieldEnum)[keyof typeof PostCallJobClaimScalarFieldEnum]
+
+
   export const PipelineScalarFieldEnum: {
     id: 'id',
     tenantId: 'tenantId',
@@ -31753,6 +33822,7 @@ export namespace Prisma {
     owner?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     activities?: ActivityListRelationFilter
     stageHistory?: DealStageHistoryListRelationFilter
+    events?: DealEventListRelationFilter
   }
 
   export type DealOrderByWithRelationInput = {
@@ -31792,6 +33862,7 @@ export namespace Prisma {
     owner?: UserOrderByWithRelationInput
     activities?: ActivityOrderByRelationAggregateInput
     stageHistory?: DealStageHistoryOrderByRelationAggregateInput
+    events?: DealEventOrderByRelationAggregateInput
   }
 
   export type DealWhereUniqueInput = Prisma.AtLeast<{
@@ -31834,6 +33905,7 @@ export namespace Prisma {
     owner?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     activities?: ActivityListRelationFilter
     stageHistory?: DealStageHistoryListRelationFilter
+    events?: DealEventListRelationFilter
   }, "id">
 
   export type DealOrderByWithAggregationInput = {
@@ -31906,6 +33978,129 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Deal"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Deal"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Deal"> | Date | string | null
+  }
+
+  export type DealEventWhereInput = {
+    AND?: DealEventWhereInput | DealEventWhereInput[]
+    OR?: DealEventWhereInput[]
+    NOT?: DealEventWhereInput | DealEventWhereInput[]
+    id?: StringFilter<"DealEvent"> | string
+    tenantId?: StringFilter<"DealEvent"> | string
+    dealId?: StringFilter<"DealEvent"> | string
+    actor?: StringFilter<"DealEvent"> | string
+    eventType?: StringFilter<"DealEvent"> | string
+    commLogId?: StringNullableFilter<"DealEvent"> | string | null
+    before?: JsonNullableFilter<"DealEvent">
+    after?: JsonNullableFilter<"DealEvent">
+    createdAt?: DateTimeFilter<"DealEvent"> | Date | string
+    deal?: XOR<DealRelationFilter, DealWhereInput>
+  }
+
+  export type DealEventOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    dealId?: SortOrder
+    actor?: SortOrder
+    eventType?: SortOrder
+    commLogId?: SortOrderInput | SortOrder
+    before?: SortOrderInput | SortOrder
+    after?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    deal?: DealOrderByWithRelationInput
+  }
+
+  export type DealEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    commLogId_eventType?: DealEventCommLogIdEventTypeCompoundUniqueInput
+    AND?: DealEventWhereInput | DealEventWhereInput[]
+    OR?: DealEventWhereInput[]
+    NOT?: DealEventWhereInput | DealEventWhereInput[]
+    tenantId?: StringFilter<"DealEvent"> | string
+    dealId?: StringFilter<"DealEvent"> | string
+    actor?: StringFilter<"DealEvent"> | string
+    eventType?: StringFilter<"DealEvent"> | string
+    commLogId?: StringNullableFilter<"DealEvent"> | string | null
+    before?: JsonNullableFilter<"DealEvent">
+    after?: JsonNullableFilter<"DealEvent">
+    createdAt?: DateTimeFilter<"DealEvent"> | Date | string
+    deal?: XOR<DealRelationFilter, DealWhereInput>
+  }, "id" | "commLogId_eventType">
+
+  export type DealEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    dealId?: SortOrder
+    actor?: SortOrder
+    eventType?: SortOrder
+    commLogId?: SortOrderInput | SortOrder
+    before?: SortOrderInput | SortOrder
+    after?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: DealEventCountOrderByAggregateInput
+    _max?: DealEventMaxOrderByAggregateInput
+    _min?: DealEventMinOrderByAggregateInput
+  }
+
+  export type DealEventScalarWhereWithAggregatesInput = {
+    AND?: DealEventScalarWhereWithAggregatesInput | DealEventScalarWhereWithAggregatesInput[]
+    OR?: DealEventScalarWhereWithAggregatesInput[]
+    NOT?: DealEventScalarWhereWithAggregatesInput | DealEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DealEvent"> | string
+    tenantId?: StringWithAggregatesFilter<"DealEvent"> | string
+    dealId?: StringWithAggregatesFilter<"DealEvent"> | string
+    actor?: StringWithAggregatesFilter<"DealEvent"> | string
+    eventType?: StringWithAggregatesFilter<"DealEvent"> | string
+    commLogId?: StringNullableWithAggregatesFilter<"DealEvent"> | string | null
+    before?: JsonNullableWithAggregatesFilter<"DealEvent">
+    after?: JsonNullableWithAggregatesFilter<"DealEvent">
+    createdAt?: DateTimeWithAggregatesFilter<"DealEvent"> | Date | string
+  }
+
+  export type PostCallJobClaimWhereInput = {
+    AND?: PostCallJobClaimWhereInput | PostCallJobClaimWhereInput[]
+    OR?: PostCallJobClaimWhereInput[]
+    NOT?: PostCallJobClaimWhereInput | PostCallJobClaimWhereInput[]
+    logId?: StringFilter<"PostCallJobClaim"> | string
+    status?: StringFilter<"PostCallJobClaim"> | string
+    claimedAt?: DateTimeFilter<"PostCallJobClaim"> | Date | string
+    finishedAt?: DateTimeNullableFilter<"PostCallJobClaim"> | Date | string | null
+  }
+
+  export type PostCallJobClaimOrderByWithRelationInput = {
+    logId?: SortOrder
+    status?: SortOrder
+    claimedAt?: SortOrder
+    finishedAt?: SortOrderInput | SortOrder
+  }
+
+  export type PostCallJobClaimWhereUniqueInput = Prisma.AtLeast<{
+    logId?: string
+    AND?: PostCallJobClaimWhereInput | PostCallJobClaimWhereInput[]
+    OR?: PostCallJobClaimWhereInput[]
+    NOT?: PostCallJobClaimWhereInput | PostCallJobClaimWhereInput[]
+    status?: StringFilter<"PostCallJobClaim"> | string
+    claimedAt?: DateTimeFilter<"PostCallJobClaim"> | Date | string
+    finishedAt?: DateTimeNullableFilter<"PostCallJobClaim"> | Date | string | null
+  }, "logId">
+
+  export type PostCallJobClaimOrderByWithAggregationInput = {
+    logId?: SortOrder
+    status?: SortOrder
+    claimedAt?: SortOrder
+    finishedAt?: SortOrderInput | SortOrder
+    _count?: PostCallJobClaimCountOrderByAggregateInput
+    _max?: PostCallJobClaimMaxOrderByAggregateInput
+    _min?: PostCallJobClaimMinOrderByAggregateInput
+  }
+
+  export type PostCallJobClaimScalarWhereWithAggregatesInput = {
+    AND?: PostCallJobClaimScalarWhereWithAggregatesInput | PostCallJobClaimScalarWhereWithAggregatesInput[]
+    OR?: PostCallJobClaimScalarWhereWithAggregatesInput[]
+    NOT?: PostCallJobClaimScalarWhereWithAggregatesInput | PostCallJobClaimScalarWhereWithAggregatesInput[]
+    logId?: StringWithAggregatesFilter<"PostCallJobClaim"> | string
+    status?: StringWithAggregatesFilter<"PostCallJobClaim"> | string
+    claimedAt?: DateTimeWithAggregatesFilter<"PostCallJobClaim"> | Date | string
+    finishedAt?: DateTimeNullableWithAggregatesFilter<"PostCallJobClaim"> | Date | string | null
   }
 
   export type PipelineWhereInput = {
@@ -34314,6 +36509,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutDealsInput
     activities?: ActivityCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateInput = {
@@ -34348,6 +36544,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealUpdateInput = {
@@ -34382,6 +36579,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutDealsNestedInput
     activities?: ActivityUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateInput = {
@@ -34416,6 +36614,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type DealCreateManyInput = {
@@ -34507,6 +36706,138 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DealEventCreateInput = {
+    id?: string
+    tenantId: string
+    actor: string
+    eventType: string
+    commLogId?: string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    deal: DealCreateNestedOneWithoutEventsInput
+  }
+
+  export type DealEventUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    dealId: string
+    actor: string
+    eventType: string
+    commLogId?: string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type DealEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    actor?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deal?: DealUpdateOneRequiredWithoutEventsNestedInput
+  }
+
+  export type DealEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    dealId?: StringFieldUpdateOperationsInput | string
+    actor?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DealEventCreateManyInput = {
+    id?: string
+    tenantId: string
+    dealId: string
+    actor: string
+    eventType: string
+    commLogId?: string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type DealEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    actor?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DealEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    dealId?: StringFieldUpdateOperationsInput | string
+    actor?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostCallJobClaimCreateInput = {
+    logId: string
+    status?: string
+    claimedAt?: Date | string
+    finishedAt?: Date | string | null
+  }
+
+  export type PostCallJobClaimUncheckedCreateInput = {
+    logId: string
+    status?: string
+    claimedAt?: Date | string
+    finishedAt?: Date | string | null
+  }
+
+  export type PostCallJobClaimUpdateInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PostCallJobClaimUncheckedUpdateInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PostCallJobClaimCreateManyInput = {
+    logId: string
+    status?: string
+    claimedAt?: Date | string
+    finishedAt?: Date | string | null
+  }
+
+  export type PostCallJobClaimUpdateManyMutationInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PostCallJobClaimUncheckedUpdateManyInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    claimedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PipelineCreateInput = {
@@ -37168,6 +39499,16 @@ export namespace Prisma {
     isNot?: UserWhereInput | null
   }
 
+  export type DealEventListRelationFilter = {
+    every?: DealEventWhereInput
+    some?: DealEventWhereInput
+    none?: DealEventWhereInput
+  }
+
+  export type DealEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type DealCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
@@ -37362,30 +39703,46 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type PipelineCountOrderByAggregateInput = {
-    id?: SortOrder
-    tenantId?: SortOrder
-    name?: SortOrder
-    stages?: SortOrder
-    filters?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+  export type DealRelationFilter = {
+    is?: DealWhereInput
+    isNot?: DealWhereInput
   }
 
-  export type PipelineMaxOrderByAggregateInput = {
-    id?: SortOrder
-    tenantId?: SortOrder
-    name?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+  export type DealEventCommLogIdEventTypeCompoundUniqueInput = {
+    commLogId: string
+    eventType: string
   }
 
-  export type PipelineMinOrderByAggregateInput = {
+  export type DealEventCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
-    name?: SortOrder
+    dealId?: SortOrder
+    actor?: SortOrder
+    eventType?: SortOrder
+    commLogId?: SortOrder
+    before?: SortOrder
+    after?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
+  }
+
+  export type DealEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    dealId?: SortOrder
+    actor?: SortOrder
+    eventType?: SortOrder
+    commLogId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DealEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    dealId?: SortOrder
+    actor?: SortOrder
+    eventType?: SortOrder
+    commLogId?: SortOrder
+    createdAt?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -37411,6 +39768,53 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type PostCallJobClaimCountOrderByAggregateInput = {
+    logId?: SortOrder
+    status?: SortOrder
+    claimedAt?: SortOrder
+    finishedAt?: SortOrder
+  }
+
+  export type PostCallJobClaimMaxOrderByAggregateInput = {
+    logId?: SortOrder
+    status?: SortOrder
+    claimedAt?: SortOrder
+    finishedAt?: SortOrder
+  }
+
+  export type PostCallJobClaimMinOrderByAggregateInput = {
+    logId?: SortOrder
+    status?: SortOrder
+    claimedAt?: SortOrder
+    finishedAt?: SortOrder
+  }
+
+  export type PipelineCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    stages?: SortOrder
+    filters?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PipelineMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PipelineMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type PipelineRelationFilter = {
@@ -37471,11 +39875,6 @@ export namespace Prisma {
   export type PipelineStageSumOrderByAggregateInput = {
     position?: SortOrder
     probability?: SortOrder
-  }
-
-  export type DealRelationFilter = {
-    is?: DealWhereInput
-    isNot?: DealWhereInput
   }
 
   export type DealStageHistoryCountOrderByAggregateInput = {
@@ -39900,6 +42299,13 @@ export namespace Prisma {
     connect?: DealStageHistoryWhereUniqueInput | DealStageHistoryWhereUniqueInput[]
   }
 
+  export type DealEventCreateNestedManyWithoutDealInput = {
+    create?: XOR<DealEventCreateWithoutDealInput, DealEventUncheckedCreateWithoutDealInput> | DealEventCreateWithoutDealInput[] | DealEventUncheckedCreateWithoutDealInput[]
+    connectOrCreate?: DealEventCreateOrConnectWithoutDealInput | DealEventCreateOrConnectWithoutDealInput[]
+    createMany?: DealEventCreateManyDealInputEnvelope
+    connect?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+  }
+
   export type ActivityUncheckedCreateNestedManyWithoutDealInput = {
     create?: XOR<ActivityCreateWithoutDealInput, ActivityUncheckedCreateWithoutDealInput> | ActivityCreateWithoutDealInput[] | ActivityUncheckedCreateWithoutDealInput[]
     connectOrCreate?: ActivityCreateOrConnectWithoutDealInput | ActivityCreateOrConnectWithoutDealInput[]
@@ -39912,6 +42318,13 @@ export namespace Prisma {
     connectOrCreate?: DealStageHistoryCreateOrConnectWithoutDealInput | DealStageHistoryCreateOrConnectWithoutDealInput[]
     createMany?: DealStageHistoryCreateManyDealInputEnvelope
     connect?: DealStageHistoryWhereUniqueInput | DealStageHistoryWhereUniqueInput[]
+  }
+
+  export type DealEventUncheckedCreateNestedManyWithoutDealInput = {
+    create?: XOR<DealEventCreateWithoutDealInput, DealEventUncheckedCreateWithoutDealInput> | DealEventCreateWithoutDealInput[] | DealEventUncheckedCreateWithoutDealInput[]
+    connectOrCreate?: DealEventCreateOrConnectWithoutDealInput | DealEventCreateOrConnectWithoutDealInput[]
+    createMany?: DealEventCreateManyDealInputEnvelope
+    connect?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -40021,6 +42434,20 @@ export namespace Prisma {
     deleteMany?: DealStageHistoryScalarWhereInput | DealStageHistoryScalarWhereInput[]
   }
 
+  export type DealEventUpdateManyWithoutDealNestedInput = {
+    create?: XOR<DealEventCreateWithoutDealInput, DealEventUncheckedCreateWithoutDealInput> | DealEventCreateWithoutDealInput[] | DealEventUncheckedCreateWithoutDealInput[]
+    connectOrCreate?: DealEventCreateOrConnectWithoutDealInput | DealEventCreateOrConnectWithoutDealInput[]
+    upsert?: DealEventUpsertWithWhereUniqueWithoutDealInput | DealEventUpsertWithWhereUniqueWithoutDealInput[]
+    createMany?: DealEventCreateManyDealInputEnvelope
+    set?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    disconnect?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    delete?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    connect?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    update?: DealEventUpdateWithWhereUniqueWithoutDealInput | DealEventUpdateWithWhereUniqueWithoutDealInput[]
+    updateMany?: DealEventUpdateManyWithWhereWithoutDealInput | DealEventUpdateManyWithWhereWithoutDealInput[]
+    deleteMany?: DealEventScalarWhereInput | DealEventScalarWhereInput[]
+  }
+
   export type ActivityUncheckedUpdateManyWithoutDealNestedInput = {
     create?: XOR<ActivityCreateWithoutDealInput, ActivityUncheckedCreateWithoutDealInput> | ActivityCreateWithoutDealInput[] | ActivityUncheckedCreateWithoutDealInput[]
     connectOrCreate?: ActivityCreateOrConnectWithoutDealInput | ActivityCreateOrConnectWithoutDealInput[]
@@ -40047,6 +42474,34 @@ export namespace Prisma {
     update?: DealStageHistoryUpdateWithWhereUniqueWithoutDealInput | DealStageHistoryUpdateWithWhereUniqueWithoutDealInput[]
     updateMany?: DealStageHistoryUpdateManyWithWhereWithoutDealInput | DealStageHistoryUpdateManyWithWhereWithoutDealInput[]
     deleteMany?: DealStageHistoryScalarWhereInput | DealStageHistoryScalarWhereInput[]
+  }
+
+  export type DealEventUncheckedUpdateManyWithoutDealNestedInput = {
+    create?: XOR<DealEventCreateWithoutDealInput, DealEventUncheckedCreateWithoutDealInput> | DealEventCreateWithoutDealInput[] | DealEventUncheckedCreateWithoutDealInput[]
+    connectOrCreate?: DealEventCreateOrConnectWithoutDealInput | DealEventCreateOrConnectWithoutDealInput[]
+    upsert?: DealEventUpsertWithWhereUniqueWithoutDealInput | DealEventUpsertWithWhereUniqueWithoutDealInput[]
+    createMany?: DealEventCreateManyDealInputEnvelope
+    set?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    disconnect?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    delete?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    connect?: DealEventWhereUniqueInput | DealEventWhereUniqueInput[]
+    update?: DealEventUpdateWithWhereUniqueWithoutDealInput | DealEventUpdateWithWhereUniqueWithoutDealInput[]
+    updateMany?: DealEventUpdateManyWithWhereWithoutDealInput | DealEventUpdateManyWithWhereWithoutDealInput[]
+    deleteMany?: DealEventScalarWhereInput | DealEventScalarWhereInput[]
+  }
+
+  export type DealCreateNestedOneWithoutEventsInput = {
+    create?: XOR<DealCreateWithoutEventsInput, DealUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: DealCreateOrConnectWithoutEventsInput
+    connect?: DealWhereUniqueInput
+  }
+
+  export type DealUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<DealCreateWithoutEventsInput, DealUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: DealCreateOrConnectWithoutEventsInput
+    upsert?: DealUpsertWithoutEventsInput
+    connect?: DealWhereUniqueInput
+    update?: XOR<XOR<DealUpdateToOneWithWhereWithoutEventsInput, DealUpdateWithoutEventsInput>, DealUncheckedUpdateWithoutEventsInput>
   }
 
   export type PipelineCreatestagesInput = {
@@ -42047,6 +44502,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutDealsInput
     activities?: ActivityCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateWithoutTenantInput = {
@@ -42080,6 +44536,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealCreateOrConnectWithoutTenantInput = {
@@ -44137,6 +46594,7 @@ export namespace Prisma {
     pipelineStage?: PipelineStageCreateNestedOneWithoutDealsInput
     activities?: ActivityCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateWithoutOwnerInput = {
@@ -44170,6 +46628,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealCreateOrConnectWithoutOwnerInput = {
@@ -44491,6 +46950,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutDealsInput
     activities?: ActivityCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateWithoutContactInput = {
@@ -44524,6 +46984,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealCreateOrConnectWithoutContactInput = {
@@ -45629,6 +48090,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DealEventCreateWithoutDealInput = {
+    id?: string
+    tenantId: string
+    actor: string
+    eventType: string
+    commLogId?: string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type DealEventUncheckedCreateWithoutDealInput = {
+    id?: string
+    tenantId: string
+    actor: string
+    eventType: string
+    commLogId?: string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type DealEventCreateOrConnectWithoutDealInput = {
+    where: DealEventWhereUniqueInput
+    create: XOR<DealEventCreateWithoutDealInput, DealEventUncheckedCreateWithoutDealInput>
+  }
+
+  export type DealEventCreateManyDealInputEnvelope = {
+    data: DealEventCreateManyDealInput | DealEventCreateManyDealInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TenantUpsertWithoutDealsInput = {
     update: XOR<TenantUpdateWithoutDealsInput, TenantUncheckedUpdateWithoutDealsInput>
     create: XOR<TenantCreateWithoutDealsInput, TenantUncheckedCreateWithoutDealsInput>
@@ -45906,6 +48399,189 @@ export namespace Prisma {
     data: XOR<DealStageHistoryUpdateManyMutationInput, DealStageHistoryUncheckedUpdateManyWithoutDealInput>
   }
 
+  export type DealEventUpsertWithWhereUniqueWithoutDealInput = {
+    where: DealEventWhereUniqueInput
+    update: XOR<DealEventUpdateWithoutDealInput, DealEventUncheckedUpdateWithoutDealInput>
+    create: XOR<DealEventCreateWithoutDealInput, DealEventUncheckedCreateWithoutDealInput>
+  }
+
+  export type DealEventUpdateWithWhereUniqueWithoutDealInput = {
+    where: DealEventWhereUniqueInput
+    data: XOR<DealEventUpdateWithoutDealInput, DealEventUncheckedUpdateWithoutDealInput>
+  }
+
+  export type DealEventUpdateManyWithWhereWithoutDealInput = {
+    where: DealEventScalarWhereInput
+    data: XOR<DealEventUpdateManyMutationInput, DealEventUncheckedUpdateManyWithoutDealInput>
+  }
+
+  export type DealEventScalarWhereInput = {
+    AND?: DealEventScalarWhereInput | DealEventScalarWhereInput[]
+    OR?: DealEventScalarWhereInput[]
+    NOT?: DealEventScalarWhereInput | DealEventScalarWhereInput[]
+    id?: StringFilter<"DealEvent"> | string
+    tenantId?: StringFilter<"DealEvent"> | string
+    dealId?: StringFilter<"DealEvent"> | string
+    actor?: StringFilter<"DealEvent"> | string
+    eventType?: StringFilter<"DealEvent"> | string
+    commLogId?: StringNullableFilter<"DealEvent"> | string | null
+    before?: JsonNullableFilter<"DealEvent">
+    after?: JsonNullableFilter<"DealEvent">
+    createdAt?: DateTimeFilter<"DealEvent"> | Date | string
+  }
+
+  export type DealCreateWithoutEventsInput = {
+    id?: string
+    title: string
+    stage: string
+    value?: number
+    currency?: string
+    probability?: number
+    probabilitySource?: $Enums.DealProbabilitySource
+    weightedValue?: number
+    expectedCloseDate?: Date | string | null
+    actualCloseDate?: Date | string | null
+    priority?: $Enums.DealPriority
+    leadSource?: string | null
+    tags?: DealCreatetagsInput | string[]
+    lastActivityAt?: Date | string | null
+    nextFollowUpAt?: Date | string | null
+    aiSummary?: string | null
+    aiHealth?: $Enums.DealHealth | null
+    aiRiskScore?: number | null
+    aiNextAction?: string | null
+    aiConfidence?: number | null
+    lastAiAnalysisAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    tenant: TenantCreateNestedOneWithoutDealsInput
+    contact: ContactCreateNestedOneWithoutDealsInput
+    pipeline?: PipelineCreateNestedOneWithoutDealsInput
+    pipelineStage?: PipelineStageCreateNestedOneWithoutDealsInput
+    owner?: UserCreateNestedOneWithoutDealsInput
+    activities?: ActivityCreateNestedManyWithoutDealInput
+    stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+  }
+
+  export type DealUncheckedCreateWithoutEventsInput = {
+    id?: string
+    tenantId: string
+    contactId: string
+    pipelineId?: string | null
+    stageId?: string | null
+    title: string
+    stage: string
+    value?: number
+    currency?: string
+    probability?: number
+    probabilitySource?: $Enums.DealProbabilitySource
+    weightedValue?: number
+    expectedCloseDate?: Date | string | null
+    actualCloseDate?: Date | string | null
+    priority?: $Enums.DealPriority
+    leadSource?: string | null
+    tags?: DealCreatetagsInput | string[]
+    ownerId?: string | null
+    lastActivityAt?: Date | string | null
+    nextFollowUpAt?: Date | string | null
+    aiSummary?: string | null
+    aiHealth?: $Enums.DealHealth | null
+    aiRiskScore?: number | null
+    aiNextAction?: string | null
+    aiConfidence?: number | null
+    lastAiAnalysisAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
+    stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+  }
+
+  export type DealCreateOrConnectWithoutEventsInput = {
+    where: DealWhereUniqueInput
+    create: XOR<DealCreateWithoutEventsInput, DealUncheckedCreateWithoutEventsInput>
+  }
+
+  export type DealUpsertWithoutEventsInput = {
+    update: XOR<DealUpdateWithoutEventsInput, DealUncheckedUpdateWithoutEventsInput>
+    create: XOR<DealCreateWithoutEventsInput, DealUncheckedCreateWithoutEventsInput>
+    where?: DealWhereInput
+  }
+
+  export type DealUpdateToOneWithWhereWithoutEventsInput = {
+    where?: DealWhereInput
+    data: XOR<DealUpdateWithoutEventsInput, DealUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type DealUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    stage?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    probability?: IntFieldUpdateOperationsInput | number
+    probabilitySource?: EnumDealProbabilitySourceFieldUpdateOperationsInput | $Enums.DealProbabilitySource
+    weightedValue?: FloatFieldUpdateOperationsInput | number
+    expectedCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actualCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    priority?: EnumDealPriorityFieldUpdateOperationsInput | $Enums.DealPriority
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: DealUpdatetagsInput | string[]
+    lastActivityAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextFollowUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    aiHealth?: NullableEnumDealHealthFieldUpdateOperationsInput | $Enums.DealHealth | null
+    aiRiskScore?: NullableIntFieldUpdateOperationsInput | number | null
+    aiNextAction?: NullableStringFieldUpdateOperationsInput | string | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastAiAnalysisAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tenant?: TenantUpdateOneRequiredWithoutDealsNestedInput
+    contact?: ContactUpdateOneRequiredWithoutDealsNestedInput
+    pipeline?: PipelineUpdateOneWithoutDealsNestedInput
+    pipelineStage?: PipelineStageUpdateOneWithoutDealsNestedInput
+    owner?: UserUpdateOneWithoutDealsNestedInput
+    activities?: ActivityUpdateManyWithoutDealNestedInput
+    stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+  }
+
+  export type DealUncheckedUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    stageId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    stage?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    probability?: IntFieldUpdateOperationsInput | number
+    probabilitySource?: EnumDealProbabilitySourceFieldUpdateOperationsInput | $Enums.DealProbabilitySource
+    weightedValue?: FloatFieldUpdateOperationsInput | number
+    expectedCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actualCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    priority?: EnumDealPriorityFieldUpdateOperationsInput | $Enums.DealPriority
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: DealUpdatetagsInput | string[]
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastActivityAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextFollowUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    aiHealth?: NullableEnumDealHealthFieldUpdateOperationsInput | $Enums.DealHealth | null
+    aiRiskScore?: NullableIntFieldUpdateOperationsInput | number | null
+    aiNextAction?: NullableStringFieldUpdateOperationsInput | string | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastAiAnalysisAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
+    stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+  }
+
   export type TenantCreateWithoutPipelinesInput = {
     id?: string
     name: string
@@ -46018,6 +48694,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutDealsInput
     activities?: ActivityCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateWithoutPipelineInput = {
@@ -46051,6 +48728,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealCreateOrConnectWithoutPipelineInput = {
@@ -46361,6 +49039,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutDealsInput
     activities?: ActivityCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateWithoutPipelineStageInput = {
@@ -46394,6 +49073,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
     stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealCreateOrConnectWithoutPipelineStageInput = {
@@ -46654,6 +49334,7 @@ export namespace Prisma {
     pipelineStage?: PipelineStageCreateNestedOneWithoutDealsInput
     owner?: UserCreateNestedOneWithoutDealsInput
     activities?: ActivityCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateWithoutStageHistoryInput = {
@@ -46687,6 +49368,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     activities?: ActivityUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealCreateOrConnectWithoutStageHistoryInput = {
@@ -46823,6 +49505,7 @@ export namespace Prisma {
     pipelineStage?: PipelineStageUpdateOneWithoutDealsNestedInput
     owner?: UserUpdateOneWithoutDealsNestedInput
     activities?: ActivityUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateWithoutStageHistoryInput = {
@@ -46856,6 +49539,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type TenantCreateWithoutBookingsInput = {
@@ -51270,6 +53954,7 @@ export namespace Prisma {
     pipelineStage?: PipelineStageCreateNestedOneWithoutDealsInput
     owner?: UserCreateNestedOneWithoutDealsInput
     stageHistory?: DealStageHistoryCreateNestedManyWithoutDealInput
+    events?: DealEventCreateNestedManyWithoutDealInput
   }
 
   export type DealUncheckedCreateWithoutActivitiesInput = {
@@ -51303,6 +53988,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     stageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutDealInput
+    events?: DealEventUncheckedCreateNestedManyWithoutDealInput
   }
 
   export type DealCreateOrConnectWithoutActivitiesInput = {
@@ -51644,6 +54330,7 @@ export namespace Prisma {
     pipelineStage?: PipelineStageUpdateOneWithoutDealsNestedInput
     owner?: UserUpdateOneWithoutDealsNestedInput
     stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateWithoutActivitiesInput = {
@@ -51677,6 +54364,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type BookingUpsertWithoutActivitiesInput = {
@@ -52234,6 +54922,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutDealsNestedInput
     activities?: ActivityUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateWithoutTenantInput = {
@@ -52267,6 +54956,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateManyWithoutTenantInput = {
@@ -53123,6 +55813,7 @@ export namespace Prisma {
     pipelineStage?: PipelineStageUpdateOneWithoutDealsNestedInput
     activities?: ActivityUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateWithoutOwnerInput = {
@@ -53156,6 +55847,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateManyWithoutOwnerInput = {
@@ -53432,6 +56124,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutDealsNestedInput
     activities?: ActivityUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateWithoutContactInput = {
@@ -53465,6 +56158,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateManyWithoutContactInput = {
@@ -53830,6 +56524,17 @@ export namespace Prisma {
     changedAt?: Date | string
   }
 
+  export type DealEventCreateManyDealInput = {
+    id?: string
+    tenantId: string
+    actor: string
+    eventType: string
+    commLogId?: string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
   export type ActivityUpdateWithoutDealInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumActivityTypeFieldUpdateOperationsInput | $Enums.ActivityType
@@ -53908,6 +56613,39 @@ export namespace Prisma {
     changedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DealEventUpdateWithoutDealInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    actor?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DealEventUncheckedUpdateWithoutDealInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    actor?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DealEventUncheckedUpdateManyWithoutDealInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    actor?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    commLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    before?: NullableJsonNullValueInput | InputJsonValue
+    after?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type DealCreateManyPipelineInput = {
     id?: string
     tenantId: string
@@ -53984,6 +56722,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutDealsNestedInput
     activities?: ActivityUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateWithoutPipelineInput = {
@@ -54017,6 +56756,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateManyWithoutPipelineInput = {
@@ -54156,6 +56896,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutDealsNestedInput
     activities?: ActivityUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUpdateManyWithoutDealNestedInput
+    events?: DealEventUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateWithoutPipelineStageInput = {
@@ -54189,6 +56930,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activities?: ActivityUncheckedUpdateManyWithoutDealNestedInput
     stageHistory?: DealStageHistoryUncheckedUpdateManyWithoutDealNestedInput
+    events?: DealEventUncheckedUpdateManyWithoutDealNestedInput
   }
 
   export type DealUncheckedUpdateManyWithoutPipelineStageInput = {
@@ -55203,6 +57945,14 @@ export namespace Prisma {
      * @deprecated Use DealDefaultArgs instead
      */
     export type DealArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DealDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use DealEventDefaultArgs instead
+     */
+    export type DealEventArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DealEventDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use PostCallJobClaimDefaultArgs instead
+     */
+    export type PostCallJobClaimArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PostCallJobClaimDefaultArgs<ExtArgs>
     /**
      * @deprecated Use PipelineDefaultArgs instead
      */

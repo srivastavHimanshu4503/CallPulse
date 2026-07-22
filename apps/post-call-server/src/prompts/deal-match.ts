@@ -41,6 +41,12 @@ export const DealMatchSchema = z.object({
     .string()
     .nullable()
     .describe("If updating: 1-2 sentences merging what was already known with what this call added/changed. Null when not updating."),
+  newTitle: z
+    .string()
+    .nullable()
+    .describe(
+      "If updating AND the deal's current title is a generic auto-template (e.g. 'Booking request — +9163...'), a short human title now that more is known: '<requirement> — <caller name>' (e.g. 'Wedding booking — Ram'). Max 60 chars. Null to keep the current title.",
+    ),
   reasoning: z.string().describe("One sentence citing the evidence for the decision"),
 });
 

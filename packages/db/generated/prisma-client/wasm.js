@@ -257,6 +257,25 @@ exports.Prisma.DealScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.DealEventScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  dealId: 'dealId',
+  actor: 'actor',
+  eventType: 'eventType',
+  commLogId: 'commLogId',
+  before: 'before',
+  after: 'after',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PostCallJobClaimScalarFieldEnum = {
+  logId: 'logId',
+  status: 'status',
+  claimedAt: 'claimedAt',
+  finishedAt: 'finishedAt'
+};
+
 exports.Prisma.PipelineScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
@@ -658,6 +677,8 @@ exports.Prisma.ModelName = {
   CustomFieldDefinition: 'CustomFieldDefinition',
   CustomFieldValue: 'CustomFieldValue',
   Deal: 'Deal',
+  DealEvent: 'DealEvent',
+  PostCallJobClaim: 'PostCallJobClaim',
   Pipeline: 'Pipeline',
   PipelineStage: 'PipelineStage',
   DealStageHistory: 'DealStageHistory',

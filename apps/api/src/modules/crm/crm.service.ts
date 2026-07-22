@@ -729,6 +729,19 @@ export class CrmService {
         },
       });
 
+      // Actor-attributed diary entry: a human moving an AI-placed deal is an
+      // implicit "the AI was wrong" label for quality measurement.
+      await tx.dealEvent.create({
+        data: {
+          tenantId,
+          dealId: id,
+          actor: userId ? `user:${userId}` : "user:unknown",
+          eventType: "STAGE_CHANGED",
+          before: { stage: existing.stage, value: existing.value, probability: existing.probability, title: existing.title, pipelineId: existing.pipelineId },
+          after: { stage: updated.stage, value: updated.value, probability: updated.probability, title: updated.title, pipelineId: updated.pipelineId },
+        },
+      }).catch(() => undefined);
+
       return this.serializeDeal(updated);
     });
   }
@@ -1229,6 +1242,17 @@ export class CrmService {
           occurredAt: new Date(),
         },
       });
+
+      // A deleted AI-created deal is the strongest wrong-deal signal we get.
+      await tx.dealEvent.create({
+        data: {
+          tenantId,
+          dealId: existing.id,
+          actor: "user:unknown",
+          eventType: "DELETED",
+          before: { stage: existing.stage, value: existing.value, probability: existing.probability, title: existing.title, pipelineId: existing.pipelineId },
+        },
+      }).catch(() => undefined);
     });
   }
 
@@ -1280,6 +1304,18 @@ export class CrmService {
           lastActivityAt: new Date(),
         },
       });
+
+      // Actor-attributed diary entry for quality measurement.
+      await tx.dealEvent.create({
+        data: {
+          tenantId,
+          dealId: id,
+          actor: userId ? `user:${userId}` : "user:unknown",
+          eventType: "UPDATED",
+          before: { stage: existing.stage, value: existing.value, probability: existing.probability, title: existing.title, pipelineId: existing.pipelineId },
+          after: { stage: updated.stage, value: updated.value, probability: updated.probability, title: updated.title, pipelineId: updated.pipelineId },
+        },
+      }).catch(() => undefined);
 
       return this.serializeDeal(updated);
     });

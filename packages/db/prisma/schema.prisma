@@ -373,10 +373,51 @@ model Deal {
   owner         User?              @relation(fields: [ownerId], references: [id])
   activities    Activity[]
   stageHistory  DealStageHistory[]
+  events        DealEvent[]
 
   @@index([tenantId, pipelineId, stage])
   @@index([tenantId, nextFollowUpAt])
+  @@index([tenantId, contactId, actualCloseDate])
   @@map("deals")
+}
+
+// Append-only diary of every deal mutation — AI and human alike. Actor
+// attribution turns normal CRM usage into implicit quality labels (an owner
+// moving an AI-created deal to another pipeline = wrong-pipeline signal),
+// and (commLogId, eventType) uniqueness is a write-level idempotency guard
+// for post-call retries. Never updated, never deleted.
+model DealEvent {
+  id        String   @id @default(uuid())
+  tenantId  String
+  dealId    String
+  // "ai" for post-call automation, "user:<id>" for dashboard edits.
+  actor     String
+  // CREATED | UPDATED | STAGE_CHANGED | DELETED
+  eventType String
+  commLogId String?
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id])
+
+  @@unique([commLogId, eventType])
+  @@index([tenantId, dealId, createdAt])
+  @@index([tenantId, actor, createdAt])
+  @@map("deal_events")
+}
+
+// Explicit post-call job claim: the worker INSERTs this row before touching
+// anything; a unique logId means exactly one run owns a call, closing the
+// retry-during-processing window that activity-row checks missed. FAILED or
+// stale PROCESSING rows may be reclaimed.
+model PostCallJobClaim {
+  logId      String    @id
+  status     String    @default("PROCESSING") // PROCESSING | DONE | FAILED
+  claimedAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  @@map("post_call_job_claims")
 }
 
 model Pipeline {
