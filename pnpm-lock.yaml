@@ -7,6 +7,11 @@ settings:
 overrides:
   onnxruntime-node: 1.23.2
 
+patchedDependencies:
+  '@livekit/agents-plugin-deepgram@1.5.1':
+    hash: b9ba599ee9ef4b329a2baa2644580fc64e5d5a1a38b5a416968d04645c041616
+    path: patches/@livekit__agents-plugin-deepgram@1.5.1.patch
+
 importers:
 
   .:
@@ -177,7 +182,7 @@ importers:
         version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)(zod@3.25.76)
       '@livekit/agents-plugin-deepgram':
         specifier: ^1.5.1
-        version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
+        version: 1.5.1(patch_hash=b9ba599ee9ef4b329a2baa2644580fc64e5d5a1a38b5a416968d04645c041616)(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
       '@livekit/agents-plugin-elevenlabs':
         specifier: ^1.5.3
         version: 1.5.3(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
@@ -4157,7 +4162,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@livekit/agents-plugin-deepgram@1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)':
+  '@livekit/agents-plugin-deepgram@1.5.1(patch_hash=b9ba599ee9ef4b329a2baa2644580fc64e5d5a1a38b5a416968d04645c041616)(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)':
     dependencies:
       '@livekit/agents': 1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)
       '@livekit/rtc-node': 0.13.31

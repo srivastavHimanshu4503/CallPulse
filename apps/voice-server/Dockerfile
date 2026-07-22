@@ -6,8 +6,10 @@ WORKDIR /app
 # so a fallback source build never breaks the image).
 RUN apt-get update -y && apt-get install -y openssl python3 make g++ && rm -rf /var/lib/apt/lists/*
 
-# Copy workspace manifests first for layer caching
+# Copy workspace manifests first for layer caching. patches/ holds pnpm
+# patchedDependencies (declared in package.json) — install fails without it.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY patches/ ./patches/
 COPY apps/voice-server/package.json ./apps/voice-server/
 COPY packages/ ./packages/
 
