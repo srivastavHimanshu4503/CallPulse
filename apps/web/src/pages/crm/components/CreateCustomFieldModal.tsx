@@ -62,15 +62,15 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-      <div className="bg-white border border-[#E5E5E5] rounded-[6px] shadow-none max-w-sm w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
-        <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-[#FAFAFA]">
-          <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
-            <Tag className="h-4.5 w-4.5 text-[#2563EB]" /> Declare Custom Field
+      <div className="bg-bg-raised border border-border rounded-[6px] shadow-none max-w-sm w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
+        <div className="h-14 border-b border-border px-6 flex items-center justify-between bg-bg-subtle">
+          <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
+            <Tag className="h-4.5 w-4.5 text-brand-600" /> Declare Custom Field
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#666666] hover:text-[#111111] focus:outline-none"
+            className="text-text-secondary hover:text-text-primary focus:outline-none"
           >
             ✕
           </button>
@@ -78,10 +78,10 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-left">
           <div>
-            <label className="block text-xs font-semibold text-[#111111] mb-1.5 flex items-center gap-1">
+            <label className="block text-xs font-semibold text-text-primary mb-1.5 flex items-center gap-1">
               Field Variable Label *
               <span title="What is the name of the custom parameter? (e.g. BHK Size, Target Budget, Preferred Location)">
-                <HelpCircle className="h-3 w-3 text-[#999999]" />
+                <HelpCircle className="h-3 w-3 text-text-placeholder" />
               </span>
             </label>
             <input
@@ -90,16 +90,16 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
               placeholder="e.g. Preferred Location"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
+              className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#111111] mb-1.5">Parameter Value Type *</label>
+            <label className="block text-xs font-semibold text-text-primary mb-1.5">Parameter Value Type *</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as any)}
-              className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+              className="w-full h-9 bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] px-3 focus:outline-none"
               required
             >
               <option value="TEXT">TEXT (Standard text values)</option>
@@ -112,27 +112,27 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
 
           {type === "DROPDOWN" && (
             <div className="animate-in fade-in slide-in-from-top-1 duration-150">
-              <label className="block text-xs font-semibold text-[#111111] mb-1.5">Selectable Options (comma-separated) *</label>
+              <label className="block text-xs font-semibold text-text-primary mb-1.5">Selectable Options (comma-separated) *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Hot Lead, Warm Lead, Cold Lead"
                 value={dropdownOptionsText}
                 onChange={(e) => setDropdownOptionsText(e.target.value)}
-                className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
+                className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 focus:outline-none"
               />
-              <p className="text-[9px] text-[#999999] mt-1 font-medium leading-relaxed">
+              <p className="text-[9px] text-text-placeholder mt-1 font-medium leading-relaxed">
                 Provide exact option labels separated by commas.
               </p>
             </div>
           )}
 
-          <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
+          <div className="pt-4 border-t border-border flex items-center justify-end gap-3">
             <Button
               variant="secondary"
               onClick={onClose}
               type="button"
-              className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px]"
+              className="border-border bg-bg-raised hover:bg-surface text-text-primary font-semibold text-xs h-9 px-4 rounded-[6px]"
             >
               Cancel
             </Button>
@@ -140,7 +140,7 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
               variant="primary"
               type="submit"
               disabled={createFieldMutation.isPending}
-              className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
+              className="bg-primary text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-primary-hover"
             >
               {createFieldMutation.isPending ? "Declaring..." : "Declare Field"}
             </Button>

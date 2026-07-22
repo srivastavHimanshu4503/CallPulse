@@ -139,7 +139,7 @@ export function ContactRecord(): React.JSX.Element {
           <button
             type="button"
             onClick={() => navigate("/crm")}
-            className="h-9 w-9 rounded-md border border-line-default bg-white hover:bg-bg-muted text-fg-secondary hover:text-fg-primary flex items-center justify-center shrink-0"
+            className="h-9 w-9 rounded-md border border-line-default bg-bg-raised hover:bg-bg-muted text-fg-secondary hover:text-fg-primary flex items-center justify-center shrink-0"
             aria-label="Back to CRM"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -181,7 +181,7 @@ export function ContactRecord(): React.JSX.Element {
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold border border-line-default bg-white text-negative-500 hover:bg-negative-50"
+            className="inline-flex items-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold border border-line-default bg-bg-raised text-negative-500 hover:bg-negative-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Delete
@@ -231,7 +231,7 @@ export function ContactRecord(): React.JSX.Element {
                   onChange={(e) => setNewNote(e.target.value)}
                   placeholder="Type a note (talked to customer, next steps, blockers…)"
                   rows={2}
-                  className="w-full bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md p-2 focus:outline-none leading-relaxed resize-none"
+                  className="w-full bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md p-2 focus:outline-none leading-relaxed resize-none"
                   autoFocus
                 />
                 <div className="flex items-center justify-end gap-2 mt-2">
@@ -377,7 +377,7 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+              className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
             />
           </div>
           <div>
@@ -386,7 +386,7 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+              className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
             />
           </div>
           <div>
@@ -395,7 +395,7 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+              className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
             />
           </div>
           <div>
@@ -404,7 +404,7 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+              className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
             />
           </div>
         </div>
@@ -616,7 +616,7 @@ function CFEditor({ def, value, onChange }: { def: any; value: any; onChange: (v
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+          className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
         >
           <option value="">Select…</option>
           {def.options?.map((o: string) => (
@@ -627,7 +627,7 @@ function CFEditor({ def, value, onChange }: { def: any; value: any; onChange: (v
         <select
           value={String(value)}
           onChange={(e) => onChange(e.target.value === "true")}
-          className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+          className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
         >
           <option value="">Select…</option>
           <option value="true">Yes</option>
@@ -638,7 +638,7 @@ function CFEditor({ def, value, onChange }: { def: any; value: any; onChange: (v
           type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "datetime-local" : "text"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+          className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
         />
       )}
       {value !== "" && value !== null && value !== undefined && (
@@ -913,14 +913,14 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
             placeholder="Deal title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+            className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
           />
           <input
             type="number"
             placeholder="Value ₹"
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+            className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
           />
           <select
             value={pipelineId}
@@ -929,7 +929,7 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
               const p = pipelines.find((pp: any) => pp.id === e.target.value);
               setStage(p?.stages?.[0] || "");
             }}
-            className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+            className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
           >
             {pipelines.map((p: any) => (
               <option key={p.id} value={p.id}>
@@ -941,7 +941,7 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
             <select
               value={stage}
               onChange={(e) => setStage(e.target.value)}
-              className="w-full h-8 bg-white border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+              className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
             >
               {pipelines.find((p: any) => p.id === pipelineId)?.stages?.map((s: string) => (
                 <option key={s} value={s}>

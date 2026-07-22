@@ -378,28 +378,28 @@ export function AgentWizard({
   };
 
   return (
-    <div className="bg-white border border-[#E5E5E5] rounded-[8px] shadow-none flex flex-col font-sans h-full w-full overflow-hidden">
+    <div className="bg-bg-raised border border-border rounded-[8px] shadow-none flex flex-col font-sans h-full w-full overflow-hidden">
       {/* TOP HEADER: Back + Title + Tabs */}
-      <div className="shrink-0 border-b border-[#E5E5E5] bg-white flex flex-col px-4 sm:px-5">
+      <div className="shrink-0 border-b border-border bg-bg-raised flex flex-col px-4 sm:px-5">
         <div className="h-14 flex items-center gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={isFormLoading}
-            className="flex items-center gap-1.5 text-[#666666] hover:text-[#111111] hover:bg-[#F7F7F7] rounded-[6px] px-2 py-1.5 text-xs font-semibold transition-colors focus:outline-none disabled:opacity-50"
+            className="flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface rounded-[6px] px-2 py-1.5 text-xs font-semibold transition-colors focus:outline-none disabled:opacity-50"
           >
             <ChevronLeft className="h-4 w-4" />
             Back
           </button>
 
-          <span className="h-5 w-[1px] bg-[#E5E5E5] shrink-0" />
+          <span className="h-5 w-[1px] bg-border shrink-0" />
 
           <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-semibold text-[#111111] tracking-tight truncate">
+            <h2 className="text-sm font-semibold text-text-primary tracking-tight truncate">
               {editingAgent ? (
                 <>
-                  <span className="text-[#666666] font-medium">Configure</span>
-                  <span className="text-[#666666] mx-1.5">·</span>
+                  <span className="text-text-secondary font-medium">Configure</span>
+                  <span className="text-text-secondary mx-1.5">·</span>
                   <span>{editingAgent.name}</span>
                 </>
               ) : (
@@ -421,8 +421,8 @@ export function AgentWizard({
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 pb-3 px-1 border-b-2 text-[13px] font-semibold transition-colors ${
                   isActive
-                    ? "border-[#2563EB] text-[#2563EB]"
-                    : "border-transparent text-[#666666] hover:text-[#111111]"
+                    ? "border-brand-500 text-brand-600"
+                    : "border-transparent text-text-secondary hover:text-text-primary"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -434,7 +434,7 @@ export function AgentWizard({
       </div>
 
       {/* BODY */}
-      <div className="flex-1 flex flex-col overflow-hidden min-h-0 bg-[#FAFAFA]/40">
+      <div className="flex-1 flex flex-col overflow-hidden min-h-0 bg-bg-subtle/40">
         <div className="flex-1 overflow-y-auto">
           {/* Two-column body: form (~60%) + bilingual per-tab setup guide.
               The guide is the non-tech user's manual — it swaps content with
@@ -600,13 +600,13 @@ export function AgentWizard({
         </div>
 
         {/* STICKY FOOTER */}
-        <div className="shrink-0 border-t border-[#E5E5E5] bg-white">
+        <div className="shrink-0 border-t border-border bg-bg-raised">
           <div className="px-4 sm:px-6 py-3 flex items-center justify-between">
             <Button
               variant="secondary"
               onClick={onClose}
               disabled={isFormLoading}
-              className="border border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px] shadow-none"
+              className="border border-border bg-bg-raised hover:bg-surface text-text-primary font-semibold text-xs h-9 px-4 rounded-[6px] shadow-none"
             >
               Cancel
             </Button>
@@ -615,7 +615,7 @@ export function AgentWizard({
               variant="primary"
               onClick={handleFinish}
               disabled={isFormLoading}
-              className="bg-[#16A34A] hover:bg-[#15803D] text-white font-semibold text-xs h-9 px-5 rounded-[6px] flex items-center gap-2 border-none shadow-none disabled:opacity-70"
+              className="bg-positive-500 hover:bg-positive-600 text-white font-semibold text-xs h-9 px-5 rounded-[6px] flex items-center gap-2 border-none shadow-none disabled:opacity-70"
             >
               {isFormLoading ? (
                 <>
@@ -699,16 +699,16 @@ function CompliancePanel({
   ];
 
   return (
-    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 space-y-4">
+    <section className="bg-bg-raised border border-border rounded-[8px] p-5 sm:p-6 space-y-4">
       <header>
-        <h3 className="text-sm font-semibold text-[#111111]">Call limits & compliance</h3>
-        <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">
+        <h3 className="text-sm font-semibold text-text-primary">Call limits & compliance</h3>
+        <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
           Set safety guardrails for how this agent behaves on every call.
         </p>
       </header>
 
       <div>
-        <label className="block text-[12px] font-semibold text-[#111111] mb-2">
+        <label className="block text-[12px] font-semibold text-text-primary mb-2">
           Max call duration
         </label>
         <div className="flex items-center gap-2 max-w-[220px]">
@@ -719,11 +719,11 @@ function CompliancePanel({
             value={maxDuration}
             onChange={(e) => setMaxDuration(Number(e.target.value))}
             disabled={disabled}
-            className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] h-10 px-3 w-full focus:outline-none focus:ring-0"
+            className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary rounded-[6px] h-10 px-3 w-full focus:outline-none focus:ring-0"
           />
-          <span className="text-xs text-[#666666] font-medium shrink-0">minutes</span>
+          <span className="text-xs text-text-secondary font-medium shrink-0">minutes</span>
         </div>
-        <p className="text-[11px] text-[#999999] mt-1.5">
+        <p className="text-[11px] text-text-placeholder mt-1.5">
           Calls beyond this length auto-terminate to prevent runaway costs.
         </p>
       </div>
@@ -741,10 +741,10 @@ function CompliancePanel({
         ))}
       </div>
 
-      <div className="pt-4 border-t border-[#E5E5E5] space-y-4 mt-2">
+      <div className="pt-4 border-t border-border space-y-4 mt-2">
         <header>
-          <h3 className="text-[13px] font-semibold text-[#111111]">Availability & Time Zone</h3>
-          <p className="text-[11px] text-[#666666] mt-0.5">
+          <h3 className="text-[13px] font-semibold text-text-primary">Availability & Time Zone</h3>
+          <p className="text-[11px] text-text-secondary mt-0.5">
             When should this agent be active to receive calls?
           </p>
         </header>
@@ -759,39 +759,39 @@ function CompliancePanel({
           />
 
           {!is24x7 && (
-            <div className="flex items-center gap-3 bg-[#FAFAFA] p-3 rounded-[8px] border border-[#E5E5E5] animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 bg-bg-subtle p-3 rounded-[8px] border border-border animate-in fade-in zoom-in-95 duration-200">
               <div className="flex-1">
-                <label className="block text-[11px] font-semibold text-[#111111] mb-1">Start Time</label>
+                <label className="block text-[11px] font-semibold text-text-primary mb-1">Start Time</label>
                 <input
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   disabled={disabled}
-                  className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] h-9 px-3 w-full focus:outline-none"
+                  className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary rounded-[6px] h-9 px-3 w-full focus:outline-none"
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-[11px] font-semibold text-[#111111] mb-1">End Time</label>
+                <label className="block text-[11px] font-semibold text-text-primary mb-1">End Time</label>
                 <input
                   type="time"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                   disabled={disabled}
-                  className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] h-9 px-3 w-full focus:outline-none"
+                  className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary rounded-[6px] h-9 px-3 w-full focus:outline-none"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1">
+            <label className="block text-[12px] font-semibold text-text-primary mb-1">
               Time Zone
             </label>
             <select
               value={timeZone}
               onChange={(e) => setTimeZone(e.target.value)}
               disabled={disabled}
-              className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] h-10 px-3 w-full focus:outline-none focus:ring-0"
+              className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary rounded-[6px] h-10 px-3 w-full focus:outline-none focus:ring-0"
             >
               <option value="Asia/Kolkata">India Standard Time (IST)</option>
               <option value="America/New_York">Eastern Time (US & Canada)</option>
@@ -804,7 +804,7 @@ function CompliancePanel({
               <option value="Asia/Singapore">Singapore Standard Time</option>
               <option value="Australia/Sydney">Australian Eastern Time (Sydney)</option>
             </select>
-            <p className="text-[11px] text-[#999999] mt-1.5">
+            <p className="text-[11px] text-text-placeholder mt-1.5">
               The time zone used for availability hours and bookings.
             </p>
           </div>
@@ -824,10 +824,10 @@ interface SwitchRowProps {
 
 function SwitchRow({ title, description, checked, onChange, disabled }: SwitchRowProps): React.JSX.Element {
   return (
-    <label className="flex items-start justify-between gap-4 rounded-[8px] border border-[#E5E5E5] p-3.5 hover:border-[#2563EB]/30 transition-colors cursor-pointer bg-white">
+    <label className="flex items-start justify-between gap-4 rounded-[8px] border border-border p-3.5 hover:border-brand-500/30 transition-colors cursor-pointer bg-bg-raised">
       <div className="min-w-0">
-        <div className="text-[13px] font-semibold text-[#111111]">{title}</div>
-        <div className="text-[11px] text-[#666666] leading-relaxed mt-0.5">{description}</div>
+        <div className="text-[13px] font-semibold text-text-primary">{title}</div>
+        <div className="text-[11px] text-text-secondary leading-relaxed mt-0.5">{description}</div>
       </div>
       <span className="relative inline-flex items-center shrink-0 mt-0.5">
         <input
@@ -837,9 +837,9 @@ function SwitchRow({ title, description, checked, onChange, disabled }: SwitchRo
           disabled={disabled}
           className="sr-only peer"
         />
-        <span className="w-[36px] h-[20px] bg-[#E5E5E5] rounded-full peer-checked:bg-[#2563EB] transition-colors" />
+        <span className="w-[36px] h-[20px] bg-border rounded-full peer-checked:bg-primary transition-colors" />
         <span
-          className={`absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-[#E5E5E5] rounded-full shadow-sm transition-transform ${
+          className={`absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-border rounded-full shadow-sm transition-transform ${
             checked ? "translate-x-4" : "translate-x-0"
           }`}
         />

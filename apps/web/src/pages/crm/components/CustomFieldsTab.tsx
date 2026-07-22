@@ -17,34 +17,34 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
       {/* Header action panel */}
       <div className="flex items-center justify-between shrink-0 mb-4 select-none">
         <div className="flex items-center gap-2">
-          <Sliders className="h-4 w-4 text-[#2563EB]" />
-          <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">
+          <Sliders className="h-4 w-4 text-brand-600" />
+          <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
             CRM Custom Field Definitions
           </span>
         </div>
         <Button
           variant="primary"
           onClick={() => setIsAddOpen(true)}
-          className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs h-9 px-3.5 rounded-[6px] flex items-center gap-1.5 border-none shadow-none"
+          className="bg-primary hover:bg-primary-hover text-white font-semibold text-xs h-9 px-3.5 rounded-[6px] flex items-center gap-1.5 border-none shadow-none"
         >
           <Plus className="h-4 w-4" /> Declare Custom Field
         </Button>
       </div>
 
       {/* Definitions grid list */}
-      <div className="flex-1 overflow-y-auto border border-[#E5E5E5] rounded-[6px] min-h-0 bg-[#FFFFFF]">
+      <div className="flex-1 overflow-y-auto border border-border rounded-[6px] min-h-0 bg-bg-raised">
         {customFields.length === 0 ? (
           <div className="p-20 text-center space-y-3">
-            <Sliders className="h-10 w-10 text-[#999999] mx-auto" />
-            <h4 className="text-sm font-bold text-[#111111]">No custom field definitions declared</h4>
-            <p className="text-xs text-[#666666] max-w-xs mx-auto leading-relaxed">
+            <Sliders className="h-10 w-10 text-text-placeholder mx-auto" />
+            <h4 className="text-sm font-bold text-text-primary">No custom field definitions declared</h4>
+            <p className="text-xs text-text-secondary max-w-xs mx-auto leading-relaxed">
               Define typed metadata columns (e.g. Budget size, preferred location, movement date) to map customer records parameters cleanly.
             </p>
           </div>
         ) : (
           <table className="w-full text-left border-collapse select-none">
             <thead>
-              <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[10px] font-bold text-[#666666] uppercase tracking-wider h-10">
+              <tr className="border-b border-border bg-bg-subtle text-[10px] font-bold text-text-secondary uppercase tracking-wider h-10">
                 <th className="px-6 w-12 text-center">#</th>
                 <th className="px-6">Field Variable Name</th>
                 <th className="px-6">Data Field Type</th>
@@ -52,18 +52,18 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
                 <th className="px-6">Registered Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E5E5] text-xs text-[#666666]">
+            <tbody className="divide-y divide-border text-xs text-text-secondary">
               {customFields.map((def, idx) => (
-                <tr key={def.id} className="hover:bg-[#F7F7F7] h-11 transition-colors">
-                  <td className="px-6 text-center font-bold text-[#999999]">{idx + 1}</td>
-                  <td className="px-6 font-bold text-[#111111]">{def.name}</td>
+                <tr key={def.id} className="hover:bg-surface h-11 transition-colors">
+                  <td className="px-6 text-center font-bold text-text-placeholder">{idx + 1}</td>
+                  <td className="px-6 font-bold text-text-primary">{def.name}</td>
                   <td className="px-6 font-medium">
                     <div className="flex flex-col gap-1">
-                      <span className="w-fit inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] uppercase tracking-wide border border-[#2563EB]/10">
+                      <span className="w-fit inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-600 uppercase tracking-wide border border-brand-500/10">
                         {def.type}
                       </span>
                       {def.type === "DROPDOWN" && def.options && def.options.length > 0 && (
-                        <span className="text-[10px] text-[#999999] leading-tight font-medium max-w-xs truncate" title={def.options.join(", ")}>
+                        <span className="text-[10px] text-text-placeholder leading-tight font-medium max-w-xs truncate" title={def.options.join(", ")}>
                           Values: {def.options.join(", ")}
                         </span>
                       )}

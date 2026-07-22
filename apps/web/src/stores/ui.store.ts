@@ -1,8 +1,19 @@
 import { create } from "zustand";
 
+export type Theme = "light" | "dark";
+
+function applyTheme(theme: Theme): void {
+  document.documentElement.classList.toggle("dark", theme === "dark");
+}
+
+const initialTheme: Theme =
+  localStorage.getItem("theme") === "dark" ? "dark" : "light";
+
 interface UIState {
   sidebarMinimized: boolean;
   toggleSidebar: () => void;
+  theme: Theme;
+  toggleTheme: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -12,6 +23,15 @@ export const useUIStore = create<UIState>((set) => ({
       const next = !state.sidebarMinimized;
       localStorage.setItem("sidebarMinimized", String(next));
       return { sidebarMinimized: next };
+    });
+  },
+  theme: initialTheme,
+  toggleTheme: () => {
+    set((state) => {
+      const next: Theme = state.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", next);
+      applyTheme(next);
+      return { theme: next };
     });
   },
 }));

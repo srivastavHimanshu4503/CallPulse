@@ -56,7 +56,7 @@ export function TimeGrid({
   return (
     <div className="flex flex-col h-full min-h-0">
       {/* Sticky day headers */}
-      <div className="flex border-b border-line-subtle bg-white shrink-0" style={{ paddingLeft: GUTTER_WIDTH }}>
+      <div className="flex border-b border-line-subtle bg-bg-raised shrink-0" style={{ paddingLeft: GUTTER_WIDTH }}>
         {days.map((d, i) => {
           const isToday = isSameDay(d, today);
           const isSelected = isSameDay(d, selectedDate);

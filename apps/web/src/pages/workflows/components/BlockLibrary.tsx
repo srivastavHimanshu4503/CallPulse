@@ -37,7 +37,7 @@ export function BlockLibrary({ onAddBlock, activeType }: BlockLibraryProps): Rea
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-[280px] shrink-0 border-r border-line-default bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+    <aside className="hidden lg:flex flex-col w-[280px] shrink-0 border-r border-line-default bg-gradient-to-b from-bg-canvas to-bg-canvas overflow-hidden">
       <div className="px-4 pt-4 pb-3 border-b border-line-subtle shrink-0">
         <div className="text-[13px] font-semibold text-fg-primary tracking-tight">Add step</div>
         <div className="text-[10.5px] text-fg-muted mt-0.5 leading-relaxed">
@@ -50,7 +50,7 @@ export function BlockLibrary({ onAddBlock, activeType }: BlockLibraryProps): Rea
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search blocks…"
-            className="w-full bg-white border border-line-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 text-[12px] text-fg-primary placeholder-fg-muted rounded-md h-8 pl-8 pr-2 focus:outline-none shadow-card"
+            className="w-full bg-bg-raised border border-line-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 text-[12px] text-fg-primary placeholder-fg-muted rounded-md h-8 pl-8 pr-2 focus:outline-none shadow-card"
           />
         </div>
       </div>
@@ -87,7 +87,7 @@ export function BlockLibrary({ onAddBlock, activeType }: BlockLibraryProps): Rea
                         "w-full flex items-start gap-2.5 px-2 py-2 rounded-md text-left transition-colors",
                         activeType === b.type
                           ? "bg-blue-50 ring-1 ring-blue-500/20"
-                          : "hover:bg-white hover:shadow-card hover:ring-1 hover:ring-line-default",
+                          : "hover:bg-bg-raised hover:shadow-card hover:ring-1 hover:ring-line-default",
                       )}
                     >
                       <BlockIcon icon={b.icon} tone={b.tone} size="sm" />

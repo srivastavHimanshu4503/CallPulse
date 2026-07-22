@@ -518,7 +518,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
             <select
               value={activePipelineId}
               onChange={(e) => setActivePipelineId(e.target.value)}
-              className="h-9 bg-white border border-line-default text-[13px] font-semibold text-fg-primary rounded-md pl-3 pr-8 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 cursor-pointer shadow-card max-w-[220px] truncate"
+              className="h-9 bg-bg-raised border border-line-default text-[13px] font-semibold text-fg-primary rounded-md pl-3 pr-8 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 cursor-pointer shadow-card max-w-[220px] truncate"
               title="Switch pipeline"
             >
               {pipelines.map((p) => (
@@ -534,7 +534,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
               onClick={() => {
                 if (activePipeline) setIsEditOpen(true);
               }}
-              className="h-9 w-9 rounded-md border border-line-default bg-white text-fg-secondary hover:text-fg-primary hover:bg-bg-muted flex items-center justify-center transition-colors"
+              className="h-9 w-9 rounded-md border border-line-default bg-bg-raised text-fg-secondary hover:text-fg-primary hover:bg-bg-muted flex items-center justify-center transition-colors"
               title="Pipeline settings — stages, probabilities, colors"
             >
               <Settings className="h-3.5 w-3.5" />
@@ -545,7 +545,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
         <button
           type="button"
           onClick={() => setIsPipelineModalOpen(true)}
-          className="h-9 w-9 rounded-md border border-dashed border-line-default bg-white text-fg-secondary hover:text-brand-600 hover:border-brand-500/40 flex items-center justify-center transition-colors"
+          className="h-9 w-9 rounded-md border border-dashed border-line-default bg-bg-raised text-fg-secondary hover:text-brand-600 hover:border-brand-500/40 flex items-center justify-center transition-colors"
           title="New pipeline"
         >
           <Plus className="h-4 w-4" />
@@ -561,7 +561,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
             placeholder="Search deals or contacts…"
             value={dealSearchQuery}
             onChange={(e) => setDealSearchQuery(e.target.value)}
-            className="w-full bg-white border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12px] text-fg-primary placeholder-fg-muted rounded-md h-9 pl-8 pr-3 focus:outline-none"
+            className="w-full bg-bg-raised border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12px] text-fg-primary placeholder-fg-muted rounded-md h-9 pl-8 pr-3 focus:outline-none"
           />
         </div>
 
@@ -572,7 +572,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
           className={`h-9 px-2.5 rounded-md border text-[12px] font-semibold flex items-center gap-1.5 transition-colors focus:outline-none ${
             filterConditions.length > 0
               ? "border-brand-500 text-brand-700 bg-brand-50"
-              : "border-line-default bg-white text-fg-secondary hover:text-fg-primary"
+              : "border-line-default bg-bg-raised text-fg-secondary hover:text-fg-primary"
           }`}
           title="Advanced filters"
         >
@@ -588,7 +588,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
         <select
           value={dealSortBy}
           onChange={(e) => setDealSortBy(e.target.value)}
-          className="h-9 bg-white border border-line-default text-[12px] font-semibold text-fg-secondary rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer"
+          className="h-9 bg-bg-raised border border-line-default text-[12px] font-semibold text-fg-secondary rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer"
           title="Sort deals"
         >
           <option value="value-desc">Value ↓</option>
@@ -613,7 +613,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
 
       {/* Pipeline statistics — one quiet line, server-computed */}
       {pipelineStats?.header && (
-        <div className="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] font-medium text-fg-secondary bg-white border border-line-default rounded-md px-3 py-1.5 mb-2 shrink-0 select-none overflow-x-auto whitespace-nowrap">
+        <div className="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] font-medium text-fg-secondary bg-bg-raised border border-line-default rounded-md px-3 py-1.5 mb-2 shrink-0 select-none overflow-x-auto whitespace-nowrap">
           <span className="inline-flex items-center gap-1 text-brand-700 font-bold uppercase tracking-wide text-[9.5px]">
             <Sparkles className="h-3 w-3" /> Live forecast
           </span>
@@ -642,20 +642,20 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
           <div className="absolute inset-0 bg-[#111111]/30 backdrop-blur-[1px]" onClick={() => setIsFilterBuilderOpen(false)} />
 
           {/* Drawer Container */}
-          <div className="absolute inset-y-0 right-0 w-full md:w-[480px] bg-white border-l border-[#E5E5E5] flex flex-col h-full overflow-hidden shadow-2xl animate-in slide-in-from-right duration-200">
+          <div className="absolute inset-y-0 right-0 w-full md:w-[480px] bg-bg-raised border-l border-border flex flex-col h-full overflow-hidden shadow-2xl animate-in slide-in-from-right duration-200">
             
             {/* Drawer Header */}
-            <div className="h-14 border-b border-[#E5E5E5] px-6 bg-white flex items-center justify-between shrink-0">
+            <div className="h-14 border-b border-border px-6 bg-bg-raised flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
-                <Filter className="h-4.5 w-4.5 text-[#2563EB]" />
-                <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">
+                <Filter className="h-4.5 w-4.5 text-brand-600" />
+                <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
                   Advanced Filters ({filterConditions.length})
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsFilterBuilderOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none"
+                className="text-text-secondary hover:text-text-primary focus:outline-none"
               >
                 ✕
               </button>
@@ -664,31 +664,31 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
             {/* Drawer Body - scrollable */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               <div>
-                <label className="block text-[10px] font-bold text-[#666666] uppercase tracking-wider mb-2">
+                <label className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-2">
                   Matching Logic
                 </label>
                 <select
                   value={filterOperator}
                   onChange={(e) => setFilterOperator(e.target.value as FilterLogicalOperator)}
-                  className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs font-bold text-[#111111] rounded-[6px] px-3 focus:outline-none cursor-pointer"
+                  className="w-full h-9 bg-bg-raised border border-border focus:border-brand-500 text-xs font-bold text-text-primary rounded-[6px] px-3 focus:outline-none cursor-pointer"
                 >
                   <option value={FilterLogicalOperator.AND}>ALL conditions must match (AND)</option>
                   <option value={FilterLogicalOperator.OR}>ANY condition can match (OR)</option>
                 </select>
-                <p className="text-[10px] text-[#999999] mt-1 font-medium leading-normal">
+                <p className="text-[10px] text-text-placeholder mt-1 font-medium leading-normal">
                   Connect multiple logical filters dynamically to refine your CRM pipelines view.
                 </p>
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-2">
-                  <span className="text-[10px] font-bold text-[#666666] uppercase tracking-wider">
+                <div className="flex items-center justify-between border-b border-border pb-2">
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                     Filter Rules
                   </span>
                 </div>
 
                 {filterConditions.length === 0 ? (
-                  <div className="py-12 border border-dashed border-[#E5E5E5] rounded-[6px] text-center text-xs text-[#999999] px-4">
+                  <div className="py-12 border border-dashed border-border rounded-[6px] text-center text-xs text-text-placeholder px-4">
                     No active rules configured. Click "+ Add Rule" below to start filtering your pipeline deals.
                   </div>
                 ) : (
@@ -699,15 +699,15 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                       const customDef = customFieldDefs.find((f) => f.id === cond.fieldId);
 
                       return (
-                        <div key={cond.id} className="border border-[#E5E5E5] rounded-[6px] p-3 space-y-3 bg-white hover:border-[#2563EB]/25 transition-colors">
+                        <div key={cond.id} className="border border-border rounded-[6px] p-3 space-y-3 bg-bg-raised hover:border-brand-500/25 transition-colors">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-[#999999] uppercase">
+                            <span className="text-[10px] font-bold text-text-placeholder uppercase">
                               {idx === 0 ? "Where Rule" : `Connector: ${filterOperator}`}
                             </span>
                             <button
                               type="button"
                               onClick={() => removeCondition(cond.id)}
-                              className="text-[#DC2626] hover:bg-[#DC2626]/5 rounded-[4px] p-1 transition-colors"
+                              className="text-negative-500 hover:bg-negative-500/5 rounded-[4px] p-1 transition-colors"
                               title="Delete Rule"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -717,11 +717,11 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                           <div className="space-y-2.5">
                             {/* Field Selector */}
                             <div>
-                              <label className="block text-[9px] font-bold text-[#999999] uppercase tracking-wider mb-1">Field</label>
+                              <label className="block text-[9px] font-bold text-text-placeholder uppercase tracking-wider mb-1">Field</label>
                               <select
                                 value={cond.fieldId}
                                 onChange={(e) => handleFieldChange(cond.id, e.target.value)}
-                                className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
+                                className="w-full h-8 bg-bg-raised border border-border text-xs text-text-primary rounded-[6px] px-2.5 focus:outline-none focus:border-brand-500 cursor-pointer"
                               >
                                 <option value="title">Deal Title</option>
                                 <option value="value">Deal Estimated Value (Rs.)</option>
@@ -738,11 +738,11 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
 
                             {/* Operator Selector */}
                             <div>
-                              <label className="block text-[9px] font-bold text-[#999999] uppercase tracking-wider mb-1">Condition</label>
+                              <label className="block text-[9px] font-bold text-text-placeholder uppercase tracking-wider mb-1">Condition</label>
                               <select
                                 value={cond.operator}
                                 onChange={(e) => handleOperatorChange(cond.id, e.target.value as FilterOperator)}
-                                className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
+                                className="w-full h-8 bg-bg-raised border border-border text-xs text-text-primary rounded-[6px] px-2.5 focus:outline-none focus:border-brand-500 cursor-pointer"
                               >
                                 {availableOps.map((op) => (
                                   <option key={op.value} value={op.value}>{op.label}</option>
@@ -753,12 +753,12 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                             {/* Value Selector/Input */}
                             {!isValHidden && (
                               <div>
-                                <label className="block text-[9px] font-bold text-[#999999] uppercase tracking-wider mb-1">Value</label>
+                                <label className="block text-[9px] font-bold text-text-placeholder uppercase tracking-wider mb-1">Value</label>
                                 {customDef?.type === "DROPDOWN" ? (
                                   <select
                                     value={cond.value}
                                     onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
+                                    className="w-full h-8 bg-bg-raised border border-border text-xs text-text-primary rounded-[6px] px-2.5 focus:outline-none focus:border-brand-500 cursor-pointer"
                                   >
                                     <option value="">Select option...</option>
                                     {customDef.options?.map((opt: string) => (
@@ -769,7 +769,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                                   <select
                                     value={cond.value}
                                     onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB] cursor-pointer"
+                                    className="w-full h-8 bg-bg-raised border border-border text-xs text-text-primary rounded-[6px] px-2.5 focus:outline-none focus:border-brand-500 cursor-pointer"
                                   >
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
@@ -779,7 +779,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                                     type="date"
                                     value={cond.value}
                                     onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB]"
+                                    className="w-full h-8 bg-bg-raised border border-border text-xs text-text-primary rounded-[6px] px-2.5 focus:outline-none focus:border-brand-500"
                                   />
                                 ) : cond.fieldId === "value" || customDef?.type === "NUMBER" ? (
                                   <input
@@ -787,7 +787,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                                     placeholder="Enter threshold value..."
                                     value={cond.value}
                                     onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB]"
+                                    className="w-full h-8 bg-bg-raised border border-border text-xs text-text-primary rounded-[6px] px-2.5 focus:outline-none focus:border-brand-500"
                                   />
                                 ) : (
                                   <input
@@ -795,7 +795,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                                     placeholder="Match text..."
                                     value={cond.value}
                                     onChange={(e) => handleValueChange(cond.id, e.target.value)}
-                                    className="w-full h-8 bg-white border border-[#E5E5E5] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] px-2.5 focus:outline-none focus:border-[#2563EB]"
+                                    className="w-full h-8 bg-bg-raised border border-border text-xs text-text-primary placeholder-text-placeholder rounded-[6px] px-2.5 focus:outline-none focus:border-brand-500"
                                   />
                                 )}
                               </div>
@@ -810,11 +810,11 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
             </div>
 
             {/* Drawer Footer - sticky */}
-            <div className="border-t border-[#E5E5E5] p-6 bg-[#FAFAFA] flex items-center justify-between shrink-0">
+            <div className="border-t border-border p-6 bg-bg-subtle flex items-center justify-between shrink-0">
               <Button
                 variant="secondary"
                 onClick={addCondition}
-                className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px] flex items-center gap-1.5"
+                className="border-border bg-bg-raised hover:bg-surface text-text-primary font-semibold text-xs h-9 px-4 rounded-[6px] flex items-center gap-1.5"
               >
                 <Plus className="h-3.5 w-3.5" /> Add Rule
               </Button>
@@ -827,7 +827,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                       setFilterConditions([]);
                       setFilterOperator(FilterLogicalOperator.AND);
                     }}
-                    className="text-xs text-[#DC2626] font-bold hover:underline"
+                    className="text-xs text-negative-500 font-bold hover:underline"
                   >
                     Clear All
                   </button>
@@ -835,7 +835,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                 <Button
                   variant="primary"
                   onClick={() => setIsFilterBuilderOpen(false)}
-                  className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
+                  className="bg-primary text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-primary-hover"
                 >
                   Apply & Close
                 </Button>
@@ -852,14 +852,14 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
         {isLoading ? (
           <div className="flex gap-5 w-full">
             {[1, 2, 3].map((idx) => (
-              <div key={idx} className="w-64 bg-[#FAFAFA] border border-[#E5E5E5] rounded-[6px] shrink-0 p-4 animate-pulse h-48" />
+              <div key={idx} className="w-64 bg-bg-subtle border border-border rounded-[6px] shrink-0 p-4 animate-pulse h-48" />
             ))}
           </div>
         ) : STAGES.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-[#E5E5E5] rounded-[6px] p-20 text-center">
-            <FolderKanban className="h-10 w-10 text-[#999999] mb-3" />
-            <h4 className="text-sm font-bold text-[#111111]">No Stages Defined for Pipeline</h4>
-            <p className="text-xs text-[#666666] mt-1 max-w-sm">
+          <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-border rounded-[6px] p-20 text-center">
+            <FolderKanban className="h-10 w-10 text-text-placeholder mb-3" />
+            <h4 className="text-sm font-bold text-text-primary">No Stages Defined for Pipeline</h4>
+            <p className="text-xs text-text-secondary mt-1 max-w-sm">
               Please declare stages in your pipeline configuration to render your Kanban boards.
             </p>
           </div>
@@ -873,15 +873,15 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
             return (
               <div
                 key={s}
-                className="w-64 bg-white border border-[#E5E5E5] rounded-[6px] shrink-0 flex flex-col justify-between h-full"
+                className="w-64 bg-bg-raised border border-border rounded-[6px] shrink-0 flex flex-col justify-between h-full"
               >
                 {/* Stage Header */}
                 <div
-                  className="p-4 border-b border-[#E5E5E5] bg-[#FFFFFF] rounded-t-[6px] shrink-0 flex flex-col gap-0.5"
+                  className="p-4 border-b border-border bg-bg-raised rounded-t-[6px] shrink-0 flex flex-col gap-0.5"
                   style={{ borderTop: `3px solid ${stageCfgByName[s]?.color || "#E5E5E5"}` }}
                 >
                   <div className="flex items-center justify-between">
-                    <h4 className="text-[10px] font-bold text-[#111111] uppercase tracking-wider leading-none truncate pr-2 flex items-center gap-1.5">
+                    <h4 className="text-[10px] font-bold text-text-primary uppercase tracking-wider leading-none truncate pr-2 flex items-center gap-1.5">
                       <span
                         className="h-2 w-2 rounded-full shrink-0"
                         style={{ backgroundColor: stageCfgByName[s]?.color || "#999999" }}
@@ -890,18 +890,18 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     </h4>
                     <div className="flex items-center gap-1">
                       {stageCfgByName[s] && (
-                        <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#EFF6FF] border border-[#2563EB]/20 text-[#2563EB]" title="Stage default probability">
+                        <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-brand-50 border border-brand-500/20 text-brand-600" title="Stage default probability">
                           {stageCfgByName[s].probability}%
                         </span>
                       )}
-                      <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#F7F7F7] border border-[#E5E5E5] text-[#666666]">
+                      <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-surface border border-border text-text-secondary">
                         {list.length}
                       </span>
                     </div>
                   </div>
-                  <div className="text-[10px] text-[#999999] font-bold tracking-wide uppercase mt-1">
-                    Value: <span className="text-[#111111] font-semibold">Rs. {sum.toLocaleString("en-IN")}</span>
-                    <span className="text-[#999999] font-medium normal-case ml-2" title="Weighted revenue (value × probability)">
+                  <div className="text-[10px] text-text-placeholder font-bold tracking-wide uppercase mt-1">
+                    Value: <span className="text-text-primary font-semibold">Rs. {sum.toLocaleString("en-IN")}</span>
+                    <span className="text-text-placeholder font-medium normal-case ml-2" title="Weighted revenue (value × probability)">
                       wtd. Rs. {Math.round(list.reduce((acc: number, d: any) => acc + (d.weightedValue || 0), 0)).toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -922,8 +922,8 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                   }}
                 >
                   {list.length === 0 ? (
-                    <div className="h-full border border-dashed border-[#E5E5E5] rounded-[6px] flex flex-col items-center justify-center p-6 text-center text-[#999999]">
-                      <Layers className="h-6 w-6 text-[#999999]/50 mb-2" />
+                    <div className="h-full border border-dashed border-border rounded-[6px] flex flex-col items-center justify-center p-6 text-center text-text-placeholder">
+                      <Layers className="h-6 w-6 text-text-placeholder/50 mb-2" />
                       <span className="text-[10px] font-medium leading-normal">Shifts deal records here</span>
                     </div>
                   ) : (
@@ -947,16 +947,16 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                           setEditDealNextFollowUp(d.nextFollowUpAt ? d.nextFollowUpAt.slice(0, 10) : "");
                           setIsEditDealOpen(true);
                         }}
-                        className={`bg-white border rounded-[6px] p-3.5 space-y-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#2563EB]/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.03)] cursor-pointer active:cursor-grabbing transition-all duration-200 ${
-                          d.isOverdue ? "border-[#DC2626]/40 border-l-[3px] border-l-[#DC2626]" : "border-[#E5E5E5]"
+                        className={`bg-bg-raised border rounded-[6px] p-3.5 space-y-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-brand-500/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.03)] cursor-pointer active:cursor-grabbing transition-all duration-200 ${
+                          d.isOverdue ? "border-negative-500/40 border-l-[3px] border-l-[#DC2626]" : "border-border"
                         }`}
                       >
                         <div>
                           <div className="flex items-start justify-between gap-1.5">
-                            <h5 className="text-xs font-bold text-[#111111] capitalize leading-snug">{d.title}</h5>
+                            <h5 className="text-xs font-bold text-text-primary capitalize leading-snug">{d.title}</h5>
                             {d.leadSource === "AI Call" && (
                               <span
-                                className="shrink-0 inline-flex items-center gap-0.5 text-[8.5px] font-bold uppercase tracking-wider rounded px-1 py-0.5 border text-[#7C3AED] bg-[#7C3AED]/5 border-[#7C3AED]/25"
+                                className="shrink-0 inline-flex items-center gap-0.5 text-[8.5px] font-bold uppercase tracking-wider rounded px-1 py-0.5 border text-indigo-600 bg-indigo-600/5 border-indigo-600/25"
                                 title="Created automatically by your AI agent from a call"
                               >
                                 <Sparkles className="h-2.5 w-2.5" />
@@ -967,25 +967,25 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                               <span
                                 className={`shrink-0 text-[8.5px] font-bold uppercase tracking-wider rounded px-1 py-0.5 border ${
                                   d.priority === "URGENT"
-                                    ? "text-[#DC2626] bg-[#DC2626]/5 border-[#DC2626]/25"
-                                    : "text-[#EA580C] bg-[#EA580C]/5 border-[#EA580C]/25"
+                                    ? "text-negative-500 bg-negative-500/5 border-negative-500/25"
+                                    : "text-orange-600 bg-orange-600/5 border-orange-600/25"
                                 }`}
                               >
                                 {d.priority}
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] font-bold text-[#999999] capitalize tracking-wide block mt-1">
-                            Contact: <span className="font-semibold text-[#666666]">{d.contactName}</span>
+                          <span className="text-[10px] font-bold text-text-placeholder capitalize tracking-wide block mt-1">
+                            Contact: <span className="font-semibold text-text-secondary">{d.contactName}</span>
                           </span>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold text-[#666666]">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold text-text-secondary">
                           <span
-                            className="inline-flex items-center gap-0.5 rounded px-1 py-0.5 bg-[#F7F7F7] border border-[#E5E5E5]"
+                            className="inline-flex items-center gap-0.5 rounded px-1 py-0.5 bg-surface border border-border"
                             title={d.probabilitySource === "MANUAL" ? "Probability manually set" : "Probability from stage default"}
                           >
-                            {d.probability ?? 0}%{d.probabilitySource === "MANUAL" && <span className="text-[#2563EB]">·M</span>}
+                            {d.probability ?? 0}%{d.probabilitySource === "MANUAL" && <span className="text-brand-600">·M</span>}
                           </span>
                           <span title="Weighted revenue">wtd. Rs. {Math.round(d.weightedValue || 0).toLocaleString("en-IN")}</span>
                           {d.expectedCloseDate && (
@@ -993,18 +993,18 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                               ⏱ {new Date(d.expectedCloseDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                             </span>
                           )}
-                          {d.isOverdue && <span className="text-[#DC2626] font-bold">Follow-up overdue</span>}
+                          {d.isOverdue && <span className="text-negative-500 font-bold">Follow-up overdue</span>}
                         </div>
 
                         {(d.aiNextAction || d.aiSummary) && (
-                          <div className="flex items-start gap-1 text-[10px] text-[#666666] leading-snug border-t border-[#F7F7F7] pt-1.5" title={d.aiSummary || undefined}>
-                            <Sparkles className="h-3 w-3 text-[#2563EB] shrink-0 mt-px" />
+                          <div className="flex items-start gap-1 text-[10px] text-text-secondary leading-snug border-t border-line-subtle pt-1.5" title={d.aiSummary || undefined}>
+                            <Sparkles className="h-3 w-3 text-brand-600 shrink-0 mt-px" />
                             <span className="line-clamp-2">{d.aiNextAction || d.aiSummary}</span>
                           </div>
                         )}
 
-                        <div className="flex items-center justify-between border-t border-[#F7F7F7] pt-2">
-                          <span className="text-xs font-bold text-[#2563EB]">Rs. {d.value.toLocaleString("en-IN")}</span>
+                        <div className="flex items-center justify-between border-t border-line-subtle pt-2">
+                          <span className="text-xs font-bold text-brand-600">Rs. {d.value.toLocaleString("en-IN")}</span>
 
                           {/* Click shifts stage controls and delete deal action */}
                           <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
@@ -1016,7 +1016,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                                 setDeleteConfirmTitle(d.title);
                                 setDeleteConfirmOpen(true);
                               }}
-                              className="text-[#DC2626] hover:bg-[#DC2626]/10 border border-transparent rounded-[4px] p-1 transition-colors"
+                              className="text-negative-500 hover:bg-negative-500/10 border border-transparent rounded-[4px] p-1 transition-colors"
                               title="Remove record from pipeline"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -1026,7 +1026,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                               type="button"
                               onClick={() => handleShiftStage(d.id, d.stage, "left")}
                               disabled={STAGES.indexOf(d.stage) === 0}
-                              className="text-[#666666] hover:bg-[#F7F7F7] hover:text-[#111111] border border-[#E5E5E5] rounded-[4px] p-1 disabled:opacity-30 disabled:hover:bg-transparent"
+                              className="text-text-secondary hover:bg-surface hover:text-text-primary border border-border rounded-[4px] p-1 disabled:opacity-30 disabled:hover:bg-transparent"
                             >
                               <ArrowLeft className="h-3 w-3" />
                             </button>
@@ -1034,7 +1034,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                               type="button"
                               onClick={() => handleShiftStage(d.id, d.stage, "right")}
                               disabled={STAGES.indexOf(d.stage) === STAGES.length - 1}
-                              className="text-[#666666] hover:bg-[#F7F7F7] hover:text-[#111111] border border-[#E5E5E5] rounded-[4px] p-1 disabled:opacity-30 disabled:hover:bg-transparent"
+                              className="text-text-secondary hover:bg-surface hover:text-text-primary border border-border rounded-[4px] p-1 disabled:opacity-30 disabled:hover:bg-transparent"
                             >
                               <ArrowRight className="h-3 w-3" />
                             </button>
@@ -1048,7 +1048,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     <button
                       type="button"
                       onClick={() => setVisibleLimits((prev) => ({ ...prev, [s]: limit + 12 }))}
-                      className="w-full py-2 bg-white hover:bg-[#F9FAFB] border border-dashed border-[#E5E5E5] rounded-[6px] text-[10px] font-bold text-[#2563EB] uppercase tracking-wider transition-all select-none mt-2"
+                      className="w-full py-2 bg-bg-raised hover:bg-bg-subtle border border-dashed border-border rounded-[6px] text-[10px] font-bold text-brand-600 uppercase tracking-wider transition-all select-none mt-2"
                     >
                       Show +12 More Deals
                     </button>
@@ -1065,31 +1065,31 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       {/* PREMIUM SPLIT REGISTER RECORD POPUP DIALOG */}
       {isAddOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-          <div className="bg-white border border-[#E5E5E5] rounded-[6px] shadow-2xl max-w-2xl w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
-            <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-[#FAFAFA]">
-              <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
-                <FolderKanban className="h-4.5 w-4.5 text-[#2563EB]" /> Register Pipeline Record
+          <div className="bg-bg-raised border border-border rounded-[6px] shadow-2xl max-w-2xl w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
+            <div className="h-14 border-b border-border px-6 flex items-center justify-between bg-bg-subtle">
+              <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
+                <FolderKanban className="h-4.5 w-4.5 text-brand-600" /> Register Pipeline Record
               </h3>
               <button
                 type="button"
                 onClick={() => setIsAddOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none text-sm"
+                className="text-text-secondary hover:text-text-primary focus:outline-none text-sm"
               >
                 ✕
               </button>
             </div>
 
             {/* Split layout: Form on left, complete learning guides on right */}
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E5E5E5]">
+            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
               
               {/* Form Input fields */}
               <form onSubmit={handleCreateDealSubmit} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Link Contact Record *</label>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Link Contact Record *</label>
                   <select
                     value={contactId}
                     onChange={(e) => setContactId(e.target.value)}
-                    className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+                    className="w-full h-9 bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] px-3 focus:outline-none"
                     required
                   >
                     <option value="">Select contact profile...</option>
@@ -1102,19 +1102,19 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Record Opportunity Title *</label>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Record Opportunity Title *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Drew Coleman onboarding track"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
+                    className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Estimated Value (Rs.) *</label>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Estimated Value (Rs.) *</label>
                   <input
                     type="number"
                     required
@@ -1122,16 +1122,16 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     placeholder="e.g. 589900"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
+                    className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Initial Stage *</label>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Initial Stage *</label>
                   <select
                     value={stage}
                     onChange={(e) => setStage(e.target.value)}
-                    className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+                    className="w-full h-9 bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] px-3 focus:outline-none"
                     required
                   >
                     {STAGES.map((s: string) => (
@@ -1145,11 +1145,11 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Priority</label>
+                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Priority</label>
                     <select
                       value={newDealPriority}
                       onChange={(e) => setNewDealPriority(e.target.value)}
-                      className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+                      className="w-full h-9 bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] px-3 focus:outline-none"
                     >
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
@@ -1158,22 +1158,22 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Expected Close</label>
+                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Expected Close</label>
                     <input
                       type="date"
                       value={newDealExpectedClose}
                       onChange={(e) => setNewDealExpectedClose(e.target.value)}
-                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                      className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] h-9 px-3 focus:outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
+                <div className="pt-4 border-t border-border flex items-center justify-end gap-3">
                   <Button
                     variant="secondary"
                     onClick={() => setIsAddOpen(false)}
                     type="button"
-                    className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px]"
+                    className="border-border bg-bg-raised hover:bg-surface text-text-primary font-semibold text-xs h-9 px-4 rounded-[6px]"
                   >
                     Cancel
                   </Button>
@@ -1181,7 +1181,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     variant="primary"
                     type="submit"
                     disabled={createDealMutation.isPending}
-                    className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
+                    className="bg-primary text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-primary-hover"
                   >
                     {createDealMutation.isPending ? "Registering..." : "Create Record"}
                   </Button>
@@ -1189,29 +1189,29 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
               </form>
 
               {/* Complete Onboarding Guide & Tips */}
-              <div className="p-6 bg-[#FAFAFA] flex flex-col justify-between select-none">
+              <div className="p-6 bg-bg-subtle flex flex-col justify-between select-none">
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5 border-b border-[#E5E5E5] pb-2">
-                    <Sparkles className="h-4 w-4 text-[#2563EB]" /> Onboarding Guide & Tips
+                  <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
+                    <Sparkles className="h-4 w-4 text-brand-600" /> Onboarding Guide & Tips
                   </h4>
 
-                  <div className="space-y-3.5 text-xs text-[#666666] leading-relaxed">
+                  <div className="space-y-3.5 text-xs text-text-secondary leading-relaxed">
                     <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">🔗 Why Link a Customer Profile?</span>
+                      <span className="font-bold text-text-primary text-[11px] block">🔗 Why Link a Customer Profile?</span>
                       <p className="mt-1">
                         Linking a contact profile aggregates this record on their **unified Activity Timeline**. Every call transcript, Twilio receptionist recording, and note merges cleanly into one dashboard.
                       </p>
                     </div>
 
                     <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">💰 Estimated Value tracking</span>
+                      <span className="font-bold text-text-primary text-[11px] block">💰 Estimated Value tracking</span>
                       <p className="mt-1">
                         Represents the commercial or lifecycle value of this opportunity. Value aggregates in real-time on columns to compute sales pipelines statistics instantly.
                       </p>
                     </div>
 
                     <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">⚡ Automated AI Workflows</span>
+                      <span className="font-bold text-text-primary text-[11px] block">⚡ Automated AI Workflows</span>
                       <p className="mt-1">
                         Moving records between columns automatically triggers background workflows! AI receptionist agents perform callbacks, SMS engines dispatch alerts, and custom API webhooks sync.
                       </p>
@@ -1219,7 +1219,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                   </div>
                 </div>
 
-                <div className="mt-6 border-t border-[#E5E5E5] pt-3 text-[10px] text-[#999999] leading-snug font-medium">
+                <div className="mt-6 border-t border-border pt-3 text-[10px] text-text-placeholder leading-snug font-medium">
                   💡 Tip: Create custom pipelines under the "New Pipeline" button to configure smart views matching your operational workflow.
                 </div>
               </div>
@@ -1270,22 +1270,22 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       {/* EDIT OPPORTUNITY RECORD POPUP DIALOG */}
       {isEditDealOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-          <div className="bg-white border border-[#E5E5E5] rounded-[6px] shadow-2xl max-w-2xl w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
-            <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-[#FAFAFA]">
-              <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
-                <FolderKanban className="h-4.5 w-4.5 text-[#2563EB]" /> Edit Opportunity Record
+          <div className="bg-bg-raised border border-border rounded-[6px] shadow-2xl max-w-2xl w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
+            <div className="h-14 border-b border-border px-6 flex items-center justify-between bg-bg-subtle">
+              <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
+                <FolderKanban className="h-4.5 w-4.5 text-brand-600" /> Edit Opportunity Record
               </h3>
               <button
                 type="button"
                 onClick={() => setIsEditDealOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none text-sm"
+                className="text-text-secondary hover:text-text-primary focus:outline-none text-sm"
               >
                 ✕
               </button>
             </div>
 
             {/* Split layout: Form on left, guidance tips on right */}
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E5E5E5]">
+            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
               
               {/* Form Input fields */}
               <form 
@@ -1312,19 +1312,19 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                 className="p-6 space-y-4"
               >
                 <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Opportunity Title *</label>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Opportunity Title *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Premium Deal onboarding"
                     value={editDealTitle}
                     onChange={(e) => setEditDealTitle(e.target.value)}
-                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
+                    className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Estimated Value (Rs.) *</label>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Estimated Value (Rs.) *</label>
                   <input
                     type="number"
                     required
@@ -1332,16 +1332,16 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     placeholder="e.g. 50000"
                     value={editDealValue}
                     onChange={(e) => setEditDealValue(e.target.value)}
-                    className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 focus:outline-none"
+                    className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">Pipeline Stage Mapping *</label>
+                  <label className="block text-xs font-semibold text-text-primary mb-1.5">Pipeline Stage Mapping *</label>
                   <select
                     value={editDealStage}
                     onChange={(e) => setEditDealStage(e.target.value)}
-                    className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+                    className="w-full h-9 bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] px-3 focus:outline-none"
                     required
                   >
                     {STAGES.map((s: string) => (
@@ -1355,10 +1355,10 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">
+                    <label className="block text-xs font-semibold text-text-primary mb-1.5">
                       Probability (%)
                       {editDealProbabilitySource === "MANUAL" && (
-                        <span className="ml-1.5 text-[9px] font-bold text-[#2563EB] uppercase">Manual</span>
+                        <span className="ml-1.5 text-[9px] font-bold text-brand-600 uppercase">Manual</span>
                       )}
                     </label>
                     <div className="flex items-center gap-1.5">
@@ -1368,14 +1368,14 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                         max={100}
                         value={editDealProbability}
                         onChange={(e) => setEditDealProbability(e.target.value)}
-                        className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                        className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] h-9 px-3 focus:outline-none"
                       />
                       {editDealProbabilitySource === "MANUAL" && (
                         <button
                           type="button"
                           onClick={() => resetProbabilityMutation.mutate(editDealId)}
                           disabled={resetProbabilityMutation.isPending}
-                          className="shrink-0 h-9 px-2 rounded-[6px] border border-[#E5E5E5] bg-white text-[10px] font-bold text-[#666666] hover:text-[#2563EB] hover:border-[#2563EB]/40 transition-colors"
+                          className="shrink-0 h-9 px-2 rounded-[6px] border border-border bg-bg-raised text-[10px] font-bold text-text-secondary hover:text-brand-600 hover:border-brand-500/40 transition-colors"
                           title="Reset to stage default probability"
                         >
                           Reset
@@ -1384,11 +1384,11 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Priority</label>
+                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Priority</label>
                     <select
                       value={editDealPriority}
                       onChange={(e) => setEditDealPriority(e.target.value)}
-                      className="w-full h-9 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] px-3 focus:outline-none"
+                      className="w-full h-9 bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] px-3 focus:outline-none"
                     >
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
@@ -1400,31 +1400,31 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Expected Close</label>
+                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Expected Close</label>
                     <input
                       type="date"
                       value={editDealExpectedClose}
                       onChange={(e) => setEditDealExpectedClose(e.target.value)}
-                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                      className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] h-9 px-3 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-[#111111] mb-1.5">Next Follow-up</label>
+                    <label className="block text-xs font-semibold text-text-primary mb-1.5">Next Follow-up</label>
                     <input
                       type="date"
                       value={editDealNextFollowUp}
                       onChange={(e) => setEditDealNextFollowUp(e.target.value)}
-                      className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-xs text-[#111111] rounded-[6px] h-9 px-3 focus:outline-none"
+                      className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] h-9 px-3 focus:outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3">
+                <div className="pt-4 border-t border-border flex items-center justify-end gap-3">
                   <Button
                     variant="secondary"
                     onClick={() => setIsEditDealOpen(false)}
                     type="button"
-                    className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px]"
+                    className="border-border bg-bg-raised hover:bg-surface text-text-primary font-semibold text-xs h-9 px-4 rounded-[6px]"
                   >
                     Cancel
                   </Button>
@@ -1432,7 +1432,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     variant="primary"
                     type="submit"
                     disabled={updateDealMutation.isPending}
-                    className="bg-[#2563EB] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#1D4ED8]"
+                    className="bg-primary text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-primary-hover"
                   >
                     {updateDealMutation.isPending ? "Saving..." : "Save Changes"}
                   </Button>
@@ -1440,29 +1440,29 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
               </form>
 
               {/* Complete Onboarding Guide & Tips */}
-              <div className="p-6 bg-[#FAFAFA] flex flex-col justify-between select-none">
+              <div className="p-6 bg-bg-subtle flex flex-col justify-between select-none">
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5 border-b border-[#E5E5E5] pb-2">
-                    <Sparkles className="h-4 w-4 text-[#2563EB]" /> Deal Tracking Strategy
+                  <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
+                    <Sparkles className="h-4 w-4 text-brand-600" /> Deal Tracking Strategy
                   </h4>
 
-                  <div className="space-y-3.5 text-xs text-[#666666] leading-relaxed">
+                  <div className="space-y-3.5 text-xs text-text-secondary leading-relaxed">
                     <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">📈 Real-time Value Updates</span>
+                      <span className="font-bold text-text-primary text-[11px] block">📈 Real-time Value Updates</span>
                       <p className="mt-1">
                         Editing the estimated value instantly recalculates stage-wide metrics across your current Kanban workspace, giving management live pipeline forecasts.
                       </p>
                     </div>
 
                     <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">⚡ Action Trigger stage shift</span>
+                      <span className="font-bold text-text-primary text-[11px] block">⚡ Action Trigger stage shift</span>
                       <p className="mt-1">
                         Selecting a new stage maps this deal instantly to that stage column. Moving cards might trigger automated voice or text receptionist sequences immediately.
                       </p>
                     </div>
 
                     <div>
-                      <span className="font-bold text-[#111111] text-[11px] block">🛡️ Audit Feeds Aggregation</span>
+                      <span className="font-bold text-text-primary text-[11px] block">🛡️ Audit Feeds Aggregation</span>
                       <p className="mt-1">
                         Every title or stage modification publishes an automated activity item directly inside the contact's unified timeline feed, keeping histories clean.
                       </p>
@@ -1470,7 +1470,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                   </div>
                 </div>
 
-                <div className="mt-6 border-t border-[#E5E5E5] pt-3 text-[10px] text-[#999999] leading-snug font-medium">
+                <div className="mt-6 border-t border-border pt-3 text-[10px] text-text-placeholder leading-snug font-medium">
                   💡 Tip: Stage updates automatically sync across collaborative users in real-time.
                 </div>
               </div>
@@ -1484,42 +1484,42 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
       {/* UNIFIED CUSTOM DELETE CONFIRMATION MODAL */}
       {deleteConfirmOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-[2px]">
-          <div className="bg-white border border-[#E5E5E5] rounded-[6px] shadow-2xl max-w-md w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
-            <div className="h-14 border-b border-[#E5E5E5] px-6 flex items-center justify-between bg-[#FAFAFA] select-none">
-              <h3 className="text-xs font-bold text-[#DC2626] uppercase tracking-wider flex items-center gap-1.5">
-                <AlertTriangle className="h-4 w-4 text-[#DC2626]" /> 
+          <div className="bg-bg-raised border border-border rounded-[6px] shadow-2xl max-w-md w-full overflow-hidden font-sans animate-in zoom-in-95 duration-150">
+            <div className="h-14 border-b border-border px-6 flex items-center justify-between bg-bg-subtle select-none">
+              <h3 className="text-xs font-bold text-negative-500 uppercase tracking-wider flex items-center gap-1.5">
+                <AlertTriangle className="h-4 w-4 text-negative-500" /> 
                 {deleteConfirmType === "deal" ? "Remove Pipeline Record" : "Delete Pipeline Workspace"}
               </h3>
               <button
                 type="button"
                 onClick={() => setDeleteConfirmOpen(false)}
-                className="text-[#666666] hover:text-[#111111] focus:outline-none text-sm"
+                className="text-text-secondary hover:text-text-primary focus:outline-none text-sm"
               >
                 ✕
               </button>
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="text-xs text-[#666666] leading-relaxed">
+              <div className="text-xs text-text-secondary leading-relaxed">
                 {deleteConfirmType === "deal" ? (
                   <p>
-                    Are you sure you want to permanently delete the pipeline record <strong className="text-[#111111]">"{deleteConfirmTitle}"</strong>?
+                    Are you sure you want to permanently delete the pipeline record <strong className="text-text-primary">"{deleteConfirmTitle}"</strong>?
                     This action will remove it from your Kanban board and contact timeline. This cannot be undone.
                   </p>
                 ) : (
                   <p>
-                    ⚠️ <strong className="text-[#DC2626]">WARNING:</strong> Are you sure you want to permanently delete the pipeline <strong className="text-[#111111]">"{deleteConfirmTitle}"</strong>?
+                    ⚠️ <strong className="text-negative-500">WARNING:</strong> Are you sure you want to permanently delete the pipeline <strong className="text-text-primary">"{deleteConfirmTitle}"</strong>?
                     All associated deals will safely revert to default backward-compatible stages. This cannot be undone.
                   </p>
                 )}
               </div>
 
-              <div className="pt-4 border-t border-[#E5E5E5] flex items-center justify-end gap-3 select-none">
+              <div className="pt-4 border-t border-border flex items-center justify-end gap-3 select-none">
                 <Button
                   variant="secondary"
                   onClick={() => setDeleteConfirmOpen(false)}
                   type="button"
-                  className="border-[#E5E5E5] bg-white hover:bg-[#F7F7F7] text-[#111111] font-semibold text-xs h-9 px-4 rounded-[6px]"
+                  className="border-border bg-bg-raised hover:bg-surface text-text-primary font-semibold text-xs h-9 px-4 rounded-[6px]"
                 >
                   Cancel
                 </Button>
@@ -1533,7 +1533,7 @@ export function PipelineTab({ contacts, refetchContacts, customFieldDefs = [] }:
                     }
                     setDeleteConfirmOpen(false);
                   }}
-                  className="bg-[#DC2626] text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-[#B91C1C] transition-colors focus:outline-none flex items-center justify-center animate-in fade-in"
+                  className="bg-negative-500 text-white font-semibold text-xs h-9 px-4 rounded-[6px] hover:bg-negative-600 transition-colors focus:outline-none flex items-center justify-center animate-in fade-in"
                 >
                   Confirm Delete
                 </button>

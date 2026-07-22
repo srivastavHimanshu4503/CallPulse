@@ -87,11 +87,11 @@ const CHANNEL_META: Record<ChannelKey, {
     name: "Slack",
     icon: Slack,
     hint: "Posts to your team channel",
-    tint: "bg-violet-500",
+    tint: "bg-indigo-500",
     tintText: "text-white",
-    soft: "bg-violet-50",
-    softText: "text-violet-600",
-    softRing: "ring-violet-500/25",
+    soft: "bg-indigo-50",
+    softText: "text-indigo-600",
+    softRing: "ring-indigo-500/25",
   },
 };
 
@@ -166,7 +166,7 @@ const VARIABLES = [
 
 function EmailPreview({ subject, body }: { subject: string; body: string }): React.JSX.Element {
   return (
-    <div className="rounded-xl border border-line-default bg-white overflow-hidden h-full flex flex-col shadow-card">
+    <div className="rounded-xl border border-line-default bg-bg-raised overflow-hidden h-full flex flex-col shadow-card">
       {/* Client chrome */}
       <div className="border-b border-line-subtle bg-bg-subtle px-3 py-1.5 flex items-center gap-2">
         <div className="flex gap-1">
@@ -177,7 +177,7 @@ function EmailPreview({ subject, body }: { subject: string; body: string }): Rea
         <span className="text-[10px] font-semibold text-fg-muted ml-1">Inbox</span>
       </div>
       {/* Envelope */}
-      <div className="px-4 py-3 border-b border-line-subtle bg-white">
+      <div className="px-4 py-3 border-b border-line-subtle bg-bg-raised">
         <div className="flex items-center gap-2 mb-2">
           <div
             className="h-8 w-8 rounded-full text-white flex items-center justify-center text-[11px] font-bold shrink-0"
@@ -199,7 +199,7 @@ function EmailPreview({ subject, body }: { subject: string; body: string }): Rea
         </div>
       </div>
       {/* Body */}
-      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-3 bg-white">
+      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-3 bg-bg-raised">
         <p className="text-[12px] text-fg-primary leading-relaxed whitespace-pre-wrap">
           {render(body)}
         </p>
@@ -216,10 +216,10 @@ function SmsPreview({ body }: { body: string }): React.JSX.Element {
   const rendered = render(body);
   return (
     <div className="flex items-start justify-center h-full">
-      <div className="w-[240px] rounded-[28px] p-2 bg-slate-900 shadow-pop">
+      <div className="w-[240px] rounded-[28px] p-2 bg-[#0F172A] shadow-pop">
         <div className="rounded-[22px] bg-white overflow-hidden">
           {/* Status bar */}
-          <div className="flex items-center justify-between px-4 py-1.5 text-[9.5px] font-semibold text-slate-900 bg-white">
+          <div className="flex items-center justify-between px-4 py-1.5 text-[9.5px] font-semibold text-[#0F172A] bg-white">
             <span>9:41</span>
             <div className="flex items-center gap-1">
               <Signal className="h-2.5 w-2.5" />
@@ -252,7 +252,7 @@ function SmsPreview({ body }: { body: string }): React.JSX.Element {
 
 function SlackPreview({ body }: { body: string }): React.JSX.Element {
   return (
-    <div className="rounded-xl border border-line-default bg-white overflow-hidden h-full flex flex-col shadow-card">
+    <div className="rounded-xl border border-line-default bg-bg-raised overflow-hidden h-full flex flex-col shadow-card">
       {/* Slack chrome */}
       <div className="bg-[#3F0E40] text-white px-3 py-2 flex items-center gap-2">
         <div className="h-5 w-5 rounded bg-white/20 flex items-center justify-center">
@@ -264,7 +264,7 @@ function SlackPreview({ body }: { body: string }): React.JSX.Element {
         </div>
       </div>
       {/* Message */}
-      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-3 py-3 bg-white">
+      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-3 py-3 bg-bg-raised">
         <div className="flex gap-2.5">
           <div
             className="h-8 w-8 rounded text-white flex items-center justify-center text-[11px] font-bold shrink-0"
@@ -307,7 +307,7 @@ function SlackPreview({ body }: { body: string }): React.JSX.Element {
         </div>
       </div>
       <div className="border-t border-line-subtle px-3 py-2 bg-bg-subtle text-[10px] text-fg-muted flex items-center gap-1">
-        <Slack className="h-3 w-3 text-violet-500" />
+        <Slack className="h-3 w-3 text-indigo-500" />
         Posted to workspace
       </div>
     </div>
@@ -347,7 +347,7 @@ const ChannelTab: React.FC<{
               borderColor: hex.active,
               boxShadow: `0 2px 6px ${hex.shadow}, 0 1px 2px rgba(0,0,0,0.08)`,
             }
-          : { backgroundColor: "#F8FAFC", color: "#475569", borderColor: "#E5E7EB" }
+          : { backgroundColor: "rgb(var(--bg-subtle))", color: "rgb(var(--fg-secondary))", borderColor: "rgb(var(--line-default))" }
       }
     >
       <span
@@ -512,7 +512,7 @@ export function Notifications(): React.JSX.Element {
                             color: "#FFFFFF",
                             boxShadow: "0 2px 4px rgba(37,99,235,0.35)",
                           }
-                        : { backgroundColor: "transparent", color: "#0F172A" }
+                        : { backgroundColor: "transparent", color: "rgb(var(--fg-primary))" }
                     }
                   >
                     <span
@@ -533,7 +533,7 @@ export function Notifications(): React.JSX.Element {
                       </div>
                       <div
                         className="text-[10px] truncate"
-                        style={isActive ? { color: "rgba(255,255,255,0.85)" } : { color: "#64748B" }}
+                        style={isActive ? { color: "rgba(255,255,255,0.85)" } : { color: "rgb(var(--slate-500))" }}
                       >
                         {e.hint}
                       </div>
@@ -545,7 +545,7 @@ export function Notifications(): React.JSX.Element {
                           ? { backgroundColor: "rgba(255,255,255,0.22)", color: "#FFFFFF" }
                           : channelCount > 0
                           ? { backgroundColor: "#F0FDF4", color: "#16A34A", boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.25)" }
-                          : { backgroundColor: "#F1F5F9", color: "#94A3B8" }
+                          : { backgroundColor: "rgb(var(--line-subtle))", color: "rgb(var(--fg-muted))" }
                       }
                     >
                       {channelCount}
@@ -628,14 +628,14 @@ export function Notifications(): React.JSX.Element {
                         {r.value}
                       </span>
                       {r.label && (
-                        <span className="text-[9.5px] text-fg-muted px-1.5 py-0.5 bg-white rounded-full font-semibold">
+                        <span className="text-[9.5px] text-fg-muted px-1.5 py-0.5 bg-bg-raised rounded-full font-semibold">
                           {r.label}
                         </span>
                       )}
                       <button
                         type="button"
                         onClick={() => removeRecipient(r.id)}
-                        className="p-0.5 rounded-full hover:bg-white transition-colors text-fg-muted hover:text-negative-500"
+                        className="p-0.5 rounded-full hover:bg-bg-raised transition-colors text-fg-muted hover:text-negative-500"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -725,7 +725,7 @@ export function Notifications(): React.JSX.Element {
             {/* Variables — visually separated panel */}
             <div
               className="mt-4 rounded-lg border p-3"
-              style={{ backgroundColor: "#F8FAFC", borderColor: "#E5E7EB" }}
+              style={{ backgroundColor: "rgb(var(--bg-subtle))", borderColor: "rgb(var(--line-default))" }}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="text-[10.5px] font-bold uppercase tracking-wider text-fg-muted">
@@ -746,9 +746,9 @@ export function Notifications(): React.JSX.Element {
                     }}
                     className="inline-flex items-center gap-1 rounded-md text-[10.5px] font-mono font-semibold px-2 py-1 transition-all border"
                     style={{
-                      backgroundColor: "#FFFFFF",
-                      color: "#475569",
-                      borderColor: "#E5E7EB",
+                      backgroundColor: "rgb(var(--bg-raised))",
+                      color: "rgb(var(--fg-secondary))",
+                      borderColor: "rgb(var(--line-default))",
                     }}
                   >
                     <Copy className="h-2.5 w-2.5" />

@@ -68,9 +68,9 @@ export function AppRouter(): React.JSX.Element {
   return (
     <React.Suspense
       fallback={
-        <div className="flex min-h-screen flex-col items-center justify-center bg-white gap-4">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-bg-canvas gap-4">
           <Logo height={96} className="animate-pulse" />
-          <div className="text-sm font-medium text-[#666666]">Loading DeskBuddy...</div>
+          <div className="text-sm font-medium text-text-secondary">Loading DeskBuddy...</div>
         </div>
       }
     >

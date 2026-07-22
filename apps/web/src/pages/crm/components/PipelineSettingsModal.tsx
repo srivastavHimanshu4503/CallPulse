@@ -226,7 +226,7 @@ export function PipelineSettingsModal({
               placeholder="e.g. Sales pipeline · Rental leads · Student admissions"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-white border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[13px] text-fg-primary placeholder-fg-muted rounded-md h-10 px-3 focus:outline-none shadow-card"
+              className="w-full bg-bg-raised border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[13px] text-fg-primary placeholder-fg-muted rounded-md h-10 px-3 focus:outline-none shadow-card"
             />
           </div>
 
@@ -273,7 +273,7 @@ export function PipelineSettingsModal({
                       const idx = STAGE_COLORS.indexOf(s.color);
                       patchStage(i, { color: STAGE_COLORS[(idx + 1) % STAGE_COLORS.length]! });
                     }}
-                    className="h-5 w-5 rounded-full border-2 border-white ring-1 ring-line-strong shrink-0 transition-transform hover:scale-110"
+                    className="h-5 w-5 rounded-full border-2 border-bg-raised ring-1 ring-line-strong shrink-0 transition-transform hover:scale-110"
                     style={{ backgroundColor: s.color }}
                     title="Click to change stage color"
                   />
@@ -294,13 +294,13 @@ export function PipelineSettingsModal({
                       max={100}
                       value={s.probability}
                       onChange={(e) => patchStage(i, { probability: clampPct(Number(e.target.value)) })}
-                      className="w-12 h-7 bg-white border border-line-default focus:border-brand-500 text-[11.5px] font-semibold text-fg-primary text-center rounded focus:outline-none"
+                      className="w-12 h-7 bg-bg-raised border border-line-default focus:border-brand-500 text-[11.5px] font-semibold text-fg-primary text-center rounded focus:outline-none"
                     />
                     <span className="text-[10px] font-bold text-fg-muted">%</span>
                   </div>
 
                   {/* Outcome: Open / Won / Lost */}
-                  <div className="flex items-center rounded-md border border-line-default bg-white p-0.5 shrink-0" title="Deals in a Won/Lost stage count as closed">
+                  <div className="flex items-center rounded-md border border-line-default bg-bg-raised p-0.5 shrink-0" title="Deals in a Won/Lost stage count as closed">
                     {(["open", "won", "lost"] as const).map((o) => {
                       const active = o === "won" ? s.isWon : o === "lost" ? s.isLost : !s.isWon && !s.isLost;
                       return (
@@ -329,7 +329,7 @@ export function PipelineSettingsModal({
                       type="button"
                       onClick={() => moveStage(i, "up")}
                       disabled={i === 0}
-                      className="h-7 w-7 rounded text-fg-muted hover:text-fg-primary hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center"
+                      className="h-7 w-7 rounded text-fg-muted hover:text-fg-primary hover:bg-bg-raised disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center"
                       title="Move up"
                     >
                       <ChevronUp className="h-3.5 w-3.5" />
@@ -338,7 +338,7 @@ export function PipelineSettingsModal({
                       type="button"
                       onClick={() => moveStage(i, "down")}
                       disabled={i === stages.length - 1}
-                      className="h-7 w-7 rounded text-fg-muted hover:text-fg-primary hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center"
+                      className="h-7 w-7 rounded text-fg-muted hover:text-fg-primary hover:bg-bg-raised disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center"
                       title="Move down"
                     >
                       <ChevronDown className="h-3.5 w-3.5" />
@@ -395,7 +395,7 @@ export function PipelineSettingsModal({
                       setFilterFieldId(e.target.value);
                       setFilterFieldValue("");
                     }}
-                    className="w-full h-8 bg-white border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
+                    className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
                   >
                     <option value="">Choose field…</option>
                     {dropdownFields.map((d) => (
@@ -414,7 +414,7 @@ export function PipelineSettingsModal({
                     value={filterFieldValue}
                     onChange={(e) => setFilterFieldValue(e.target.value)}
                     disabled={!filterFieldId}
-                    className="w-full h-8 bg-white border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none disabled:opacity-50"
+                    className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none disabled:opacity-50"
                   >
                     <option value="">Choose value…</option>
                     {filterOptions.map((o) => (
@@ -485,7 +485,7 @@ export function PipelineSettingsModal({
             variant="secondary"
             type="button"
             onClick={onClose}
-            className="border border-line-default bg-white hover:bg-bg-muted text-fg-primary font-semibold text-[12px] h-9 px-3.5 rounded-md shadow-none"
+            className="border border-line-default bg-bg-raised hover:bg-bg-muted text-fg-primary font-semibold text-[12px] h-9 px-3.5 rounded-md shadow-none"
           >
             Cancel
           </Button>

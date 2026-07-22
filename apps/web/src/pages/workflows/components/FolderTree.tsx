@@ -162,7 +162,7 @@ export function FolderTree({
       </div>
 
       {/* Footer hint — always shown, quick reminder of how moves work */}
-      <div className="border-t border-line-subtle px-3 py-2 shrink-0 bg-white">
+      <div className="border-t border-line-subtle px-3 py-2 shrink-0 bg-bg-raised">
         <p className="text-[10px] text-fg-muted leading-relaxed">
           Use the <b className="text-fg-primary">⋯</b> on any workflow or folder to <b className="text-fg-primary">move</b> it into another folder.
         </p>
@@ -379,7 +379,7 @@ function FolderKebab({
           <div
             ref={menuRef}
             style={{ position: "fixed", top: pos.top, left: pos.left, width: 200, zIndex: 1000 }}
-            className="rounded-lg border border-line-default bg-white shadow-pop py-1"
+            className="rounded-lg border border-line-default bg-bg-raised shadow-pop py-1"
           >
             <MenuItem icon={Plus} label="New sub-folder" onClick={() => { setOpen(false); onCreateChild(); }} />
             <MenuItem icon={Pencil} label="Rename" onClick={() => { setOpen(false); onRename(); }} />

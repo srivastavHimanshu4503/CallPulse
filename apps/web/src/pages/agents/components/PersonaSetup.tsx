@@ -74,7 +74,7 @@ export function PersonaSetup({
               onChange={(e) => setName(e.target.value)}
               error={errors.name}
               disabled={disabled}
-              className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 px-3 w-full shadow-none"
+              className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] h-10 px-3 w-full shadow-none"
             />
           </Field>
           <Field label="Role / purpose" required error={errors.role}>
@@ -85,7 +85,7 @@ export function PersonaSetup({
               onChange={(e) => setRole(e.target.value)}
               error={errors.role}
               disabled={disabled}
-              className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 px-3 w-full shadow-none"
+              className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] h-10 px-3 w-full shadow-none"
             />
           </Field>
         </div>
@@ -93,12 +93,12 @@ export function PersonaSetup({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Primary language" required>
             <div className="relative">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999] pointer-events-none" />
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-placeholder pointer-events-none" />
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
                 disabled={disabled}
-                className="w-full h-10 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] pl-9 pr-9 focus:outline-none appearance-none"
+                className="w-full h-10 bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary rounded-[6px] pl-9 pr-9 focus:outline-none appearance-none"
               >
                 {LANGUAGES.map((l) => (
                   <option key={l} value={l}>
@@ -106,12 +106,12 @@ export function PersonaSetup({
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999] pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-placeholder pointer-events-none" />
             </div>
           </Field>
 
           <Field label="Tone">
-            <div className="grid grid-cols-3 gap-1.5 p-1 bg-[#F7F7F7] rounded-[6px] border border-[#E5E5E5]">
+            <div className="grid grid-cols-3 gap-1.5 p-1 bg-surface rounded-[6px] border border-border">
               {TONES.map((t) => {
                 const Icon = t.icon;
                 const selected = tone === t.value;
@@ -124,8 +124,8 @@ export function PersonaSetup({
                     title={t.hint}
                     className={`flex items-center justify-center gap-1.5 h-8 rounded-[4px] text-xs font-semibold transition-all ${
                       selected
-                        ? "bg-white text-[#2563EB] shadow-sm ring-1 ring-[#2563EB]/15"
-                        : "text-[#666666] hover:text-[#111111]"
+                        ? "bg-bg-raised text-brand-600 shadow-sm ring-1 ring-brand-500/15"
+                        : "text-text-secondary hover:text-text-primary"
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
@@ -144,7 +144,7 @@ export function PersonaSetup({
                 value={modelName}
                 onChange={(e) => setModelName(e.target.value)}
                 disabled={disabled}
-                className="w-full h-10 bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] pl-3 pr-9 focus:outline-none appearance-none"
+                className="w-full h-10 bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary rounded-[6px] pl-3 pr-9 focus:outline-none appearance-none"
               >
                 {MODELS.map((m) => (
                   <option key={m.value} value={m.value}>
@@ -152,7 +152,7 @@ export function PersonaSetup({
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999] pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-placeholder pointer-events-none" />
             </div>
           </Field>
         </div>
@@ -175,7 +175,7 @@ export function PersonaSetup({
             disabled={disabled}
             placeholder="Namaste! Main aapki kaise help kar sakti hoon?"
             rows={3}
-            className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
+            className="w-full bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
           />
         </Field>
 
@@ -191,7 +191,7 @@ export function PersonaSetup({
             disabled={disabled}
             placeholder="I'll connect you with our team for this. One moment please."
             rows={3}
-            className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
+            className="w-full bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
           />
         </Field>
       </SectionCard>
@@ -209,11 +209,11 @@ interface SectionCardProps {
 
 function SectionCard({ title, description, children }: SectionCardProps): React.JSX.Element {
   return (
-    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 space-y-4">
+    <section className="bg-bg-raised border border-border rounded-[8px] p-5 sm:p-6 space-y-4">
       <header>
-        <h3 className="text-sm font-semibold text-[#111111]">{title}</h3>
+        <h3 className="text-sm font-semibold text-text-primary">{title}</h3>
         {description && (
-          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">{description}</p>
+          <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">{description}</p>
         )}
       </header>
       <div className="space-y-4">{children}</div>
@@ -234,14 +234,14 @@ function Field({ label, required, hint, error, counter, children }: FieldProps):
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
-        <label className="text-[12px] font-semibold text-[#111111]">
+        <label className="text-[12px] font-semibold text-text-primary">
           {label}
-          {required && <span className="text-[#DC2626] ml-0.5">*</span>}
+          {required && <span className="text-negative-500 ml-0.5">*</span>}
         </label>
         {counter && (
           <span
             className={`text-[10px] font-medium tabular-nums ${
-              counter.current >= counter.max ? "text-[#DC2626]" : "text-[#999999]"
+              counter.current >= counter.max ? "text-negative-500" : "text-text-placeholder"
             }`}
           >
             {counter.current}/{counter.max}
@@ -250,7 +250,7 @@ function Field({ label, required, hint, error, counter, children }: FieldProps):
       </div>
       {children}
       {hint && !error && (
-        <p className="text-[11px] text-[#999999] mt-1.5 leading-relaxed flex items-start gap-1">
+        <p className="text-[11px] text-text-placeholder mt-1.5 leading-relaxed flex items-start gap-1">
           <Info className="h-3 w-3 mt-0.5 shrink-0" />
           <span>{hint}</span>
         </p>

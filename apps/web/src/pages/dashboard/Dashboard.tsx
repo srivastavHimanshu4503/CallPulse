@@ -96,8 +96,8 @@ const OUTCOME_STYLES: Record<string, string> = {
 const LANG_STYLES: Record<string, string> = {
   Hindi:    "bg-orange-100 text-orange-700",
   Tamil:    "bg-emerald-100 text-emerald-700",
-  Gujarati: "bg-pink-100 text-pink-700",
-  Marathi:  "bg-violet-100 text-violet-700",
+  Gujarati: "bg-rose-100 text-rose-700",
+  Marathi:  "bg-indigo-100 text-indigo-700",
   English:  "bg-brand-50 text-brand-600",
   Bengali:  "bg-rose-100 text-rose-700",
 };
@@ -277,7 +277,7 @@ export function Dashboard(): React.JSX.Element {
           <button
             type="button"
             onClick={() => navigate("/crm")}
-            className="inline-flex items-center gap-2 h-9 px-3 rounded-lg border border-line-default bg-white hover:bg-bg-muted text-fg-primary text-[12.5px] font-semibold transition-all"
+            className="inline-flex items-center gap-2 h-9 px-3 rounded-lg border border-line-default bg-bg-raised hover:bg-bg-muted text-fg-primary text-[12.5px] font-semibold transition-all"
           >
             <Users className="h-3.5 w-3.5" />
             Open CRM
@@ -450,7 +450,7 @@ export function Dashboard(): React.JSX.Element {
                 <li key={a.name} className="flex items-center gap-3">
                   <div className="relative">
                     <Avatar name={a.name} colorClass={a.color} size={34} />
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-white border border-line-default text-[9px] font-bold text-fg-secondary flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-bg-raised border border-line-default text-[9px] font-bold text-fg-secondary flex items-center justify-center">
                       {i + 1}
                     </span>
                   </div>

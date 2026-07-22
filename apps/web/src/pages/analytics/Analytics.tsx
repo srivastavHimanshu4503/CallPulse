@@ -231,9 +231,9 @@ const AgentFilter: React.FC<{
         onChange={(e) => onChange(e.target.value)}
         className="appearance-none pl-9 pr-8 h-9 rounded-lg border text-[12.5px] font-semibold cursor-pointer focus:outline-none"
         style={{
-          backgroundColor: "#FFFFFF",
-          borderColor: "#E5E7EB",
-          color: "#0F172A",
+          backgroundColor: "rgb(var(--bg-raised))",
+          borderColor: "rgb(var(--line-default))",
+          color: "rgb(var(--fg-primary))",
           boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
         }}
       >
@@ -532,7 +532,7 @@ export function Analytics(): React.JSX.Element {
               {stats.sentiment.map((s: any) => (
                 <div key={s.label} className="flex items-center gap-3">
                   <span className="text-[11px] font-semibold text-fg-secondary w-14">{s.label}</span>
-                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#F1F5F9" }}>
+                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgb(var(--line-subtle))" }}>
                     <div className="h-full rounded-full" style={{ width: `${s.pct}%`, backgroundColor: s.color }} />
                   </div>
                   <span className="text-[11px] font-semibold text-fg-primary tabular-nums w-8 text-right">{s.pct}%</span>

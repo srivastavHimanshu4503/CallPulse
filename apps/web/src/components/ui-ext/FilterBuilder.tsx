@@ -157,7 +157,7 @@ export function FilterBuilder({
         role="dialog"
         aria-modal="true"
         className={cn(
-          "absolute inset-y-0 right-0 w-full sm:w-[480px] bg-white border-l-2 border-line-strong flex flex-col h-full overflow-hidden shadow-pop transform transition-transform duration-220 ease-out will-change-transform",
+          "absolute inset-y-0 right-0 w-full sm:w-[480px] bg-bg-raised border-l-2 border-line-strong flex flex-col h-full overflow-hidden shadow-pop transform transition-transform duration-220 ease-out will-change-transform",
           visible ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -177,7 +177,7 @@ export function FilterBuilder({
           <button
             type="button"
             onClick={onClose}
-            className="h-8 w-8 rounded-md hover:bg-white text-fg-secondary hover:text-fg-primary flex items-center justify-center border border-transparent hover:border-line-default transition-colors"
+            className="h-8 w-8 rounded-md hover:bg-bg-raised text-fg-secondary hover:text-fg-primary flex items-center justify-center border border-transparent hover:border-line-default transition-colors"
             aria-label="Close filters"
           >
             <X className="h-4 w-4" />
@@ -200,7 +200,7 @@ export function FilterBuilder({
                   className={cn(
                     "px-3 h-7 rounded text-[11.5px] font-semibold transition-colors",
                     logical === op
-                      ? "bg-white text-brand-600 shadow-card ring-1 ring-brand-500/15"
+                      ? "bg-bg-raised text-brand-600 shadow-card ring-1 ring-brand-500/15"
                       : "text-fg-secondary hover:text-fg-primary",
                   )}
                 >
@@ -264,7 +264,7 @@ export function FilterBuilder({
                         <select
                           value={cond.fieldId}
                           onChange={(e) => swapField(cond.id, e.target.value)}
-                          className="w-full h-8 bg-white border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20"
+                          className="w-full h-8 bg-bg-raised border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20"
                         >
                           {fields.map((f) => (
                             <option key={f.id} value={f.id}>
@@ -275,7 +275,7 @@ export function FilterBuilder({
                         <select
                           value={cond.operator}
                           onChange={(e) => patch(cond.id, { operator: e.target.value as FilterOperator })}
-                          className="w-full h-8 bg-white border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20"
+                          className="w-full h-8 bg-bg-raised border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20"
                         >
                           {ops.map((o) => (
                             <option key={o.value} value={o.value}>
@@ -338,7 +338,7 @@ function ValueInput({
   onChange: (v: string) => void;
 }): React.JSX.Element {
   const baseCls =
-    "w-full h-8 bg-white border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20";
+    "w-full h-8 bg-bg-raised border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20";
   if (field.type === "select") {
     return (
       <select value={value} onChange={(e) => onChange(e.target.value)} className={baseCls}>

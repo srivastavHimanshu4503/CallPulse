@@ -62,7 +62,7 @@ export function PurchaseNumberModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-fg-primary/30 backdrop-blur-[2px]">
-      <div className="bg-white border border-line-default rounded-xl shadow-2xl max-w-lg w-full overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]">
+      <div className="bg-bg-raised border border-line-default rounded-xl shadow-2xl max-w-lg w-full overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]">
         {/* Header */}
         <div className="px-5 py-4 border-b border-line-subtle flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
@@ -122,7 +122,7 @@ export function PurchaseNumberModal({
                   maxLength={3}
                   onChange={(e) => setAreaCode(e.target.value.replace(/\D/g, ""))}
                   onKeyDown={(e) => e.key === "Enter" && setSearch(areaCode)}
-                  className="w-full h-9 bg-white border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md pl-8 pr-3 focus:outline-none"
+                  className="w-full h-9 bg-bg-raised border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md pl-8 pr-3 focus:outline-none"
                 />
               </div>
               <button
@@ -159,7 +159,7 @@ export function PurchaseNumberModal({
                         "rounded-lg border p-3 text-left transition-colors",
                         selected === n.phoneNumber
                           ? "border-brand-500 bg-brand-50 ring-2 ring-brand-500/15"
-                          : "border-line-default bg-white hover:border-brand-500/40",
+                          : "border-line-default bg-bg-raised hover:border-brand-500/40",
                       ].join(" ")}
                     >
                       <div className="text-[13.5px] font-bold text-fg-primary tabular-nums">

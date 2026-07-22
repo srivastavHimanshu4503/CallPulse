@@ -79,7 +79,7 @@ export function DuplicatesModal({ onClose, onMerged }: DuplicatesModalProps): Re
           <Button
             variant="secondary"
             onClick={onClose}
-            className="border border-line-default bg-white text-fg-primary h-9 px-3.5 text-[12px] font-semibold rounded-md shadow-none"
+            className="border border-line-default bg-bg-raised text-fg-primary h-9 px-3.5 text-[12px] font-semibold rounded-md shadow-none"
           >
             Close
           </Button>
@@ -130,7 +130,7 @@ function DuplicateRow({
               className={`text-left rounded-lg border p-3 transition-colors ${
                 isTarget
                   ? "bg-brand-50 border-brand-500 ring-1 ring-brand-500/25"
-                  : "bg-white border-line-default hover:border-line-strong"
+                  : "bg-bg-raised border-line-default hover:border-line-strong"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -147,7 +147,7 @@ function DuplicateRow({
                   </div>
                 </div>
                 {isTarget && (
-                  <span className="text-[9.5px] font-bold uppercase tracking-wider text-brand-600 bg-white border border-brand-500/25 rounded px-1.5 py-0.5">
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider text-brand-600 bg-bg-raised border border-brand-500/25 rounded px-1.5 py-0.5">
                     Keep
                   </span>
                 )}

@@ -1,32 +1,14 @@
+@import "../../../../packages/config/theme.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --primary: 99 102 241; /* #6366F1 HSL coordinates roughly in RGB */
-    
-    /* Light Mode */
-    --background: 0 0% 100%; /* #FFFFFF */
-    --surface: 210 20% 98%; /* #F9FAFB */
-    --border: 220 13% 91%; /* #E5E7EB */
-    --text: 224 71% 4%; /* #111827 */
-    --muted: 220 9% 46%; /* #6B7280 */
-  }
-
-  .dark {
-    /* Dark Mode (Default) */
-    --background: 0 0% 6%; /* #0F0F0F */
-    --surface: 0 0% 10%; /* #1A1A1A */
-    --border: 0 0% 16%; /* #2A2A2A */
-    --text: 210 20% 98%; /* #F9FAFB */
-    --muted: 220 9% 46%; /* #6B7280 */
-  }
-}
-
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
+  background-color: rgb(var(--bg-canvas));
+  color: rgb(var(--fg-primary));
 }
 
 /* Glassmorphism Surface effect */
@@ -36,23 +18,23 @@ body {
   border: 1px solid rgba(42, 42, 42, 0.5);
 }
 
-/* Custom premium scrollbar - clean light theme minimal style */
+/* Custom premium scrollbar - theme-aware minimal style */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAFAFA;
+  background: rgb(var(--bg-subtle));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E5E5E5;
+  background: rgb(var(--line-default));
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2563EB;
+  background: rgb(var(--brand-500));
 }
 
 /* Hide scrollbar utility - keeps scroll functional */
@@ -65,4 +47,3 @@ body {
   height: 0;
   display: none;
 }
-

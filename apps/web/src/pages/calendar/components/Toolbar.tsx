@@ -24,11 +24,11 @@ export function Toolbar({ label, view, onViewChange, onNavigate, onToday }: Tool
         <button
           type="button"
           onClick={onToday}
-          className="h-8 px-3 text-[12px] font-semibold text-fg-secondary bg-white border border-line-default rounded-lg hover:bg-bg-subtle hover:text-fg-primary transition-colors"
+          className="h-8 px-3 text-[12px] font-semibold text-fg-secondary bg-bg-raised border border-line-default rounded-lg hover:bg-bg-subtle hover:text-fg-primary transition-colors"
         >
           Today
         </button>
-        <div className="inline-flex items-center rounded-lg border border-line-default bg-white overflow-hidden">
+        <div className="inline-flex items-center rounded-lg border border-line-default bg-bg-raised overflow-hidden">
           <button
             type="button"
             onClick={() => onNavigate(-1)}

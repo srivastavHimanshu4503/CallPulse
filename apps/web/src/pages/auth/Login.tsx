@@ -5,7 +5,7 @@ import { useAuthStore } from "../../stores/auth.store.js";
 import { AuthLayout } from "../../components/auth/AuthLayout.js";
 
 const inputClass =
-  "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-11 px-3.5 w-full transition-all";
+  "bg-bg-raised border-border focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-text-primary placeholder-text-placeholder rounded-[10px] h-11 px-3.5 w-full transition-all";
 
 const primaryButton =
   "w-full h-11 text-white font-bold text-[14px] rounded-[6px] flex items-center justify-center transition-colors bg-brand-500 hover:bg-brand-600 shadow-sm disabled:opacity-70";
@@ -68,10 +68,10 @@ export function Login(): React.JSX.Element {
             <span className="h-1 w-1 rounded-full bg-brand-600" />
             Welcome back
           </span>
-          <h1 className="text-[30px] leading-tight font-bold tracking-tight text-[#111111]">
+          <h1 className="text-[30px] leading-tight font-bold tracking-tight text-text-primary">
             Sign in to your workspace
           </h1>
-          <p className="text-[14px] text-[#666666] mt-2">
+          <p className="text-[14px] text-text-secondary mt-2">
             Log in to manage your AI receptionist, calls, and leads.
           </p>
         </div>
@@ -88,7 +88,7 @@ export function Login(): React.JSX.Element {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Email address</label>
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Email address</label>
             <Input
               type="email" placeholder="name@company.com" value={email}
               onChange={(e) => { setEmail(e.target.value); if (emailError) validateEmail(e.target.value); }}
@@ -100,7 +100,7 @@ export function Login(): React.JSX.Element {
 
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-[13px] font-semibold text-[#111111]">Password</label>
+              <label className="block text-[13px] font-semibold text-text-primary">Password</label>
               <Link to="/forgot-password" className="text-[12.5px] text-brand-600 hover:text-brand-700 font-semibold">
                 Forgot password?
               </Link>
@@ -116,7 +116,7 @@ export function Login(): React.JSX.Element {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666] hover:text-[#111111] text-[11.5px] font-semibold focus:outline-none uppercase tracking-wider"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary text-[11.5px] font-semibold focus:outline-none uppercase tracking-wider"
                 tabIndex={-1}
               >
                 {showPassword ? "Hide" : "Show"}
@@ -136,9 +136,9 @@ export function Login(): React.JSX.Element {
           </Button>
         </form>
 
-        <div className="mt-8 text-center text-[13.5px] text-[#666666]">
+        <div className="mt-8 text-center text-[13.5px] text-text-secondary">
           New to DeskBuddy?{" "}
-          <Link to="/register" className="text-[#111111] font-bold hover:text-brand-600 transition-colors">
+          <Link to="/register" className="text-text-primary font-bold hover:text-brand-600 transition-colors">
             Create a business account
           </Link>
         </div>

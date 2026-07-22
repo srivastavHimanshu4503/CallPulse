@@ -78,7 +78,7 @@ export function Tabs<T extends string>({
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-semibold transition-all disabled:opacity-40",
               isActive
-                ? "bg-white text-blue-600 shadow-card ring-1 ring-blue-500/20"
+                ? "bg-bg-raised text-blue-600 shadow-card ring-1 ring-blue-500/20"
                 : "text-fg-secondary hover:text-fg-primary",
             )}
           >
@@ -88,7 +88,7 @@ export function Tabs<T extends string>({
               <span
                 className={cn(
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-0.5 tabular-nums",
-                  isActive ? "bg-blue-50 text-blue-700 ring-1 ring-blue-500/25" : "bg-white text-fg-muted border border-line-default",
+                  isActive ? "bg-blue-50 text-blue-700 ring-1 ring-blue-500/25" : "bg-bg-raised text-fg-muted border border-line-default",
                 )}
               >
                 {t.count}

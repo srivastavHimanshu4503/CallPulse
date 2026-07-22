@@ -698,7 +698,7 @@ export function Settings(): React.JSX.Element {
                     style={
                       isActive
                         ? { backgroundColor: "#2563EB", color: "#FFFFFF", boxShadow: "0 2px 4px rgba(37,99,235,0.35)" }
-                        : { backgroundColor: "transparent", color: "#0F172A" }
+                        : { backgroundColor: "transparent", color: "rgb(var(--fg-primary))" }
                     }
                   >
                     <n.icon className="h-4 w-4 shrink-0" />
@@ -706,7 +706,7 @@ export function Settings(): React.JSX.Element {
                       <div className="text-[12.5px] font-semibold leading-tight">{n.label}</div>
                       <div
                         className="text-[10px] truncate mt-0.5"
-                        style={isActive ? { color: "rgba(255,255,255,0.85)" } : { color: "#64748B" }}
+                        style={isActive ? { color: "rgba(255,255,255,0.85)" } : { color: "rgb(var(--slate-500))" }}
                       >
                         {n.hint}
                       </div>

@@ -352,7 +352,7 @@ export function WorkflowSetup({
             type="button"
             onClick={handleAddIntakeScenario}
             disabled={disabled}
-            className="w-full text-[#2563EB] hover:text-[#1D4ED8] text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-[#EFF6FF]/60 border border-dashed border-[#2563EB]/30 rounded-[8px] py-2.5 hover:bg-[#EFF6FF] transition-colors"
+            className="w-full text-brand-600 hover:text-brand-600 text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-brand-50/60 border border-dashed border-brand-500/30 rounded-[8px] py-2.5 hover:bg-brand-50 transition-colors"
           >
             <Plus className="h-3.5 w-3.5" /> Add intake scenario
           </button>
@@ -384,7 +384,7 @@ export function WorkflowSetup({
             type="button"
             onClick={handleAddSmsScenario}
             disabled={disabled}
-            className="w-full text-[#2563EB] hover:text-[#1D4ED8] text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-[#EFF6FF]/60 border border-dashed border-[#2563EB]/30 rounded-[8px] py-2.5 hover:bg-[#EFF6FF] transition-colors"
+            className="w-full text-brand-600 hover:text-brand-600 text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-brand-50/60 border border-dashed border-brand-500/30 rounded-[8px] py-2.5 hover:bg-brand-50 transition-colors"
           >
             <Plus className="h-3.5 w-3.5" /> Add SMS scenario
           </button>
@@ -417,7 +417,7 @@ export function WorkflowSetup({
             type="button"
             onClick={handleAddApiScenario}
             disabled={disabled}
-            className="w-full text-[#2563EB] hover:text-[#1D4ED8] text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-[#EFF6FF]/60 border border-dashed border-[#2563EB]/30 rounded-[8px] py-2.5 hover:bg-[#EFF6FF] transition-colors"
+            className="w-full text-brand-600 hover:text-brand-600 text-xs font-semibold flex items-center justify-center gap-1.5 focus:outline-none bg-brand-50/60 border border-dashed border-brand-500/30 rounded-[8px] py-2.5 hover:bg-brand-50 transition-colors"
           >
             <Plus className="h-3.5 w-3.5" /> Add API scenario
           </button>
@@ -436,9 +436,9 @@ export function WorkflowSetup({
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
               When to transfer?
-              <span className="text-[#DC2626] ml-0.5">*</span>
+              <span className="text-negative-500 ml-0.5">*</span>
             </label>
             <input
               type="text"
@@ -446,11 +446,11 @@ export function WorkflowSetup({
               onChange={(e) => setCallTransferCondition(e.target.value)}
               placeholder="e.g. When the caller asks for a human, or is upset"
               disabled={disabled}
-              className="w-full h-10 px-3 py-2 text-[13px] text-[#111111] placeholder:text-[#999999] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+              className="w-full h-10 px-3 py-2 text-[13px] text-text-primary placeholder:text-text-placeholder bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">Transfer style</label>
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">Transfer style</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {([
                 { value: "warm", title: "Warm transfer", desc: "Agent announces the caller, stays on until your team picks up." },
@@ -463,12 +463,12 @@ export function WorkflowSetup({
                   disabled={disabled}
                   className={`text-left p-3 rounded-[8px] border transition-colors ${
                     callTransferStyle === opt.value
-                      ? "border-[#2563EB] bg-[#EFF6FF]/50 ring-1 ring-[#2563EB]/20"
-                      : "border-[#E5E5E5] bg-white hover:border-[#2563EB]/40"
+                      ? "border-brand-500 bg-brand-50/50 ring-1 ring-brand-500/20"
+                      : "border-border bg-bg-raised hover:border-brand-500/40"
                   }`}
                 >
-                  <div className="text-[12px] font-semibold text-[#111111]">{opt.title}</div>
-                  <div className="text-[11px] text-[#666666] mt-0.5 leading-snug">{opt.desc}</div>
+                  <div className="text-[12px] font-semibold text-text-primary">{opt.title}</div>
+                  <div className="text-[11px] text-text-secondary mt-0.5 leading-snug">{opt.desc}</div>
                 </button>
               ))}
             </div>
@@ -493,38 +493,38 @@ export function WorkflowSetup({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">Ring for</label>
+              <label className="block text-[12px] font-semibold text-text-primary mb-1.5">Ring for</label>
               <select
                 value={callTransferTimeoutSec}
                 onChange={(e) => setCallTransferTimeoutSec(Number(e.target.value))}
                 disabled={disabled}
-                className="w-full h-10 px-3 text-[13px] text-[#111111] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+                className="w-full h-10 px-3 text-[13px] text-text-primary bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
               >
                 <option value={15}>15 seconds</option>
                 <option value={25}>25 seconds</option>
                 <option value={40}>40 seconds</option>
                 <option value={60}>60 seconds</option>
               </select>
-              <p className="text-[11px] text-[#999999] mt-1">Per number — fallback rings after this.</p>
+              <p className="text-[11px] text-text-placeholder mt-1">Per number — fallback rings after this.</p>
             </div>
             <div>
-              <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">If no one answers</label>
+              <label className="block text-[12px] font-semibold text-text-primary mb-1.5">If no one answers</label>
               <select
                 value={callTransferNoAnswerAction}
                 onChange={(e) => setCallTransferNoAnswerAction(e.target.value as "take_message" | "offer_callback" | "end_politely")}
                 disabled={disabled}
-                className="w-full h-10 px-3 text-[13px] text-[#111111] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+                className="w-full h-10 px-3 text-[13px] text-text-primary bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
               >
                 <option value="take_message">AI takes a message &amp; saves it as a lead</option>
                 <option value="offer_callback">AI apologises &amp; promises a callback</option>
                 <option value="end_politely">AI ends the call politely</option>
               </select>
-              <p className="text-[11px] text-[#999999] mt-1">The caller is never left hanging.</p>
+              <p className="text-[11px] text-text-placeholder mt-1">The caller is never left hanging.</p>
             </div>
           </div>
 
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
               What should the agent say before transferring?
             </label>
             <input
@@ -533,7 +533,7 @@ export function WorkflowSetup({
               onChange={(e) => setCallTransferMessage(e.target.value)}
               placeholder="Main aapko humari team se connect kar rahi hoon, ek moment..."
               disabled={disabled}
-              className="w-full h-10 px-3 py-2 text-[13px] text-[#111111] placeholder:text-[#999999] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+              className="w-full h-10 px-3 py-2 text-[13px] text-text-primary placeholder:text-text-placeholder bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
             />
           </div>
         </div>
@@ -551,9 +551,9 @@ export function WorkflowSetup({
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
               When to offer a booking?
-              <span className="text-[#DC2626] ml-0.5">*</span>
+              <span className="text-negative-500 ml-0.5">*</span>
             </label>
             <input
               type="text"
@@ -561,18 +561,18 @@ export function WorkflowSetup({
               onChange={(e) => setBookingField("triggerCondition", e.target.value)}
               placeholder="e.g. When the caller wants to book an appointment or site visit"
               disabled={disabled}
-              className="w-full h-10 px-3 py-2 text-[13px] text-[#111111] placeholder:text-[#999999] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+              className="w-full h-10 px-3 py-2 text-[13px] text-text-primary placeholder:text-text-placeholder bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">Calendar provider</label>
+              <label className="block text-[12px] font-semibold text-text-primary mb-1.5">Calendar provider</label>
               <select
                 value={booking.provider}
                 onChange={(e) => setBookingField("provider", e.target.value as AgentBookingConfig["provider"])}
                 disabled={disabled}
-                className="w-full h-10 px-3 text-[13px] text-[#111111] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+                className="w-full h-10 px-3 text-[13px] text-text-primary bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
               >
                 <option value="google">Google Calendar</option>
                 <option value="calcom">Cal.com</option>
@@ -580,12 +580,12 @@ export function WorkflowSetup({
               </select>
             </div>
             <div>
-              <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">Meeting duration</label>
+              <label className="block text-[12px] font-semibold text-text-primary mb-1.5">Meeting duration</label>
               <select
                 value={booking.meetingDurationMin}
                 onChange={(e) => setBookingField("meetingDurationMin", Number(e.target.value))}
                 disabled={disabled}
-                className="w-full h-10 px-3 text-[13px] text-[#111111] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+                className="w-full h-10 px-3 text-[13px] text-text-primary bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
               >
                 <option value={15}>15 minutes</option>
                 <option value={30}>30 minutes</option>
@@ -596,9 +596,9 @@ export function WorkflowSetup({
           </div>
 
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
               {booking.provider === "google" ? "Calendar ID or booking-page link" : booking.provider === "calcom" ? "Cal.com event link" : "Booking link"}
-              <span className="text-[#DC2626] ml-0.5">*</span>
+              <span className="text-negative-500 ml-0.5">*</span>
             </label>
             <input
               type="text"
@@ -606,25 +606,25 @@ export function WorkflowSetup({
               onChange={(e) => setBookingField("calendarLink", e.target.value)}
               placeholder={booking.provider === "calcom" ? "https://cal.com/yourname/30min" : booking.provider === "google" ? "yourbusiness@gmail.com or booking-page link" : "https://..."}
               disabled={disabled}
-              className="w-full h-10 px-3 py-2 text-[13px] text-[#111111] placeholder:text-[#999999] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors font-mono text-[12px]"
+              className="w-full h-10 px-3 py-2 text-[13px] text-text-primary placeholder:text-text-placeholder bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors font-mono text-[12px]"
             />
           </div>
 
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">Booking hours</label>
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">Booking hours</label>
             <input
               type="text"
               value={booking.workingHoursNote}
               onChange={(e) => setBookingField("workingHoursNote", e.target.value)}
               placeholder="Mon–Sat, 10:00 AM – 7:00 PM IST"
               disabled={disabled}
-              className="w-full h-10 px-3 py-2 text-[13px] text-[#111111] placeholder:text-[#999999] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+              className="w-full h-10 px-3 py-2 text-[13px] text-text-primary placeholder:text-text-placeholder bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
             />
-            <p className="text-[11px] text-[#999999] mt-1">The agent will only offer slots inside these hours.</p>
+            <p className="text-[11px] text-text-placeholder mt-1">The agent will only offer slots inside these hours.</p>
           </div>
 
           <div>
-            <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
               Confirmation message
             </label>
             <input
@@ -633,23 +633,23 @@ export function WorkflowSetup({
               onChange={(e) => setBookingField("confirmationMessage", e.target.value)}
               placeholder="Aapki booking confirm ho gayi hai! Confirmation message mil jayega."
               disabled={disabled}
-              className="w-full h-10 px-3 py-2 text-[13px] text-[#111111] placeholder:text-[#999999] bg-white border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB] transition-colors"
+              className="w-full h-10 px-3 py-2 text-[13px] text-text-primary placeholder:text-text-placeholder bg-bg-raised border border-border rounded-[6px] focus:outline-none focus:border-brand-500 transition-colors"
             />
           </div>
 
-          <label className="flex items-start gap-2.5 rounded-[8px] border border-[#E5E5E5] bg-white p-3 cursor-pointer hover:border-[#2563EB]/40 transition-colors">
+          <label className="flex items-start gap-2.5 rounded-[8px] border border-border bg-bg-raised p-3 cursor-pointer hover:border-brand-500/40 transition-colors">
             <input
               type="checkbox"
               checked={booking.askEmail}
               onChange={(e) => setBookingField("askEmail", e.target.checked)}
               disabled={disabled}
-              className="mt-0.5 h-4 w-4 rounded border-[#E5E5E5] accent-[#2563EB]"
+              className="mt-0.5 h-4 w-4 rounded border-border accent-[#2563EB]"
             />
             <span className="min-w-0">
-              <span className="block text-[12px] font-semibold text-[#111111]">
+              <span className="block text-[12px] font-semibold text-text-primary">
                 Ask the caller for their email
               </span>
-              <span className="block text-[11px] text-[#666666] mt-0.5 leading-snug">
+              <span className="block text-[11px] text-text-secondary mt-0.5 leading-snug">
                 The agent will ask for an email so the calendar invite lands in their inbox.
                 Either way, the caller always gets an SMS confirmation on their phone number.
               </span>
@@ -683,16 +683,16 @@ function PhoneInput({ label, value, onChange, required, disabled, hint }: PhoneI
 
   return (
     <div>
-      <label className="block text-[12px] font-semibold text-[#111111] mb-1.5">
+      <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
         {label}
-        {required && <span className="text-[#DC2626] ml-0.5">*</span>}
+        {required && <span className="text-negative-500 ml-0.5">*</span>}
       </label>
       <div className="flex gap-2">
         <select
           value={code}
           onChange={(e) => update(e.target.value, local)}
           disabled={disabled}
-          className="h-10 w-[96px] shrink-0 px-2 text-[13px] text-[#111111] bg-[#F7F7F7] border border-[#E5E5E5] rounded-[6px] focus:outline-none focus:border-[#2563EB]"
+          className="h-10 w-[96px] shrink-0 px-2 text-[13px] text-text-primary bg-surface border border-border rounded-[6px] focus:outline-none focus:border-brand-500"
         >
           {COUNTRY_CODES.map((c) => (
             <option key={c.code} value={c.code}>{c.label}</option>
@@ -705,15 +705,15 @@ function PhoneInput({ label, value, onChange, required, disabled, hint }: PhoneI
           onChange={(e) => update(code, e.target.value.replace(/\D/g, "").slice(0, 12))}
           placeholder="9876543210"
           disabled={disabled}
-          className={`w-full h-10 px-3 py-2 text-[13px] text-[#111111] placeholder:text-[#999999] bg-white border rounded-[6px] focus:outline-none transition-colors tabular-nums ${
-            local && !isValid ? "border-[#DC2626] focus:border-[#DC2626]" : "border-[#E5E5E5] focus:border-[#2563EB]"
+          className={`w-full h-10 px-3 py-2 text-[13px] text-text-primary placeholder:text-text-placeholder bg-bg-raised border rounded-[6px] focus:outline-none transition-colors tabular-nums ${
+            local && !isValid ? "border-negative-500 focus:border-negative-500" : "border-border focus:border-brand-500"
           }`}
         />
       </div>
       {local && !isValid ? (
-        <p className="text-[11px] text-[#DC2626] mt-1 font-medium">Enter 6–12 digits (numbers only).</p>
+        <p className="text-[11px] text-negative-500 mt-1 font-medium">Enter 6–12 digits (numbers only).</p>
       ) : (
-        <p className="text-[11px] text-[#999999] mt-1">{hint ?? "Digits only — country code is added automatically."}</p>
+        <p className="text-[11px] text-text-placeholder mt-1">{hint ?? "Digits only — country code is added automatically."}</p>
       )}
     </div>
   );
@@ -748,12 +748,12 @@ function FeatureBlock({
 
   return (
     <section
-      className={`bg-white border rounded-[8px] transition-colors ${
-        enabled ? "border-[#2563EB]/25" : "border-[#E5E5E5]"
+      className={`bg-bg-raised border rounded-[8px] transition-colors ${
+        enabled ? "border-brand-500/25" : "border-border"
       }`}
     >
       <header 
-        className={`p-5 flex items-start gap-3 select-none ${enabled ? "cursor-pointer hover:bg-[#FAFAFA]/50" : ""}`}
+        className={`p-5 flex items-start gap-3 select-none ${enabled ? "cursor-pointer hover:bg-bg-subtle/50" : ""}`}
         onClick={() => {
           if (enabled && !disabled) {
             setIsExpanded(!isExpanded);
@@ -763,15 +763,15 @@ function FeatureBlock({
         <div
           className={`h-10 w-10 rounded-[8px] flex items-center justify-center shrink-0 transition-colors ${
             enabled
-              ? "bg-[#2563EB] text-white"
-              : "bg-[#F7F7F7] text-[#666666] border border-[#E5E5E5]"
+              ? "bg-primary text-white"
+              : "bg-surface text-text-secondary border border-border"
           }`}
         >
           <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-sm font-semibold text-[#111111]">{title}</h3>
+            <h3 className="text-sm font-semibold text-text-primary">{title}</h3>
             {gated && (
               <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-amber-50 border border-amber-200 text-amber-700 px-2 py-0.5 rounded-full">
                 <Lock className="h-2.5 w-2.5" />
@@ -779,12 +779,12 @@ function FeatureBlock({
               </span>
             )}
             {!gated && countBadge && (
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-50 border border-brand-500/15 text-brand-600 px-2 py-0.5 rounded-full">
                 {countBadge}
               </span>
             )}
           </div>
-          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed pr-2">{description}</p>
+          <p className="text-[12px] text-text-secondary mt-1 leading-relaxed pr-2">{description}</p>
         </div>
         
         <div className="flex items-center gap-4 shrink-0 mt-0.5">
@@ -809,9 +809,9 @@ function FeatureBlock({
               disabled={disabled || gated}
               className="sr-only peer"
             />
-            <span className="w-[36px] h-[20px] bg-[#E5E5E5] rounded-full peer-checked:bg-[#2563EB] transition-colors" />
+            <span className="w-[36px] h-[20px] bg-border rounded-full peer-checked:bg-primary transition-colors" />
             <span
-              className={`absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-[#E5E5E5] rounded-full shadow-sm transition-transform ${
+              className={`absolute top-[2px] left-[2px] h-4 w-4 bg-white border border-border rounded-full shadow-sm transition-transform ${
                 !gated && enabled ? "translate-x-4" : "translate-x-0"
               }`}
             />
@@ -819,14 +819,14 @@ function FeatureBlock({
           
           {enabled && (
             <ChevronDown 
-              className={`h-5 w-5 text-[#999999] transition-transform ${isExpanded ? "rotate-180" : ""}`} 
+              className={`h-5 w-5 text-text-placeholder transition-transform ${isExpanded ? "rotate-180" : ""}`} 
             />
           )}
         </div>
       </header>
 
       {enabled && isExpanded && (
-        <div className="border-t border-[#E5E5E5] p-5 bg-[#FAFAFA]/40 rounded-b-[8px] animate-in slide-in-from-top-2 duration-200">
+        <div className="border-t border-border p-5 bg-bg-subtle/40 rounded-b-[8px] animate-in slide-in-from-top-2 duration-200">
           {children}
         </div>
       )}

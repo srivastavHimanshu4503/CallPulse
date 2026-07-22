@@ -88,8 +88,8 @@ const BTN_INLINE: Record<BtnVariant, React.CSSProperties> = {
       "0 1px 2px rgba(15,23,42,0.10), 0 4px 12px -4px rgba(37,99,235,0.45)",
   },
   secondary: {
-    backgroundColor: "#F8FAFC",
-    borderColor: "#E5E7EB",
+    backgroundColor: "rgb(var(--slate-50))",
+    borderColor: "rgb(var(--line-default))",
     boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
   },
   ghost: {},
@@ -135,7 +135,7 @@ export function Segmented<T extends string>({
   return (
     <div
       className="inline-flex items-center gap-1 rounded-lg p-1 border"
-      style={{ backgroundColor: "#F1F5F9", borderColor: "#E5E7EB" }}
+      style={{ backgroundColor: "rgb(var(--line-subtle))", borderColor: "rgb(var(--line-default))" }}
     >
       {options.map((o) => {
         const active = o.value === value;
@@ -152,7 +152,7 @@ export function Segmented<T extends string>({
                     color: "#FFFFFF",
                     boxShadow: "0 1px 2px rgba(37,99,235,0.35), 0 1px 3px rgba(0,0,0,0.08)",
                   }
-                : { backgroundColor: "transparent", color: "#475569" }
+                : { backgroundColor: "transparent", color: "rgb(var(--fg-secondary))" }
             }
           >
             {o.label}
@@ -216,11 +216,11 @@ export const Field: React.FC<{
 
 // Input class shared across pages
 export const inputClass =
-  "w-full h-9 px-3 rounded-lg border border-line-default bg-white text-[12.5px] text-fg-primary placeholder:text-fg-muted focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-all outline-none";
+  "w-full h-9 px-3 rounded-lg border border-line-default bg-bg-raised text-[12.5px] text-fg-primary placeholder:text-fg-muted focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-all outline-none";
 
 // Textarea class
 export const textareaClass =
-  "w-full px-3 py-2 rounded-lg border border-line-default bg-white text-[12.5px] text-fg-primary placeholder:text-fg-muted focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-all outline-none resize-none";
+  "w-full px-3 py-2 rounded-lg border border-line-default bg-bg-raised text-[12.5px] text-fg-primary placeholder:text-fg-muted focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-all outline-none resize-none";
 
 // ─────────────────────────────────────────────────────────────
 // Empty state

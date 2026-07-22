@@ -39,7 +39,7 @@ export function Pagination({
             <select
               value={itemsPerPage}
               onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-              className="h-7 bg-white border border-line-default text-[11.5px] font-semibold text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer"
+              className="h-7 bg-bg-raised border border-line-default text-[11.5px] font-semibold text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer"
             >
               {pageSizes.map((s) => (
                 <option key={s} value={s}>
@@ -60,7 +60,7 @@ export function Pagination({
           type="button"
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="h-7 w-7 rounded-md border border-line-default bg-white text-fg-secondary hover:text-fg-primary hover:bg-bg-muted disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30"
+          className="h-7 w-7 rounded-md border border-line-default bg-bg-raised text-fg-secondary hover:text-fg-primary hover:bg-bg-muted disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30"
           aria-label="Previous page"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -72,7 +72,7 @@ export function Pagination({
           type="button"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage >= totalPages}
-          className="h-7 w-7 rounded-md border border-line-default bg-white text-fg-secondary hover:text-fg-primary hover:bg-bg-muted disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30"
+          className="h-7 w-7 rounded-md border border-line-default bg-bg-raised text-fg-secondary hover:text-fg-primary hover:bg-bg-muted disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30"
           aria-label="Next page"
         >
           <ChevronRight className="h-4 w-4" />

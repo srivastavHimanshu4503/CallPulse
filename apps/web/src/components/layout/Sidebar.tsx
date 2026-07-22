@@ -16,6 +16,8 @@ import {
   CreditCard,
   Code2,
   CalendarDays,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
 import { useUIStore } from "../../stores/ui.store.js";
@@ -48,6 +50,8 @@ export function Sidebar(): React.JSX.Element {
   const user = useAuthStore((state) => state.user);
   const sidebarMinimized = useUIStore((state) => state.sidebarMinimized);
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
+  const theme = useUIStore((state) => state.theme);
+  const toggleTheme = useUIStore((state) => state.toggleTheme);
 
   const entitlements = useEntitlements();
   const [profileOpen, setProfileOpen] = React.useState(false);
@@ -106,7 +110,7 @@ export function Sidebar(): React.JSX.Element {
   return (
     <aside
       className={[
-        "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-line-default bg-white text-fg-primary transition-all duration-200 select-none",
+        "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-line-default bg-bg-raised text-fg-primary transition-all duration-200 select-none",
         sidebarMinimized ? "w-[68px]" : "w-[220px]",
       ].join(" ")}
     >
@@ -146,6 +150,46 @@ export function Sidebar(): React.JSX.Element {
         <div className="space-y-0.5">{NAV.map(renderNavItem)}</div>
       </nav>
 
+      {/* Theme toggle — menu-style row above the credits card */}
+      <div className="px-2.5 pb-2 shrink-0">
+        {sidebarMinimized ? (
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="h-10 w-10 mx-auto flex items-center justify-center rounded-lg text-fg-muted hover:text-fg-primary hover:bg-bg-muted transition-colors"
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
+          >
+            {theme === "dark" ? <Sun className="h-[17px] w-[17px]" /> : <Moon className="h-[17px] w-[17px]" />}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="w-full flex items-center gap-3 px-3 h-9 rounded-lg text-fg-secondary hover:bg-bg-muted hover:text-fg-primary transition-all"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-[17px] w-[17px] shrink-0 text-fg-muted" />
+            ) : (
+              <Moon className="h-[17px] w-[17px] shrink-0 text-fg-muted" />
+            )}
+            <span className="text-[13px] font-medium tracking-tight flex-1 text-left">Dark mode</span>
+            <span
+              className={[
+                "relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors",
+                theme === "dark" ? "bg-brand-500" : "bg-line-strong",
+              ].join(" ")}
+            >
+              <span
+                className={[
+                  "inline-block h-3 w-3 rounded-full bg-white shadow transition-transform",
+                  theme === "dark" ? "translate-x-[14px]" : "translate-x-0.5",
+                ].join(" ")}
+              />
+            </span>
+          </button>
+        )}
+      </div>
+
       {/* Billing / Usage — live plan + credits */}
       <div className="border-t border-line-subtle p-3 shrink-0">
         {(() => {
@@ -159,7 +203,7 @@ export function Sidebar(): React.JSX.Element {
               <button
                 type="button"
                 onClick={goBilling}
-                className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all border border-line-default bg-white text-fg-primary hover:bg-bg-muted"
+                className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all border border-line-default bg-bg-raised text-fg-primary hover:bg-bg-muted"
                 title={`${isPro ? "Pro" : "Free plan"} · ${entitlements.creditBalance} credits`}
               >
                 <Zap className="h-[17px] w-[17px]" />
@@ -168,7 +212,7 @@ export function Sidebar(): React.JSX.Element {
           }
 
           return (
-            <div className={["relative rounded-xl p-3 border", isPro ? "border-emerald-200 bg-emerald-50/50" : "border-line-default bg-white"].join(" ")}>
+            <div className={["relative rounded-xl p-3 border", isPro ? "border-emerald-200 bg-emerald-50/50" : "border-line-default bg-bg-raised"].join(" ")}>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-fg-primary">
                   {isPro ? "Pro" : "Free plan"}
@@ -219,7 +263,7 @@ export function Sidebar(): React.JSX.Element {
                 className={[
                   "w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5",
                   isPro
-                    ? "bg-white border border-line-default text-fg-primary hover:bg-bg-muted"
+                    ? "bg-bg-raised border border-line-default text-fg-primary hover:bg-bg-muted"
                     : "bg-primary text-white hover:opacity-90 shadow-sm",
                 ].join(" ")}
               >
@@ -277,7 +321,7 @@ export function Sidebar(): React.JSX.Element {
             ].join(" ")}
           >
             <div
-              className="rounded-lg border border-line-default bg-white shadow-pop overflow-hidden"
+              className="rounded-lg border border-line-default bg-bg-raised shadow-pop overflow-hidden"
               style={{ minWidth: sidebarMinimized ? "240px" : undefined }}
             >
               <div className="px-3.5 py-3 border-b border-line-subtle flex items-center gap-3">

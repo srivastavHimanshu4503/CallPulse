@@ -99,7 +99,7 @@ export function Calendar(): React.JSX.Element {
 
         <div className="flex-1 min-h-0 flex gap-4">
           {/* ── Calendar pane — full remaining width ── */}
-          <div className="flex-1 min-w-0 rounded-xl border border-line-default bg-white shadow-card overflow-hidden flex flex-col">
+          <div className="flex-1 min-w-0 rounded-xl border border-line-default bg-bg-raised shadow-card overflow-hidden flex flex-col">
             {isLoading ? (
               <div className="flex-1 flex items-center justify-center text-fg-muted text-[13px]">Loading calendar…</div>
             ) : view === "Month" ? (
@@ -125,7 +125,7 @@ export function Calendar(): React.JSX.Element {
           </div>
 
           {/* ── Context panel ── */}
-          <aside className="hidden lg:flex w-[320px] xl:w-[340px] shrink-0 rounded-xl border border-line-default bg-white shadow-card flex-col overflow-hidden">
+          <aside className="hidden lg:flex w-[320px] xl:w-[340px] shrink-0 rounded-xl border border-line-default bg-bg-raised shadow-card flex-col overflow-hidden">
             {selectedBooking ? (
               <BookingDetails
                 key={selectedBooking.id}

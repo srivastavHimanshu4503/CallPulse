@@ -286,7 +286,7 @@ function WorkflowBuilderInner(): React.JSX.Element {
     <PageWrapper noScroll>
       <div className="flex flex-col h-full overflow-hidden font-sans bg-slate-50">
         {/* Top bar */}
-        <div className="h-14 shrink-0 border-b border-line-default bg-white flex items-center px-3 gap-3">
+        <div className="h-14 shrink-0 border-b border-line-default bg-bg-raised flex items-center px-3 gap-3">
           <button
             type="button"
             onClick={() => {
@@ -315,7 +315,7 @@ function WorkflowBuilderInner(): React.JSX.Element {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === "Escape") setRenaming(false);
                 }}
-                className="w-full max-w-md bg-white border border-line-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 text-[14px] font-semibold text-fg-primary rounded-md h-9 px-2.5 focus:outline-none"
+                className="w-full max-w-md bg-bg-raised border border-line-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 text-[14px] font-semibold text-fg-primary rounded-md h-9 px-2.5 focus:outline-none"
               />
             ) : (
               <button

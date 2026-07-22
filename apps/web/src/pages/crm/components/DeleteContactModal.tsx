@@ -31,7 +31,7 @@ export function DeleteContactModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-fg-primary/30 backdrop-blur-[2px]">
-      <div className="bg-white border border-line-default rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-150">
+      <div className="bg-bg-raised border border-line-default rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-150">
         <div className="px-5 py-4 border-b border-line-subtle flex items-center gap-2.5">
           <span className="h-8 w-8 rounded-lg bg-negative-50 text-negative-500 ring-1 ring-negative-500/20 flex items-center justify-center shrink-0">
             <AlertTriangle className="h-4 w-4" />
@@ -72,7 +72,7 @@ export function DeleteContactModal({
           <button
             type="button"
             onClick={onClose}
-            className="h-9 px-3.5 rounded-md border border-line-default bg-white hover:bg-bg-muted text-[12px] font-semibold text-fg-primary transition-colors"
+            className="h-9 px-3.5 rounded-md border border-line-default bg-bg-raised hover:bg-bg-muted text-[12px] font-semibold text-fg-primary transition-colors"
           >
             Cancel
           </button>

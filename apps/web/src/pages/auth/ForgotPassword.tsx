@@ -5,10 +5,10 @@ import { api } from "../../lib/axios.js";
 import { AuthLayout } from "../../components/auth/AuthLayout.js";
 
 const inputClass =
-  "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-11 px-3.5 w-full transition-all";
+  "bg-bg-raised border-border focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-text-primary placeholder-text-placeholder rounded-[10px] h-11 px-3.5 w-full transition-all";
 
 const otpClass =
-  "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-12 text-center tracking-[0.5em] font-mono text-lg w-full transition-all";
+  "bg-bg-raised border-border focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-text-primary placeholder-text-placeholder rounded-[10px] h-12 text-center tracking-[0.5em] font-mono text-lg w-full transition-all";
 
 const goldButton =
   "w-full h-11 text-[#0a0416] font-bold text-[14px] rounded-[10px] flex items-center justify-center transition-all hover:brightness-110 shadow-[0_10px_30px_-10px_rgba(251,191,36,0.55)] disabled:opacity-70";
@@ -81,10 +81,10 @@ export function ForgotPassword(): React.JSX.Element {
             <span className="h-1 w-1 rounded-full bg-orange-600" />
             Account recovery
           </span>
-          <h1 className="text-[28px] leading-tight font-bold tracking-tight text-[#111111]">
+          <h1 className="text-[28px] leading-tight font-bold tracking-tight text-text-primary">
             {isOtpSent ? "Verify & reset" : "Reset your password"}
           </h1>
-          <p className="text-[13.5px] text-[#666666] mt-2">
+          <p className="text-[13.5px] text-text-secondary mt-2">
             {isOtpSent ? "Enter the 6-digit code we sent and choose a new password." : "We'll send a one-time verification code to your email."}
           </p>
         </div>
@@ -116,9 +116,9 @@ export function ForgotPassword(): React.JSX.Element {
               </svg>
               Sandbox OTP
             </div>
-            <p className="mt-1.5 text-[#666666]">
+            <p className="mt-1.5 text-text-secondary">
               For testing, your code is:{" "}
-              <strong className="text-[#111111] font-mono bg-white border border-amber-200 px-2 py-0.5 rounded ml-1">{devOtp}</strong>
+              <strong className="text-text-primary font-mono bg-bg-raised border border-amber-200 px-2 py-0.5 rounded ml-1">{devOtp}</strong>
             </p>
           </div>
         )}
@@ -126,7 +126,7 @@ export function ForgotPassword(): React.JSX.Element {
         {!isOtpSent ? (
           <form onSubmit={handleSendOtp} className="space-y-4">
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Business email address</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Business email address</label>
               <Input type="email" placeholder="name@company.com" value={email}
                 onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(""); }}
                 onBlur={validateEmail} error={emailError} disabled={isLoading} required
@@ -145,11 +145,11 @@ export function ForgotPassword(): React.JSX.Element {
         ) : (
           <form onSubmit={handleResetPassword} className="space-y-4">
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Email address</label>
-              <Input type="email" value={email} disabled className="bg-[#F7F7F7] border-[#E5E5E5] text-[14px] text-[#666666] rounded-[10px] h-11 px-3.5 w-full" />
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Email address</label>
+              <Input type="email" value={email} disabled className="bg-surface border-border text-[14px] text-text-secondary rounded-[10px] h-11 px-3.5 w-full" />
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">6-digit verification code</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">6-digit verification code</label>
               <Input type="text" placeholder="000000" maxLength={6} value={otp}
                 onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); if (otpError) setOtpError(""); }}
                 error={otpError} disabled={isLoading} required
@@ -157,7 +157,7 @@ export function ForgotPassword(): React.JSX.Element {
               />
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">New password</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">New password</label>
               <Input type="password" placeholder="Enter a strong password" value={newPassword}
                 onChange={(e) => { setNewPassword(e.target.value); if (newPasswordError) setNewPasswordError(""); }}
                 error={newPasswordError} disabled={isLoading} required
@@ -175,9 +175,9 @@ export function ForgotPassword(): React.JSX.Element {
           </form>
         )}
 
-        <div className="mt-8 text-center text-[13.5px] text-[#666666]">
+        <div className="mt-8 text-center text-[13.5px] text-text-secondary">
           Remember your password?{" "}
-          <Link to="/login" className="text-[#111111] font-bold hover:text-orange-600 transition-colors">Back to sign in</Link>
+          <Link to="/login" className="text-text-primary font-bold hover:text-orange-600 transition-colors">Back to sign in</Link>
         </div>
       </div>
     </AuthLayout>

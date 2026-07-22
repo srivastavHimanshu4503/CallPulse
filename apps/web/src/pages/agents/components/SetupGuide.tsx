@@ -208,13 +208,13 @@ export function SetupGuide({ tab }: { tab: string }): React.JSX.Element | null {
   if (!content) return null;
 
   return (
-    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 font-sans">
+    <section className="bg-bg-raised border border-border rounded-[8px] p-5 font-sans">
       <div className="flex items-start justify-between gap-3 mb-3">
-        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#2563EB]">
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-600">
           <BookOpen className="h-3.5 w-3.5" />
           {lang === "hi" ? "Setup guide" : "Setup guide"}
         </span>
-        <div className="flex items-center gap-1 p-0.5 bg-[#F7F7F7] rounded-[6px] border border-[#E5E5E5]">
+        <div className="flex items-center gap-1 p-0.5 bg-surface rounded-[6px] border border-border">
           {(["en", "hi"] as GuideLang[]).map((l) => (
             <button
               key={l}
@@ -222,8 +222,8 @@ export function SetupGuide({ tab }: { tab: string }): React.JSX.Element | null {
               onClick={() => pick(l)}
               className={`px-2.5 h-6 text-[11px] font-semibold rounded-[4px] transition-all ${
                 lang === l
-                  ? "bg-white text-[#2563EB] shadow-sm ring-1 ring-[#2563EB]/15"
-                  : "text-[#666666] hover:text-[#111111]"
+                  ? "bg-bg-raised text-brand-600 shadow-sm ring-1 ring-brand-500/15"
+                  : "text-text-secondary hover:text-text-primary"
               }`}
             >
               {l === "en" ? "English" : "हिंदी"}
@@ -232,30 +232,30 @@ export function SetupGuide({ tab }: { tab: string }): React.JSX.Element | null {
         </div>
       </div>
 
-      <h4 className="text-[13px] font-semibold text-[#111111] leading-snug">{content.title}</h4>
-      <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">{content.intro}</p>
+      <h4 className="text-[13px] font-semibold text-text-primary leading-snug">{content.title}</h4>
+      <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">{content.intro}</p>
 
       <ol className="mt-4 space-y-2.5">
         {content.steps.map((step, i) => (
           <li key={i} className="flex items-start gap-2.5">
-            <span className="h-5 w-5 rounded-full bg-[#EFF6FF] text-[#2563EB] text-[10px] font-bold flex items-center justify-center shrink-0 mt-[1px]">
+            <span className="h-5 w-5 rounded-full bg-brand-50 text-brand-600 text-[10px] font-bold flex items-center justify-center shrink-0 mt-[1px]">
               {i + 1}
             </span>
-            <span className="text-[12px] text-[#333333] leading-relaxed">{step}</span>
+            <span className="text-[12px] text-text-primary leading-relaxed">{step}</span>
           </li>
         ))}
       </ol>
 
       {content.tips.length > 0 && (
-        <div className="mt-4 bg-[#FAFAFA] border border-[#E5E5E5] rounded-[8px] p-3">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#111111] mb-2">
-            <Lightbulb className="h-3.5 w-3.5 text-[#D97706]" />
+        <div className="mt-4 bg-bg-subtle border border-border rounded-[8px] p-3">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-text-primary mb-2">
+            <Lightbulb className="h-3.5 w-3.5 text-attention-500" />
             {lang === "hi" ? "काम की tips" : "Tips"}
           </span>
           <ul className="space-y-1.5">
             {content.tips.map((tip, i) => (
-              <li key={i} className="text-[11px] text-[#666666] leading-relaxed flex items-start gap-1.5">
-                <span className="text-[#D97706] mt-[2px] shrink-0">•</span>
+              <li key={i} className="text-[11px] text-text-secondary leading-relaxed flex items-start gap-1.5">
+                <span className="text-attention-500 mt-[2px] shrink-0">•</span>
                 <span>{tip}</span>
               </li>
             ))}

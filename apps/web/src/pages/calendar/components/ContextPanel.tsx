@@ -105,7 +105,7 @@ const combine = (dateStr: string, timeStr: string): Date => {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const FIELD_CLS =
-  "w-full h-9 px-2.5 text-[12.5px] text-fg-primary bg-white border border-line-default rounded-lg focus:outline-none focus:border-brand-500 transition-colors disabled:opacity-60";
+  "w-full h-9 px-2.5 text-[12.5px] text-fg-primary bg-bg-raised border border-line-default rounded-lg focus:outline-none focus:border-brand-500 transition-colors disabled:opacity-60";
 const LABEL_CLS = "block text-[10px] font-bold text-fg-muted uppercase tracking-wider mb-1.5";
 
 export function BookingDetails({
@@ -333,13 +333,13 @@ export function BookingDetails({
             rows={3}
             placeholder="Anything your team should know before this appointment…"
             disabled={saving}
-            className="w-full px-2.5 py-2 text-[12.5px] text-fg-primary bg-white border border-line-default rounded-lg focus:outline-none focus:border-brand-500 transition-colors resize-none leading-relaxed disabled:opacity-60"
+            className="w-full px-2.5 py-2 text-[12.5px] text-fg-primary bg-bg-raised border border-line-default rounded-lg focus:outline-none focus:border-brand-500 transition-colors resize-none leading-relaxed disabled:opacity-60"
           />
         </div>
       </div>
 
       {/* Sticky footer actions */}
-      <div className="px-4 py-3 border-t border-line-subtle shrink-0 space-y-2 bg-white">
+      <div className="px-4 py-3 border-t border-line-subtle shrink-0 space-y-2 bg-bg-raised">
         <button
           type="button"
           onClick={handleSave}
@@ -354,7 +354,7 @@ export function BookingDetails({
               type="button"
               onClick={() => onSave({ status: "completed" })}
               disabled={saving}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-white border border-line-default hover:bg-bg-subtle hover:text-emerald-700 transition-colors disabled:opacity-60"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-bg-raised border border-line-default hover:bg-bg-subtle hover:text-emerald-700 transition-colors disabled:opacity-60"
             >
               <CheckCircle2 className="h-3.5 w-3.5" /> Mark completed
             </button>
@@ -362,7 +362,7 @@ export function BookingDetails({
               type="button"
               onClick={() => onSave({ status: "cancelled" })}
               disabled={saving}
-              className="flex-1 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-white border border-line-default hover:bg-bg-subtle hover:text-negative-600 transition-colors disabled:opacity-60"
+              className="flex-1 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-bg-raised border border-line-default hover:bg-bg-subtle hover:text-negative-600 transition-colors disabled:opacity-60"
             >
               Cancel booking
             </button>

@@ -135,7 +135,7 @@ export function FolderPickerModal({
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="h-9 px-3.5 rounded-md border border-line-default bg-white hover:bg-slate-100 text-fg-primary text-[12px] font-semibold disabled:opacity-60"
+            className="h-9 px-3.5 rounded-md border border-line-default bg-bg-raised hover:bg-bg-subtle text-fg-primary text-[12px] font-semibold disabled:opacity-60"
           >
             Cancel
           </button>

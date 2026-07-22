@@ -466,7 +466,7 @@ function WorkflowsInner(): React.JSX.Element {
             }}
             className={`inline-flex items-center justify-center gap-1 h-8 w-[80px] rounded-md text-[11.5px] font-semibold border ${
               w.isActive
-                ? "border-line-default bg-white text-fg-secondary hover:text-fg-primary hover:bg-slate-50"
+                ? "border-line-default bg-bg-raised text-fg-secondary hover:text-fg-primary hover:bg-bg-subtle"
                 : "border-blue-500/30 bg-blue-50 text-blue-700 hover:bg-blue-100"
             }`}
           >
@@ -642,7 +642,7 @@ function WorkflowsInner(): React.JSX.Element {
                             key={sf.id}
                             type="button"
                             onClick={() => setSelectedFolder(sf.id)}
-                            className="text-left flex items-center gap-2.5 p-2.5 rounded-lg border border-line-default bg-white hover:border-blue-500/40 hover:shadow-card transition-all"
+                            className="text-left flex items-center gap-2.5 p-2.5 rounded-lg border border-line-default bg-bg-raised hover:border-blue-500/40 hover:shadow-card transition-all"
                           >
                             <span className="h-9 w-9 rounded-lg bg-amber-50 text-amber-500 ring-1 ring-amber-500/25 flex items-center justify-center shrink-0">
                               <Folder className="h-4 w-4" />
@@ -673,7 +673,7 @@ function WorkflowsInner(): React.JSX.Element {
                         <button
                           type="button"
                           onClick={() => setBulkAction("move")}
-                          className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[11.5px] font-semibold bg-white border border-line-default text-fg-primary hover:bg-slate-50"
+                          className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[11.5px] font-semibold bg-bg-raised border border-line-default text-fg-primary hover:bg-bg-subtle"
                         >
                           <FolderInput className="h-3 w-3" />
                           Move to folder
@@ -681,7 +681,7 @@ function WorkflowsInner(): React.JSX.Element {
                         <button
                           type="button"
                           onClick={() => setBulkAction("delete")}
-                          className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[11.5px] font-semibold bg-white border border-rose-500 text-rose-500 hover:bg-rose-50"
+                          className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[11.5px] font-semibold bg-bg-raised border border-rose-500 text-rose-500 hover:bg-rose-50"
                         >
                           <Trash2 className="h-3 w-3" />
                           Delete
@@ -689,7 +689,7 @@ function WorkflowsInner(): React.JSX.Element {
                         <button
                           type="button"
                           onClick={() => setSelectedIds([])}
-                          className="inline-flex items-center gap-1 h-8 px-2 rounded-md text-[11.5px] font-semibold text-fg-secondary hover:text-fg-primary hover:bg-white"
+                          className="inline-flex items-center gap-1 h-8 px-2 rounded-md text-[11.5px] font-semibold text-fg-secondary hover:text-fg-primary hover:bg-bg-raised"
                         >
                           Clear
                         </button>
@@ -907,7 +907,7 @@ function EmptyWorkflows({ onCreate }: { onCreate: () => void }): React.JSX.Eleme
           </div>
         </div>
 
-        <div className="rounded-xl border border-line-default bg-white p-4">
+        <div className="rounded-xl border border-line-default bg-bg-raised p-4">
           <h3 className="text-[13px] font-semibold text-fg-primary mb-3">How folders work</h3>
           <ul className="space-y-2 text-[12px] text-fg-secondary leading-relaxed">
             <li className="flex items-start gap-2">
@@ -999,7 +999,7 @@ function RowMenu({
         className={`h-8 w-8 rounded-md border flex items-center justify-center transition-colors ${
           open
             ? "bg-slate-100 border-line-default text-fg-primary"
-            : "bg-white border-line-default text-fg-secondary hover:text-fg-primary hover:bg-slate-50"
+            : "bg-bg-raised border-line-default text-fg-secondary hover:text-fg-primary hover:bg-bg-subtle"
         }`}
       >
         <MoreHorizontal className="h-4 w-4" />
@@ -1009,7 +1009,7 @@ function RowMenu({
           <div
             ref={menuRef}
             style={{ position: "fixed", top: pos.top, left: pos.left, width: 180, zIndex: 1000 }}
-            className="bg-white border border-line-default rounded-lg shadow-pop py-1"
+            className="bg-bg-raised border border-line-default rounded-lg shadow-pop py-1"
           >
             <MenuItem
               icon={FolderInput}

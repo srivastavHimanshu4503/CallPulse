@@ -103,7 +103,7 @@ export function FolderFormModal({
               placeholder={placeholder}
               disabled={isSaving}
               maxLength={80}
-              className="w-full bg-white border border-line-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-[13px] text-fg-primary placeholder-fg-muted rounded-md h-10 px-3 focus:outline-none shadow-card disabled:opacity-60"
+              className="w-full bg-bg-raised border border-line-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-[13px] text-fg-primary placeholder-fg-muted rounded-md h-10 px-3 focus:outline-none shadow-card disabled:opacity-60"
             />
             <div className="flex items-center justify-between mt-1">
               <p className="text-[10.5px] text-fg-muted">
@@ -125,7 +125,7 @@ export function FolderFormModal({
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="h-9 px-3.5 rounded-md border border-line-default bg-white hover:bg-slate-100 text-fg-primary text-[12px] font-semibold shadow-none disabled:opacity-60"
+            className="h-9 px-3.5 rounded-md border border-line-default bg-bg-raised hover:bg-bg-subtle text-fg-primary text-[12px] font-semibold shadow-none disabled:opacity-60"
           >
             Cancel
           </button>

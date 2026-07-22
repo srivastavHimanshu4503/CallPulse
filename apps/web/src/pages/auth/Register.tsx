@@ -5,13 +5,13 @@ import { useAuthStore } from "../../stores/auth.store.js";
 import { AuthLayout } from "../../components/auth/AuthLayout.js";
 
 const inputClass =
-  "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-11 px-3.5 w-full transition-all";
+  "bg-bg-raised border-border focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-text-primary placeholder-text-placeholder rounded-[10px] h-11 px-3.5 w-full transition-all";
 
 const primaryButton =
   "text-white font-bold text-[14px] rounded-[6px] flex items-center justify-center transition-colors bg-brand-500 hover:bg-brand-600 shadow-sm disabled:opacity-70";
 
 const ghostButton =
-  "border border-[#E5E5E5] bg-white text-[#111111] font-semibold text-[14px] rounded-[10px] hover:bg-[#F7F7F7] transition-all";
+  "border border-border bg-bg-raised text-text-primary font-semibold text-[14px] rounded-[10px] hover:bg-surface transition-all";
 
 export function Register(): React.JSX.Element {
   const navigate = useNavigate();
@@ -106,12 +106,12 @@ export function Register(): React.JSX.Element {
                 <span className="h-1 w-1 rounded-full bg-brand-600" />
                 Get started free
               </span>
-              <h1 className="text-[26px] leading-tight font-bold tracking-tight text-[#111111]">
+              <h1 className="text-[26px] leading-tight font-bold tracking-tight text-text-primary">
                 {step === 1 && "Create your account"}
                 {step === 2 && "Tell us about your business"}
                 {step === 3 && "Review & confirm"}
               </h1>
-              <p className="text-[13px] text-[#666666] mt-1.5">
+              <p className="text-[13px] text-text-secondary mt-1.5">
                 {step === 1 && "A few details and your AI receptionist is live."}
                 {step === 2 && "We'll personalise your assistant with this context."}
                 {step === 3 && "Double-check everything before we launch your workspace."}
@@ -131,7 +131,7 @@ export function Register(): React.JSX.Element {
                             ? "bg-emerald-500 text-white"
                             : active
                             ? "bg-brand-500 text-white ring-4 ring-brand-500/25"
-                            : "bg-[#F0F0F0] text-[#999999]"
+                            : "bg-bg-muted text-text-placeholder"
                         }`}
                       >
                         {done ? (
@@ -140,12 +140,12 @@ export function Register(): React.JSX.Element {
                           </svg>
                         ) : ( s.n )}
                       </div>
-                      <span className={`text-[12px] font-semibold ${active ? "text-[#111111]" : done ? "text-[#666666]" : "text-[#999999]"}`}>
+                      <span className={`text-[12px] font-semibold ${active ? "text-text-primary" : done ? "text-text-secondary" : "text-text-placeholder"}`}>
                         {s.label}
                       </span>
                     </div>
                     {i < STEPS.length - 1 && (
-                      <div className={`flex-1 h-[2px] rounded-full ${done ? "bg-emerald-500" : "bg-[#F0F0F0]"}`} />
+                      <div className={`flex-1 h-[2px] rounded-full ${done ? "bg-emerald-500" : "bg-bg-muted"}`} />
                     )}
                   </React.Fragment>
                 );
@@ -157,21 +157,21 @@ export function Register(): React.JSX.Element {
         {step === 1 && (
           <div className="space-y-3.5 animate-in fade-in duration-200">
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Full name</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Full name</label>
               <Input type="text" placeholder="Rajesh Kumar" value={name}
                 onChange={(e) => { setName(e.target.value); if (errors.name) setErrors((p) => ({ ...p, name: "" })); }}
                 error={errors.name} className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Email address</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Email address</label>
               <Input type="email" placeholder="rajesh@company.com" value={email}
                 onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: "" })); }}
                 error={errors.email} className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Mobile number</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Mobile number</label>
               <Input type="tel" placeholder="+919876543210" value={phone}
                 onChange={(e) => {
                   let val = e.target.value;
@@ -184,14 +184,14 @@ export function Register(): React.JSX.Element {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Password</label>
+                <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Password</label>
                 <Input type="password" placeholder="8+ characters" value={password}
                   onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors((p) => ({ ...p, password: "" })); }}
                   error={errors.password} className={inputClass}
                 />
               </div>
               <div>
-                <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Confirm</label>
+                <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Confirm</label>
                 <Input type="password" placeholder="Repeat password" value={confirmPassword}
                   onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors((p) => ({ ...p, confirmPassword: "" })); }}
                   error={errors.confirmPassword} className={inputClass}
@@ -203,9 +203,9 @@ export function Register(): React.JSX.Element {
               Continue →
             </Button>
 
-            <div className="mt-3 text-center text-[13px] text-[#666666]">
+            <div className="mt-3 text-center text-[13px] text-text-secondary">
               Already have an account?{" "}
-              <Link to="/login" className="text-[#111111] font-bold hover:text-brand-600 transition-colors">Sign in</Link>
+              <Link to="/login" className="text-text-primary font-bold hover:text-brand-600 transition-colors">Sign in</Link>
             </div>
           </div>
         )}
@@ -213,7 +213,7 @@ export function Register(): React.JSX.Element {
         {step === 2 && (
           <div className="space-y-3.5 animate-in fade-in duration-200">
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Business name</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Business name</label>
               <Input type="text" placeholder="Rajesh Distributors" value={businessName}
                 onChange={(e) => { setBusinessName(e.target.value); if (errors.businessName) setErrors((p) => ({ ...p, businessName: "" })); }}
                 error={errors.businessName} className={inputClass}
@@ -221,7 +221,7 @@ export function Register(): React.JSX.Element {
             </div>
 
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Business type</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Business type</label>
               <div className="relative">
                 <select value={businessType} onChange={(e) => setBusinessType(e.target.value)}
                   className={`${inputClass} appearance-none pr-9 cursor-pointer`}>
@@ -231,15 +231,15 @@ export function Register(): React.JSX.Element {
                   <option value="ecommerce">E-commerce</option>
                   <option value="other">Other</option>
                 </select>
-                <svg viewBox="0 0 24 24" fill="none" className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]">
+                <svg viewBox="0 0 24 24" fill="none" className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary">
                   <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
             </div>
 
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">
-                Website URL <span className="text-[#999999] font-normal">(optional)</span>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">
+                Website URL <span className="text-text-placeholder font-normal">(optional)</span>
               </label>
               <Input type="text" placeholder="https://example.com" value={websiteUrl}
                 onChange={(e) => { setWebsiteUrl(e.target.value); if (errors.websiteUrl) setErrors((p) => ({ ...p, websiteUrl: "" })); }}
@@ -248,7 +248,7 @@ export function Register(): React.JSX.Element {
             </div>
 
             <div>
-              <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Team size</label>
+              <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Team size</label>
               <div className="grid grid-cols-4 gap-2">
                 {[
                   { value: "SOLO", label: "Just me" },
@@ -260,7 +260,7 @@ export function Register(): React.JSX.Element {
                     className={`flex items-center justify-center px-2 rounded-[10px] border text-[12px] font-semibold transition-all h-10 ${
                       teamSize === item.value
                         ? "border-amber-500 bg-amber-50 text-brand-700"
-                        : "border-[#E5E5E5] bg-white text-[#666666] hover:text-[#111111] hover:border-[#B0B0B0]"
+                        : "border-border bg-bg-raised text-text-secondary hover:text-text-primary hover:border-line-strong"
                     }`}>
                     {item.label}
                   </button>
@@ -289,16 +289,16 @@ export function Register(): React.JSX.Element {
               </div>
             )}
 
-            <div className="rounded-[12px] border border-[#E5E5E5] bg-[#FAFBFC] p-4 space-y-4">
+            <div className="rounded-[12px] border border-border bg-bg-subtle p-4 space-y-4">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-brand-600">Owner</span>
-                <p className="text-[14px] text-[#111111] font-semibold mt-1">{name}</p>
-                <p className="text-[12.5px] text-[#666666] mt-0.5">{email} · {phone}</p>
+                <p className="text-[14px] text-text-primary font-semibold mt-1">{name}</p>
+                <p className="text-[12.5px] text-text-secondary mt-0.5">{email} · {phone}</p>
               </div>
-              <div className="border-t border-[#EEEEEE] pt-3">
+              <div className="border-t border-line-default pt-3">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-brand-600">Business</span>
-                <p className="text-[14px] text-[#111111] font-semibold mt-1">{businessName}</p>
-                <p className="text-[12.5px] text-[#666666] mt-0.5 capitalize">
+                <p className="text-[14px] text-text-primary font-semibold mt-1">{businessName}</p>
+                <p className="text-[12.5px] text-text-secondary mt-0.5 capitalize">
                   {businessType.replace("_", " ")} · {teamSize.toLowerCase()} team
                 </p>
                 {websiteUrl && <p className="text-[12.5px] text-brand-600 truncate mt-1">{websiteUrl}</p>}
@@ -308,12 +308,12 @@ export function Register(): React.JSX.Element {
             <label className="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" checked={agreeTerms}
                 onChange={(e) => { setAgreeTerms(e.target.checked); if (formError) setFormError(""); }}
-                className="mt-0.5 h-4 w-4 rounded border-[#E5E5E5] text-amber-500 focus:ring-2 focus:ring-amber-500/25 cursor-pointer"
+                className="mt-0.5 h-4 w-4 rounded border-border text-amber-500 focus:ring-2 focus:ring-amber-500/25 cursor-pointer"
               />
-              <span className="text-[12.5px] text-[#666666] leading-relaxed select-none">
+              <span className="text-[12.5px] text-text-secondary leading-relaxed select-none">
                 I agree to the{" "}
-                <span className="text-[#111111] font-semibold hover:text-brand-600 transition-colors">Terms of Service</span> &{" "}
-                <span className="text-[#111111] font-semibold hover:text-brand-600 transition-colors">Privacy Policy</span>.
+                <span className="text-text-primary font-semibold hover:text-brand-600 transition-colors">Terms of Service</span> &{" "}
+                <span className="text-text-primary font-semibold hover:text-brand-600 transition-colors">Privacy Policy</span>.
               </span>
             </label>
 
@@ -341,10 +341,10 @@ export function Register(): React.JSX.Element {
                 </svg>
               </div>
             </div>
-            <h2 className="text-[24px] font-bold text-[#111111] mb-2 tracking-tight">
+            <h2 className="text-[24px] font-bold text-text-primary mb-2 tracking-tight">
               Welcome to DeskBuddy, {name.split(" ")[0]}!
             </h2>
-            <p className="text-[13.5px] text-[#666666] leading-relaxed max-w-sm mx-auto mb-8">
+            <p className="text-[13.5px] text-text-secondary leading-relaxed max-w-sm mx-auto mb-8">
               Your business workspace is ready and your AI receptionist is being configured right now.
             </p>
             <Button type="button" variant="primary" className={`w-full h-11 ${primaryButton}`} onClick={() => navigate("/dashboard")}>

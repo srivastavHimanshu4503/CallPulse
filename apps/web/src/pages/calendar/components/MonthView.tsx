@@ -46,7 +46,7 @@ export function MonthView({
               key={i}
               onClick={() => onPickDay(d)}
               className={`min-h-0 p-1.5 border-b border-r border-line-subtle [&:nth-child(7n)]:border-r-0 cursor-pointer transition-colors group overflow-hidden flex flex-col ${
-                isSelected ? "bg-brand-50/40" : inMonth ? "bg-white hover:bg-bg-subtle/60" : "bg-bg-subtle/30 hover:bg-bg-subtle/60"
+                isSelected ? "bg-brand-50/40" : inMonth ? "bg-bg-raised hover:bg-bg-subtle/60" : "bg-bg-subtle/30 hover:bg-bg-subtle/60"
               }`}
             >
               <div className="flex items-center justify-between mb-1 shrink-0">

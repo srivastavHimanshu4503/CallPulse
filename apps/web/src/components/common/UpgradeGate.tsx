@@ -50,7 +50,7 @@ export function UpgradeGate({ feature }: { feature: string }): React.JSX.Element
 
   return (
     <div className="flex-1 h-full flex items-center justify-center p-8">
-      <div className="max-w-md w-full rounded-xl border border-line-default bg-white shadow-card overflow-hidden">
+      <div className="max-w-md w-full rounded-xl border border-line-default bg-bg-raised shadow-card overflow-hidden">
         <div className="h-1 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500" />
         <div className="p-6 space-y-4">
           <div className="flex items-center gap-3">

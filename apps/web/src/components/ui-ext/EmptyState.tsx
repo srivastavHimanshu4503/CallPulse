@@ -29,7 +29,7 @@ export function EmptyState({
       )}
     >
       {Icon && (
-        <div className={cn("mb-3 flex items-center justify-center rounded-full bg-white border border-line-default text-brand-500", iconSize)}>
+        <div className={cn("mb-3 flex items-center justify-center rounded-full bg-bg-raised border border-line-default text-brand-500", iconSize)}>
           <Icon className={size === "lg" ? "h-7 w-7" : "h-5 w-5"} />
         </div>
       )}

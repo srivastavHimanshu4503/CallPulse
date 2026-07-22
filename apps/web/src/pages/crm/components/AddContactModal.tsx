@@ -80,7 +80,7 @@ export function AddContactModal({
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Priya"
-              className="w-full bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
+              className="w-full bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
             />
           </div>
           <div>
@@ -91,7 +91,7 @@ export function AddContactModal({
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Sharma"
-              className="w-full bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
+              className="w-full bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
             />
           </div>
         </div>
@@ -103,7 +103,7 @@ export function AddContactModal({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="priya@example.com"
-            className="w-full bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
+            className="w-full bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
           />
         </div>
 
@@ -114,7 +114,7 @@ export function AddContactModal({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+91 98765 43210"
-            className="w-full bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
+            className="w-full bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
           />
         </div>
 
@@ -128,7 +128,7 @@ export function AddContactModal({
                   <select
                     value={fieldValues[def.id] || ""}
                     onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
-                    className="w-full h-9 bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary rounded-md px-2 focus:outline-none"
+                    className="w-full h-9 bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary rounded-md px-2 focus:outline-none"
                   >
                     <option value="">Select…</option>
                     {def.options?.map((opt: string) => (
@@ -141,7 +141,7 @@ export function AddContactModal({
                   <select
                     value={fieldValues[def.id] || ""}
                     onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
-                    className="w-full h-9 bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary rounded-md px-2 focus:outline-none"
+                    className="w-full h-9 bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary rounded-md px-2 focus:outline-none"
                   >
                     <option value="">Select…</option>
                     <option value="true">Yes</option>
@@ -153,7 +153,7 @@ export function AddContactModal({
                     placeholder={`Enter ${def.name.toLowerCase()}`}
                     value={fieldValues[def.id] || ""}
                     onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
-                    className="w-full bg-white border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
+                    className="w-full bg-bg-raised border border-line-default focus:border-brand-500 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 px-2.5 focus:outline-none"
                   />
                 )}
               </div>
@@ -166,7 +166,7 @@ export function AddContactModal({
             variant="secondary"
             type="button"
             onClick={onClose}
-            className="border border-line-default bg-white hover:bg-bg-muted text-fg-primary font-semibold text-[12px] h-9 px-3.5 rounded-md shadow-none"
+            className="border border-line-default bg-bg-raised hover:bg-bg-muted text-fg-primary font-semibold text-[12px] h-9 px-3.5 rounded-md shadow-none"
           >
             Cancel
           </Button>

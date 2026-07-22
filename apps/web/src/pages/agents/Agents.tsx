@@ -248,8 +248,8 @@ export function Agents(): React.JSX.Element {
       {/* Stats — inline single-line strip, not big tiles */}
       {agents && agents.length > 0 && (
         <div
-          className="rounded-lg border bg-white flex items-center gap-3 px-3 py-2 mb-3 overflow-x-auto"
-          style={{ borderColor: "#E5E7EB" }}
+          className="rounded-lg border bg-bg-raised flex items-center gap-3 px-3 py-2 mb-3 overflow-x-auto"
+          style={{ borderColor: "rgb(var(--line-default))" }}
         >
           <InlineStat icon={Users} label="Agents" value={stats.total.toString()} tint={{ bg: "#EFF6FF", fg: "#2563EB" }} />
           <Divider />
@@ -290,7 +290,7 @@ export function Agents(): React.JSX.Element {
       {isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-lg border border-line-default bg-white h-[124px] animate-pulse" />
+            <div key={i} className="rounded-lg border border-line-default bg-bg-raised h-[124px] animate-pulse" />
           ))}
         </div>
       )}
@@ -341,7 +341,7 @@ export function Agents(): React.JSX.Element {
 
       {/* List view */}
       {agents && filteredAgents.length > 0 && viewMode === "list" && (
-        <div className="rounded-lg border border-line-default bg-white overflow-hidden shadow-card">
+        <div className="rounded-lg border border-line-default bg-bg-raised overflow-hidden shadow-card">
           <table className="w-full text-[12.5px]">
             <thead className="bg-bg-subtle border-b border-line-subtle">
               <tr className="text-left">
@@ -486,21 +486,21 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
 
   return (
     <div
-      className="group relative rounded-xl border bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-line-strong transition-all duration-200 flex flex-col h-full"
-      style={{ borderColor: "#E5E7EB" }}
+      className="group relative rounded-xl border bg-bg-raised overflow-hidden shadow-sm hover:shadow-md hover:border-line-strong transition-all duration-200 flex flex-col h-full"
+      style={{ borderColor: "rgb(var(--line-default))" }}
     >
       {/* Top Header Section */}
       <div className="p-4 pb-0 flex items-start justify-between relative">
         <div className="flex items-center gap-3 min-w-0">
           <div className="relative shrink-0 group-hover:scale-105 transition-transform duration-300">
             <div
-              className="h-11 w-11 rounded-full text-white font-bold text-[14px] flex items-center justify-center shadow-md ring-2 ring-white"
+              className="h-11 w-11 rounded-full text-white font-bold text-[14px] flex items-center justify-center shadow-md ring-2 ring-bg-raised"
               style={{ background: gradient }}
             >
               {initials}
             </div>
             {agent.isActive && (
-              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-positive-500 ring-2 ring-white shadow-sm" />
+              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-positive-500 ring-2 ring-bg-raised shadow-sm" />
             )}
           </div>
           <div className="min-w-0 flex-1">
@@ -642,7 +642,7 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
           type="button"
           onClick={(e) => { e.stopPropagation(); onTest(); }}
           disabled={!agent.isActive}
-          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-white border border-line-default hover:bg-bg-subtle hover:text-fg-primary transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-bg-raised border border-line-default hover:bg-bg-subtle hover:text-fg-primary transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <PhoneCall className="h-3.5 w-3.5" />
           Test Call
@@ -650,7 +650,7 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onLogs(); }}
-          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-white border border-line-default hover:bg-bg-subtle hover:text-fg-primary transition-all"
+          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-bg-raised border border-line-default hover:bg-bg-subtle hover:text-fg-primary transition-all"
         >
           <ListIcon className="h-3.5 w-3.5" />
           Logs
@@ -658,7 +658,7 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onConfigure(); }}
-          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] shadow-sm transition-all"
+          className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-white bg-primary hover:bg-primary-hover shadow-sm transition-all"
         >
           <Pencil className="h-3.5 w-3.5" />
           Edit
@@ -725,7 +725,7 @@ function WhatsAppSetupModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[480px] rounded-2xl bg-white shadow-2xl overflow-hidden"
+        className="w-full max-w-[480px] rounded-2xl bg-bg-raised shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -796,7 +796,7 @@ function WhatsAppSetupModal({
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="e.g. Share our catalog when someone asks about products. For bulk orders, collect quantity and city."
-                className="w-full text-[12px] bg-white border border-line-default rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[76px]"
+                className="w-full text-[12px] bg-bg-raised border border-line-default rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[76px]"
               />
               <p className="text-[10.5px] text-fg-muted mt-1">
                 Works out of the box without this — add guidance only if you want channel-specific behavior.
@@ -872,7 +872,7 @@ function AiCreateModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[520px] rounded-2xl bg-white shadow-2xl overflow-hidden"
+        className="w-full max-w-[520px] rounded-2xl bg-bg-raised shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Gradient header */}
@@ -910,7 +910,7 @@ function AiCreateModal({
             onChange={(e) => setPrompt(e.target.value)}
             rows={4}
             placeholder="e.g. A friendly receptionist for my salon in Pune. Books appointments in Marathi & Hindi. Tells customers about our Diwali offers."
-            className={`w-full px-3 py-2.5 rounded-lg border border-line-default bg-white text-[13px] text-fg-primary placeholder:text-fg-muted focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-all outline-none resize-none`}
+            className={`w-full px-3 py-2.5 rounded-lg border border-line-default bg-bg-raised text-[13px] text-fg-primary placeholder:text-fg-muted focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition-all outline-none resize-none`}
           />
 
           <div className="text-[10.5px] font-bold uppercase tracking-wider text-fg-muted mt-4 mb-2">
@@ -1017,12 +1017,12 @@ function StatusPill({ active }: { active: boolean }): React.JSX.Element {
       style={
         active
           ? { backgroundColor: "#DCFCE7", color: "#15803D", boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.25)" }
-          : { backgroundColor: "#F1F5F9", color: "#64748B", boxShadow: "inset 0 0 0 1px #E5E7EB" }
+          : { backgroundColor: "rgb(var(--line-subtle))", color: "rgb(var(--slate-500))", boxShadow: "inset 0 0 0 1px rgb(var(--line-default))" }
       }
     >
       <span
         className="h-1.5 w-1.5 rounded-full"
-        style={{ backgroundColor: active ? "#16A34A" : "#94A3B8" }}
+        style={{ backgroundColor: active ? "#16A34A" : "rgb(var(--fg-muted))" }}
       />
       {active ? "Live" : "Off"}
     </span>
@@ -1033,7 +1033,7 @@ function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMo
   return (
     <div
       className="inline-flex items-center gap-1 rounded-lg p-1 border"
-      style={{ backgroundColor: "#F1F5F9", borderColor: "#E5E7EB" }}
+      style={{ backgroundColor: "rgb(var(--line-subtle))", borderColor: "rgb(var(--line-default))" }}
     >
       {[
         { value: "grid" as ViewMode, icon: LayoutGrid },
@@ -1053,7 +1053,7 @@ function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMo
                   color: "#FFFFFF",
                   boxShadow: "0 1px 2px rgba(37,99,235,0.35), 0 1px 3px rgba(0,0,0,0.08)",
                 }
-                : { backgroundColor: "transparent", color: "#475569" }
+                : { backgroundColor: "transparent", color: "rgb(var(--fg-secondary))" }
             }
           >
             <opt.icon className="h-3.5 w-3.5" />
@@ -1073,7 +1073,7 @@ function EmptyState({ onCreate, onAiCreate }: { onCreate: () => void; onAiCreate
     <div
       className="relative rounded-2xl overflow-hidden p-8"
       style={{
-        background: "linear-gradient(135deg, #EEF2FF 0%, #FDF4FF 55%, #FFF1F2 100%)",
+        background: "linear-gradient(135deg, rgb(var(--indigo-50)) 0%, rgb(var(--bg-muted)) 55%, rgb(var(--rose-50)) 100%)",
         border: "1px solid rgba(139,92,246,0.2)",
       }}
     >
@@ -1122,7 +1122,7 @@ function EmptyState({ onCreate, onAiCreate }: { onCreate: () => void; onAiCreate
             type="button"
             onClick={onCreate}
             className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg text-[12.5px] font-semibold border transition-all hover:bg-white"
-            style={{ backgroundColor: "rgba(255,255,255,0.7)", borderColor: "#E5E7EB", color: "#0F172A" }}
+            style={{ backgroundColor: "rgba(255,255,255,0.7)", borderColor: "rgb(var(--line-default))", color: "rgb(var(--fg-primary))" }}
           >
             <Plus className="h-3.5 w-3.5" />
             Manual setup
@@ -1153,7 +1153,7 @@ function RowActionsCompact({ agent, onTest, onConfigure, onLogs, onDelete }: Row
         onClick={onTest}
         disabled={!agent.isActive}
         className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-semibold border transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-        style={{ backgroundColor: "#F8FAFC", borderColor: "#E5E7EB", color: "#0F172A" }}
+        style={{ backgroundColor: "rgb(var(--bg-subtle))", borderColor: "rgb(var(--line-default))", color: "rgb(var(--fg-primary))" }}
       >
         <Radio className="h-3 w-3" />
         Test
@@ -1161,7 +1161,7 @@ function RowActionsCompact({ agent, onTest, onConfigure, onLogs, onDelete }: Row
       <button
         type="button"
         onClick={onConfigure}
-        className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] transition-all"
+        className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-bold text-white bg-primary hover:bg-primary-hover transition-all"
       >
         <Pencil className="h-3 w-3" />
         Edit
@@ -1250,8 +1250,8 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
         className="h-6 w-6 rounded-md flex items-center justify-center transition-colors focus:outline-none shrink-0"
         style={
           open
-            ? { backgroundColor: "#F1F5F9", color: "#0F172A" }
-            : { backgroundColor: "transparent", color: "#64748B" }
+            ? { backgroundColor: "rgb(var(--line-subtle))", color: "rgb(var(--fg-primary))" }
+            : { backgroundColor: "transparent", color: "rgb(var(--slate-500))" }
         }
       >
         <MoreHorizontal className="h-3.5 w-3.5" />
@@ -1268,10 +1268,10 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
               left: coords.left,
               width: MENU_WIDTH,
               zIndex: 1000,
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "rgb(var(--bg-raised))",
               boxShadow: "0 12px 28px rgba(15,23,42,0.15)",
               borderRadius: 8,
-              border: "1px solid #E5E7EB",
+              border: "1px solid rgb(var(--line-default))",
             }}
             className="py-1 animate-in fade-in duration-100"
           >
@@ -1287,9 +1287,9 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
                     onClick={() => { setOpen(false); item.onClick(); }}
                     disabled={item.disabled}
                     className="w-full flex items-center gap-2 px-3 py-2 text-[12px] font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={isDestructive ? { color: "#DC2626" } : { color: "#0F172A" }}
+                    style={isDestructive ? { color: "#DC2626" } : { color: "rgb(var(--fg-primary))" }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = isDestructive ? "#FEF2F2" : "#F8FAFC";
+                      e.currentTarget.style.backgroundColor = isDestructive ? "#FEF2F2" : "rgb(var(--bg-subtle))";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = "transparent";

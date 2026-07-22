@@ -101,7 +101,7 @@ export function RecordingPlayer({ logId, fallbackDuration }: RecordingPlayerProp
   };
 
   return (
-    <div className="flex items-center gap-3 w-full rounded-xl border border-line-default bg-white shadow-card px-3 py-1.5">
+    <div className="flex items-center gap-3 w-full rounded-xl border border-line-default bg-bg-raised shadow-card px-3 py-1.5">
       {url && (
         <audio
           ref={audioRef}

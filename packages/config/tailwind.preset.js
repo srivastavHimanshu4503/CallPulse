@@ -1,112 +1,106 @@
 /**
  * Centralised design tokens for the Indi AI app.
- * Use semantic aliases (bg-*, fg-*, line-*) in new code so themes stay
- * consistent. Legacy tokens (background, surface, text-*, primary, etc.)
- * are preserved for existing pages.
+ * All colors resolve to CSS variables defined in packages/config/theme.css
+ * (light values on :root, dark values on .dark) so the whole app themes
+ * from one place. Use semantic aliases (bg-*, fg-*, line-*) in new code.
+ *
+ * Note: the raw palettes below (slate/blue/emerald/rose/amber) are ALSO
+ * theme-aware — e.g. bg-emerald-50 becomes a dark green in dark mode.
+ * For colors that must never change with the theme, use black/white or an
+ * arbitrary value like bg-[#0F172A].
  */
+const v = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+const scale = (name, stops, extra = {}) => ({
+  ...Object.fromEntries(stops.map((s) => [s, v(`${name}-${s}`)])),
+  ...extra,
+});
+const S10 = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+
 export default {
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
         // ───────── Semantic surfaces ─────────
         bg: {
-          canvas: "#FFFFFF",       // main page background
-          subtle: "#FAFAFA",       // sidebar, subtle sections
-          muted: "#F5F5F7",        // muted panels, chip fills
-          raised: "#FFFFFF",       // cards
-          inverse: "#0A0416",      // dark auth panel
-          highlight: "#EFF6FF",    // brand-tinted highlight
+          canvas: v("bg-canvas"),       // main page background
+          subtle: v("bg-subtle"),       // sidebar, subtle sections
+          muted: v("bg-muted"),         // muted panels, chip fills
+          raised: v("bg-raised"),       // cards
+          inverse: v("bg-inverse"),     // dark auth panel (dark in both themes)
+          highlight: v("bg-highlight"), // brand-tinted highlight
         },
 
         // ───────── Foregrounds ─────────
         fg: {
-          primary: "#0F172A",      // headings & body
-          secondary: "#475569",    // sub-copy
-          muted: "#94A3B8",        // captions, hints
-          inverse: "#FFFFFF",
-          onBrand: "#FFFFFF",
-          onAccent: "#0A0416",
+          primary: v("fg-primary"),     // headings & body
+          secondary: v("fg-secondary"), // sub-copy
+          muted: v("fg-muted"),         // captions, hints
+          inverse: v("fg-inverse"),
+          onBrand: v("fg-on-brand"),
+          onAccent: v("fg-on-accent"),
         },
 
         // ───────── Lines / borders ─────────
         line: {
-          subtle: "#F1F5F9",
-          default: "#E5E7EB",
-          strong: "#CBD5E1",
+          subtle: v("line-subtle"),
+          default: v("line-default"),
+          strong: v("line-strong"),
         },
 
         // ───────── Brand (blue) ─────────
-        brand: {
-          50: "#EFF6FF",
-          100: "#DBEAFE",
-          200: "#BFDBFE",
-          300: "#93C5FD",
-          400: "#60A5FA",
-          500: "#2563EB",
-          600: "#1D4ED8",
-          700: "#1E40AF",
-          800: "#1E3A8A",
-          900: "#172554",
-          DEFAULT: "#2563EB",
-        },
+        brand: scale("brand", S10, { DEFAULT: v("brand-500") }),
 
         // ───────── Metallic amber accent (used on auth CTAs) ─────────
-        accent: {
-          50: "#FFFBEB",
-          100: "#FEF3C7",
-          200: "#FDE68A",
-          300: "#FCD34D",
-          400: "#FBBF24",
-          500: "#F5B849",
-          600: "#F97316",
-          700: "#EA580C",
-          DEFAULT: "#F5B849",
-        },
+        accent: scale("accent", [50, 100, 200, 300, 400, 500, 600, 700], {
+          DEFAULT: v("accent-500"),
+        }),
 
         // ───────── Semantic status ─────────
-        positive: {
-          50: "#F0FDF4",
-          500: "#16A34A",
-          600: "#15803D",
-          DEFAULT: "#16A34A",
-        },
-        negative: {
-          50: "#FEF2F2",
-          500: "#DC2626",
-          600: "#B91C1C",
-          DEFAULT: "#DC2626",
-        },
-        attention: {
-          50: "#FFFBEB",
-          500: "#D97706",
-          600: "#B45309",
-          DEFAULT: "#D97706",
-        },
+        positive: scale("positive", [50, 100, 200, 500, 600, 700], {
+          DEFAULT: v("positive-500"),
+        }),
+        negative: scale("negative", [50, 100, 200, 500, 600, 700], {
+          DEFAULT: v("negative-500"),
+        }),
+        attention: scale("attention", [50, 100, 200, 500, 600, 700], {
+          DEFAULT: v("attention-500"),
+        }),
+
+        // ───────── Theme-aware raw palettes ─────────
+        slate: scale("slate", S10),
+        blue: scale("blue", S10),
+        emerald: scale("emerald", S10),
+        rose: scale("rose", S10),
+        amber: scale("amber", S10),
+        red: scale("red", S10),
+        orange: scale("orange", S10),
+        indigo: scale("indigo", S10),
 
         // ───────── Legacy (kept for backwards-compat) ─────────
-        background: "#FFFFFF",
-        surface: "#F7F7F7",
-        border: "#E5E5E5",
+        background: v("background"),
+        surface: v("surface"),
+        border: v("border-default"),
         text: {
-          primary: "#111111",
-          secondary: "#666666",
-          placeholder: "#999999",
+          primary: v("text-primary"),
+          secondary: v("text-secondary"),
+          placeholder: v("text-placeholder"),
         },
         primary: {
-          DEFAULT: "#2563EB",
-          hover: "#1D4ED8",
+          DEFAULT: v("primary"),
+          hover: v("primary-hover"),
           text: "#FFFFFF",
         },
-        error: "#DC2626",
-        success: "#16A34A",
-        warning: "#D97706",
+        error: v("error"),
+        success: v("success"),
+        warning: v("warning"),
         sidebar: {
-          bg: "#FAFAFA",
-          border: "#E5E5E5",
+          bg: v("sidebar-bg"),
+          border: v("sidebar-border"),
         },
         active: {
-          nav: "#EFF6FF",
-          navText: "#2563EB",
+          nav: v("active-nav"),
+          navText: v("active-nav-text"),
         },
       },
       fontFamily: {

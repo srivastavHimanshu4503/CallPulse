@@ -79,7 +79,7 @@ export function BulkDeleteWorkflowsModal({
           <div className="text-[10px] font-bold uppercase tracking-wider text-fg-muted mb-1.5">
             Selected
           </div>
-          <div className="rounded-md border border-line-default bg-white max-h-[140px] overflow-y-auto divide-y divide-line-subtle">
+          <div className="rounded-md border border-line-default bg-bg-raised max-h-[140px] overflow-y-auto divide-y divide-line-subtle">
             {workflows.slice(0, 12).map((w) => (
               <div key={w.id} className="flex items-center justify-between gap-2 px-3 py-1.5">
                 <span className="text-[12px] text-fg-primary truncate">{w.name}</span>
@@ -104,7 +104,7 @@ export function BulkDeleteWorkflowsModal({
           type="button"
           onClick={onClose}
           disabled={isDeleting}
-          className="h-9 px-3.5 rounded-md border border-line-default bg-white hover:bg-slate-100 text-fg-primary text-[12px] font-semibold disabled:opacity-60"
+          className="h-9 px-3.5 rounded-md border border-line-default bg-bg-raised hover:bg-bg-subtle text-fg-primary text-[12px] font-semibold disabled:opacity-60"
         >
           Cancel
         </button>

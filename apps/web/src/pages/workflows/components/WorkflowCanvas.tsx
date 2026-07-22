@@ -218,7 +218,7 @@ function buildGraph(
 
 /* ─────────────────────────── Custom nodes ─────────────────────────── */
 
-const HANDLE_CLS = "!h-2 !w-2 !bg-slate-300 !border !border-white";
+const HANDLE_CLS = "!h-2 !w-2 !bg-slate-300 !border !border-bg-raised";
 
 function TriggerNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
   const trigger = (data as any).trigger as Trigger;
@@ -231,7 +231,7 @@ function TriggerNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
     <div
       style={{ width: NODE_W, height: NODE_H }}
       className={cn(
-        "rounded-xl bg-white cursor-pointer transition-all overflow-hidden flex flex-col",
+        "rounded-xl bg-bg-raised cursor-pointer transition-all overflow-hidden flex flex-col",
         selected
           ? "ring-2 ring-blue-500/40 border border-blue-500 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]"
           : "border border-line-default hover:border-blue-500/40 shadow-card",
@@ -287,7 +287,7 @@ function StepNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
         <button
           type="button"
           onClick={() => ctx.onMoveStep(step.id, "up")}
-          className="h-7 w-7 rounded-md bg-white border border-line-default text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 flex items-center justify-center shadow-card"
+          className="h-7 w-7 rounded-md bg-bg-raised border border-line-default text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 flex items-center justify-center shadow-card"
           title="Move earlier in its chain"
         >
           <ArrowUp className="h-3.5 w-3.5" />
@@ -295,7 +295,7 @@ function StepNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
         <button
           type="button"
           onClick={() => ctx.onMoveStep(step.id, "down")}
-          className="h-7 w-7 rounded-md bg-white border border-line-default text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 flex items-center justify-center shadow-card"
+          className="h-7 w-7 rounded-md bg-bg-raised border border-line-default text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 flex items-center justify-center shadow-card"
           title="Move later in its chain"
         >
           <ArrowDown className="h-3.5 w-3.5" />
@@ -303,7 +303,7 @@ function StepNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
         <button
           type="button"
           onClick={() => ctx.onDeleteStep(step.id)}
-          className="h-7 w-7 rounded-md bg-white border border-line-default text-fg-secondary hover:text-rose-500 hover:border-rose-500/40 flex items-center justify-center shadow-card"
+          className="h-7 w-7 rounded-md bg-bg-raised border border-line-default text-fg-secondary hover:text-rose-500 hover:border-rose-500/40 flex items-center justify-center shadow-card"
           title={isIf ? "Delete condition (steps inside are kept)" : "Delete step"}
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -313,7 +313,7 @@ function StepNodeCmp({ data, selected }: NodeProps): React.JSX.Element {
       <div
         style={{ width: NODE_W, height: NODE_H }}
         className={cn(
-          "rounded-xl bg-white cursor-pointer transition-all overflow-hidden flex flex-col",
+          "rounded-xl bg-bg-raised cursor-pointer transition-all overflow-hidden flex flex-col",
           selected
             ? "ring-2 ring-blue-500/40 border border-blue-500 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]"
             : "border border-line-default hover:border-blue-500/40 shadow-card",
@@ -380,7 +380,7 @@ function GhostNodeCmp({ data }: NodeProps): React.JSX.Element {
         type="button"
         style={{ width: NODE_W, height: GHOST_H }}
         onClick={(e) => ctx.openMenu(insert, e.currentTarget.getBoundingClientRect())}
-        className="rounded-xl border-2 border-dashed border-line-strong bg-white/60 hover:border-blue-500/50 hover:bg-blue-50/40 text-fg-muted hover:text-blue-600 flex items-center justify-center gap-1.5 text-[11.5px] font-semibold transition-colors"
+        className="rounded-xl border-2 border-dashed border-line-strong bg-bg-raised/60 hover:border-blue-500/50 hover:bg-blue-50/40 text-fg-muted hover:text-blue-600 flex items-center justify-center gap-1.5 text-[11.5px] font-semibold transition-colors"
       >
         <Plus className="h-3.5 w-3.5" />
         Add step
@@ -416,7 +416,7 @@ function FlowEdgeCmp(props: EdgeProps): React.JSX.Element {
           {data.label && (
             <span
               className={cn(
-                "text-[9px] font-bold uppercase tracking-wide rounded-full px-1.5 py-0.5 border bg-white",
+                "text-[9px] font-bold uppercase tracking-wide rounded-full px-1.5 py-0.5 border bg-bg-raised",
                 data.label === "Yes"
                   ? "text-emerald-600 border-emerald-500/40"
                   : "text-rose-500 border-rose-400/40",
@@ -429,7 +429,7 @@ function FlowEdgeCmp(props: EdgeProps): React.JSX.Element {
             <button
               type="button"
               onClick={(e) => ctx.openMenu(data.insert!, e.currentTarget.getBoundingClientRect())}
-              className="h-5 w-5 rounded-full bg-white border border-line-strong text-fg-muted hover:text-blue-600 hover:border-blue-500 flex items-center justify-center shadow-card transition-colors"
+              className="h-5 w-5 rounded-full bg-bg-raised border border-line-strong text-fg-muted hover:text-blue-600 hover:border-blue-500 flex items-center justify-center shadow-card transition-colors"
               title="Insert a step here"
             >
               <Plus className="h-3 w-3" />
@@ -480,7 +480,7 @@ function AddMenu({
       <div
         style={{ left, top }}
         onClick={(e) => e.stopPropagation()}
-        className="absolute w-[264px] max-h-[360px] overflow-y-auto bg-white border border-line-default rounded-xl shadow-2xl p-1.5 animate-in fade-in zoom-in-95 duration-100"
+        className="absolute w-[264px] max-h-[360px] overflow-y-auto bg-bg-raised border border-line-default rounded-xl shadow-2xl p-1.5 animate-in fade-in zoom-in-95 duration-100"
       >
         {groups.map((g) => (
           <div key={g.title}>
@@ -609,7 +609,7 @@ export function WorkflowCanvas(props: WorkflowCanvasProps): React.JSX.Element {
               <button
                 type="button"
                 onClick={props.onTidy}
-                className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md bg-white border border-line-default text-[11.5px] font-semibold text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 shadow-card transition-colors"
+                className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md bg-bg-raised border border-line-default text-[11.5px] font-semibold text-fg-secondary hover:text-blue-600 hover:border-blue-500/40 shadow-card transition-colors"
                 title="Snap all steps back to the automatic layout"
               >
                 <LayoutGrid className="h-3.5 w-3.5" />

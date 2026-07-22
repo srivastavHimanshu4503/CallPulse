@@ -267,7 +267,7 @@ export function ImportContactsModal({
                       <select
                         value={mapping[h] || ""}
                         onChange={(e) => reMap({ ...mapping, [h]: e.target.value })}
-                        className="flex-1 h-8 bg-white border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500"
+                        className="flex-1 h-8 bg-bg-raised border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500"
                       >
                         <option value="">— Ignore —</option>
                         <option value="firstName">First name</option>
@@ -331,7 +331,7 @@ export function ImportContactsModal({
             variant="secondary"
             type="button"
             onClick={onClose}
-            className="border border-line-default bg-white text-fg-primary h-9 px-3.5 text-[12px] font-semibold rounded-md shadow-none"
+            className="border border-line-default bg-bg-raised text-fg-primary h-9 px-3.5 text-[12px] font-semibold rounded-md shadow-none"
           >
             Cancel
           </Button>

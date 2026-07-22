@@ -26,7 +26,7 @@ export function SearchInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         autoFocus={autoFocus}
-        className="w-full bg-white border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 pl-8 pr-8 focus:outline-none shadow-card"
+        className="w-full bg-bg-raised border border-line-default focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 text-[12.5px] text-fg-primary placeholder-fg-muted rounded-md h-9 pl-8 pr-8 focus:outline-none shadow-card"
       />
       {value && (
         <button

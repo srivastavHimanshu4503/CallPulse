@@ -142,7 +142,7 @@ export function CreateWorkflowModal({
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="h-9 px-3.5 rounded-md border border-line-default bg-white hover:bg-slate-100 text-fg-primary text-[12px] font-semibold disabled:opacity-60"
+              className="h-9 px-3.5 rounded-md border border-line-default bg-bg-raised hover:bg-bg-subtle text-fg-primary text-[12px] font-semibold disabled:opacity-60"
             >
               Cancel
             </button>
@@ -190,7 +190,7 @@ function ChoiceCard({
         "text-left flex items-start gap-2.5 p-3 rounded-lg border transition-all",
         active
           ? "border-blue-500 bg-blue-50/60 ring-2 ring-blue-500/20 shadow-card"
-          : "border-line-default bg-white hover:border-line-strong hover:shadow-card",
+          : "border-line-default bg-bg-raised hover:border-line-strong hover:shadow-card",
       )}
     >
       <span className={cn("h-8 w-8 rounded-lg ring-1 flex items-center justify-center shrink-0", tile, ring)}>
@@ -264,8 +264,8 @@ function FolderDropdown({
         className={cn(
           "w-full flex items-center gap-2 h-10 px-3 rounded-md border transition-colors text-left shadow-card",
           open
-            ? "border-blue-500 ring-2 ring-blue-500/20 bg-white"
-            : "border-line-default bg-white hover:border-line-strong",
+            ? "border-blue-500 ring-2 ring-blue-500/20 bg-bg-raised"
+            : "border-line-default bg-bg-raised hover:border-line-strong",
         )}
       >
         {currentLabel ? (
@@ -282,7 +282,7 @@ function FolderDropdown({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-white border border-line-default rounded-md shadow-pop py-1 max-h-[240px] overflow-y-auto">
+        <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-bg-raised border border-line-default rounded-md shadow-pop py-1 max-h-[240px] overflow-y-auto">
           <MenuFolderRow
             active={value === null}
             depth={0}

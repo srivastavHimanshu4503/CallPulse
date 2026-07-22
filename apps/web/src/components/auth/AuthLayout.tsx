@@ -217,7 +217,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
   const g = GREETINGS[lang];
 
   return (
-    <div className="min-h-screen lg:h-screen lg:overflow-hidden w-full flex bg-white font-sans antialiased text-[#111111]">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden w-full flex bg-bg-canvas font-sans antialiased text-text-primary">
       <style>{`
         @keyframes authWave {
           0% { transform: scaleY(0.4); }
@@ -494,7 +494,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
       </div>
 
       {/* ============ RIGHT: FORM PANEL — clean light theme ============ */}
-      <div className="relative flex-1 lg:w-1/2 flex flex-col min-h-screen lg:h-screen lg:overflow-y-auto auth-hide-scroll bg-white">
+      <div className="relative flex-1 lg:w-1/2 flex flex-col min-h-screen lg:h-screen lg:overflow-y-auto auth-hide-scroll bg-bg-raised">
         {/* Top-right logo */}
         <div className="flex items-center justify-end px-6 sm:px-10 pt-5 shrink-0">
           <Logo height={26} />
@@ -504,12 +504,12 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
           <div className="w-full max-w-[420px]">{children}</div>
         </div>
 
-        <div className="px-6 sm:px-10 pb-5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#999999]">
+        <div className="px-6 sm:px-10 pb-5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-placeholder">
           <div>© {new Date().getFullYear()} DeskBuddy · Made in India</div>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-[#111111] transition-colors">Privacy</a>
-            <a href="#" className="hover:text-[#111111] transition-colors">Terms</a>
-            <a href="#" className="hover:text-[#111111] transition-colors">Support</a>
+            <a href="#" className="hover:text-text-primary transition-colors">Privacy</a>
+            <a href="#" className="hover:text-text-primary transition-colors">Terms</a>
+            <a href="#" className="hover:text-text-primary transition-colors">Support</a>
           </div>
         </div>
       </div>

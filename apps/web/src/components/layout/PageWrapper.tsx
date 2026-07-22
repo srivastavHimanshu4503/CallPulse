@@ -11,7 +11,7 @@ export function PageWrapper({ children, noScroll = false }: PageWrapperProps): R
   const sidebarMinimized = useUIStore((state) => state.sidebarMinimized);
 
   return (
-    <div className="h-screen overflow-hidden bg-white text-[#111111] font-sans antialiased">
+    <div className="h-screen overflow-hidden bg-bg-canvas text-fg-primary font-sans antialiased">
       <Sidebar />
 
       <div

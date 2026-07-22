@@ -214,20 +214,20 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
     .sort((a, b) => rank(a.id) - rank(b.id));
 
   return (
-    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 space-y-5 font-sans">
+    <section className="bg-bg-raised border border-border rounded-[8px] p-5 sm:p-6 space-y-5 font-sans">
       <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-[#111111]">Language & voice</h3>
-          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">
+          <h3 className="text-sm font-semibold text-text-primary">Language & voice</h3>
+          <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
             Pick the language your agent speaks with callers — we'll show only the voices that sound natural in it.
           </p>
         </div>
         {activeVoice && (
-          <div className="inline-flex items-center gap-2 bg-[#EFF6FF] border border-[#2563EB]/15 rounded-full pl-2 pr-3 py-1 self-start">
+          <div className="inline-flex items-center gap-2 bg-brand-50 border border-brand-500/15 rounded-full pl-2 pr-3 py-1 self-start">
             <span className="h-5 w-5 rounded-full bg-white flex items-center justify-center">
-              <AudioLines className="h-3 w-3 text-[#2563EB]" />
+              <AudioLines className="h-3 w-3 text-brand-600" />
             </span>
-            <span className="text-[11px] font-semibold text-[#2563EB]">
+            <span className="text-[11px] font-semibold text-brand-600">
               Selected: {activeVoice.name}
             </span>
           </div>
@@ -237,7 +237,7 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
       {/* Language selector — same setting as the General tab, editable here
           because it decides which voices make sense. */}
       <div>
-        <label className="block text-[12px] font-semibold text-[#111111] mb-2">
+        <label className="block text-[12px] font-semibold text-text-primary mb-2">
           Agent language
         </label>
         <div className="flex flex-wrap gap-1.5">
@@ -251,8 +251,8 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
                 onClick={() => setLanguage(l)}
                 className={`px-3 h-8 text-xs font-semibold rounded-full border transition-all ${
                   active
-                    ? "bg-[#2563EB] border-[#2563EB] text-white"
-                    : "bg-white border-[#E5E5E5] text-[#666666] hover:border-[#2563EB]/40 hover:text-[#111111]"
+                    ? "bg-primary border-brand-500 text-white"
+                    : "bg-bg-raised border-border text-text-secondary hover:border-brand-500/40 hover:text-text-primary"
                 }`}
               >
                 {l}
@@ -265,18 +265,18 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
       {/* Search & gender */}
       <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-placeholder" />
           <input
             type="text"
             placeholder="Search voices..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             disabled={disabled}
-            className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] h-10 pl-9 pr-3 w-full focus:outline-none focus:ring-0"
+            className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] h-10 pl-9 pr-3 w-full focus:outline-none focus:ring-0"
           />
         </div>
 
-        <div className="flex items-center gap-1 p-1 bg-[#F7F7F7] rounded-[6px] border border-[#E5E5E5] self-start">
+        <div className="flex items-center gap-1 p-1 bg-surface rounded-[6px] border border-border self-start">
           {(["All", "Male", "Female"] as GenderFilter[]).map((g) => (
             <button
               key={g}
@@ -285,8 +285,8 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
               disabled={disabled}
               className={`px-3 h-8 text-xs font-semibold rounded-[4px] transition-all ${
                 selectedGender === g
-                  ? "bg-white text-[#2563EB] shadow-sm ring-1 ring-[#2563EB]/15"
-                  : "text-[#666666] hover:text-[#111111]"
+                  ? "bg-bg-raised text-brand-600 shadow-sm ring-1 ring-brand-500/15"
+                  : "text-text-secondary hover:text-text-primary"
               }`}
             >
               {g}
@@ -298,12 +298,12 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
       {/* Voice grid */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-semibold text-[#999999] uppercase tracking-wider">
+          <span className="text-[11px] font-semibold text-text-placeholder uppercase tracking-wider">
             {filteredVoices.length} {filteredVoices.length === 1 ? "voice" : "voices"} for {language}
           </span>
         </div>
         {filteredVoices.length === 0 ? (
-          <div className="py-10 text-center text-xs text-[#666666] bg-[#FAFAFA] border border-dashed border-[#E5E5E5] rounded-[8px] font-medium">
+          <div className="py-10 text-center text-xs text-text-secondary bg-bg-subtle border border-dashed border-border rounded-[8px] font-medium">
             No voices match those filters.
           </div>
         ) : (
@@ -322,16 +322,16 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
                   disabled={disabled}
                   className={`text-left p-3.5 rounded-[8px] border transition-all relative ${
                     isSelected
-                      ? "bg-[#EFF6FF]/50 border-[#2563EB] ring-1 ring-[#2563EB]/20"
-                      : "bg-white border-[#E5E5E5] hover:border-[#2563EB]/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.04)]"
+                      ? "bg-brand-50/50 border-brand-500 ring-1 ring-brand-500/20"
+                      : "bg-bg-raised border-border hover:border-brand-500/40 hover:shadow-[0_2px_8px_rgba(37,99,235,0.04)]"
                   }`}
                 >
                   {isSelected ? (
-                    <span className="absolute top-2.5 right-2.5 h-5 w-5 rounded-full bg-[#2563EB] text-white flex items-center justify-center">
+                    <span className="absolute top-2.5 right-2.5 h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center">
                       <Check className="h-3 w-3" strokeWidth={3.5} />
                     </span>
                   ) : isRecommended ? (
-                    <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-0.5 text-[8px] font-semibold text-[#2563EB] bg-[#EFF6FF] border border-[#2563EB]/15 rounded-full px-1.5 py-[2px] leading-none">
+                    <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-0.5 text-[8px] font-semibold text-brand-600 bg-brand-50 border border-brand-500/15 rounded-full px-1.5 py-[2px] leading-none">
                       <Star className="h-2 w-2 fill-current shrink-0" />
                       Recommended
                     </span>
@@ -347,21 +347,21 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
 
                     <div className="min-w-0 flex-1 pr-6">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-sm font-semibold text-[#111111]">{v.name}</span>
+                        <span className="text-sm font-semibold text-text-primary">{v.name}</span>
                         <span
                           className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
                             v.gender === "Female"
-                              ? "bg-[#FDF2F8] text-[#DB2777] border border-[#DB2777]/10"
-                              : "bg-[#EFF6FF] text-[#2563EB] border border-[#2563EB]/10"
+                              ? "bg-rose-50 text-rose-600 border border-rose-600/10"
+                              : "bg-brand-50 text-brand-600 border border-brand-500/10"
                           }`}
                         >
                           {v.gender}
                         </span>
                       </div>
-                      <div className="text-[11px] text-[#666666] mt-1 font-medium leading-tight">
+                      <div className="text-[11px] text-text-secondary mt-1 font-medium leading-tight">
                         {v.accent}
                       </div>
-                      <div className="text-[11px] text-[#999999] mt-1.5 font-normal leading-relaxed line-clamp-2">
+                      <div className="text-[11px] text-text-placeholder mt-1.5 font-normal leading-relaxed line-clamp-2">
                         {v.description}
                       </div>
                     </div>
@@ -386,21 +386,21 @@ interface VoiceSpeedControlProps {
 export function VoiceSpeedControl({ value, onChange, disabled }: VoiceSpeedControlProps): React.JSX.Element {
   const effective = value ?? 1.0;
   return (
-    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 font-sans">
+    <section className="bg-bg-raised border border-border rounded-[8px] p-5 sm:p-6 font-sans">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-[#111111]">Speaking speed</h3>
-          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">
+          <h3 className="text-sm font-semibold text-text-primary">Speaking speed</h3>
+          <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
             How fast the agent talks on calls. 1× is natural — most businesses keep it between 0.9× and 1.1×.
           </p>
         </div>
-        <span className="text-[11px] font-semibold text-[#2563EB] bg-[#EFF6FF] border border-[#2563EB]/15 rounded-full px-2.5 py-1 shrink-0">
+        <span className="text-[11px] font-semibold text-brand-600 bg-brand-50 border border-brand-500/15 rounded-full px-2.5 py-1 shrink-0">
           {value === null ? "Default" : `${effective.toFixed(2)}×`}
         </span>
       </div>
 
       <div className="mt-4 flex items-center gap-3">
-        <span className="text-[11px] font-medium text-[#999999] shrink-0">Slower</span>
+        <span className="text-[11px] font-medium text-text-placeholder shrink-0">Slower</span>
         <input
           type="range"
           min={0.5}
@@ -411,7 +411,7 @@ export function VoiceSpeedControl({ value, onChange, disabled }: VoiceSpeedContr
           onChange={(e) => onChange(Number(e.target.value))}
           className="flex-1 accent-[#2563EB] h-1.5 cursor-pointer"
         />
-        <span className="text-[11px] font-medium text-[#999999] shrink-0">Faster</span>
+        <span className="text-[11px] font-medium text-text-placeholder shrink-0">Faster</span>
       </div>
 
       {value !== null && (
@@ -419,7 +419,7 @@ export function VoiceSpeedControl({ value, onChange, disabled }: VoiceSpeedContr
           type="button"
           onClick={() => onChange(null)}
           disabled={disabled}
-          className="mt-3 text-[11px] font-semibold text-[#666666] hover:text-[#2563EB] transition-colors"
+          className="mt-3 text-[11px] font-semibold text-text-secondary hover:text-brand-600 transition-colors"
         >
           Reset to default
         </button>
@@ -464,21 +464,21 @@ export function VoiceTuningControl({ voice, value, onChange, disabled }: VoiceTu
   };
 
   return (
-    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 font-sans">
+    <section className="bg-bg-raised border border-border rounded-[8px] p-5 sm:p-6 font-sans">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-[#111111]">Voice tuning</h3>
-          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">
+          <h3 className="text-sm font-semibold text-text-primary">Voice tuning</h3>
+          <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
             Fine-tune how the selected voice sounds on calls. Use the preview button above to hear changes.
           </p>
         </div>
-        <span className="text-[11px] font-semibold text-[#2563EB] bg-[#EFF6FF] border border-[#2563EB]/15 rounded-full px-2.5 py-1 shrink-0">
+        <span className="text-[11px] font-semibold text-brand-600 bg-brand-50 border border-brand-500/15 rounded-full px-2.5 py-1 shrink-0">
           {hasCustom ? "Custom" : "Default"}
         </span>
       </div>
 
       {fields.length === 0 ? (
-        <p className="mt-4 text-[12px] text-[#999999]">
+        <p className="mt-4 text-[12px] text-text-placeholder">
           This voice has no extra tuning options — only the speaking speed above applies.
         </p>
       ) : (
@@ -490,8 +490,8 @@ export function VoiceTuningControl({ voice, value, onChange, disabled }: VoiceTu
             return (
               <div key={f.key}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-[12px] font-semibold text-[#111111]">{f.label}</label>
-                  <span className="text-[11px] font-semibold text-[#666666] tabular-nums">
+                  <label className="text-[12px] font-semibold text-text-primary">{f.label}</label>
+                  <span className="text-[11px] font-semibold text-text-secondary tabular-nums">
                     {typeof raw === "number" ? display : `${display} · default`}
                   </span>
                 </div>
@@ -505,7 +505,7 @@ export function VoiceTuningControl({ voice, value, onChange, disabled }: VoiceTu
                   onChange={(e) => setField(f.key, Number(e.target.value) / 100)}
                   className="w-full accent-[#2563EB] h-1.5 cursor-pointer"
                 />
-                <p className="text-[11px] text-[#999999] mt-1">{f.help}</p>
+                <p className="text-[11px] text-text-placeholder mt-1">{f.help}</p>
               </div>
             );
           })}
@@ -515,7 +515,7 @@ export function VoiceTuningControl({ voice, value, onChange, disabled }: VoiceTu
               type="button"
               onClick={() => onChange(null)}
               disabled={disabled}
-              className="text-[11px] font-semibold text-[#666666] hover:text-[#2563EB] transition-colors"
+              className="text-[11px] font-semibold text-text-secondary hover:text-brand-600 transition-colors"
             >
               Reset to defaults
             </button>
@@ -561,23 +561,23 @@ export function PronunciationControl({ value, onChange, disabled }: Pronunciatio
   };
 
   return (
-    <section className="bg-white border border-[#E5E5E5] rounded-[8px] p-5 sm:p-6 font-sans">
+    <section className="bg-bg-raised border border-border rounded-[8px] p-5 sm:p-6 font-sans">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-[#111111]">Pronunciation</h3>
-          <p className="text-[12px] text-[#666666] mt-1 leading-relaxed">
+          <h3 className="text-sm font-semibold text-text-primary">Pronunciation</h3>
+          <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
             If the agent says a word wrong — your brand name, an acronym — tell it exactly how to say it.
           </p>
         </div>
-        <span className="text-[11px] font-semibold text-[#666666] bg-[#F7F7F7] border border-[#E5E5E5] rounded-full px-2.5 py-1 shrink-0 tabular-nums">
+        <span className="text-[11px] font-semibold text-text-secondary bg-surface border border-border rounded-full px-2.5 py-1 shrink-0 tabular-nums">
           {rows.length}/{MAX_PRONUNCIATIONS}
         </span>
       </div>
 
       <div className="mt-4 space-y-2">
         {rows.length === 0 && (
-          <p className="text-[12px] text-[#999999] bg-[#FAFAFA] border border-dashed border-[#E5E5E5] rounded-[8px] px-3 py-3">
-            No overrides yet. Example: <span className="font-semibold text-[#666666]">NAIC</span> → <span className="font-semibold text-[#666666]">N A I C</span>, or <span className="font-semibold text-[#666666]">PhonePe</span> → <span className="font-semibold text-[#666666]">फ़ोन पे</span>.
+          <p className="text-[12px] text-text-placeholder bg-bg-subtle border border-dashed border-border rounded-[8px] px-3 py-3">
+            No overrides yet. Example: <span className="font-semibold text-text-secondary">NAIC</span> → <span className="font-semibold text-text-secondary">N A I C</span>, or <span className="font-semibold text-text-secondary">PhonePe</span> → <span className="font-semibold text-text-secondary">फ़ोन पे</span>.
           </p>
         )}
         {rows.map((r, i) => (
@@ -588,23 +588,23 @@ export function PronunciationControl({ value, onChange, disabled }: Pronunciatio
               value={r.word}
               disabled={disabled}
               onChange={(e) => setRow(i, { word: e.target.value })}
-              className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-[13px] text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 w-2/5 focus:outline-none focus:ring-0"
+              className="bg-bg-raised border border-border focus:border-brand-500 text-[13px] text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 w-2/5 focus:outline-none focus:ring-0"
             />
-            <span className="text-[#999999] text-xs shrink-0">→</span>
+            <span className="text-text-placeholder text-xs shrink-0">→</span>
             <input
               type="text"
               placeholder="Spoken as (e.g. N A I C)"
               value={r.sayAs}
               disabled={disabled}
               onChange={(e) => setRow(i, { sayAs: e.target.value })}
-              className="bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-[13px] text-[#111111] placeholder-[#999999] rounded-[6px] h-9 px-3 flex-1 focus:outline-none focus:ring-0"
+              className="bg-bg-raised border border-border focus:border-brand-500 text-[13px] text-text-primary placeholder-text-placeholder rounded-[6px] h-9 px-3 flex-1 focus:outline-none focus:ring-0"
             />
             <button
               type="button"
               aria-label="Remove word"
               disabled={disabled}
               onClick={() => propagate(rows.filter((_, idx) => idx !== i))}
-              className="h-9 w-9 shrink-0 rounded-[6px] border border-[#E5E5E5] text-[#999999] hover:text-[#DC2626] hover:border-[#DC2626]/40 transition-colors flex items-center justify-center"
+              className="h-9 w-9 shrink-0 rounded-[6px] border border-border text-text-placeholder hover:text-negative-500 hover:border-negative-500/40 transition-colors flex items-center justify-center"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -616,7 +616,7 @@ export function PronunciationControl({ value, onChange, disabled }: Pronunciatio
             type="button"
             disabled={disabled}
             onClick={() => setRows([...rows, { word: "", sayAs: "" }])}
-            className="mt-1 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] transition-colors"
+            className="mt-1 inline-flex items-center gap-1.5 text-[12px] font-semibold text-brand-600 hover:text-brand-600 transition-colors"
           >
             <Plus className="h-3.5 w-3.5" />
             Add word
@@ -643,12 +643,12 @@ function PlayButton({ onClick, isPlaying, isLoading, disabled }: PlayButtonProps
       aria-disabled={disabled}
       className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer ${
         isPlaying
-          ? "bg-[#2563EB] text-white shadow-[0_0_0_4px_rgba(37,99,235,0.15)]"
-          : "bg-white border border-[#E5E5E5] text-[#666666] hover:border-[#2563EB] hover:text-[#2563EB]"
+          ? "bg-primary text-white shadow-[0_0_0_4px_rgba(37,99,235,0.15)]"
+          : "bg-bg-raised border border-border text-text-secondary hover:border-brand-500 hover:text-brand-600"
       } ${disabled ? "opacity-60 pointer-events-none" : ""}`}
     >
       {isLoading ? (
-        <Loader2 className="h-4 w-4 animate-spin text-[#2563EB]" />
+        <Loader2 className="h-4 w-4 animate-spin text-brand-600" />
       ) : isPlaying ? (
         <Pause className="h-4 w-4 fill-current" />
       ) : (

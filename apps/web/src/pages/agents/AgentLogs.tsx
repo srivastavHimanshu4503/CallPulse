@@ -149,7 +149,7 @@ export function AgentLogs(): React.JSX.Element {
 
   const waSessionControls =
     selectedLog?.type === "WHATSAPP" && waSession ? (
-      <div className="rounded-xl border border-border bg-white shadow-sm p-3">
+      <div className="rounded-xl border border-border bg-bg-raised shadow-sm p-3">
         {waSession.status === "OPEN" ? (
           <>
             <div className="flex items-center justify-between mb-2.5">
@@ -349,7 +349,7 @@ export function AgentLogs(): React.JSX.Element {
                 </div>
                 <div className={`px-4 py-3 text-[14px] leading-relaxed shadow-sm ${
                   isAgent
-                    ? "bg-white border border-border text-text-primary rounded-2xl rounded-tl-sm"
+                    ? "bg-bg-raised border border-border text-text-primary rounded-2xl rounded-tl-sm"
                     : "bg-primary text-white rounded-2xl rounded-tr-sm"
                 }`}>
                   {text}
@@ -385,7 +385,7 @@ export function AgentLogs(): React.JSX.Element {
 
   return (
     <PageWrapper noScroll>
-      <div className="flex-1 flex flex-col min-h-0 bg-white border border-border rounded-2xl overflow-hidden shadow-sm font-sans text-text-primary">
+      <div className="flex-1 flex flex-col min-h-0 bg-bg-raised border border-border rounded-2xl overflow-hidden shadow-sm font-sans text-text-primary">
         
         {/* Top Header */}
         <div className="flex-none h-14 border-b border-border flex items-center justify-between px-5 bg-surface/50 shrink-0 z-10">
@@ -400,7 +400,7 @@ export function AgentLogs(): React.JSX.Element {
             <h1 className="text-sm font-bold text-text-primary tracking-tight">
               {agent ? `${agent.name} — Logs` : "Agent Logs"}
             </h1>
-            <div className="flex items-center rounded-lg border border-border bg-white p-0.5 ml-1">
+            <div className="flex items-center rounded-lg border border-border bg-bg-raised p-0.5 ml-1">
               <button
                 type="button"
                 onClick={() => setViewMode("logs")}
@@ -456,12 +456,12 @@ export function AgentLogs(): React.JSX.Element {
 
         {/* Split Pane Content */}
         {viewMode === "logs" && (
-        <div className="flex-1 flex min-h-0 bg-white">
+        <div className="flex-1 flex min-h-0 bg-bg-raised">
           
           {/* LEFT PANE - INBOX STYLE */}
           <div className="w-[340px] bg-bg-canvas border-r border-border flex flex-col h-full shrink-0">
             {/* Search and Filters Header */}
-            <div className="p-3 border-b border-border bg-white flex flex-col gap-2 shrink-0 z-10">
+            <div className="p-3 border-b border-border bg-bg-raised flex flex-col gap-2 shrink-0 z-10">
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted" />
                 <input
@@ -476,7 +476,7 @@ export function AgentLogs(): React.JSX.Element {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="flex-1 bg-white border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
+                  className="flex-1 bg-bg-raised border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
                 >
                   <option value="ALL">All Channels</option>
                   <option value="CALL">Calls (in & out)</option>
@@ -485,7 +485,7 @@ export function AgentLogs(): React.JSX.Element {
                 <select
                   value={extractionStatus}
                   onChange={(e) => setExtractionStatus(e.target.value)}
-                  className="flex-1 bg-white border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
+                  className="flex-1 bg-bg-raised border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
                 >
                   <option value="ALL">All Status</option>
                   <option value="PENDING">Pending</option>
@@ -514,11 +514,11 @@ export function AgentLogs(): React.JSX.Element {
             <div className="flex-1 overflow-y-auto">
               {isLoading ? (
                 <div className="p-3 space-y-2">
-                  {[1, 2, 3, 4].map(i => <div key={i} className="h-16 bg-white shadow-sm animate-pulse rounded-lg border border-border" />)}
+                  {[1, 2, 3, 4].map(i => <div key={i} className="h-16 bg-bg-raised shadow-sm animate-pulse rounded-lg border border-border" />)}
                 </div>
               ) : filteredLogs.length === 0 ? (
                 <div className="p-8 flex flex-col items-center justify-center text-center h-full">
-                  <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm border border-border">
+                  <div className="h-10 w-10 bg-bg-raised rounded-full flex items-center justify-center mb-3 shadow-sm border border-border">
                     <Filter className="h-4 w-4 text-text-muted" />
                   </div>
                   <p className="text-xs font-semibold text-text-primary mb-1">No logs found</p>
@@ -538,7 +538,7 @@ export function AgentLogs(): React.JSX.Element {
                         key={log.id}
                         onClick={() => setSelectedLog(log)}
                         className={`group cursor-pointer p-3 transition-all relative ${
-                          isSelected ? "bg-active-nav-bg border-l-2 border-l-primary" : "hover:bg-white bg-transparent border-l-2 border-l-transparent"
+                          isSelected ? "bg-active-nav-bg border-l-2 border-l-primary" : "hover:bg-bg-raised bg-transparent border-l-2 border-l-transparent"
                         }`}
                       >
                         <div className="flex items-start justify-between">
@@ -559,7 +559,7 @@ export function AgentLogs(): React.JSX.Element {
                             </div>
                             {/* Profile Avatar */}
                             <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 shadow-sm ${
-                              isSelected ? "bg-primary text-white" : "bg-white border border-border text-primary"
+                              isSelected ? "bg-primary text-white" : "bg-bg-raised border border-border text-primary"
                             }`}>
                               {initial}
                             </div>
@@ -620,10 +620,10 @@ export function AgentLogs(): React.JSX.Element {
           </div>
 
           {/* RIGHT PANE - DETAILS */}
-          <div className="flex-1 flex flex-col min-w-0 bg-white border-l border-border">
+          <div className="flex-1 flex flex-col min-w-0 bg-bg-raised border-l border-border">
             {!selectedLog ? (
               <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface/30">
-                <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-border">
+                <div className="h-12 w-12 bg-bg-raised rounded-full flex items-center justify-center mb-4 shadow-sm border border-border">
                   <Activity className="h-5 w-5 text-primary/50" />
                 </div>
                 <h3 className="text-base font-bold text-text-primary mb-1">No Interaction Selected</h3>
@@ -684,7 +684,7 @@ export function AgentLogs(): React.JSX.Element {
                     {selectedLog.contactId && (
                       <button 
                         onClick={() => navigate(`/crm/contacts/${selectedLog.contactId}`)}
-                        className="px-2.5 py-1 bg-white border border-border hover:border-primary/50 hover:text-primary text-[10px] font-bold text-text-primary rounded transition-all flex items-center gap-1.5 shadow-sm"
+                        className="px-2.5 py-1 bg-bg-raised border border-border hover:border-primary/50 hover:text-primary text-[10px] font-bold text-text-primary rounded transition-all flex items-center gap-1.5 shadow-sm"
                       >
                         <User className="h-3 w-3" /> View contact in CRM
                       </button>
@@ -698,7 +698,7 @@ export function AgentLogs(): React.JSX.Element {
                 </div>
 
                 {/* Tabs Navigation */}
-                <div className="flex items-center px-5 bg-white border-b border-border shrink-0">
+                <div className="flex items-center px-5 bg-bg-raised border-b border-border shrink-0">
                   <button 
                     onClick={() => setActiveTab("transcript")}
                     className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-colors ${activeTab === "transcript" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
@@ -732,7 +732,7 @@ export function AgentLogs(): React.JSX.Element {
                 )}
 
                 {/* Tab Content Area */}
-                <div className="flex-1 overflow-y-auto w-full bg-white">
+                <div className="flex-1 overflow-y-auto w-full bg-bg-raised">
                   <div className="w-full h-full p-6">
                     <div className="w-full">
                       {/* TRANSCRIPT TAB */}
@@ -756,9 +756,9 @@ export function AgentLogs(): React.JSX.Element {
                       {/* SUMMARY & SCORE TAB */}
                       {activeTab === "summary" && (
                         <div className="space-y-4">
-                          <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
+                          <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
                             <h3 className="text-xs font-bold text-text-primary mb-3 flex items-center gap-1.5">
-                              <Sparkles className="h-3.5 w-3.5 text-primary" /> 
+                              <Sparkles className="h-3.5 w-3.5 text-primary" />
                               Conversation Summary
                             </h3>
                             {selectedLog.extractedFields?.summary ? (
@@ -772,7 +772,7 @@ export function AgentLogs(): React.JSX.Element {
                             )}
                           </div>
 
-                          <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
+                          <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
                             <h3 className="text-xs font-bold text-text-primary mb-3 flex items-center gap-1.5">
                               <Activity className="h-3.5 w-3.5 text-success" /> 
                               Lead Score
@@ -798,7 +798,7 @@ export function AgentLogs(): React.JSX.Element {
 
                       {/* EXTRACTIONS TAB */}
                       {activeTab === "extractions" && (
-                        <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
+                        <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
                           <h3 className="text-xs font-bold text-text-primary mb-4 flex items-center gap-1.5">
                             <ShieldCheck className="h-3.5 w-3.5 text-primary" /> 
                             Extracted CRM Fields
@@ -834,10 +834,10 @@ export function AgentLogs(): React.JSX.Element {
 
         {/* CHATS VIEW — WhatsApp inbox for this agent */}
         {viewMode === "chats" && (
-          <div className="flex-1 flex min-h-0 bg-white">
+          <div className="flex-1 flex min-h-0 bg-bg-raised">
             {/* Conversation list */}
             <div className="w-[300px] bg-bg-canvas border-r border-border flex flex-col h-full shrink-0">
-              <div className="px-3 py-2.5 border-b border-border bg-white flex items-center justify-between shrink-0">
+              <div className="px-3 py-2.5 border-b border-border bg-bg-raised flex items-center justify-between shrink-0">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
                   Customers ({chatsByContact.length})
                 </span>
@@ -871,7 +871,7 @@ export function AgentLogs(): React.JSX.Element {
                                 <User className="h-4 w-4" />
                               </div>
                               {group.hasLive && (
-                                <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse" />
+                                <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-bg-raised animate-pulse" />
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
@@ -904,7 +904,7 @@ export function AgentLogs(): React.JSX.Element {
                                 type="button"
                                 onClick={() => setSelectedLog(log)}
                                 className={`w-full text-left pl-[52px] pr-3 py-2 border-t border-border/40 transition-colors ${
-                                  selectedLog?.id === log.id ? "bg-emerald-50/80" : "bg-white hover:bg-surface"
+                                  selectedLog?.id === log.id ? "bg-emerald-50/80" : "bg-bg-raised hover:bg-surface"
                                 }`}
                               >
                                 <div className="flex items-baseline justify-between gap-2">
@@ -939,7 +939,7 @@ export function AgentLogs(): React.JSX.Element {
             <div className="flex-1 flex flex-col min-h-0 bg-[#F7F5F1]">
               {selectedLog?.type === "WHATSAPP" ? (
                 <>
-                  <div className="h-12 shrink-0 bg-white border-b border-border flex items-center px-4 gap-3">
+                  <div className="h-12 shrink-0 bg-bg-raised border-b border-border flex items-center px-4 gap-3">
                     <div className="h-8 w-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
                       <User className="h-4 w-4" />
                     </div>
@@ -1126,7 +1126,7 @@ function ComposeWhatsAppModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[520px] max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl"
+        className="w-full max-w-[520px] max-h-[90vh] overflow-y-auto rounded-2xl bg-bg-raised shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -1157,7 +1157,7 @@ function ComposeWhatsAppModal({
                   type="button"
                   onClick={() => setMode(m)}
                   className={`px-3 h-7 rounded-md text-[11.5px] font-bold capitalize transition-colors ${
-                    mode === m ? "bg-white text-text-primary shadow-sm" : "text-text-secondary hover:text-text-primary"
+                    mode === m ? "bg-bg-raised text-text-primary shadow-sm" : "text-text-secondary hover:text-text-primary"
                   }`}
                 >
                   {m === "freeform" ? "Freeform" : "Template (cold outreach)"}
@@ -1186,7 +1186,7 @@ function ComposeWhatsAppModal({
                   {templates.map((t) => {
                     const st = TEMPLATE_STATUS_UI[t.approvalStatus] ?? TEMPLATE_STATUS_UI.unsubmitted!;
                     return (
-                      <div key={t.sid} className="rounded-lg border border-border bg-white p-2.5">
+                      <div key={t.sid} className="rounded-lg border border-border bg-bg-raised p-2.5">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-[12px] font-bold text-text-primary truncate">{t.name}</span>
                           <div className="flex items-center gap-2 shrink-0">
@@ -1219,19 +1219,19 @@ function ComposeWhatsAppModal({
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Template name, e.g. call_followup"
-                  className="w-full h-8 px-2.5 text-[12px] bg-white border border-border rounded-lg focus:outline-none focus:border-emerald-500"
+                  className="w-full h-8 px-2.5 text-[12px] bg-bg-raised border border-border rounded-lg focus:outline-none focus:border-emerald-500"
                 />
                 <textarea
                   value={newBody}
                   onChange={(e) => setNewBody(e.target.value)}
                   placeholder={"Namaste {{1}}! Aapne humein call kiya tha {{2}} ke liye. Hum aapko details bhejna chahte hain — reply karein to continue."}
-                  className="w-full text-[12px] bg-white border border-border rounded-lg px-2.5 py-2 focus:outline-none focus:border-emerald-500 min-h-[70px]"
+                  className="w-full text-[12px] bg-bg-raised border border-border rounded-lg px-2.5 py-2 focus:outline-none focus:border-emerald-500 min-h-[70px]"
                 />
                 <div className="flex items-center gap-2">
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="h-8 px-2 text-[11.5px] bg-white border border-border rounded-lg focus:outline-none"
+                    className="h-8 px-2 text-[11.5px] bg-bg-raised border border-border rounded-lg focus:outline-none"
                   >
                     <option value="MARKETING">Marketing</option>
                     <option value="UTILITY">Utility (follow-ups, confirmations)</option>
@@ -1260,7 +1260,7 @@ function ComposeWhatsAppModal({
               value={to}
               onChange={(e) => setTo(e.target.value)}
               placeholder="+919876543210"
-              className="w-full h-9 px-3 text-[13px] bg-white border border-border rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+              className="w-full h-9 px-3 text-[13px] bg-bg-raised border border-border rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
             />
           </div>
 
@@ -1271,7 +1271,7 @@ function ComposeWhatsAppModal({
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Namaste! Aapne humein call kiya tha — main details share kar raha hoon…"
-                className="w-full text-[13px] bg-white border border-border rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[90px]"
+                className="w-full text-[13px] bg-bg-raised border border-border rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[90px]"
               />
               <p className="text-[10.5px] text-text-muted mt-1 leading-snug">
                 Only delivers if this customer messaged you in the last 24 hours. For cold outreach, switch to
@@ -1294,7 +1294,7 @@ function ComposeWhatsAppModal({
                       setTemplateSid(e.target.value);
                       setVariables({});
                     }}
-                    className="w-full h-9 px-2.5 text-[12.5px] bg-white border border-border rounded-lg focus:outline-none focus:border-emerald-500"
+                    className="w-full h-9 px-2.5 text-[12.5px] bg-bg-raised border border-border rounded-lg focus:outline-none focus:border-emerald-500"
                   >
                     <option value="">Select a template…</option>
                     {approved.map((t) => (
@@ -1317,11 +1317,11 @@ function ComposeWhatsAppModal({
                         value={variables[v] ?? ""}
                         onChange={(e) => setVariables((prev) => ({ ...prev, [v]: e.target.value }))}
                         placeholder={v === "1" ? "e.g. Ramesh ji" : "value"}
-                        className="w-full h-8 px-2.5 text-[12.5px] bg-white border border-border rounded-lg focus:outline-none focus:border-emerald-500"
+                        className="w-full h-8 px-2.5 text-[12.5px] bg-bg-raised border border-border rounded-lg focus:outline-none focus:border-emerald-500"
                       />
                     </div>
                   ))}
-                  <div className="rounded-lg bg-[#F0FDF4] border border-emerald-200 px-3 py-2.5">
+                  <div className="rounded-lg bg-positive-50 border border-emerald-200 px-3 py-2.5">
                     <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-700 mb-1">Preview</div>
                     <p className="text-[12px] text-emerald-900 leading-snug whitespace-pre-wrap">{preview}</p>
                   </div>

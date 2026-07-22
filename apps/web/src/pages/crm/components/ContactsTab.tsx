@@ -395,7 +395,7 @@ export function ContactsTab({
               className={`inline-flex items-center gap-1 h-7 px-2 rounded-md border text-[11px] font-bold transition-colors ${
                 quickBand === "hot"
                   ? "border-negative-500 bg-negative-50 text-negative-500"
-                  : "border-line-default bg-white text-fg-secondary hover:text-negative-500 hover:border-negative-500/40"
+                  : "border-line-default bg-bg-raised text-fg-secondary hover:text-negative-500 hover:border-negative-500/40"
               }`}
               title="Show hot leads only"
             >
@@ -407,16 +407,16 @@ export function ContactsTab({
               className={`inline-flex items-center gap-1 h-7 px-2 rounded-md border text-[11px] font-bold transition-colors ${
                 quickSource === "ai"
                   ? "border-brand-500 bg-brand-50 text-brand-700"
-                  : "border-line-default bg-white text-fg-secondary hover:text-brand-700 hover:border-brand-500/40"
+                  : "border-line-default bg-bg-raised text-fg-secondary hover:text-brand-700 hover:border-brand-500/40"
               }`}
               title="Show contacts captured by AI calls"
             >
               <PhoneCall className="h-3 w-3" /> {aiInsights.aiCaptured} from calls
             </button>
-            <span className="hidden lg:inline-flex items-center gap-1 h-7 px-2 rounded-md border border-line-default bg-white text-[11px] font-bold text-fg-secondary">
+            <span className="hidden lg:inline-flex items-center gap-1 h-7 px-2 rounded-md border border-line-default bg-bg-raised text-[11px] font-bold text-fg-secondary">
               <TrendingUp className="h-3 w-3" /> {aiInsights.newThisWeek} new this week
             </span>
-            <span className="hidden xl:inline-flex items-center gap-1 h-7 px-2 rounded-md border border-line-default bg-white text-[11px] font-bold text-fg-secondary">
+            <span className="hidden xl:inline-flex items-center gap-1 h-7 px-2 rounded-md border border-line-default bg-bg-raised text-[11px] font-bold text-fg-secondary">
               <Star className="h-3 w-3" /> {aiInsights.withDeals} with deals
             </span>
           </div>
@@ -442,7 +442,7 @@ export function ContactsTab({
                 setSortDir("asc");
               }}
               className={`h-9 border text-[12px] font-semibold rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer max-w-[180px] truncate ${
-                sortFieldId ? "border-brand-500 bg-brand-50 text-brand-700" : "border-line-default bg-white text-fg-secondary"
+                sortFieldId ? "border-brand-500 bg-brand-50 text-brand-700" : "border-line-default bg-bg-raised text-fg-secondary"
               }`}
               title="Order contacts by a custom field"
             >
@@ -537,7 +537,7 @@ export function ContactsTab({
             <button
               type="button"
               onClick={handleBulkDelete}
-              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md text-[11px] font-semibold bg-white border border-negative-500 text-negative-500 hover:bg-negative-50"
+              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md text-[11px] font-semibold bg-bg-raised border border-negative-500 text-negative-500 hover:bg-negative-50"
             >
               <Trash2 className="h-3 w-3" />
               Delete
@@ -545,7 +545,7 @@ export function ContactsTab({
             <button
               type="button"
               onClick={() => setSelectedIds([])}
-              className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-semibold text-fg-secondary hover:text-fg-primary hover:bg-white"
+              className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-semibold text-fg-secondary hover:text-fg-primary hover:bg-bg-raised"
             >
               <X className="h-3 w-3" />
               Clear

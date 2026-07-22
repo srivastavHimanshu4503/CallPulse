@@ -113,12 +113,12 @@ function SiteChrome({
 }): React.JSX.Element {
   const container =
     device === "mobile"
-      ? "max-w-[280px] h-[560px] mx-auto rounded-[22px] p-1.5 bg-slate-900 shadow-pop flex flex-col"
+      ? "max-w-[280px] h-[560px] mx-auto rounded-[22px] p-1.5 bg-[#0F172A] shadow-pop flex flex-col"
       : "w-full h-full max-w-[900px] rounded-lg bg-slate-100 border border-line-default shadow-pop mx-auto flex flex-col";
   const inner =
     device === "mobile"
-      ? "rounded-[16px] bg-white overflow-hidden flex-1 flex flex-col relative"
-      : "rounded-md bg-white overflow-hidden flex-1 flex flex-col relative";
+      ? "rounded-[16px] bg-bg-raised overflow-hidden flex-1 flex flex-col relative"
+      : "rounded-md bg-bg-raised overflow-hidden flex-1 flex flex-col relative";
 
   return (
     <div className={container}>
@@ -129,13 +129,13 @@ function SiteChrome({
             <span className="h-2 w-2 rounded-full bg-amber-400" />
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
           </div>
-          <div className="flex-1 mx-2 h-4 rounded-md bg-white border border-line-subtle text-[9.5px] text-fg-muted font-medium flex items-center px-2">
+          <div className="flex-1 mx-2 h-4 rounded-md bg-bg-raised border border-line-subtle text-[9.5px] text-fg-muted font-medium flex items-center px-2">
             <Globe className="h-2 w-2 mr-1.5" />
             {domain}
             <Search className="h-2 w-2 ml-auto" />
           </div>
         </div>
-        <div className="relative flex-1 bg-white overflow-y-auto">{children}</div>
+        <div className="relative flex-1 bg-bg-raised overflow-y-auto">{children}</div>
       </div>
     </div>
   );
@@ -143,9 +143,9 @@ function SiteChrome({
 
 function TemplateSalon(): React.JSX.Element {
   return (
-    <div className="bg-gradient-to-br from-pink-50 to-white p-3 min-h-[260px]">
+    <div className="bg-gradient-to-br from-rose-50 to-bg-canvas p-3 min-h-[260px]">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[11px] font-bold text-slate-900">Glow Studio</div>
+        <div className="text-[11px] font-bold text-[#0F172A]">Glow Studio</div>
         <div className="flex gap-1.5 text-[8.5px] text-slate-500 font-medium">
           <span>Services</span><span>Book</span><span>Contact</span>
         </div>
@@ -155,7 +155,7 @@ function TemplateSalon(): React.JSX.Element {
       </div>
       <div className="grid grid-cols-3 gap-1.5">
         {["Haircut", "Facial", "Spa"].map((s) => (
-          <div key={s} className="rounded-md bg-white border border-line-subtle p-1.5">
+          <div key={s} className="rounded-md bg-bg-raised border border-line-subtle p-1.5">
             <div className="h-7 rounded bg-bg-muted mb-1" />
             <div className="text-[9px] font-semibold text-slate-700">{s}</div>
             <div className="text-[8px] text-slate-500">₹499+</div>
@@ -168,20 +168,20 @@ function TemplateSalon(): React.JSX.Element {
 
 function TemplateClinic(): React.JSX.Element {
   return (
-    <div className="bg-gradient-to-br from-emerald-50 to-white p-3 min-h-[260px]">
+    <div className="bg-gradient-to-br from-emerald-50 to-bg-canvas p-3 min-h-[260px]">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[11px] font-bold text-slate-900">Wellness Care Clinic</div>
+        <div className="text-[11px] font-bold text-[#0F172A]">Wellness Care Clinic</div>
         <div className="flex gap-1.5 text-[8.5px] text-slate-500 font-medium">
           <span>Doctors</span><span>Book</span><span>Insurance</span>
         </div>
       </div>
-      <div className="rounded-md bg-white border border-line-subtle p-2 mb-1.5">
+      <div className="rounded-md bg-bg-raised border border-line-subtle p-2 mb-1.5">
         <div className="text-[9.5px] font-bold text-emerald-700 mb-0.5">✓ Same-day appointments</div>
         <div className="text-[8.5px] text-slate-600">General physician · Dermatology · Pediatrics</div>
       </div>
       <div className="space-y-1.5">
         {["Dr. Kapoor — General Physician", "Dr. Mehta — Dermatologist"].map((d) => (
-          <div key={d} className="flex items-center gap-2 rounded-md bg-white border border-line-subtle p-1.5">
+          <div key={d} className="flex items-center gap-2 rounded-md bg-bg-raised border border-line-subtle p-1.5">
             <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center text-[8.5px] font-bold text-emerald-700">DR</div>
             <div className="flex-1">
               <div className="text-[9px] font-semibold text-slate-700">{d}</div>
@@ -198,7 +198,7 @@ function TemplateRealEstate(): React.JSX.Element {
   return (
     <div className="bg-slate-50 p-3 min-h-[260px]">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[11px] font-bold text-slate-900">Metro Homes Realty</div>
+        <div className="text-[11px] font-bold text-[#0F172A]">Metro Homes Realty</div>
         <div className="flex gap-1.5 text-[8.5px] text-slate-500 font-medium">
           <span>Listings</span><span>Rent</span><span>Sell</span>
         </div>
@@ -208,7 +208,7 @@ function TemplateRealEstate(): React.JSX.Element {
           { name: "3 BHK · Andheri West", price: "₹1.2 Cr", label: "New" },
           { name: "2 BHK · Powai",         price: "₹85 L",  label: "Hot" },
         ].map((h) => (
-          <div key={h.name} className="rounded-md bg-white border border-line-subtle overflow-hidden">
+          <div key={h.name} className="rounded-md bg-bg-raised border border-line-subtle overflow-hidden">
             <div className="h-14 bg-gradient-to-br from-blue-200 to-blue-400 relative">
               <span className="absolute top-1 left-1 text-[8px] font-bold bg-white/90 text-blue-700 px-1 py-0.5 rounded">{h.label}</span>
             </div>
@@ -225,9 +225,9 @@ function TemplateRealEstate(): React.JSX.Element {
 
 function TemplateEcom(): React.JSX.Element {
   return (
-    <div className="bg-white p-3 min-h-[260px]">
+    <div className="bg-bg-raised p-3 min-h-[260px]">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[11px] font-bold text-slate-900">Kumar Kirana</div>
+        <div className="text-[11px] font-bold text-[#0F172A]">Kumar Kirana</div>
         <div className="flex items-center gap-2 text-[8.5px] text-slate-500 font-medium">
           <Search className="h-2.5 w-2.5" />
           <ShoppingCart className="h-2.5 w-2.5" />
@@ -321,14 +321,14 @@ function WidgetPanel({
   const headerText = light ? "#0F172A" : "#FFFFFF";
   return (
     <div
-      className="w-72 rounded-[24px] bg-white border border-line-default overflow-hidden flex flex-col"
+      className="w-72 rounded-[24px] bg-bg-raised border border-line-default overflow-hidden flex flex-col"
       style={{ boxShadow: "0 20px 60px -12px rgba(15,23,42,0.30)" }}
     >
       <div className="p-6 flex flex-col items-center justify-center gap-4 bg-bg-subtle relative pt-10 pb-8">
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 opacity-50 hover:opacity-100 p-2 text-fg-muted bg-white rounded-full shadow-sm"
+          className="absolute top-4 right-4 opacity-50 hover:opacity-100 p-2 text-fg-muted bg-bg-raised rounded-full shadow-sm"
         >
           <X className="h-4 w-4" />
         </button>
@@ -346,7 +346,7 @@ function WidgetPanel({
           <div className="text-[12px] text-fg-muted mt-1 animate-pulse font-medium">Speaking...</div>
         </div>
       </div>
-      <div className="p-5 bg-white border-t border-line-subtle text-center pb-6">
+      <div className="p-5 bg-bg-raised border-t border-line-subtle text-center pb-6">
         <p className="text-[12px] text-slate-600 leading-relaxed italic mb-6 font-medium">"{welcome}"</p>
         <div className="flex justify-center gap-6">
           <button
@@ -389,7 +389,7 @@ const TabBtn: React.FC<{
             color: "#FFFFFF",
             boxShadow: "0 2px 4px rgba(37,99,235,0.35), 0 1px 2px rgba(0,0,0,0.08)",
           }
-        : { backgroundColor: "transparent", color: "#475569" }
+        : { backgroundColor: "transparent", color: "rgb(var(--fg-secondary))" }
     }
   >
     <Icon className="h-3.5 w-3.5" />
@@ -424,7 +424,7 @@ function ChoiceRow<T extends string>({
                     borderColor: "#1D4ED8",
                     boxShadow: "0 2px 4px rgba(37,99,235,0.35)",
                   }
-                : { backgroundColor: "#FFFFFF", color: "#475569", borderColor: "#E5E7EB" }
+                : { backgroundColor: "rgb(var(--bg-raised))", color: "rgb(var(--fg-secondary))", borderColor: "rgb(var(--line-default))" }
             }
           >
             {o.label}
@@ -524,9 +524,9 @@ export function Widget(): React.JSX.Element {
                         boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.28)",
                       }
                     : {
-                        backgroundColor: "#F1F5F9",
-                        color: "#64748B",
-                        boxShadow: "inset 0 0 0 1px #E5E7EB",
+                        backgroundColor: "rgb(var(--line-subtle))",
+                        color: "rgb(var(--slate-500))",
+                        boxShadow: "inset 0 0 0 1px rgb(var(--line-default))",
                       }
                 }
               >
@@ -555,7 +555,7 @@ export function Widget(): React.JSX.Element {
           {/* Tab bar */}
           <div
             className="flex items-center gap-1 rounded-lg p-1 mb-4 border"
-            style={{ backgroundColor: "#F1F5F9", borderColor: "#E5E7EB" }}
+            style={{ backgroundColor: "rgb(var(--line-subtle))", borderColor: "rgb(var(--line-default))" }}
           >
             <TabBtn active={tab === "design"}   onClick={() => setTab("design")}   icon={Palette}  label="Design" />
             <TabBtn active={tab === "behavior"} onClick={() => setTab("behavior")} icon={Bot}      label="Behavior" />
@@ -594,7 +594,7 @@ export function Widget(): React.JSX.Element {
                       type="color"
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
-                      className="h-9 w-11 rounded-lg border border-line-default cursor-pointer bg-white p-0.5"
+                      className="h-9 w-11 rounded-lg border border-line-default cursor-pointer bg-bg-raised p-0.5"
                     />
                     <input
                       type="text"
@@ -674,7 +674,7 @@ export function Widget(): React.JSX.Element {
                     One tag. Any website.
                   </div>
                   <p className="text-[10.5px] text-fg-secondary leading-snug">
-                    Paste this before <code className="font-mono bg-white px-1 rounded">&lt;/body&gt;</code> on your site. The widget shows up instantly.
+                    Paste this before <code className="font-mono bg-bg-raised px-1 rounded">&lt;/body&gt;</code> on your site. The widget shows up instantly.
                   </p>
                 </div>
 
@@ -691,7 +691,7 @@ export function Widget(): React.JSX.Element {
                       {copied ? (<><Check className="h-3 w-3" /> Copied</>) : (<><Copy className="h-3 w-3" /> Copy</>)}
                     </button>
                   </div>
-                  <pre className="text-[10px] leading-relaxed bg-slate-900 text-emerald-200 rounded-md p-2.5 overflow-x-auto no-scrollbar font-mono">
+                  <pre className="text-[10px] leading-relaxed bg-[#0F172A] text-[#A7F3D0] rounded-md p-2.5 overflow-x-auto no-scrollbar font-mono">
 {embedJs}
                   </pre>
                 </div>
@@ -734,7 +734,7 @@ export function Widget(): React.JSX.Element {
                           borderColor: "#1D4ED8",
                           boxShadow: "0 2px 4px rgba(37,99,235,0.35)",
                         }
-                      : { backgroundColor: "#F1F5F9", color: "#475569", borderColor: "#E5E7EB" }
+                      : { backgroundColor: "rgb(var(--line-subtle))", color: "rgb(var(--fg-secondary))", borderColor: "rgb(var(--line-default))" }
                   }
                 >
                   <t.icon className="h-3 w-3" />
@@ -747,7 +747,7 @@ export function Widget(): React.JSX.Element {
           {/* Preview surface — tinted so any color, even white, still contrasts */}
           <div className="flex-1 min-h-[500px] overflow-hidden rounded-xl p-3 flex items-center justify-center"
             style={{
-              background: "linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #eef2ff 100%)",
+              background: "linear-gradient(135deg, rgb(var(--bg-highlight)) 0%, rgb(var(--bg-subtle)) 50%, rgb(var(--bg-highlight)) 100%)",
             }}
           >
             <div className="w-full h-full flex flex-col justify-center">

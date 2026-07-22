@@ -5,10 +5,10 @@ import { api } from "../../lib/axios.js";
 import { AuthLayout } from "../../components/auth/AuthLayout.js";
 
 const inputClass =
-  "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-11 px-3.5 w-full transition-all";
+  "bg-bg-raised border-border focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[14px] text-text-primary placeholder-text-placeholder rounded-[10px] h-11 px-3.5 w-full transition-all";
 
 const otpClass =
-  "bg-white border-[#E5E5E5] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-[#111111] placeholder-[#B0B0B0] rounded-[10px] h-12 text-center tracking-[0.5em] font-mono text-lg w-full transition-all";
+  "bg-bg-raised border-border focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15 text-text-primary placeholder-text-placeholder rounded-[10px] h-12 text-center tracking-[0.5em] font-mono text-lg w-full transition-all";
 
 const goldButton =
   "w-full h-11 text-[#0a0416] font-bold text-[14px] rounded-[10px] flex items-center justify-center transition-all hover:brightness-110 shadow-[0_10px_30px_-10px_rgba(251,191,36,0.55)] disabled:opacity-70";
@@ -58,8 +58,8 @@ export function ResetPassword(): React.JSX.Element {
             <span className="h-1 w-1 rounded-full bg-orange-600" />
             Reset password
           </span>
-          <h1 className="text-[28px] leading-tight font-bold tracking-tight text-[#111111]">Set a new password</h1>
-          <p className="text-[13.5px] text-[#666666] mt-2">
+          <h1 className="text-[28px] leading-tight font-bold tracking-tight text-text-primary">Set a new password</h1>
+          <p className="text-[13.5px] text-text-secondary mt-2">
             Enter your email, recovery code, and a new secure password.
           </p>
         </div>
@@ -85,7 +85,7 @@ export function ResetPassword(): React.JSX.Element {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Registered email</label>
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Registered email</label>
             <Input type="email" placeholder="name@company.com" value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={emailError} disabled={isLoading} required
@@ -93,7 +93,7 @@ export function ResetPassword(): React.JSX.Element {
             />
           </div>
           <div>
-            <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">Verification code</label>
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Verification code</label>
             <Input type="text" placeholder="000000" maxLength={6} value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
               error={otpError} disabled={isLoading} required
@@ -101,7 +101,7 @@ export function ResetPassword(): React.JSX.Element {
             />
           </div>
           <div>
-            <label className="block text-[13px] font-semibold text-[#111111] mb-1.5">New password</label>
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">New password</label>
             <Input type="password" placeholder="Enter a strong password" value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               error={passwordError} disabled={isLoading} required
@@ -118,9 +118,9 @@ export function ResetPassword(): React.JSX.Element {
           </Button>
         </form>
 
-        <div className="mt-8 text-center text-[13.5px] text-[#666666]">
+        <div className="mt-8 text-center text-[13.5px] text-text-secondary">
           Remember your password?{" "}
-          <Link to="/login" className="text-[#111111] font-bold hover:text-orange-600 transition-colors">Back to sign in</Link>
+          <Link to="/login" className="text-text-primary font-bold hover:text-orange-600 transition-colors">Back to sign in</Link>
         </div>
       </div>
     </AuthLayout>
