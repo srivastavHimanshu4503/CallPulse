@@ -1,4 +1,5 @@
 import { defineAgent, llm as agentsLLM, voice, type JobContext, type JobProcess } from "@livekit/agents";
+import { initSentry, captureError, flushSentry } from "@antigravity/observability";
 import * as silero from "@livekit/agents-plugin-silero";
 import { RoomEvent } from "@livekit/rtc-node";
 import { RoomServiceClient, SipClient } from "livekit-server-sdk";
@@ -22,6 +23,9 @@ import { TwilioTelephonyProvider } from "../telephony/twilio/provider.js";
 import { resolveLanguageCodes, type VoiceKey } from "../voices/config.js";
 
 const log = createLogger("agent");
+// This module runs inside LiveKit's child job processes — init Sentry here
+// so call-handling crashes are reported (no-op without SENTRY_DSN).
+initSentry({ service: "voice-agent", environment: process.env.NODE_ENV });
 const eventBus = new LocalEventBus();
 const agentConfigProvider = getAgentConfigProvider();
 
@@ -554,6 +558,7 @@ export default defineAgent({
         configuredVoice: persona.voice,
         message: (err as Error).message,
       });
+      captureError(err, { where: "createTTS", callSid, voice: persona.voice, tenantId: persona.ids.tenantId });
       ttsInstance = createTTS({ voice: "sarvam:priya", language: langCodes.tts });
     }
 
@@ -920,6 +925,7 @@ export default defineAgent({
         callLog.error("call log persistence failed — post-call dispatch aborted", {
           message: (err as Error).message,
         });
+        captureError(err, { where: "persistCallLog", callSid, tenantId: persona.ids.tenantId });
       }
 
       if (persisted) {
@@ -948,9 +954,11 @@ export default defineAgent({
           callLog.warn("post-call dispatch threw unexpectedly", {
             message: (err as Error).message,
           });
+          captureError(err, { where: "dispatchPostCall", callSid, tenantId: persona.ids.tenantId });
         }
       }
 
+      await flushSentry();
       eventBus.emit("call.ended", {
         callSid,
         callerNumber,

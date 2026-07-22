@@ -1,4 +1,5 @@
 import { db } from "@antigravity/db";
+import { captureError } from "@antigravity/observability";
 import { getErrorMessage, toAppError } from "@antigravity/errors";
 import { createLogger } from "../logger.js";
 import { finalizeExtraction, markExtractionInProgress } from "../persistence/log-status.js";
@@ -141,6 +142,14 @@ const runPipeline = async (job: PostCallJob, handlers: JobHandler[]): Promise<vo
         logId: job.logId,
         handler: handler.name,
         ...appErr.toJSON(),
+      });
+      // Handler failures are isolated by design but each one is a broken
+      // feature for that call (billing, CRM, deals...) — track every one.
+      captureError(err, {
+        where: `pipeline.${handler.name}`,
+        logId: job.logId,
+        tenantId: job.tenantId,
+        callSid: job.callSid,
       });
     }
   }

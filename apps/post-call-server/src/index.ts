@@ -1,3 +1,4 @@
+import { initSentry, captureError } from "@antigravity/observability";
 import { db } from "@antigravity/db";
 import express from "express";
 
@@ -12,12 +13,17 @@ import { createIngestRouter } from "./routes/ingest.js";
 
 const log = createLogger("server");
 
+// Error monitoring — active only when SENTRY_DSN is set (deployed envs).
+initSentry({ service: "post-call-server", environment: config.env });
+
 const queue = createQueue<PostCallJob>("post-call");
 queue.process(async (job) => {
   await runPostCallPipeline(job.data);
 });
 queue.on("failed", (job, err) => {
   log.error("job DLQ", { id: job.id, name: job.name, message: err.message });
+  // A dead-lettered job means a call was never billed/analyzed — page-worthy.
+  captureError(err, { where: "queue.dlq", jobId: String(job.id), jobName: job.name });
 });
 
 const app = express();

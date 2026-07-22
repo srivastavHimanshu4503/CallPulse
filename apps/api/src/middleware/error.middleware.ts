@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import { captureError } from "@antigravity/observability";
 import { logger } from "../utils/logger.js";
 import { sendError } from "../utils/response.js";
 
@@ -21,6 +22,16 @@ export function errorMiddleware(
   });
 
   const statusCode = "status" in err && typeof err.status === "number" ? err.status : 500;
+  // Expected 4xx (validation, auth, not-found) is noise, not an incident.
+  if (statusCode >= 500) {
+    captureError(err, {
+      url: req.originalUrl,
+      method: req.method,
+      tenantId: req.tenantId,
+      userId: req.userId,
+    });
+  }
+
   const message = err.message || "An unexpected system error occurred";
 
   sendError(res, message, statusCode);

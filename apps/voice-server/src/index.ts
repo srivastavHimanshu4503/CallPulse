@@ -5,11 +5,15 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import { initSentry, captureError } from "@antigravity/observability";
 import { config } from "./config.js";
 import { createLogger } from "./logger.js";
 import voiceRouter from "./channels/voice/index.js";
 
 const log = createLogger("server");
+
+// Error monitoring — active only when SENTRY_DSN is set (deployed envs).
+initSentry({ service: "voice-server", environment: config.env });
 
 // Optional native import — worker cannot boot without it, but Express still can.
 let agentsPkg: any = null;
@@ -93,7 +97,10 @@ if (agentsPkg && config.livekit.isConfigured) {
     worker
       .run()
       .then(() => log.info("livekit agent worker running"))
-      .catch((err: Error) => log.error("worker crashed", { message: err.message, stack: err.stack }));
+      .catch((err: Error) => {
+        log.error("worker crashed", { message: err.message, stack: err.stack });
+        captureError(err, { where: "worker.run" });
+      });
   } catch (err) {
     log.error("failed to initialize worker", { message: (err as Error)?.message });
   }

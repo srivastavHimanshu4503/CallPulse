@@ -1,7 +1,11 @@
+import { initSentry } from "@antigravity/observability";
 import { app } from "./app.js";
 import { env } from "./config/env.js";
 import { logger } from "./utils/logger.js";
 import { db } from "./config/database.js";
+
+// Error monitoring — active only when SENTRY_DSN is set (deployed envs).
+initSentry({ service: "api", environment: env.NODE_ENV });
 
 async function main() {
   try {
