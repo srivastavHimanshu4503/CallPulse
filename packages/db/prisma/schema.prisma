@@ -569,13 +569,24 @@ model AIAgent {
   dndCompliance    Boolean            @default(true)
   recordingConsent Boolean            @default(true)
   isActive         Boolean            @default(true)
-  systemPrompt     String
+  // How the agent should talk and behave — written by the business owner in
+  // the dashboard, injected into the live call prompt as its own section.
+  agentGuidelines  String?
   modelName        String
-  voice            String             @default("elevenlabs:EXAVITQu4vr4xnSDxMaL")
+  voice            String             @default("sarvam:priya")
   // Speaking-speed multiplier. Null = per-provider default (providers pace
   // the same nominal speed very differently, so a single global constant
   // made Sarvam drag and ElevenLabs rush).
   voiceSpeed       Float?
+  // Per-voice provider tunables chosen by the user in the dashboard
+  // (ElevenLabs: stability/similarityBoost/style; Sarvam: temperature).
+  // Null = provider defaults.
+  voiceSettings    Json?
+  // User-defined word → spoken-form overrides ({"NAIC": "N A I C"}).
+  // Source of truth for the synced Sarvam pronunciation dictionary.
+  pronunciations   Json?
+  // Sarvam pronunciation dictionary id (p_xxx) synced from `pronunciations`.
+  pronunciationDictId String?
   intakeWorkflowId String?
   smsWorkflowId    String?
   phoneNumberId    String?

@@ -18,6 +18,12 @@ const envSchema = z.object({
   LIVEKIT_URL: optionalString,
   LIVEKIT_API_KEY: optionalString,
   LIVEKIT_API_SECRET: optionalString,
+  // Worker registration name. The LiveKit SIP dispatch rule routes real
+  // phone calls to "inbound-agent" — local dev MUST register under a
+  // different name (e.g. "inbound-agent-local") or the laptop steals
+  // production calls whenever it's running (both envs share one LiveKit
+  // project). Browser test calls follow the api server's matching env.
+  LIVEKIT_AGENT_NAME: z.string().default("inbound-agent"),
 
   TWILIO_ACCOUNT_SID: optionalString,
   TWILIO_AUTH_TOKEN: optionalString,
@@ -166,6 +172,7 @@ export const config = {
     url: env.LIVEKIT_URL,
     apiKey: env.LIVEKIT_API_KEY,
     apiSecret: env.LIVEKIT_API_SECRET,
+    agentName: env.LIVEKIT_AGENT_NAME,
     isConfigured: !!(env.LIVEKIT_URL && env.LIVEKIT_API_KEY && env.LIVEKIT_API_SECRET),
   },
   twilio: {

@@ -1,6 +1,6 @@
 import { getAgentByPhoneNumber, getAgentById, type AgentContext } from "@antigravity/db";
 import { createLogger } from "../logger.js";
-import type { AgentConfigProvider, AgentPersonaConfig } from "./types.js";
+import type { AgentConfigProvider, AgentPersonaConfig, AgentVoiceSettings } from "./types.js";
 
 const log = createLogger("agent-config:prisma");
 
@@ -53,9 +53,11 @@ const shape = (ctx: AgentContext): AgentPersonaConfig => ({
   language: ctx.agent.language,
   greetingMessage: ctx.agent.greetingMessage,
   fallbackMessage: ctx.agent.fallbackMessage,
-  systemPrompt: ctx.agent.systemPrompt || undefined,
+  guidelines: ctx.agent.agentGuidelines || undefined,
   voice: ctx.agent.voice,
   voiceSpeed: ctx.agent.voiceSpeed ?? undefined,
+  voiceSettings: (ctx.agent.voiceSettings as AgentVoiceSettings | null) ?? undefined,
+  pronunciationDictId: ctx.agent.pronunciationDictId ?? undefined,
   maxDurationMinutes: ctx.agent.maxDuration,
   knowledge: ctx.knowledgeBases.map((kb) => ({
     name: kb.name,

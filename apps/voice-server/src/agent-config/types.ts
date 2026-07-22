@@ -15,12 +15,16 @@ export interface AgentPersonaConfig {
   greetingMessage: string;
   /** Fallback line when the agent cannot resolve a request. */
   fallbackMessage: string;
-  /** Free-form system prompt tail — appended to the base persona rules. */
-  systemPrompt?: string;
+  /** Owner-written behavior guidelines — appended to the base persona rules. */
+  guidelines?: string;
   /** Which voice profile to use for TTS. */
   voice: string;
   /** Speaking-speed multiplier. Undefined = per-provider default. */
   voiceSpeed?: number;
+  /** User-tuned per-voice provider settings (0–1 floats). Undefined = defaults. */
+  voiceSettings?: AgentVoiceSettings;
+  /** Sarvam pronunciation dictionary id synced by the api server (p_xxx). */
+  pronunciationDictId?: string;
   /** Max call duration in minutes; the agent should wrap up before this. */
   maxDurationMinutes: number;
   /** Knowledge base content, concatenated into the system prompt. */
@@ -46,6 +50,18 @@ export interface AgentPersonaConfig {
     tenantId: string;
     phoneNumberId: string;
   };
+}
+
+/** Mirrors `AgentVoiceSettings` in @antigravity/types (stored as JSON on the agent row). */
+export interface AgentVoiceSettings {
+  /** ElevenLabs: lower = more expressive, higher = more stable/monotone. */
+  stability?: number;
+  /** ElevenLabs: adherence to the original voice timbre. */
+  similarityBoost?: number;
+  /** ElevenLabs: style exaggeration. */
+  style?: number;
+  /** Sarvam: sampling temperature — higher is more expressive. */
+  temperature?: number;
 }
 
 export interface KnowledgeBaseEntry {

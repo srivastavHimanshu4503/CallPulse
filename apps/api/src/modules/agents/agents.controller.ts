@@ -282,7 +282,7 @@ export class AgentsController {
 
   async testVoice(req: Request, res: Response): Promise<void> {
     try {
-      const { provider, voice, language } = req.body;
+      const { provider, voice, language, voiceSettings } = req.body;
       if (!provider || !voice) {
         sendError(res, "Provider and voice are required", 400);
         return;
@@ -290,9 +290,10 @@ export class AgentsController {
       const audioBuffer = await agentsService.generateTestVoice({
         provider,
         voice,
-        language
+        language,
+        voiceSettings
       });
-      const contentType = provider === "openai" ? "audio/mpeg" : "audio/wav";
+      const contentType = provider === "sarvam" ? "audio/wav" : "audio/mpeg";
       res.setHeader("Content-Type", contentType);
       res.send(audioBuffer);
     } catch (error: any) {

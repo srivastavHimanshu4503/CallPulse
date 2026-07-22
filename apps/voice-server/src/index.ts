@@ -63,7 +63,7 @@ const httpServer = app.listen(config.server.port, () => {
 let worker: any = null;
 if (agentsPkg && config.livekit.isConfigured) {
   try {
-    log.info("initializing livekit agent worker", { agentName: "inbound-agent" });
+    log.info("initializing livekit agent worker", { agentName: config.livekit.agentName });
     if (typeof agentsPkg.initializeLogger === "function") {
       agentsPkg.initializeLogger({ level: config.server.logLevel });
     }
@@ -73,7 +73,7 @@ if (agentsPkg && config.livekit.isConfigured) {
         wsURL: config.livekit.url!,
         apiKey: config.livekit.apiKey!,
         apiSecret: config.livekit.apiSecret!,
-        agentName: "inbound-agent",
+        agentName: config.livekit.agentName,
         // The child job process has to cold-import the whole dep graph
         // (Prisma generated client, LiveKit plugins, Sarvam/OpenAI SDKs) on
         // every spawn. LiveKit's default 10s budget is too tight in dev on

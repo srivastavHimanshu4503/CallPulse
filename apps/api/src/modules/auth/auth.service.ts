@@ -88,7 +88,6 @@ export class AuthService {
         data: {
           tenantId: tenant.id,
           name: `${businessName} AI Assistant`,
-          systemPrompt: `You are a helpful customer support assistant representing ${businessName}. Address clients politely and assist them with their inquiries.`,
           modelName: "gemini-2.5-flash",
         },
       });

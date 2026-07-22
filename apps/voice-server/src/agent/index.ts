@@ -11,6 +11,7 @@ import { appendTurn, createSession, endSession } from "./session.js";
 import { persistCallLog } from "../persistence/call-log.js";
 import { dispatchPostCall } from "../notifier/post-call.js";
 import { buildSystemPrompt } from "./prompt.js";
+import { loadCallerContext } from "./caller-context.js";
 import { WorkflowTriggerStub } from "../workflows/stub.js";
 import { buildTools } from "./tools/index.js";
 import { createLLM, createPipelineLLM } from "@antigravity/llm";
@@ -145,9 +146,28 @@ export default defineAgent({
     // calls resolve the agent by WHICH of our numbers was dialed — LiveKit
     // delivers that as participant attributes, so multiple purchased numbers
     // route to their own agents automatically.
+    //
+    // Lookups are retried once: a transient DB hiccup (connection reset,
+    // brief pool exhaustion) must degrade to +600ms of ring time, never to
+    // an unanswered call — a missed pickup is the worst failure this
+    // product can have.
+    const lookupWithRetry = async (
+      fn: () => Promise<Awaited<ReturnType<typeof agentConfigProvider.getById>>>
+    ) => {
+      try {
+        return await fn();
+      } catch (err) {
+        callLog.warn("agent lookup failed — retrying once", {
+          message: (err as Error).message,
+        });
+        await new Promise((r) => setTimeout(r, 600));
+        return fn();
+      }
+    };
+
     let persona = null;
     if (roomHint.agentId) {
-      persona = await agentConfigProvider.getById(roomHint.agentId);
+      persona = await lookupWithRetry(() => agentConfigProvider.getById(roomHint.agentId!));
       if (!persona) {
         callLog.error("no active agent found by hint agentId — aborting call", {
           hintAgentId: roomHint.agentId,
@@ -167,11 +187,12 @@ export default defineAgent({
         return;
       }
 
-      persona =
+      persona = await lookupWithRetry(async () =>
         (await agentConfigProvider.getByPhoneNumber(dialed)) ??
         (!dialed.startsWith("+")
           ? await agentConfigProvider.getByPhoneNumber(`+${dialed}`)
-          : null);
+          : null)
+      );
       if (!persona) {
         callLog.error("no agent registered in DB for dialed number — aborting call", {
           dialed,
@@ -208,6 +229,11 @@ export default defineAgent({
       intakeEnabled: persona.intake.enabled,
       maxDurationMinutes: persona.maxDurationMinutes,
     });
+
+    // Returning-caller context (name, open deals, last-call summary) loads in
+    // parallel with the credit check below and is awaited just before the
+    // system prompt is built. Failures resolve to null inside the loader.
+    const callerContextPromise = loadCallerContext(persona.ids.tenantId, callerNumber);
 
     const session = createSession(callSid, callerNumber, languageKey);
     if (resolvedDialedNumber) session.metadata.dialedNumber = resolvedDialedNumber;
@@ -473,7 +499,16 @@ export default defineAgent({
       return failureAdvice;
     };
 
-    const systemPrompt = buildSystemPrompt(persona, voiceGender);
+    const callerContext = await callerContextPromise;
+    if (callerContext) {
+      callLog.info("returning caller recognized", {
+        caller: callerNumber,
+        name: callerContext.name ?? "(unknown)",
+        openDeals: callerContext.openDeals.length,
+        hasLastCallSummary: !!callerContext.lastCallSummary,
+      });
+    }
+    const systemPrompt = buildSystemPrompt(persona, voiceGender, callerContext ?? undefined);
 
     const tools = buildTools({
       callSid,
@@ -491,6 +526,8 @@ export default defineAgent({
       voice: persona.voice,
       language: langCodes.tts,
       pace: persona.voiceSpeed,
+      settings: persona.voiceSettings,
+      dictId: persona.pronunciationDictId,
     };
 
     const pipelineLLM = createPipelineLLM({
@@ -506,19 +543,41 @@ export default defineAgent({
 
     const sttInstance = createSTT({ language: langCodes.stt });
 
+    // TTS init must never kill the pickup: a misconfigured voice or a
+    // missing provider key on one agent degrades to the default voice, not
+    // to an unanswered phone.
+    let ttsInstance;
+    try {
+      ttsInstance = createTTS(ttsOptions);
+    } catch (err) {
+      callLog.error("TTS init failed — falling back to default voice", {
+        configuredVoice: persona.voice,
+        message: (err as Error).message,
+      });
+      ttsInstance = createTTS({ voice: "sarvam:priya", language: langCodes.tts });
+    }
+
     const agent = new voice.Agent({
       instructions: systemPrompt,
       tools,
       stt: sttInstance,
       llm: pipelineLLM,
-      tts: createTTS(ttsOptions),
+      tts: ttsInstance,
     });
+
+    // Prewarmed 300ms-min-silence Silero instance (see prewarm). If prewarm
+    // failed (disk hiccup loading the ONNX model), load it now instead of
+    // handing the SDK `undefined` — that crashed the session and presented
+    // as "agent never picked up".
+    let vad = ctx.proc.userData.vad as voice.AgentSessionOptions["vad"] | undefined;
+    if (!vad) {
+      callLog.warn("prewarmed VAD missing — loading in-call");
+      vad = (await silero.VAD.load({ minSilenceDuration: 300 })) as voice.AgentSessionOptions["vad"];
+    }
 
     const agentSession = new voice.AgentSession({
       useTtsAlignedTranscript: true,
-      // Prewarmed 300ms-min-silence Silero instance (see prewarm). Omitting
-      // this would make the SDK load its own VAD with the 550ms default.
-      vad: ctx.proc.userData.vad as voice.AgentSessionOptions["vad"],
+      vad,
       turnHandling: {
         // Silero VAD detects audio-level silence. Sarvam's own END_SPEECH
         // signal arrives ~200ms before its FINAL_TRANSCRIPT, which caused

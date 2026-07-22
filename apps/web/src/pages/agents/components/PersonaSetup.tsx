@@ -1,6 +1,9 @@
 import * as React from "react";
 import { Input } from "@antigravity/ui";
 import { Smile, Briefcase, Coffee, ChevronDown, Globe, Info } from "lucide-react";
+// Single source of truth with the Voice tab — the same setting is editable
+// in both places.
+import { AGENT_LANGUAGES } from "./VoiceSelector.js";
 
 interface PersonaSetupProps {
   name: string;
@@ -21,7 +24,7 @@ interface PersonaSetupProps {
   disabled: boolean;
 }
 
-const LANGUAGES = ["English", "Hindi", "Hinglish", "Marathi", "Tamil", "Telugu"];
+const LANGUAGES = AGENT_LANGUAGES;
 const TONES = [
   { value: "Friendly", icon: Smile, hint: "Warm & approachable" },
   { value: "Professional", icon: Briefcase, hint: "Formal & clear" },

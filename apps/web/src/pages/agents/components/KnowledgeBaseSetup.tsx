@@ -1,43 +1,53 @@
 import * as React from "react";
 import { Input } from "@antigravity/ui";
-import { Info, UploadCloud, Link as LinkIcon, FileText, RefreshCw } from "lucide-react";
-import { api } from "../../../lib/axios.js";
-
-interface StoredKnowledgeBase {
-  id: string;
-  name: string;
-  content: string | null;
-  updatedAt: string;
-}
+import { Info, UploadCloud, Link as LinkIcon, FileText, MessageSquareText } from "lucide-react";
 
 interface KnowledgeBaseSetupProps {
-  /** When editing an existing agent, its stored knowledge bases are shown. */
-  agentId?: string;
   websiteUrl: string;
   setWebsiteUrl: (val: string) => void;
   businessInfo: string;
   setBusinessInfo: (val: string) => void;
+  agentGuidelines: string;
+  setAgentGuidelines: (val: string) => void;
   errors: Record<string, string>;
   disabled: boolean;
 }
 
 export function KnowledgeBaseSetup({
-  agentId,
   websiteUrl,
   setWebsiteUrl,
   businessInfo,
   setBusinessInfo,
+  agentGuidelines,
+  setAgentGuidelines,
   errors,
   disabled,
 }: KnowledgeBaseSetupProps): React.JSX.Element {
   return (
     <div className="space-y-5 animate-in fade-in duration-200 font-sans">
-      {agentId && <StoredKnowledgeSection agentId={agentId} disabled={disabled} />}
+      {/* WHAT the agent knows — pure business facts. */}
       <SectionCard
-        title="Knowledge base sources"
-        description="Anchor the agent's answers to your business facts, pricing, FAQs, and documents."
+        title="Knowledge base"
+        description="Your business data — the facts the agent answers from. It never invents anything outside this."
       >
-        <Field label="Website URL (Link)" hint="We crawl this page to pull FAQs and services." error={errors.websiteUrl}>
+        <Field
+          label="Business information (raw data)"
+          hint="Paste your raw business data: services, price list, packages, timings, address. Just the facts — no instructions."
+        >
+          <div className="relative">
+             <FileText className="absolute left-3 top-3 h-4 w-4 text-[#999999] pointer-events-none" />
+            <textarea
+              value={businessInfo}
+              onChange={(e) => setBusinessInfo(e.target.value)}
+              disabled={disabled}
+              placeholder={"E.g.\nPlastic chair ₹12 per chair. Cushion chair ₹25.\nSmall tent ₹2,500 onwards.\nOpen 9am–8pm, closed Tuesday.\nWe serve Jaipur and nearby areas."}
+              rows={8}
+              className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] pl-9 p-3 focus:outline-none leading-relaxed resize-y"
+            />
+          </div>
+        </Field>
+
+        <Field label="Website URL (optional)" hint="We crawl this page to pull FAQs and services." error={errors.websiteUrl}>
           <div className="relative">
             <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999] pointer-events-none" />
             <Input
@@ -53,23 +63,6 @@ export function KnowledgeBaseSetup({
         </Field>
 
         <Field
-          label="Common Questions / Raw Text"
-          hint="Paste pricing, service list, hours, or common Q&A. Higher signal = fewer fallbacks."
-        >
-          <div className="relative">
-             <FileText className="absolute left-3 top-3 h-4 w-4 text-[#999999] pointer-events-none" />
-            <textarea
-              value={businessInfo}
-              onChange={(e) => setBusinessInfo(e.target.value)}
-              disabled={disabled}
-              placeholder="E.g. Pricing starts at ₹50L. Bandra listing. Open on weekends 10am–7pm..."
-              rows={5}
-              className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] pl-9 p-3 focus:outline-none leading-relaxed resize-none"
-            />
-          </div>
-        </Field>
-
-        <Field
           label="Upload Files (Coming Soon)"
           hint="Upload PDF, DOCX, or TXT files to expand your agent's knowledge."
         >
@@ -80,102 +73,31 @@ export function KnowledgeBaseSetup({
           </div>
         </Field>
       </SectionCard>
+
+      {/* HOW the agent behaves — owner's instructions, separate from facts. */}
+      <SectionCard
+        title="Agent guidelines"
+        description="How the agent should treat callers — tone, do's and don'ts, what to always or never say."
+      >
+        <Field
+          label="Instructions for the agent (optional)"
+          hint="Write like you're briefing a new receptionist. The agent follows these on every call."
+        >
+          <div className="relative">
+            <MessageSquareText className="absolute left-3 top-3 h-4 w-4 text-[#999999] pointer-events-none" />
+            <textarea
+              value={agentGuidelines}
+              onChange={(e) => setAgentGuidelines(e.target.value)}
+              disabled={disabled}
+              maxLength={4000}
+              placeholder={"E.g.\nAlways ask for the event date before quoting a package.\nNever promise same-day delivery.\nIf someone asks for the owner, take their number politely.\nAddress regular customers by name."}
+              rows={7}
+              className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] placeholder-[#999999] rounded-[6px] pl-9 p-3 focus:outline-none leading-relaxed resize-y"
+            />
+          </div>
+        </Field>
+      </SectionCard>
     </div>
-  );
-}
-
-function StoredKnowledgeSection({
-  agentId,
-  disabled,
-}: {
-  agentId: string;
-  disabled: boolean;
-}): React.JSX.Element {
-  const [kbs, setKbs] = React.useState<StoredKnowledgeBase[] | null>(null);
-  const [drafts, setDrafts] = React.useState<Record<string, string>>({});
-  const [savingId, setSavingId] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
-
-  const load = React.useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/agents/${agentId}/knowledge`);
-      const list: StoredKnowledgeBase[] = res.data?.data ?? [];
-      setKbs(list);
-      setDrafts(Object.fromEntries(list.map((kb) => [kb.id, kb.content ?? ""])));
-    } catch {
-      setKbs([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [agentId]);
-
-  React.useEffect(() => {
-    void load();
-  }, [load]);
-
-  const save = async (kbId: string) => {
-    setSavingId(kbId);
-    try {
-      await api.put(`/agents/${agentId}/knowledge/${kbId}`, { content: drafts[kbId] ?? "" });
-      setKbs((prev) =>
-        prev?.map((kb) => (kb.id === kbId ? { ...kb, content: drafts[kbId] ?? "" } : kb)) ?? null,
-      );
-    } finally {
-      setSavingId(null);
-    }
-  };
-
-  return (
-    <SectionCard
-      title="Agent knowledge base"
-      description="What your agent already knows. A starter knowledge base is generated automatically from your business details — edit it any time."
-    >
-      {kbs === null || loading ? (
-        <p className="text-[12px] text-[#666666]">Loading knowledge base…</p>
-      ) : kbs.length === 0 ? (
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-[12px] text-[#666666] leading-relaxed">
-            Your starter knowledge base is still being generated — this usually takes a few
-            seconds after the agent is created.
-          </p>
-          <button
-            type="button"
-            onClick={() => void load()}
-            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] shrink-0"
-          >
-            <RefreshCw className="h-3.5 w-3.5" />
-            Refresh
-          </button>
-        </div>
-      ) : (
-        kbs.map((kb) => {
-          const dirty = (drafts[kb.id] ?? "") !== (kb.content ?? "");
-          return (
-            <div key={kb.id}>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-[12px] font-semibold text-[#111111]">{kb.name}</label>
-                <button
-                  type="button"
-                  disabled={disabled || !dirty || savingId === kb.id}
-                  onClick={() => void save(kb.id)}
-                  className="text-[12px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] disabled:text-[#999999]"
-                >
-                  {savingId === kb.id ? "Saving…" : dirty ? "Save" : "Saved"}
-                </button>
-              </div>
-              <textarea
-                value={drafts[kb.id] ?? ""}
-                onChange={(e) => setDrafts((d) => ({ ...d, [kb.id]: e.target.value }))}
-                disabled={disabled}
-                rows={10}
-                className="w-full bg-white border border-[#E5E5E5] focus:border-[#2563EB] text-sm text-[#111111] rounded-[6px] p-3 focus:outline-none leading-relaxed resize-y"
-              />
-            </div>
-          );
-        })
-      )}
-    </SectionCard>
   );
 }
 

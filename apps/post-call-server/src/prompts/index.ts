@@ -12,6 +12,13 @@ export {
   type ExtractableFieldDef,
 } from "./crm-extraction.js";
 export {
+  DealMatchSchema,
+  buildDealMatchSystemPrompt,
+  buildDealMatchUserPrompt,
+  type DealMatchResult,
+  type OpenDealForMatch,
+} from "./deal-match.js";
+export {
   LeadScoreSchema,
   buildLeadScoringSystemPrompt,
   buildLeadScoringUserContext,

@@ -4,10 +4,11 @@ import { api } from "../../../lib/axios.js";
 import { toast } from "sonner";
 import { Button } from "@antigravity/ui";
 import { PersonaSetup } from "./PersonaSetup.js";
-import { VoiceSelector, VoiceSpeedControl } from "./VoiceSelector.js";
+import { VoiceSelector, VoiceSpeedControl, VoiceTuningControl, PronunciationControl } from "./VoiceSelector.js";
 import { TelephonySetup } from "./TelephonySetup.js";
 import { WorkflowSetup } from "./WorkflowSetup.js";
 import { KnowledgeBaseSetup } from "./KnowledgeBaseSetup.js";
+import { SetupGuide } from "./SetupGuide.js";
 import {
   UserRound,
   Waves,
@@ -18,7 +19,7 @@ import {
   Loader2,
   ChevronLeft,
 } from "lucide-react";
-import type { SerializedAgent, AgentBookingConfig } from "@antigravity/types";
+import type { SerializedAgent, AgentBookingConfig, AgentVoiceSettings } from "@antigravity/types";
 
 interface AgentWizardProps {
   editingAgent: SerializedAgent | null;
@@ -88,12 +89,21 @@ export function AgentWizard({
   // STEP 1.5: Knowledge Base States
   const [businessInfo, setBusinessInfo] = React.useState(editingAgent?.businessInfo || "");
   const [websiteUrl, setWebsiteUrl] = React.useState(editingAgent?.websiteUrl || "");
+  const [agentGuidelines, setAgentGuidelines] = React.useState(editingAgent?.agentGuidelines || "");
 
   // STEP 2: Audio & Telephony States
   const [voice, setVoice] = React.useState(editingAgent?.voice || "priya");
   // null = provider default speed
   const [voiceSpeed, setVoiceSpeed] = React.useState<number | null>(
     editingAgent?.voiceSpeed ?? null
+  );
+  // null = provider defaults for every tunable
+  const [voiceSettings, setVoiceSettings] = React.useState<AgentVoiceSettings | null>(
+    editingAgent?.voiceSettings ?? null
+  );
+  // Word → spoken-form overrides (synced to a Sarvam pronunciation dictionary)
+  const [pronunciations, setPronunciations] = React.useState<Record<string, string> | null>(
+    editingAgent?.pronunciations ?? null
   );
   const [phoneNumberId, setPhoneNumberId] = React.useState<string | null>(
     editingAgent?.phoneNumberId || null
@@ -300,12 +310,17 @@ export function AgentWizard({
       fallbackMessage,
       businessInfo: businessInfo.trim() || null,
       websiteUrl: websiteUrl.trim() || null,
+      agentGuidelines: agentGuidelines.trim() || null,
       maxDuration: Number(maxDuration),
       dndCompliance,
       recordingConsent,
       isActive,
       voice,
       voiceSpeed,
+      // {} (not null) so "Reset to defaults" actually clears the stored value
+      voiceSettings: voiceSettings ?? {},
+      // {} clears the remote Sarvam dictionary when the user removes all words
+      pronunciations: pronunciations ?? {},
       intakeWorkflowId: intakeEnabled ? intakeWorkflowId : null,
       smsWorkflowId: smsEnabled ? smsWorkflowId : null,
       phoneNumberId,
@@ -421,8 +436,11 @@ export function AgentWizard({
       {/* BODY */}
       <div className="flex-1 flex flex-col overflow-hidden min-h-0 bg-[#FAFAFA]/40">
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-5 sm:py-6">
-            <div className="space-y-5">
+          {/* Two-column body: form (~60%) + bilingual per-tab setup guide.
+              The guide is the non-tech user's manual — it swaps content with
+              the active tab and collapses away below lg. */}
+          <div className="max-w-[1240px] mx-auto px-4 sm:px-6 py-5 sm:py-6 flex items-start gap-6">
+            <div className="flex-1 min-w-0 space-y-5">
               {activeTab === "general" && (
                 <PersonaSetup
                   name={name}
@@ -446,11 +464,12 @@ export function AgentWizard({
 
               {activeTab === "knowledge" && (
                 <KnowledgeBaseSetup
-                  agentId={editingAgent?.id}
                   websiteUrl={websiteUrl}
                   setWebsiteUrl={setWebsiteUrl}
                   businessInfo={businessInfo}
                   setBusinessInfo={setBusinessInfo}
+                  agentGuidelines={agentGuidelines}
+                  setAgentGuidelines={setAgentGuidelines}
                   errors={errors}
                   disabled={isFormLoading}
                 />
@@ -462,11 +481,25 @@ export function AgentWizard({
                     voice={voice}
                     setVoice={setVoice}
                     language={language}
+                    setLanguage={setLanguage}
+                    voiceSettings={voiceSettings}
                     disabled={isFormLoading}
                   />
                   <VoiceSpeedControl
                     value={voiceSpeed}
                     onChange={setVoiceSpeed}
+                    disabled={isFormLoading}
+                  />
+                  <VoiceTuningControl
+                    voice={voice}
+                    value={voiceSettings}
+                    onChange={setVoiceSettings}
+                    disabled={isFormLoading}
+                  />
+                  <PronunciationControl
+                    voice={voice}
+                    value={pronunciations}
+                    onChange={setPronunciations}
                     disabled={isFormLoading}
                   />
                 </div>
@@ -558,9 +591,13 @@ export function AgentWizard({
                   />
                 </div>
               )}
-              </div>
             </div>
+
+            <aside className="hidden lg:block w-[360px] shrink-0 sticky top-1">
+              <SetupGuide tab={activeTab} />
+            </aside>
           </div>
+        </div>
 
         {/* STICKY FOOTER */}
         <div className="shrink-0 border-t border-[#E5E5E5] bg-white">

@@ -22246,10 +22246,11 @@ export namespace Prisma {
     dndCompliance: boolean | null
     recordingConsent: boolean | null
     isActive: boolean | null
-    systemPrompt: string | null
+    agentGuidelines: string | null
     modelName: string | null
     voice: string | null
     voiceSpeed: number | null
+    pronunciationDictId: string | null
     intakeWorkflowId: string | null
     smsWorkflowId: string | null
     phoneNumberId: string | null
@@ -22295,10 +22296,11 @@ export namespace Prisma {
     dndCompliance: boolean | null
     recordingConsent: boolean | null
     isActive: boolean | null
-    systemPrompt: string | null
+    agentGuidelines: string | null
     modelName: string | null
     voice: string | null
     voiceSpeed: number | null
+    pronunciationDictId: string | null
     intakeWorkflowId: string | null
     smsWorkflowId: string | null
     phoneNumberId: string | null
@@ -22344,10 +22346,13 @@ export namespace Prisma {
     dndCompliance: number
     recordingConsent: number
     isActive: number
-    systemPrompt: number
+    agentGuidelines: number
     modelName: number
     voice: number
     voiceSpeed: number
+    voiceSettings: number
+    pronunciations: number
+    pronunciationDictId: number
     intakeWorkflowId: number
     smsWorkflowId: number
     phoneNumberId: number
@@ -22410,10 +22415,11 @@ export namespace Prisma {
     dndCompliance?: true
     recordingConsent?: true
     isActive?: true
-    systemPrompt?: true
+    agentGuidelines?: true
     modelName?: true
     voice?: true
     voiceSpeed?: true
+    pronunciationDictId?: true
     intakeWorkflowId?: true
     smsWorkflowId?: true
     phoneNumberId?: true
@@ -22459,10 +22465,11 @@ export namespace Prisma {
     dndCompliance?: true
     recordingConsent?: true
     isActive?: true
-    systemPrompt?: true
+    agentGuidelines?: true
     modelName?: true
     voice?: true
     voiceSpeed?: true
+    pronunciationDictId?: true
     intakeWorkflowId?: true
     smsWorkflowId?: true
     phoneNumberId?: true
@@ -22508,10 +22515,13 @@ export namespace Prisma {
     dndCompliance?: true
     recordingConsent?: true
     isActive?: true
-    systemPrompt?: true
+    agentGuidelines?: true
     modelName?: true
     voice?: true
     voiceSpeed?: true
+    voiceSettings?: true
+    pronunciations?: true
+    pronunciationDictId?: true
     intakeWorkflowId?: true
     smsWorkflowId?: true
     phoneNumberId?: true
@@ -22647,10 +22657,13 @@ export namespace Prisma {
     dndCompliance: boolean
     recordingConsent: boolean
     isActive: boolean
-    systemPrompt: string
+    agentGuidelines: string | null
     modelName: string
     voice: string
     voiceSpeed: number | null
+    voiceSettings: JsonValue | null
+    pronunciations: JsonValue | null
+    pronunciationDictId: string | null
     intakeWorkflowId: string | null
     smsWorkflowId: string | null
     phoneNumberId: string | null
@@ -22718,10 +22731,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt?: boolean
+    agentGuidelines?: boolean
     modelName?: boolean
     voice?: boolean
     voiceSpeed?: boolean
+    voiceSettings?: boolean
+    pronunciations?: boolean
+    pronunciationDictId?: boolean
     intakeWorkflowId?: boolean
     smsWorkflowId?: boolean
     phoneNumberId?: boolean
@@ -22776,10 +22792,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt?: boolean
+    agentGuidelines?: boolean
     modelName?: boolean
     voice?: boolean
     voiceSpeed?: boolean
+    voiceSettings?: boolean
+    pronunciations?: boolean
+    pronunciationDictId?: boolean
     intakeWorkflowId?: boolean
     smsWorkflowId?: boolean
     phoneNumberId?: boolean
@@ -22829,10 +22848,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt?: boolean
+    agentGuidelines?: boolean
     modelName?: boolean
     voice?: boolean
     voiceSpeed?: boolean
+    voiceSettings?: boolean
+    pronunciations?: boolean
+    pronunciationDictId?: boolean
     intakeWorkflowId?: boolean
     smsWorkflowId?: boolean
     phoneNumberId?: boolean
@@ -22902,10 +22924,13 @@ export namespace Prisma {
       dndCompliance: boolean
       recordingConsent: boolean
       isActive: boolean
-      systemPrompt: string
+      agentGuidelines: string | null
       modelName: string
       voice: string
       voiceSpeed: number | null
+      voiceSettings: Prisma.JsonValue | null
+      pronunciations: Prisma.JsonValue | null
+      pronunciationDictId: string | null
       intakeWorkflowId: string | null
       smsWorkflowId: string | null
       phoneNumberId: string | null
@@ -23349,10 +23374,13 @@ export namespace Prisma {
     readonly dndCompliance: FieldRef<"AIAgent", 'Boolean'>
     readonly recordingConsent: FieldRef<"AIAgent", 'Boolean'>
     readonly isActive: FieldRef<"AIAgent", 'Boolean'>
-    readonly systemPrompt: FieldRef<"AIAgent", 'String'>
+    readonly agentGuidelines: FieldRef<"AIAgent", 'String'>
     readonly modelName: FieldRef<"AIAgent", 'String'>
     readonly voice: FieldRef<"AIAgent", 'String'>
     readonly voiceSpeed: FieldRef<"AIAgent", 'Float'>
+    readonly voiceSettings: FieldRef<"AIAgent", 'Json'>
+    readonly pronunciations: FieldRef<"AIAgent", 'Json'>
+    readonly pronunciationDictId: FieldRef<"AIAgent", 'String'>
     readonly intakeWorkflowId: FieldRef<"AIAgent", 'String'>
     readonly smsWorkflowId: FieldRef<"AIAgent", 'String'>
     readonly phoneNumberId: FieldRef<"AIAgent", 'String'>
@@ -30431,10 +30459,13 @@ export namespace Prisma {
     dndCompliance: 'dndCompliance',
     recordingConsent: 'recordingConsent',
     isActive: 'isActive',
-    systemPrompt: 'systemPrompt',
+    agentGuidelines: 'agentGuidelines',
     modelName: 'modelName',
     voice: 'voice',
     voiceSpeed: 'voiceSpeed',
+    voiceSettings: 'voiceSettings',
+    pronunciations: 'pronunciations',
+    pronunciationDictId: 'pronunciationDictId',
     intakeWorkflowId: 'intakeWorkflowId',
     smsWorkflowId: 'smsWorkflowId',
     phoneNumberId: 'phoneNumberId',
@@ -32534,10 +32565,13 @@ export namespace Prisma {
     dndCompliance?: BoolFilter<"AIAgent"> | boolean
     recordingConsent?: BoolFilter<"AIAgent"> | boolean
     isActive?: BoolFilter<"AIAgent"> | boolean
-    systemPrompt?: StringFilter<"AIAgent"> | string
+    agentGuidelines?: StringNullableFilter<"AIAgent"> | string | null
     modelName?: StringFilter<"AIAgent"> | string
     voice?: StringFilter<"AIAgent"> | string
     voiceSpeed?: FloatNullableFilter<"AIAgent"> | number | null
+    voiceSettings?: JsonNullableFilter<"AIAgent">
+    pronunciations?: JsonNullableFilter<"AIAgent">
+    pronunciationDictId?: StringNullableFilter<"AIAgent"> | string | null
     intakeWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableFilter<"AIAgent"> | string | null
@@ -32591,10 +32625,13 @@ export namespace Prisma {
     dndCompliance?: SortOrder
     recordingConsent?: SortOrder
     isActive?: SortOrder
-    systemPrompt?: SortOrder
+    agentGuidelines?: SortOrderInput | SortOrder
     modelName?: SortOrder
     voice?: SortOrder
     voiceSpeed?: SortOrderInput | SortOrder
+    voiceSettings?: SortOrderInput | SortOrder
+    pronunciations?: SortOrderInput | SortOrder
+    pronunciationDictId?: SortOrderInput | SortOrder
     intakeWorkflowId?: SortOrderInput | SortOrder
     smsWorkflowId?: SortOrderInput | SortOrder
     phoneNumberId?: SortOrderInput | SortOrder
@@ -32651,10 +32688,13 @@ export namespace Prisma {
     dndCompliance?: BoolFilter<"AIAgent"> | boolean
     recordingConsent?: BoolFilter<"AIAgent"> | boolean
     isActive?: BoolFilter<"AIAgent"> | boolean
-    systemPrompt?: StringFilter<"AIAgent"> | string
+    agentGuidelines?: StringNullableFilter<"AIAgent"> | string | null
     modelName?: StringFilter<"AIAgent"> | string
     voice?: StringFilter<"AIAgent"> | string
     voiceSpeed?: FloatNullableFilter<"AIAgent"> | number | null
+    voiceSettings?: JsonNullableFilter<"AIAgent">
+    pronunciations?: JsonNullableFilter<"AIAgent">
+    pronunciationDictId?: StringNullableFilter<"AIAgent"> | string | null
     intakeWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableFilter<"AIAgent"> | string | null
@@ -32708,10 +32748,13 @@ export namespace Prisma {
     dndCompliance?: SortOrder
     recordingConsent?: SortOrder
     isActive?: SortOrder
-    systemPrompt?: SortOrder
+    agentGuidelines?: SortOrderInput | SortOrder
     modelName?: SortOrder
     voice?: SortOrder
     voiceSpeed?: SortOrderInput | SortOrder
+    voiceSettings?: SortOrderInput | SortOrder
+    pronunciations?: SortOrderInput | SortOrder
+    pronunciationDictId?: SortOrderInput | SortOrder
     intakeWorkflowId?: SortOrderInput | SortOrder
     smsWorkflowId?: SortOrderInput | SortOrder
     phoneNumberId?: SortOrderInput | SortOrder
@@ -32768,10 +32811,13 @@ export namespace Prisma {
     dndCompliance?: BoolWithAggregatesFilter<"AIAgent"> | boolean
     recordingConsent?: BoolWithAggregatesFilter<"AIAgent"> | boolean
     isActive?: BoolWithAggregatesFilter<"AIAgent"> | boolean
-    systemPrompt?: StringWithAggregatesFilter<"AIAgent"> | string
+    agentGuidelines?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     modelName?: StringWithAggregatesFilter<"AIAgent"> | string
     voice?: StringWithAggregatesFilter<"AIAgent"> | string
     voiceSpeed?: FloatNullableWithAggregatesFilter<"AIAgent"> | number | null
+    voiceSettings?: JsonNullableWithAggregatesFilter<"AIAgent">
+    pronunciations?: JsonNullableWithAggregatesFilter<"AIAgent">
+    pronunciationDictId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     intakeWorkflowId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableWithAggregatesFilter<"AIAgent"> | string | null
@@ -35144,10 +35190,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -35201,10 +35250,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -35256,10 +35308,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35313,10 +35368,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35369,10 +35427,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -35420,10 +35481,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35472,10 +35536,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37685,10 +37752,13 @@ export namespace Prisma {
     dndCompliance?: SortOrder
     recordingConsent?: SortOrder
     isActive?: SortOrder
-    systemPrompt?: SortOrder
+    agentGuidelines?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
     voiceSpeed?: SortOrder
+    voiceSettings?: SortOrder
+    pronunciations?: SortOrder
+    pronunciationDictId?: SortOrder
     intakeWorkflowId?: SortOrder
     smsWorkflowId?: SortOrder
     phoneNumberId?: SortOrder
@@ -37743,10 +37813,11 @@ export namespace Prisma {
     dndCompliance?: SortOrder
     recordingConsent?: SortOrder
     isActive?: SortOrder
-    systemPrompt?: SortOrder
+    agentGuidelines?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
     voiceSpeed?: SortOrder
+    pronunciationDictId?: SortOrder
     intakeWorkflowId?: SortOrder
     smsWorkflowId?: SortOrder
     phoneNumberId?: SortOrder
@@ -37792,10 +37863,11 @@ export namespace Prisma {
     dndCompliance?: SortOrder
     recordingConsent?: SortOrder
     isActive?: SortOrder
-    systemPrompt?: SortOrder
+    agentGuidelines?: SortOrder
     modelName?: SortOrder
     voice?: SortOrder
     voiceSpeed?: SortOrder
+    pronunciationDictId?: SortOrder
     intakeWorkflowId?: SortOrder
     smsWorkflowId?: SortOrder
     phoneNumberId?: SortOrder
@@ -42232,10 +42304,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -42287,10 +42362,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -43067,10 +43145,13 @@ export namespace Prisma {
     dndCompliance?: BoolFilter<"AIAgent"> | boolean
     recordingConsent?: BoolFilter<"AIAgent"> | boolean
     isActive?: BoolFilter<"AIAgent"> | boolean
-    systemPrompt?: StringFilter<"AIAgent"> | string
+    agentGuidelines?: StringNullableFilter<"AIAgent"> | string | null
     modelName?: StringFilter<"AIAgent"> | string
     voice?: StringFilter<"AIAgent"> | string
     voiceSpeed?: FloatNullableFilter<"AIAgent"> | number | null
+    voiceSettings?: JsonNullableFilter<"AIAgent">
+    pronunciations?: JsonNullableFilter<"AIAgent">
+    pronunciationDictId?: StringNullableFilter<"AIAgent"> | string | null
     intakeWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     smsWorkflowId?: StringNullableFilter<"AIAgent"> | string | null
     phoneNumberId?: StringNullableFilter<"AIAgent"> | string | null
@@ -46913,10 +46994,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -46969,10 +47053,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -47246,10 +47333,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47302,10 +47392,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49346,10 +49439,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -49402,10 +49498,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -49559,10 +49658,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49615,10 +49717,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49791,10 +49896,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -49847,10 +49955,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -50159,10 +50270,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50215,10 +50329,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50485,10 +50602,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -50541,10 +50661,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -50813,10 +50936,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50869,10 +50995,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51795,10 +51924,13 @@ export namespace Prisma {
     dndCompliance?: boolean
     recordingConsent?: boolean
     isActive?: boolean
-    systemPrompt: string
+    agentGuidelines?: string | null
     modelName: string
     voice?: string
     voiceSpeed?: number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: string | null
     intakeWorkflowId?: string | null
     smsWorkflowId?: string | null
     phoneNumberId?: string | null
@@ -52381,10 +52513,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52436,10 +52571,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52491,10 +52629,13 @@ export namespace Prisma {
     dndCompliance?: BoolFieldUpdateOperationsInput | boolean
     recordingConsent?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    systemPrompt?: StringFieldUpdateOperationsInput | string
+    agentGuidelines?: NullableStringFieldUpdateOperationsInput | string | null
     modelName?: StringFieldUpdateOperationsInput | string
     voice?: StringFieldUpdateOperationsInput | string
     voiceSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    voiceSettings?: NullableJsonNullValueInput | InputJsonValue
+    pronunciations?: NullableJsonNullValueInput | InputJsonValue
+    pronunciationDictId?: NullableStringFieldUpdateOperationsInput | string | null
     intakeWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     smsWorkflowId?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumberId?: NullableStringFieldUpdateOperationsInput | string | null

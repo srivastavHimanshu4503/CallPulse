@@ -161,6 +161,9 @@ export class AgentsService {
       phoneNumber,
       voice: agent.voice,
       voiceSpeed: agent.voiceSpeed,
+      voiceSettings: (agent.voiceSettings as SerializedAgent["voiceSettings"]) ?? null,
+      pronunciations: (agent.pronunciations as SerializedAgent["pronunciations"]) ?? null,
+      agentGuidelines: agent.agentGuidelines ?? null,
       intakeWorkflowId: agent.intakeWorkflowId,
       smsWorkflowId: agent.smsWorkflowId,
       phoneNumberId: agent.phoneNumberId,
@@ -242,6 +245,9 @@ export class AgentsService {
       isActive,
       voice,
       voiceSpeed,
+      voiceSettings,
+      pronunciations,
+      agentGuidelines,
       intakeWorkflowId,
       smsWorkflowId,
       phoneNumberId,
@@ -289,8 +295,10 @@ export class AgentsService {
           dndCompliance: dndCompliance ?? true,
           recordingConsent: recordingConsent ?? true,
           isActive: isActive ?? true,
-          voice: voice || "elevenlabs:EXAVITQu4vr4xnSDxMaL",
+          voice: voice || "sarvam:priya",
           voiceSpeed: voiceSpeed ?? null,
+          voiceSettings: voiceSettings ?? undefined,
+          pronunciations: pronunciations ?? undefined,
           intakeWorkflowId: intakeWorkflowId || null,
           smsWorkflowId: smsWorkflowId || null,
           phoneNumberId: phoneNumberId || null,
@@ -319,7 +327,7 @@ export class AgentsService {
           bookingConfig: bookingConfig ?? undefined,
           timeZone: timeZone ?? "Asia/Kolkata",
           businessHours: businessHours ?? undefined,
-          systemPrompt: `You are a helpful ${tone} AI assistant named ${name} specializing in a ${role} role. Greeting: ${greetingMessage}`,
+          agentGuidelines: agentGuidelines || null,
           modelName: "gemini-2.5-flash",
         },
       });
@@ -341,6 +349,9 @@ export class AgentsService {
 
     registerWhatsAppSenderInBackground(agent, tenantId);
     generateDefaultKnowledgeBaseInBackground(agent, tenantId);
+    if (pronunciations && Object.keys(pronunciations).length > 0) {
+      await this.syncPronunciationDictionary(agent.id);
+    }
     return this.serializeAgent(agent, tenantId);
   }
 
@@ -478,6 +489,9 @@ export class AgentsService {
       isActive,
       voice,
       voiceSpeed,
+      voiceSettings,
+      pronunciations,
+      agentGuidelines,
       intakeWorkflowId,
       smsWorkflowId,
       phoneNumberId,
@@ -528,6 +542,8 @@ export class AgentsService {
           isActive: isActive !== undefined ? isActive : undefined,
           voice: voice !== undefined ? voice : undefined,
           voiceSpeed: voiceSpeed !== undefined ? voiceSpeed : undefined,
+          voiceSettings: voiceSettings !== undefined ? (voiceSettings ?? undefined) : undefined,
+          pronunciations: pronunciations !== undefined ? (pronunciations ?? undefined) : undefined,
           intakeWorkflowId: intakeWorkflowId !== undefined ? intakeWorkflowId : undefined,
           smsWorkflowId: smsWorkflowId !== undefined ? smsWorkflowId : undefined,
           phoneNumberId: phoneNumberId !== undefined ? phoneNumberId : undefined,
@@ -556,7 +572,7 @@ export class AgentsService {
           bookingConfig: bookingConfig !== undefined ? (bookingConfig ?? undefined) : undefined,
           timeZone: timeZone !== undefined ? timeZone : undefined,
           businessHours: businessHours !== undefined ? businessHours : undefined,
-          systemPrompt: `You are a helpful ${tone || existing.tone} AI assistant named ${name || existing.name} specializing in a ${role || existing.role} role. Greeting: ${greetingMessage || existing.greetingMessage}`,
+          agentGuidelines: agentGuidelines !== undefined ? agentGuidelines : undefined,
         },
       });
 
@@ -583,6 +599,11 @@ export class AgentsService {
     });
 
     registerWhatsAppSenderInBackground(updated, tenantId);
+    // Re-sync the Sarvam dictionary when the mappings changed OR the agent's
+    // language changed (entries are stored under the language's code).
+    if (pronunciations !== undefined || (language !== undefined && language !== existing.language)) {
+      await this.syncPronunciationDictionary(id);
+    }
     return this.serializeAgent(updated, tenantId);
   }
 
@@ -758,12 +779,115 @@ export class AgentsService {
     });
   }
 
+  /**
+   * Sync the agent's word → spoken-form overrides to a Sarvam pronunciation
+   * dictionary and store the resulting dict_id on the agent row. Best-effort:
+   * a Sarvam outage must never fail an agent save — the voice-server simply
+   * keeps using the last synced dictionary (or none).
+   *
+   * Entries are scoped under the agent's language code (Sarvam applies only
+   * the block matching the TTS target_language_code). Emptying the list
+   * deletes the remote dictionary — Sarvam caps an account at 10.
+   */
+  private async syncPronunciationDictionary(agentId: string): Promise<void> {
+    const apiKey = process.env.SARVAM_API_KEY;
+    if (!apiKey) return;
+
+    try {
+      const agent = await db.aIAgent.findFirst({
+        where: { id: agentId },
+        select: { id: true, language: true, pronunciations: true, pronunciationDictId: true },
+      });
+      if (!agent) return;
+
+      const entries = (agent.pronunciations as Record<string, string> | null) ?? {};
+      const words = Object.entries(entries).filter(([w, s]) => w.trim() && s.trim());
+
+      if (words.length === 0) {
+        if (agent.pronunciationDictId) {
+          await fetch(
+            `https://api.sarvam.ai/text-to-speech/pronunciation-dictionary?dict_id=${encodeURIComponent(agent.pronunciationDictId)}`,
+            { method: "DELETE", headers: { "api-subscription-key": apiKey } }
+          ).catch(() => undefined);
+          await db.aIAgent.update({ where: { id: agentId }, data: { pronunciationDictId: null } });
+        }
+        return;
+      }
+
+      const langCodeMap: Record<string, string> = {
+        english: "en-IN",
+        hindi: "hi-IN",
+        hinglish: "hi-IN",
+        marathi: "mr-IN",
+        tamil: "ta-IN",
+        telugu: "te-IN",
+        bengali: "bn-IN",
+        gujarati: "gu-IN",
+        kannada: "kn-IN",
+        malayalam: "ml-IN",
+        punjabi: "pa-IN",
+        odia: "od-IN",
+      };
+      const langCode = langCodeMap[(agent.language || "").toLowerCase()] ?? "hi-IN";
+
+      const payload = JSON.stringify({
+        pronunciations: { [langCode]: Object.fromEntries(words) },
+      });
+      // Sarvam rejects multipart parts without an explicit application/json
+      // content type, so the file part MUST be a typed Blob. Fresh FormData
+      // per request — undici consumes the body stream on send.
+      const upload = async (method: "POST" | "PUT", url: string) => {
+        const form = new FormData();
+        form.append("file", new Blob([payload], { type: "application/json" }), "dict.json");
+        return fetch(url, { method, headers: { "api-subscription-key": apiKey }, body: form });
+      };
+
+      let dictId = agent.pronunciationDictId;
+      let res = dictId
+        ? await upload(
+            "PUT",
+            `https://api.sarvam.ai/text-to-speech/pronunciation-dictionary?dict_id=${encodeURIComponent(dictId)}`
+          )
+        : await upload("POST", "https://api.sarvam.ai/text-to-speech/pronunciation-dictionary");
+
+      // A stale/deleted dict_id makes the update 4xx — fall back to creating
+      // a fresh dictionary rather than losing the user's mappings.
+      if (dictId && !res.ok) {
+        res = await upload("POST", "https://api.sarvam.ai/text-to-speech/pronunciation-dictionary");
+        dictId = null;
+      }
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        console.error(`Sarvam pronunciation dictionary sync failed (${res.status}): ${body}`);
+        return;
+      }
+
+      if (!dictId) {
+        const result = (await res.json()) as { dictionary_id?: string };
+        if (result.dictionary_id) {
+          await db.aIAgent.update({
+            where: { id: agentId },
+            data: { pronunciationDictId: result.dictionary_id },
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Sarvam pronunciation dictionary sync failed:", err);
+    }
+  }
+
   async generateTestVoice(opts: {
     provider: string;
     voice: string;
     language?: string;
+    voiceSettings?: {
+      stability?: number;
+      similarityBoost?: number;
+      style?: number;
+      temperature?: number;
+    } | null;
   }): Promise<Buffer> {
-    const { provider, voice, language } = opts;
+    const { provider, voice, language, voiceSettings } = opts;
 
     // Normalize voice identifier
     const cleanVoice = voice.split(":").pop() || voice;
@@ -780,6 +904,7 @@ export class AgentsService {
     // (voice IDs lowercased to match voiceKey).
     const femaleVoices = [
       "priya", "aditi", "ritu", "deepika", "kavitha",
+      "ishita", "suhani", "neha", "pooja", "roopa",
       "alloy", "shimmer", "coral", "sage", "marin",
       "exavitqu4vr4xnsdxmal", "xrexe9ykig1wjnnlvkgx", "cgsgspj2msm6clmckdw9",
       "hpp4j3vqnfwauoo0d1us", "xb7hh8msujpsbsdyk0k2"
@@ -805,33 +930,25 @@ export class AgentsService {
         : "Namaste! Main aapki help karne ke liye ready hoon. Main aapki call connect kar raha hoon.";
     }
 
-    if (provider === "openai") {
-      const apiKey = process.env.OPENAI_API_KEY;
-      if (!apiKey) throw new Error("OPENAI_API_KEY is not configured on the API server");
-
-      const response = await fetch("https://api.openai.com/v1/audio/speech", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "tts-1",
-          input: testText,
-          voice: speaker, // use mapped voice identifier
-        }),
-      });
-      if (!response.ok) {
-        const err = await response.text();
-        throw new Error(`OpenAI TTS preview failed: ${err}`);
-      }
-      const arrayBuffer = await response.arrayBuffer();
-      return Buffer.from(arrayBuffer);
-    } else if (provider === "sarvam") {
+    if (provider === "sarvam") {
       const apiKey = process.env.SARVAM_API_KEY;
       if (!apiKey) throw new Error("SARVAM_API_KEY is not configured on the API server");
 
-      const isEnglish = agentLang.startsWith("en");
+      const langCodeMap: Record<string, string> = {
+        english: "en-IN",
+        hindi: "hi-IN",
+        hinglish: "hi-IN",
+        marathi: "mr-IN",
+        tamil: "ta-IN",
+        telugu: "te-IN",
+        bengali: "bn-IN",
+        gujarati: "gu-IN",
+        kannada: "kn-IN",
+        malayalam: "ml-IN",
+        punjabi: "pa-IN",
+        odia: "od-IN",
+      };
+      const targetLanguageCode = langCodeMap[agentLang] ?? "hi-IN";
       const response = await fetch("https://api.sarvam.ai/text-to-speech", {
         method: "POST",
         headers: {
@@ -841,8 +958,11 @@ export class AgentsService {
         body: JSON.stringify({
           text: testText,
           speaker: speaker, // use mapped speaker ID
-          target_language_code: isEnglish ? "en-IN" : "hi-IN",
+          target_language_code: targetLanguageCode,
           model: "bulbul:v3",
+          ...(voiceSettings?.temperature !== undefined
+            ? { temperature: voiceSettings.temperature }
+            : {}),
         }),
       });
       if (!response.ok) {
@@ -869,6 +989,18 @@ export class AgentsService {
           model_id: "eleven_turbo_v2_5",
           text: testText,
           language_code: agentLang.startsWith("en") ? "en" : "hi",
+          ...(voiceSettings &&
+          (voiceSettings.stability !== undefined ||
+            voiceSettings.similarityBoost !== undefined ||
+            voiceSettings.style !== undefined)
+            ? {
+                voice_settings: {
+                  stability: voiceSettings.stability ?? 0.5,
+                  similarity_boost: voiceSettings.similarityBoost ?? 0.75,
+                  ...(voiceSettings.style !== undefined ? { style: voiceSettings.style } : {}),
+                },
+              }
+            : {}),
         }),
       });
       if (!response.ok) {

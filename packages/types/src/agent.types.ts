@@ -16,6 +16,22 @@ export interface AgentBookingConfig {
   askEmail: boolean;
 }
 
+/**
+ * Per-voice provider tunables the user adjusts in the dashboard. All values
+ * are stored provider-native (0–1 floats); the UI renders them as 0–100
+ * sliders. Absent field = provider default.
+ */
+export interface AgentVoiceSettings {
+  /** ElevenLabs: lower = more expressive/variable, higher = more monotone-stable. */
+  stability?: number;
+  /** ElevenLabs: how closely the output sticks to the original voice timbre. */
+  similarityBoost?: number;
+  /** ElevenLabs: style exaggeration — higher is more dramatic delivery. */
+  style?: number;
+  /** Sarvam: sampling temperature — higher is more expressive/varied. */
+  temperature?: number;
+}
+
 export interface SerializedAgent {
   id: string;
   name: string;
@@ -26,6 +42,8 @@ export interface SerializedAgent {
   fallbackMessage: string;
   businessInfo: string | null;
   websiteUrl: string | null;
+  /** Owner-written instructions for how the agent should talk and behave. */
+  agentGuidelines: string | null;
   maxDuration: number;
   dndCompliance: boolean;
   recordingConsent: boolean;
@@ -33,6 +51,9 @@ export interface SerializedAgent {
   phoneNumber: string;
   voice: string;
   voiceSpeed: number | null;
+  voiceSettings: AgentVoiceSettings | null;
+  /** Word → spoken-form overrides (Sarvam pronunciation dictionary source). */
+  pronunciations: Record<string, string> | null;
   intakeWorkflowId: string | null;
   smsWorkflowId: string | null;
   phoneNumberId: string | null;

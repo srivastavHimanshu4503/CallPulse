@@ -3,15 +3,35 @@ import { z } from "zod";
 export const createAgentSchema = z.object({
   name: z.string().min(1, "Agent name is required"),
   role: z.string().min(1, "Agent role is required"),
-  language: z.enum(["English", "Hindi", "Hinglish", "Marathi", "Tamil", "Telugu"], {
-    errorMap: () => ({ message: "Please select a valid language" }),
-  }),
+  // All 11 languages Sarvam bulbul:v3 speaks (10 Indian + Indian English).
+  language: z.enum(
+    [
+      "English",
+      "Hindi",
+      "Hinglish",
+      "Marathi",
+      "Tamil",
+      "Telugu",
+      "Bengali",
+      "Gujarati",
+      "Kannada",
+      "Malayalam",
+      "Punjabi",
+      "Odia",
+    ],
+    {
+      errorMap: () => ({ message: "Please select a valid language" }),
+    }
+  ),
   greetingMessage: z.string().min(1, "Greeting message is required"),
   tone: z.enum(["Friendly", "Professional", "Casual"], {
     errorMap: () => ({ message: "Please select a valid tone" }),
   }),
   fallbackMessage: z.string().min(1, "Fallback message is required"),
   businessInfo: z.string().optional().nullable(),
+  // How the agent should talk/behave — free text from the business owner,
+  // injected into the live call prompt as its own section.
+  agentGuidelines: z.string().max(4000).optional().nullable(),
   websiteUrl: z
     .string()
     .transform((val) => (val === "" ? null : val))
@@ -22,10 +42,29 @@ export const createAgentSchema = z.object({
   dndCompliance: z.boolean().default(true),
   recordingConsent: z.boolean().default(true),
   isActive: z.boolean().default(true).optional(),
-  voice: z.string().default("Priya (Indian Female)").optional(),
-  // 0.7–1.2 is the intersection of all providers' safe speed ranges
-  // (ElevenLabs hard-caps at [0.7, 1.2]). Null = per-provider default.
-  voiceSpeed: z.coerce.number().min(0.7).max(1.2).optional().nullable(),
+  voice: z.string().default("sarvam:priya").optional(),
+  // Sarvam bulbul:v3 accepts 0.5–2.0. Legacy ElevenLabs voices are clamped
+  // to their own [0.7, 1.2] range in the voice-server. Null = default.
+  voiceSpeed: z.coerce.number().min(0.5).max(2.0).optional().nullable(),
+  // Word → spoken-form overrides fed to the Sarvam pronunciation dictionary.
+  // Sarvam caps a dictionary at 100 words.
+  pronunciations: z
+    .record(z.string().min(1).max(80), z.string().min(1).max(200))
+    .refine((obj) => Object.keys(obj).length <= 100, {
+      message: "At most 100 pronunciation entries are allowed",
+    })
+    .optional()
+    .nullable(),
+  // Provider-native 0–1 floats (UI shows 0–100 sliders). Null = defaults.
+  voiceSettings: z
+    .object({
+      stability: z.coerce.number().min(0).max(1).optional(),
+      similarityBoost: z.coerce.number().min(0).max(1).optional(),
+      style: z.coerce.number().min(0).max(1).optional(),
+      temperature: z.coerce.number().min(0).max(1).optional(),
+    })
+    .optional()
+    .nullable(),
   intakeWorkflowId: z.string().optional().nullable(),
   smsWorkflowId: z.string().optional().nullable(),
   phoneNumberId: z.string().optional().nullable(),
