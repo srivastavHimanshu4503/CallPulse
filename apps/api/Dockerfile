@@ -6,8 +6,6 @@ RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists
 
 # Copy workspace manifests first for layer caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-# patches/ holds pnpm patchedDependencies (declared in package.json) — install fails without it.
-COPY patches/ ./patches/
 COPY apps/api/package.json ./apps/api/
 COPY packages/ ./packages/
 

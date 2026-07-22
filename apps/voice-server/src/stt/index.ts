@@ -52,17 +52,12 @@ export class FlushableSarvamSTT extends sarvam.STT {
 }
 
 /**
- * Deepgram STT with the same flushActive() surface. The stock plugin's flush
- * only drains the local audio buffer — it never tells Deepgram to finalize,
- * and the plugin's AudioEnergyFilter drops silent frames, so Deepgram never
- * "hears" the silence its endpointing needs. Result: finals stalled until the
- * caller spoke again (measured 17.9s of dead air on 2026-07-22). Our pnpm
- * patch (patches/@livekit__agents-plugin-deepgram) makes flush also send
- * Deepgram's `{"type":"Finalize"}` control message, so flushActive() on VAD
- * end-of-speech forces an immediate final. Interims still stream — they let
- * the SDK's preemptiveGeneration start the LLM while the caller is finishing,
- * hiding LLM TTFT inside the end-of-utterance window. Sarvam (finals only)
- * can never do that.
+ * Deepgram STT with the same flushActive() surface. Deepgram's plugin ignores
+ * the base-class flush (no Finalize frame), but its own endpointing finalizes
+ * within tens of ms AND it streams interim transcripts — which is the whole
+ * point: interims let the SDK's preemptiveGeneration start the LLM while the
+ * caller is still finishing, hiding LLM TTFT inside the end-of-utterance
+ * window. Sarvam (finals only) can never do that.
  */
 export class FlushableDeepgramSTT extends deepgram.STT {
   #active: agentsSTT.SpeechStream | null = null;
