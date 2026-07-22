@@ -13,8 +13,8 @@ export interface OpenDealForMatch {
   value: number;
   summary: string | null;
   lastActivityAt: string | null;
-  /** Ordered stage names of this deal's pipeline, tagged won/lost. */
-  stages: { name: string; isWon: boolean; isLost: boolean }[];
+  /** Ordered stages of this deal's pipeline with default win % and won/lost tags. */
+  stages: { name: string; probability: number; isWon: boolean; isLost: boolean }[];
 }
 
 export const DealMatchSchema = z.object({
@@ -52,10 +52,12 @@ Rules:
 1. Same event/booking/requirement (confirming it, asking for updates, changing date/quantity/details, negotiating its price, cancelling it) → UPDATE_EXISTING with that deal's id.
 2. A clearly different product, event, or requirement → CREATE_NEW.
 3. When genuinely unsure whether it is the same requirement, prefer UPDATE_EXISTING for follow-up-style calls ("what about my booking", "wo wala order") and CREATE_NEW only when the caller describes a distinctly different need.
-4. Stage moves (newStage) must be justified by the call:
-   - Caller CONFIRMED / finalized the booking or purchase → the stage whose name means booked/confirmed/won.
+4. Stage moves (newStage) must be justified by the call. Read the stage list as a progress ladder — the win % tells you what each stage means (low % = first contact, middle % = actively interested / qualified, high % = practically agreed, won = confirmed/booked, lost = cancelled):
+   - Caller CONFIRMED / finalized the booking or purchase → the won stage.
    - Caller CANCELLED → the lost stage.
-   - Deal simply discussed further → null (keep stage). Never move a deal backward just because the caller asked a question.
+   - The call clearly ADVANCED the deal (caller shared detailed requirements — date, venue, quantities, guest count — asked for a quote, or showed strong buying signals) → the open stage that matches that progress (typically the next one up the ladder).
+   - Small talk, a repeated question, or no new progress → null (keep the current stage).
+   - Move forward or keep — NEVER move a deal backward down the ladder.
    - newStage must be copied character-for-character from the deal's stage list.
 5. updatedValue only when the call itself established a new total (new quote, changed quantity). Never invent or zero it.
 6. dealId must be copied exactly from the list — never fabricate an id.`;
@@ -68,7 +70,10 @@ export const buildDealMatchUserPrompt = (
   const dealLines = deals
     .map((d, i) => {
       const stages = d.stages
-        .map((s) => `${s.name}${s.isWon ? " (won)" : s.isLost ? " (lost)" : ""}`)
+        .map(
+          (s) =>
+            `${s.name} (${s.probability}%${s.isWon ? ", won" : s.isLost ? ", lost" : ""})`
+        )
         .join(" → ");
       return `Deal ${i + 1}:
   id: ${d.id}

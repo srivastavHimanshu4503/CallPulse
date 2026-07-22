@@ -120,6 +120,7 @@ export const dealCreation: JobHandler = {
           lastActivityAt: d.lastActivityAt?.toISOString() ?? null,
           stages: (d.pipeline?.stageConfigs ?? []).map((s) => ({
             name: s.name,
+            probability: s.probability,
             isWon: s.isWon,
             isLost: s.isLost,
           })),
@@ -249,7 +250,7 @@ export const dealCreation: JobHandler = {
             tenantId: ctx.job.tenantId,
             contactId: ctx.job.contactId,
             type: ACTIVITY_TYPES.DEAL_CREATED,
-            summary: `Deal created: ${title}`,
+            summary: `Deal created in ${firstStage}: ${title}`,
             commLogId: ctx.job.logId,
             dealId: deal.id,
             occurredAt: new Date(),
@@ -373,8 +374,8 @@ const applyDealUpdate = async (
         contactId: ctx.job.contactId,
         type: stageChanged ? ACTIVITY_TYPES.DEAL_STAGE_CHANGED : ACTIVITY_TYPES.FIELD_UPDATED,
         summary: stageChanged
-          ? `Deal moved to ${stageCfg!.name} from follow-up call: ${deal.title}`
-          : `Deal updated from follow-up call: ${deal.title}`,
+          ? `Deal moved ${deal.stage} → ${stageCfg!.name} (follow-up call): ${deal.title}`
+          : `Deal updated from follow-up call (stays in ${deal.stage}): ${deal.title}`,
         commLogId: ctx.job.logId,
         dealId: deal.id,
         occurredAt: new Date(),
