@@ -279,12 +279,24 @@ export default defineAgent({
     void (config.twilio.isConfigured ? new TwilioTelephonyProvider() : undefined);
 
     let hangupRequested = false;
+    // Latest SpeechHandle from the SDK's SpeechCreated event. When end_call
+    // fires, we await its playout so the goodbye line actually finishes
+    // before we tear the room down.
+    let lastSpeechHandle: { waitForPlayout: () => Promise<void> } | null = null;
     const callStartedAt = Date.now();
     // Defensive grace period: refuse to hang up in the first 6 seconds of a
     // call. If the LLM mistakes the greeting acknowledgment ("hello", "hi")
     // for a farewell and calls end_call too early, we ignore it and keep the
     // conversation going. Legitimate goodbyes always happen later.
     const HANGUP_GRACE_MS = 6000;
+    // Absolute cap on how long we'll wait for the goodbye TTS to finish
+    // playing before we force teardown — guards against a stuck TTS stream
+    // leaving the caller in dead air forever.
+    const FAREWELL_MAX_WAIT_MS = 6000;
+    // Extra drain time after the local playout event, so in-flight RTP
+    // packets can actually reach the caller on SIP (LiveKit → SIP trunk →
+    // carrier → phone) before we drop the room.
+    const SIP_DRAIN_MS = 700;
 
     // Unified hangup path. Whether the LLM invoked `end_call`, the assistant
     // heuristic fired, the caller said goodbye, the idle timer expired, or
@@ -312,13 +324,39 @@ export default defineAgent({
         source: callSource,
         elapsedMs: elapsed,
         room: roomName,
+        hasSpeechHandle: !!lastSpeechHandle,
       });
-      // Give TTS a beat to finish speaking the goodbye line before tearing
-      // down the call. Tuned tight — long enough to avoid mid-word cutoff,
-      // short enough to feel snappy.
-      setTimeout(async () => {
+
+      // Wait for the currently-playing farewell TTS to actually finish
+      // (waitForPlayout resolves once the SDK is done streaming audio),
+      // then give SIP a short drain window. If the SDK never resolves
+      // (crashed TTS, disconnected participant), cap the wait so we don't
+      // hang forever.
+      const waitStart = Date.now();
+      const playoutPromise = lastSpeechHandle
+        ? lastSpeechHandle.waitForPlayout().catch((err) => {
+            callLog.warn("waitForPlayout rejected — proceeding with teardown", {
+              message: (err as Error)?.message,
+            });
+          })
+        : Promise.resolve();
+      const cap = new Promise<void>((resolve) => setTimeout(resolve, FAREWELL_MAX_WAIT_MS));
+      await Promise.race([playoutPromise, cap]);
+      const playoutWaitMs = Date.now() - waitStart;
+      // SIP-only: audio still has to travel LiveKit → trunk → carrier → phone
+      // after the local playout event fires. Skip this drain on browser test
+      // calls (WebRTC is direct so playout complete ≈ heard).
+      if (callSource !== "browser") {
+        await new Promise((resolve) => setTimeout(resolve, SIP_DRAIN_MS));
+      }
+      callLog.info("teardown starting after farewell playout", {
+        playoutWaitMs,
+        capped: playoutWaitMs >= FAREWELL_MAX_WAIT_MS,
+        drainMs: callSource !== "browser" ? SIP_DRAIN_MS : 0,
+      });
+
+      {
         const teardownStart = Date.now();
-        callLog.info("teardown starting after TTS grace");
         if (config.livekit.url && config.livekit.apiKey && config.livekit.apiSecret) {
           try {
             const rs = new RoomServiceClient(
@@ -355,7 +393,7 @@ export default defineAgent({
         } catch (err) {
           callLog.warn("room disconnect failed", { message: (err as Error).message });
         }
-      }, 900);
+      }
     };
 
     // Speaking handle for code paths that run before/outside an LLM turn
@@ -738,6 +776,11 @@ export default defineAgent({
 
     agentSession.on(voice.AgentSessionEventTypes.SpeechCreated, (ev: any) => {
       callLog.info("speech created", { source: ev?.source, userInitiated: ev?.userInitiated });
+      // Track the latest speech handle so endCall can await its full playout
+      // before tearing down the room — otherwise the goodbye line gets chopped.
+      if (ev?.speechHandle) {
+        lastSpeechHandle = ev.speechHandle;
+      }
     });
 
     // The moment Silero VAD says the caller stopped (user speaking →
