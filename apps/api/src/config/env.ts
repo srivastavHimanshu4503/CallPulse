@@ -33,23 +33,9 @@ const envSchema = z.object({
   // Plivo — used for Indian numbers. Both keys required to enable Plivo.
   PLIVO_AUTH_ID: z.string().min(1).optional(),
   PLIVO_AUTH_TOKEN: z.string().min(1).optional(),
-  // Plivo application ID that owns the SIP endpoint / voice URL webhook.
-  // Set once in the Plivo console and referenced when creating trunks.
-  PLIVO_APPLICATION_ID: z.string().min(1).optional(),
-  // The trunk (SIP domain) Plivo routes purchased Indian DIDs into.
-  // Optional — if unset, we skip auto-attach and log a warning.
-  PLIVO_TRUNK_ID: z.string().min(1).optional(),
   // Compliance application ID from Plivo India KYC. India numbers cannot be
   // purchased without attaching one. Set once after KYC approval.
   PLIVO_COMPLIANCE_APPLICATION_ID: z.string().min(1).optional(),
-  // LiveKit SIP inbound URI — where Plivo forwards the call. Grab this from
-  // the LiveKit dashboard under Project → SIP → Inbound Trunk (Host).
-  // Example: sip.livekit.cloud OR <project-id>.sip.livekit.cloud
-  LIVEKIT_SIP_URI: z.string().min(1).optional(),
-  // Auth for the LiveKit inbound SIP trunk. Plivo attaches these on the SIP
-  // INVITE so LiveKit accepts the call.
-  LIVEKIT_SIP_AUTH_USERNAME: z.string().min(1).optional(),
-  LIVEKIT_SIP_AUTH_PASSWORD: z.string().min(1).optional(),
 
   // Razorpay — optional so the API boots without payments configured.
   RAZORPAY_KEY_ID: z.string().min(1).optional(),

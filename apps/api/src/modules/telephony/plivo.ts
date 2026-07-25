@@ -6,6 +6,11 @@ import { env } from "../../config/env.js";
  * `twilio.ts` — same three verbs (list, buy, attach) so the router can pick
  * a provider based on country without knowing implementation details.
  *
+ * Routing model: SIP Trunking (same as Twilio Elastic Trunk). Purchased
+ * DIDs are attached in the Plivo console to a SIP trunk whose termination
+ * points at LiveKit's inbound SIP host. No Applications, no webhooks —
+ * Plivo forwards SIP INVITEs straight to LiveKit.
+ *
  * India specifics:
  *  - CPaaS providers (Plivo, Twilio, Telnyx) can only sell landline DIDs on
  *    Indian city STD codes (022 Mumbai, 080 Bangalore, 011 Delhi, etc.).
@@ -67,7 +72,6 @@ export const listAvailableNumbers = async (
  * can release / re-configure the number later.
  */
 export const purchaseNumber = async (phoneNumber: string): Promise<string> => {
-  const applicationId = env.PLIVO_APPLICATION_ID;
   const complianceApplicationId = env.PLIVO_COMPLIANCE_APPLICATION_ID;
 
   if (!complianceApplicationId) {
@@ -82,9 +86,11 @@ export const purchaseNumber = async (phoneNumber: string): Promise<string> => {
 
   try {
     // Signature: buy(number, appId, cnamLookup, haEnable, complianceApplicationId)
+    // We intentionally skip appId — routing happens via SIP trunk (configured
+    // in Plivo console), not via a Voice URL Application.
     const resp = await getClient().numbers.buy(
       bare,
-      applicationId,
+      undefined,
       undefined,
       undefined,
       complianceApplicationId,
@@ -107,7 +113,6 @@ export const purchaseNumber = async (phoneNumber: string): Promise<string> => {
       String(err);
     console.error("[plivo] purchaseNumber failed", {
       number: bare,
-      applicationId,
       complianceApplicationId,
       status: anyErr?.statusCode || anyErr?.status,
       detail,
@@ -126,26 +131,15 @@ export const purchaseNumber = async (phoneNumber: string): Promise<string> => {
 };
 
 /**
- * Attach a purchased number to the SIP trunk that fronts LiveKit. In Plivo,
- * "trunk" attachment is really "point this number at an Application" — the
- * application has a voice URL that returns Plivo XML routing the call over
- * SIP to LiveKit. If the number was bought with `applicationId` already set
- * (see `purchaseNumber`), attachment is already done and this is a no-op.
+ * SIP trunk attachment for Plivo is a one-time console setup — you create
+ * a SIP trunk in the Plivo dashboard that terminates at LiveKit's SIP host,
+ * and newly-purchased DIDs are attached to that trunk on the same page.
+ * There is no per-number API attach step.
  *
- * We keep the function for interface parity with the Twilio adapter — the
- * billing service calls both providers the same way.
+ * We keep this function as a no-op for interface parity with the Twilio
+ * adapter, so `provisionPhoneNumber` in billing.service can call both
+ * providers with the same shape.
  */
-export const attachNumberToSipTrunk = async (phoneNumber: string): Promise<void> => {
-  const applicationId = env.PLIVO_APPLICATION_ID;
-  if (!applicationId) {
-    console.warn(
-      "[plivo] PLIVO_APPLICATION_ID not set — skipping trunk attach. Configure the number's voice URL manually in the Plivo console.",
-    );
-    return;
-  }
-
-  const bare = phoneNumber.replace(/^\+/, "");
-  await getClient().numbers.update(bare, {
-    appId: applicationId,
-  });
+export const attachNumberToSipTrunk = async (_phoneNumber: string): Promise<void> => {
+  // No-op — Plivo SIP trunk is configured in the console, not via API.
 };
