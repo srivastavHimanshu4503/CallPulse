@@ -80,19 +80,49 @@ export const purchaseNumber = async (phoneNumber: string): Promise<string> => {
   // match how their examples do it.
   const bare = phoneNumber.replace(/^\+/, "");
 
-  // Signature: buy(number, appId, cnamLookup, haEnable, complianceApplicationId)
-  const resp = await getClient().numbers.buy(
-    bare,
-    applicationId,
-    undefined,
-    undefined,
-    complianceApplicationId,
-  );
+  try {
+    // Signature: buy(number, appId, cnamLookup, haEnable, complianceApplicationId)
+    const resp = await getClient().numbers.buy(
+      bare,
+      applicationId,
+      undefined,
+      undefined,
+      complianceApplicationId,
+    );
 
-  // Plivo returns { api_id, message, numbers: [{ number, status, ... }] }
-  // We use the bare number as the reference; that's what all subsequent
-  // Plivo API calls (release, update) key off of.
-  return (resp as any)?.numbers?.[0]?.number || bare;
+    // Plivo returns { api_id, message, numbers: [{ number, status, ... }] }
+    // We use the bare number as the reference; that's what all subsequent
+    // Plivo API calls (release, update) key off of.
+    return (resp as any)?.numbers?.[0]?.number || bare;
+  } catch (err) {
+    // Surface the ACTUAL Plivo response so we can tell "number gone" from
+    // "compliance/application mismatch" from "auth failure". Their SDK
+    // sometimes attaches details on `.body` or `.response`.
+    const anyErr = err as any;
+    const detail =
+      anyErr?.response?.data ||
+      anyErr?.body ||
+      anyErr?.data ||
+      anyErr?.message ||
+      String(err);
+    console.error("[plivo] purchaseNumber failed", {
+      number: bare,
+      applicationId,
+      complianceApplicationId,
+      status: anyErr?.statusCode || anyErr?.status,
+      detail,
+    });
+    // Common cause: search results go stale in seconds. Message the caller
+    // clearly so the UI can prompt a retry rather than a mystery 500.
+    if (String(detail).toLowerCase().includes("not found")) {
+      throw new Error(
+        "Number no longer available on Plivo — search again and pick another (India inventory turns over fast).",
+      );
+    }
+    throw new Error(
+      `Plivo purchase failed: ${typeof detail === "string" ? detail : JSON.stringify(detail)}`,
+    );
+  }
 };
 
 /**

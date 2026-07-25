@@ -252,13 +252,16 @@ export class BillingService {
     try {
       providerRef = await providerModule.purchaseNumber(phoneNumber);
     } catch (err) {
+      const inner = (err as Error).message || String(err);
       console.error(
         `[billing] PAID BUT ${providerName} PURCHASE FAILED — tenant ${tenantId}, payment ${paymentId}, number ${phoneNumber}:`,
-        (err as Error).message,
+        inner,
       );
-      throw new Error(
-        "Payment received but the number could not be provisioned — our team will fix this shortly",
-      );
+      // Bubble the provider's actual message up so the UI can tell the user
+      // WHY (number gone, KYC issue, etc.) and show the payment ref for a
+      // refund request. The final "keep this ref for support" line is
+      // appended by the UI, not here.
+      throw new Error(inner);
     }
 
     // Steps 2+3 — wire the call path end to end, zero manual console work:

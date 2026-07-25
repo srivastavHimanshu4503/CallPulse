@@ -1,10 +1,11 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Phone, Crown, Search, X, MapPin, Sparkles, Info } from "lucide-react";
+import { Phone, Crown, Search, X, MapPin, Sparkles, Info, AlertTriangle, Copy } from "lucide-react";
+import { toast } from "sonner";
 import { api } from "../../../lib/axios.js";
 import { useEntitlements } from "../../../hooks/useEntitlements.js";
-import { useRazorpayCheckout } from "../../../hooks/useRazorpayCheckout.js";
+import { useRazorpayCheckout, type CheckoutErrorInfo } from "../../../hooks/useRazorpayCheckout.js";
 import { PHONE_NUMBER_PRICE_BY_COUNTRY } from "@antigravity/types";
 
 interface PurchaseNumberModalProps {
@@ -89,6 +90,7 @@ export function PurchaseNumberModal({
   const [searchInput, setSearchInput] = React.useState("");
   const [searchApplied, setSearchApplied] = React.useState("");
   const [selected, setSelected] = React.useState<string | null>(null);
+  const [purchaseError, setPurchaseError] = React.useState<CheckoutErrorInfo | null>(null);
   const canBuy = ent.can("PHONE_NUMBER_PURCHASE");
 
   // Reset selection + search when country changes so results don't leak.
@@ -96,6 +98,7 @@ export function PurchaseNumberModal({
     setSearchInput("");
     setSearchApplied("");
     setSelected(null);
+    setPurchaseError(null);
   }, [country]);
 
   const meta = COUNTRY_META[country];
@@ -131,6 +134,7 @@ export function PurchaseNumberModal({
 
   const handleBuy = () => {
     if (!selected) return;
+    setPurchaseError(null);
     void checkout(
       { product: "phone-number", agentId, phoneNumber: selected, country },
       `Dedicated ${country === "IN" ? "Indian" : "US"} number for ${agentName}`,
@@ -138,6 +142,12 @@ export function PurchaseNumberModal({
         void queryClient.invalidateQueries({ queryKey: ["agents"] });
         void queryClient.invalidateQueries({ queryKey: ["telephony-numbers"] });
         onClose();
+      },
+      (info) => {
+        // Payment already went through — keep the modal open and show a
+        // persistent alert so the user has the paymentId for refund/support.
+        setPurchaseError(info);
+        setSelected(null);
       },
     );
   };
@@ -246,6 +256,46 @@ export function PurchaseNumberModal({
                 <Info className="h-3 w-3 text-fg-muted shrink-0 mt-0.5" />
                 <p className="text-[10.5px] text-fg-secondary leading-snug">{meta.disclaimer}</p>
               </div>
+
+              {/* Persistent alert: payment succeeded but provisioning failed. */}
+              {purchaseError?.paid && (
+                <div className="mt-2.5 rounded-md bg-negative-50 border border-negative-500/30 px-3 py-2.5 flex items-start gap-2">
+                  <AlertTriangle className="h-4 w-4 text-negative-500 shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[12px] font-semibold text-negative-500 leading-snug">
+                      Payment received but the number couldn't be secured
+                    </div>
+                    <div className="text-[11px] text-fg-secondary mt-1 leading-snug">
+                      {purchaseError.message}
+                    </div>
+                    <div className="text-[11px] text-fg-secondary mt-1.5 leading-snug">
+                      <strong>What to do:</strong>{" "}
+                      {country === "IN"
+                        ? "Indian inventory shifts fast. Search again and pick a different number — if you keep hitting this, share the payment ref below with support."
+                        : "Search for a new number and try again."}
+                    </div>
+                    {purchaseError.paymentId && (
+                      <div className="mt-2 flex items-center gap-1.5">
+                        <code className="text-[10.5px] font-mono bg-bg-raised border border-line-default rounded px-1.5 py-0.5 text-fg-primary tabular-nums">
+                          {purchaseError.paymentId}
+                        </code>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(purchaseError.paymentId!);
+                            toast.success("Payment ref copied");
+                          }}
+                          className="inline-flex items-center gap-1 h-6 px-1.5 rounded text-[10.5px] font-semibold text-fg-secondary hover:bg-bg-muted"
+                          title="Copy payment reference"
+                        >
+                          <Copy className="h-3 w-3" />
+                          Copy
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Search */}
