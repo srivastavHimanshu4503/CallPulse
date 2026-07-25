@@ -20,6 +20,15 @@ aws ecr get-login-password --region "$REGION" |
   docker login --username AWS --password-stdin "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
 
 $COMPOSE pull
+
+# Sync Prisma schema to the DB BEFORE booting the new api image — we use
+# `db push` (not migrations) as the source of truth, so every deploy must
+# reconcile any schema change with the live DB. Runs inside a throwaway
+# `api` container using the just-pulled image; DATABASE_URL comes from
+# the .env we wrote above.
+$COMPOSE run --rm --entrypoint sh api -c \
+  "pnpm --filter @antigravity/db exec prisma db push --skip-generate"
+
 $COMPOSE up -d --remove-orphans
 # Caddyfile is a single-file bind mount: git pull replaces the inode and the
 # running container keeps the stale one, so config edits silently no-op.
