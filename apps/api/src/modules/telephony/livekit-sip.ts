@@ -2,22 +2,15 @@ import { SipClient, RoomConfiguration, RoomAgentDispatch } from "livekit-server-
 import { env } from "../../config/env.js";
 
 /**
- * LiveKit SIP routing automation. Two goals:
- *
- *   1. A wildcard inbound trunk exists (empty `numbers`), so ANY SIP INVITE
- *      from any upstream provider (Twilio, Plivo, or a future one) is
- *      accepted without per-DID whitelisting.
- *   2. At least one dispatch rule exists that spawns our voice agent for
- *      every accepted call, regardless of which trunk it landed on.
- *
- * This function is idempotent — safe to call at server startup AND after
- * every number purchase. Runs against LiveKit REST from the api-server;
- * fails soft if LiveKit env is missing (local dev without SIP setup).
+ * LiveKit SIP routing automation. After a number is purchased on any
+ * upstream provider (Twilio, Plivo, ...) we make sure LiveKit will accept
+ * calls for it and dispatch our voice agent — zero console clicking for
+ * the customer OR for us.
  */
 
 const AGENT_NAME = "inbound-agent";
 const DISPATCH_RULE_NAME = "indiai-inbound-dispatch";
-const WILDCARD_TRUNK_NAME = "indiai-inbound-wildcard";
+const TRUNK_NAME = "indiai-inbound";
 
 const httpUrl = (ws: string): string =>
   ws.replace(/^wss:\/\//, "https://").replace(/^ws:\/\//, "http://");
@@ -31,54 +24,63 @@ const getSip = (): SipClient => {
   return sip;
 };
 
-const isLiveKitConfigured = (): boolean =>
-  Boolean(env.LIVEKIT_URL && env.LIVEKIT_API_KEY && env.LIVEKIT_API_SECRET);
-
 /**
- * Ensures the wildcard trunk + a global dispatch rule exist. Call at startup
- * so a freshly-provisioned LiveKit project doesn't need any dashboard clicks
- * before it can accept calls.
+ * Ensure inbound calls to `phoneNumber` reach the voice agent:
+ *  1. The number is on a LiveKit inbound trunk (append to the existing one,
+ *     or create the first trunk). A trunk with an EMPTY numbers list accepts
+ *     everything, so nothing to do in that case.
+ *  2. At least one dispatch rule exists that spawns our agent per caller.
  */
-export const ensureLiveKitInboundReady = async (): Promise<void> => {
-  if (!isLiveKitConfigured()) {
-    console.warn("[livekit-sip] LiveKit not configured — skipping inbound setup");
-    return;
-  }
-
+export const ensureNumberRouted = async (phoneNumber: string): Promise<void> => {
   const client = getSip();
 
-  // ── Wildcard trunk ──
+  // ── 1. Inbound trunk ──
   const trunks = await client.listSipInboundTrunk();
   const wildcard = trunks.find((t) => !t.numbers || t.numbers.length === 0);
-  if (!wildcard) {
-    await client.createSipInboundTrunk(WILDCARD_TRUNK_NAME, [], { krispEnabled: true });
-    console.log(`[livekit-sip] created wildcard inbound trunk "${WILDCARD_TRUNK_NAME}"`);
+  const holding = trunks.find((t) => t.numbers?.includes(phoneNumber));
+
+  let trunkId: string | undefined = (wildcard ?? holding)?.sipTrunkId;
+  if (!wildcard && !holding) {
+    // One trunk per number keeps this append-only and idempotent — LiveKit
+    // is happy with many inbound trunks.
+    const created = await client.createSipInboundTrunk(
+      `${TRUNK_NAME}-${phoneNumber.replace(/\D/g, "")}`,
+      [phoneNumber],
+      { krispEnabled: true },
+    );
+    trunkId = created.sipTrunkId;
   }
 
-  // ── Global dispatch rule ──
+  // ── 2. Dispatch rule ──
   const rules = await client.listSipDispatchRule();
-  const globalRule = rules.find((r) => !r.trunkIds || r.trunkIds.length === 0);
-  if (!globalRule) {
+  if (rules.length === 0) {
     await client.createSipDispatchRule(
       { type: "individual", roomPrefix: "call-" },
       {
         name: DISPATCH_RULE_NAME,
-        trunkIds: [], // empty = applies to all trunks
+        // Empty trunkIds = applies to every trunk, present and future.
+        trunkIds: [],
         roomConfig: new RoomConfiguration({
           agents: [new RoomAgentDispatch({ agentName: AGENT_NAME })],
         }),
       },
     );
-    console.log(`[livekit-sip] created global dispatch rule "${DISPATCH_RULE_NAME}"`);
+  } else {
+    // A rule scoped to specific trunks won't cover a NEW trunk we created.
+    const covered = rules.some(
+      (r) => !r.trunkIds || r.trunkIds.length === 0 || (trunkId && r.trunkIds.includes(trunkId)),
+    );
+    if (!covered && trunkId) {
+      await client.createSipDispatchRule(
+        { type: "individual", roomPrefix: "call-" },
+        {
+          name: `${DISPATCH_RULE_NAME}-${phoneNumber.replace(/\D/g, "")}`,
+          trunkIds: [trunkId],
+          roomConfig: new RoomConfiguration({
+            agents: [new RoomAgentDispatch({ agentName: AGENT_NAME })],
+          }),
+        },
+      );
+    }
   }
-};
-
-/**
- * Kept for interface parity with the previous per-DID approach. The wildcard
- * trunk already accepts every DID, so we just make sure the wildcard exists.
- * `phoneNumber` is ignored on purpose — it's fine because the dispatch rule
- * spawns the agent for any accepted call.
- */
-export const ensureNumberRouted = async (_phoneNumber: string): Promise<void> => {
-  await ensureLiveKitInboundReady();
 };
