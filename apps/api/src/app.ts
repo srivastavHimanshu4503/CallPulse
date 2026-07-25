@@ -11,6 +11,7 @@ import { bookingsRouter } from "./modules/bookings/bookings.router.js";
 import { workflowsRouter } from "./modules/workflows/workflows.router.js";
 import { billingRouter, billingWebhookHandler } from "./modules/billing/billing.router.js";
 import { telephonyRouter } from "./modules/telephony/telephony.router.js";
+import { plivoWebhookRouter } from "./modules/telephony/plivo-webhook.js";
 import { recordingsRouter } from "./modules/recordings/recordings.router.js";
 import { whatsappRouter, whatsappConversationsRouter } from "./modules/whatsapp/whatsapp.router.js";
 
@@ -38,6 +39,7 @@ app.use("/api/v1/billing", billingRouter);
 app.use("/api/v1/telephony", telephonyRouter);
 app.use("/api/v1/recordings", recordingsRouter);
 app.use("/api/v1/webhooks/whatsapp", whatsappRouter);
+app.use("/api/v1/webhooks/plivo", plivoWebhookRouter);
 app.use("/api/v1/whatsapp", whatsappConversationsRouter);
 
 

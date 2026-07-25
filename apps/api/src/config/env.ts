@@ -42,6 +42,10 @@ const envSchema = z.object({
   // Compliance application ID from Plivo India KYC. India numbers cannot be
   // purchased without attaching one. Set once after KYC approval.
   PLIVO_COMPLIANCE_APPLICATION_ID: z.string().min(1).optional(),
+  // LiveKit SIP inbound URI — where Plivo forwards the call. Grab this from
+  // the LiveKit dashboard under Project → SIP → Inbound Trunk (Host).
+  // Example: sip.livekit.cloud OR <project-id>.sip.livekit.cloud
+  LIVEKIT_SIP_URI: z.string().min(1).optional(),
 
   // Razorpay — optional so the API boots without payments configured.
   RAZORPAY_KEY_ID: z.string().min(1).optional(),
