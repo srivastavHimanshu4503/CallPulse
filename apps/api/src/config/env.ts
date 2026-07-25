@@ -46,6 +46,10 @@ const envSchema = z.object({
   // the LiveKit dashboard under Project → SIP → Inbound Trunk (Host).
   // Example: sip.livekit.cloud OR <project-id>.sip.livekit.cloud
   LIVEKIT_SIP_URI: z.string().min(1).optional(),
+  // Auth for the LiveKit inbound SIP trunk. Plivo attaches these on the SIP
+  // INVITE so LiveKit accepts the call.
+  LIVEKIT_SIP_AUTH_USERNAME: z.string().min(1).optional(),
+  LIVEKIT_SIP_AUTH_PASSWORD: z.string().min(1).optional(),
 
   // Razorpay — optional so the API boots without payments configured.
   RAZORPAY_KEY_ID: z.string().min(1).optional(),

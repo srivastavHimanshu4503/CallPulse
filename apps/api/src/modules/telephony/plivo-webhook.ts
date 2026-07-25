@@ -59,10 +59,17 @@ router.post("/answer", (req: Request, res: Response) => {
   const sipUser = to.replace(/^\+/, "") || "any";
   const sipUri = `sip:${xmlEscape(sipUser)}@${xmlEscape(sipHost)}`;
 
+  // Optional SIP auth — LiveKit inbound trunks require it. Passed as XML
+  // attributes on <SIP>; Plivo attaches them to the outgoing INVITE.
+  const authAttrs =
+    env.LIVEKIT_SIP_AUTH_USERNAME && env.LIVEKIT_SIP_AUTH_PASSWORD
+      ? ` username="${xmlEscape(env.LIVEKIT_SIP_AUTH_USERNAME)}" password="${xmlEscape(env.LIVEKIT_SIP_AUTH_PASSWORD)}"`
+      : "";
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Dial callerId="${xmlEscape(from)}" answerOnBridge="true" hangupOnStar="false">
-    <SIP>${sipUri}</SIP>
+    <SIP${authAttrs}>${sipUri}</SIP>
   </Dial>
 </Response>`;
 

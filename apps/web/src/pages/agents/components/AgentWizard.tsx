@@ -515,6 +515,7 @@ export function AgentWizard({
                     phoneNumbers={phoneNumbers}
                     refetchPhoneNumbers={refetchPhoneNumbers}
                     disabled={isFormLoading}
+                    agentName={name}
                   />
                   <CompliancePanel
                     maxDuration={maxDuration}
