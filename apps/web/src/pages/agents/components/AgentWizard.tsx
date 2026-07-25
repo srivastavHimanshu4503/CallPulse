@@ -378,7 +378,7 @@ export function AgentWizard({
   };
 
   return (
-    <div className="bg-bg-raised border border-border rounded-[8px] shadow-none flex flex-col font-sans h-full w-full overflow-hidden">
+    <div className="bg-bg-raised border border-border rounded-[8px] shadow-none flex flex-col font-sans min-h-full lg:h-full w-full lg:overflow-hidden">
       {/* TOP HEADER: Back + Title + Tabs */}
       <div className="shrink-0 border-b border-border bg-bg-raised flex flex-col px-4 sm:px-5">
         <div className="h-14 flex items-center gap-3">
@@ -409,8 +409,8 @@ export function AgentWizard({
           </div>
         </div>
         
-        {/* TAB NAVIGATION */}
-        <div className="flex items-center gap-6 mt-1">
+        {/* TAB NAVIGATION — horizontal scroll on narrow viewports */}
+        <div className="flex items-center gap-4 sm:gap-6 mt-1 overflow-x-auto no-scrollbar -mx-4 sm:-mx-5 px-4 sm:px-5">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -419,7 +419,7 @@ export function AgentWizard({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 pb-3 px-1 border-b-2 text-[13px] font-semibold transition-colors ${
+                className={`flex items-center gap-2 pb-3 px-1 border-b-2 text-[13px] font-semibold transition-colors whitespace-nowrap shrink-0 ${
                   isActive
                     ? "border-brand-500 text-brand-600"
                     : "border-transparent text-text-secondary hover:text-text-primary"
@@ -434,8 +434,8 @@ export function AgentWizard({
       </div>
 
       {/* BODY */}
-      <div className="flex-1 flex flex-col overflow-hidden min-h-0 bg-bg-subtle/40">
-        <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col lg:overflow-hidden min-h-0 bg-bg-subtle/40">
+        <div className="flex-1 lg:overflow-y-auto">
           {/* Two-column body: form (~60%) + bilingual per-tab setup guide.
               The guide is the non-tech user's manual — it swaps content with
               the active tab and collapses away below lg. */}

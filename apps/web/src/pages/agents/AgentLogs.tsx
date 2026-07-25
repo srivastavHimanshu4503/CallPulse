@@ -387,39 +387,40 @@ export function AgentLogs(): React.JSX.Element {
     <PageWrapper noScroll>
       <div className="flex-1 flex flex-col min-h-0 bg-bg-raised border border-border rounded-2xl overflow-hidden shadow-sm font-sans text-text-primary">
         
-        {/* Top Header */}
-        <div className="flex-none h-14 border-b border-border flex items-center justify-between px-5 bg-surface/50 shrink-0 z-10">
-          <div className="flex items-center gap-3">
+        {/* Top Header — flex-wrap so it stacks on narrow viewports */}
+        <div className="flex-none border-b border-border flex flex-wrap items-center justify-between gap-2 px-3 sm:px-5 py-2 lg:py-0 lg:h-14 bg-surface/50 shrink-0 z-10">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               onClick={() => navigate("/agents")}
-              className="inline-flex items-center gap-1.5 h-8 px-2.5 -ml-1.5 rounded-md text-[12.5px] font-semibold text-text-secondary hover:text-text-primary hover:bg-surface transition-colors"
+              className="inline-flex items-center gap-1.5 h-8 px-2 sm:px-2.5 -ml-1 sm:-ml-1.5 rounded-md text-[12.5px] font-semibold text-text-secondary hover:text-text-primary hover:bg-surface transition-colors shrink-0"
+              aria-label="Back to Agents"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Agents
+              <span className="hidden sm:inline">Back to Agents</span>
             </button>
-            <h1 className="text-sm font-bold text-text-primary tracking-tight">
+            <h1 className="text-sm font-bold text-text-primary tracking-tight truncate hidden md:block">
               {agent ? `${agent.name} — Logs` : "Agent Logs"}
             </h1>
-            <div className="flex items-center rounded-lg border border-border bg-bg-raised p-0.5 ml-1">
+            <div className="flex items-center rounded-lg border border-border bg-bg-raised p-0.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setViewMode("logs")}
-                className={`inline-flex items-center gap-1.5 px-3 h-7 rounded-md text-[11.5px] font-bold transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-7 rounded-md text-[11.5px] font-bold transition-colors ${
                   viewMode === "logs" ? "bg-primary text-white shadow-sm" : "text-text-secondary hover:text-text-primary"
                 }`}
               >
                 <FileText className="h-3 w-3" />
-                Call Logs
+                <span className="hidden xs:inline">Call </span>Logs
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("chats")}
-                className={`inline-flex items-center gap-1.5 px-3 h-7 rounded-md text-[11.5px] font-bold transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-7 rounded-md text-[11.5px] font-bold transition-colors ${
                   viewMode === "chats" ? "bg-emerald-600 text-white shadow-sm" : "text-text-secondary hover:text-text-primary"
                 }`}
               >
                 <MessageCircle className="h-3 w-3" />
-                WhatsApp Chats
+                <span className="hidden xs:inline">WhatsApp </span>Chats
               </button>
             </div>
           </div>
@@ -443,14 +444,15 @@ export function AgentLogs(): React.JSX.Element {
                   ? "Enable the WhatsApp Bot first"
                   : "Start a WhatsApp conversation with any number"
             }
-            className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-bold transition-colors shadow-sm ${
+            className={`inline-flex items-center gap-1.5 h-8 px-2.5 sm:px-3 rounded-lg text-[12px] font-bold transition-colors shadow-sm shrink-0 ${
               agent?.whatsappEnabled && agent?.phoneNumberId
                 ? "text-white bg-emerald-600 hover:bg-emerald-700"
                 : "text-text-muted bg-surface border border-border cursor-not-allowed"
             }`}
           >
             <MessageCircle className="h-3.5 w-3.5" />
-            New WhatsApp chat
+            <span className="hidden sm:inline">New WhatsApp chat</span>
+            <span className="sm:hidden">New</span>
           </button>
         </div>
 
@@ -632,9 +634,9 @@ export function AgentLogs(): React.JSX.Element {
             ) : (
               <div className="flex-1 flex flex-col min-h-0 relative">
                 
-                {/* Ultra Thin Detail Header */}
-                <div className="px-3 sm:px-5 py-2 border-b border-border bg-surface/30 shrink-0 flex items-center justify-between z-10 relative gap-2">
-                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                {/* Ultra Thin Detail Header — wraps on narrow viewports */}
+                <div className="px-3 sm:px-5 py-2 border-b border-border bg-surface/30 shrink-0 flex flex-wrap items-start sm:items-center justify-between z-10 relative gap-2">
+                  <div className="flex items-start sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <button
                       type="button"
                       onClick={() => setSelectedLog(null)}
@@ -652,7 +654,7 @@ export function AgentLogs(): React.JSX.Element {
                       </h2>
                       {selectedLog.contact?.phones?.[0] && (
                         <>
-                          <span className="text-border text-xs">|</span>
+                          <span className="hidden sm:inline text-border text-xs">|</span>
                           <span className="text-xs font-medium text-text-secondary flex items-center gap-1">
                             <Phone className="h-3 w-3" />
                             {selectedLog.contact.phones[0]}
@@ -662,11 +664,11 @@ export function AgentLogs(): React.JSX.Element {
                       <span className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${getStatusColor(selectedLog.extractionStatus)}`}>
                         {selectedLog.extractionStatus}
                       </span>
-                      <span className="text-border text-xs">|</span>
+                      <span className="hidden sm:inline text-border text-xs">|</span>
                       <span className="text-xs font-medium text-text-secondary">{formatDateTime(selectedLog.occurredAt)}</span>
                       {selectedLog.duration && (
                         <>
-                          <span className="text-border text-xs">|</span>
+                          <span className="hidden sm:inline text-border text-xs">|</span>
                           <span className="text-xs font-medium text-text-secondary">
                             {selectedLog.metadata?.transfer?.initiated ? `AI ${selectedLog.duration}s` : `${selectedLog.duration}s`}
                           </span>
@@ -674,7 +676,7 @@ export function AgentLogs(): React.JSX.Element {
                       )}
                       {selectedLog.metadata?.transfer?.initiated && (
                         <>
-                          <span className="text-border text-xs">|</span>
+                          <span className="hidden sm:inline text-border text-xs">|</span>
                           <span className="text-xs font-medium text-text-secondary flex items-center gap-1">
                             <PhoneForwarded className="h-3 w-3" />
                             {selectedLog.metadata.transfer.status === "failed"
@@ -690,11 +692,14 @@ export function AgentLogs(): React.JSX.Element {
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     {selectedLog.contactId && (
-                      <button 
+                      <button
                         onClick={() => navigate(`/crm/contacts/${selectedLog.contactId}`)}
                         className="px-2.5 py-1 bg-bg-raised border border-border hover:border-primary/50 hover:text-primary text-[10px] font-bold text-text-primary rounded transition-all flex items-center gap-1.5 shadow-sm"
+                        title="View contact in CRM"
                       >
-                        <User className="h-3 w-3" /> View contact in CRM
+                        <User className="h-3 w-3" />
+                        <span className="hidden md:inline">View contact in CRM</span>
+                        <span className="md:hidden">CRM</span>
                       </button>
                     )}
                     {selectedLog.activities?.some((a: any) => a.type === "DEAL_CREATED") && (
@@ -705,25 +710,27 @@ export function AgentLogs(): React.JSX.Element {
                   </div>
                 </div>
 
-                {/* Tabs Navigation */}
-                <div className="flex items-center px-5 bg-bg-raised border-b border-border shrink-0">
-                  <button 
+                {/* Tabs Navigation — horizontal scroll on narrow viewports */}
+                <div className="flex items-center px-3 sm:px-5 bg-bg-raised border-b border-border shrink-0 overflow-x-auto no-scrollbar">
+                  <button
                     onClick={() => setActiveTab("transcript")}
-                    className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-colors ${activeTab === "transcript" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
+                    className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === "transcript" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
                   >
                     Transcript
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab("summary")}
-                    className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-colors ${activeTab === "summary" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
+                    className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === "summary" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
                   >
-                    AI Summary & Score
+                    <span className="hidden sm:inline">AI </span>Summary<span className="hidden sm:inline"> &amp; Score</span>
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab("extractions")}
-                    className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-1.5 ${activeTab === "extractions" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
+                    className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap ${activeTab === "extractions" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
                   >
-                    Extracted Data <Sparkles className="h-3 w-3" />
+                    <span className="hidden sm:inline">Extracted Data</span>
+                    <span className="sm:hidden">Extracted</span>
+                    <Sparkles className="h-3 w-3" />
                   </button>
                 </div>
 

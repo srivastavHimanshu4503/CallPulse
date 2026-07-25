@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Sidebar } from "./Sidebar.js";
 import { Logo } from "../common/Logo.js";
@@ -12,6 +13,14 @@ interface PageWrapperProps {
 export function PageWrapper({ children, noScroll = false }: PageWrapperProps): React.JSX.Element {
   const sidebarMinimized = useUIStore((state) => state.sidebarMinimized);
   const setMobileSidebarOpen = useUIStore((state) => state.setMobileSidebarOpen);
+  const location = useLocation();
+  const mainRef = React.useRef<HTMLElement | null>(null);
+
+  // Reset scroll position on route change so users don't land mid-page.
+  React.useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const desktopPaddingClass = sidebarMinimized ? "lg:pl-[68px]" : "lg:pl-[220px]";
 
@@ -37,6 +46,7 @@ export function PageWrapper({ children, noScroll = false }: PageWrapperProps): R
         className={`flex flex-col h-screen overflow-hidden bg-bg-canvas transition-all duration-200 pt-14 lg:pt-0 ${desktopPaddingClass}`}
       >
         <main
+          ref={mainRef}
           className={`flex-1 pt-4 lg:pt-5 px-4 sm:px-5 lg:px-6 pb-5 animate-in fade-in duration-200 flex flex-col overflow-y-auto ${
             noScroll ? "lg:overflow-hidden" : ""
           }`}
