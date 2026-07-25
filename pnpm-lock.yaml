@@ -41,6 +41,9 @@ importers:
       '@antigravity/validators':
         specifier: workspace:*
         version: link:../../packages/validators
+      axios:
+        specifier: ^1.18.1
+        version: 1.18.1
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -7179,7 +7182,7 @@ snapshots:
 
   twilio@4.23.0:
     dependencies:
-      axios: 1.16.1
+      axios: 1.18.1
       dayjs: 1.11.20
       https-proxy-agent: 5.0.1
       jsonwebtoken: 9.0.3
@@ -7222,7 +7225,7 @@ snapshots:
   typesense@1.8.2(@babel/runtime@7.29.2):
     dependencies:
       '@babel/runtime': 7.29.2
-      axios: 1.16.1
+      axios: 1.18.1
       loglevel: 1.9.2
     transitivePeerDependencies:
       - debug

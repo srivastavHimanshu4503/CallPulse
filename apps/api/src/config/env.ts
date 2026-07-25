@@ -36,6 +36,10 @@ const envSchema = z.object({
   // Compliance application ID from Plivo India KYC. India numbers cannot be
   // purchased without attaching one. Set once after KYC approval.
   PLIVO_COMPLIANCE_APPLICATION_ID: z.string().min(1).optional(),
+  // Zentrunk (SIP Trunking) trunk ID that fronts LiveKit. Purchased DIDs
+  // get auto-attached to this trunk right after buying so calls immediately
+  // SIP-forward to LiveKit — no manual console click.
+  PLIVO_TRUNK_ID: z.string().min(1).optional(),
 
   // Razorpay — optional so the API boots without payments configured.
   RAZORPAY_KEY_ID: z.string().min(1).optional(),

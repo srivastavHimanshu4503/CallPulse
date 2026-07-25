@@ -1,4 +1,5 @@
 import { Client } from "plivo";
+import axios from "axios";
 import { env } from "../../config/env.js";
 
 /**
@@ -131,15 +132,57 @@ export const purchaseNumber = async (phoneNumber: string): Promise<string> => {
 };
 
 /**
- * SIP trunk attachment for Plivo is a one-time console setup — you create
- * a SIP trunk in the Plivo dashboard that terminates at LiveKit's SIP host,
- * and newly-purchased DIDs are attached to that trunk on the same page.
- * There is no per-number API attach step.
+ * Attach a just-purchased DID to the Zentrunk SIP trunk that terminates at
+ * LiveKit. Plivo's Node SDK doesn't expose Zentrunk endpoints, so we hit
+ * the REST API directly with the account's Basic Auth (auth_id : auth_token).
  *
- * We keep this function as a no-op for interface parity with the Twilio
- * adapter, so `provisionPhoneNumber` in billing.service can call both
- * providers with the same shape.
+ * Endpoint:
+ *   POST /v1/Account/{auth_id}/Zentrunk/Trunk/{trunk_id}/PhoneNumber/
+ *   Body: { phone_numbers: [ "<E.164 no-plus>" ] }
+ *
+ * Failure is loud but non-fatal — the DID is bought; the user can manually
+ * link it in the Plivo console if this call fails for any reason. Billing
+ * service records "trunk attach pending" on the PhoneNumber row.
  */
-export const attachNumberToSipTrunk = async (_phoneNumber: string): Promise<void> => {
-  // No-op — Plivo SIP trunk is configured in the console, not via API.
+export const attachNumberToSipTrunk = async (phoneNumber: string): Promise<void> => {
+  const trunkId = env.PLIVO_TRUNK_ID;
+  if (!trunkId) {
+    console.warn(
+      "[plivo] PLIVO_TRUNK_ID not set — skipping auto trunk-attach. Link the DID manually in the Plivo console.",
+    );
+    return;
+  }
+  if (!env.PLIVO_AUTH_ID || !env.PLIVO_AUTH_TOKEN) return;
+
+  const bare = phoneNumber.replace(/^\+/, "");
+  const url = `https://api.plivo.com/v1/Account/${env.PLIVO_AUTH_ID}/Zentrunk/Trunk/${trunkId}/PhoneNumber/`;
+
+  try {
+    await axios.post(
+      url,
+      { phone_numbers: [bare] },
+      {
+        auth: { username: env.PLIVO_AUTH_ID, password: env.PLIVO_AUTH_TOKEN },
+        timeout: 15_000,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+    console.log(`[plivo] attached ${bare} to Zentrunk ${trunkId}`);
+  } catch (err) {
+    const anyErr = err as any;
+    console.error("[plivo] trunk attach failed", {
+      number: bare,
+      trunkId,
+      status: anyErr?.response?.status,
+      detail: anyErr?.response?.data || anyErr?.message,
+    });
+    // Re-throw so billing.service marks the row "trunk attach pending".
+    throw new Error(
+      `Plivo trunk attach failed: ${
+        typeof anyErr?.response?.data === "string"
+          ? anyErr.response.data
+          : JSON.stringify(anyErr?.response?.data || anyErr?.message || err)
+      }`,
+    );
+  }
 };
