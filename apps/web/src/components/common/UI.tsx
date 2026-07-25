@@ -50,14 +50,18 @@ export const PageHeader: React.FC<{
   subtitle?: React.ReactNode;
   actions?: React.ReactNode;
 }> = ({ title, subtitle, actions }) => (
-  <div className="flex items-center justify-between gap-4 shrink-0 mb-4">
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 shrink-0 mb-4">
     <div className="min-w-0">
-      <h1 className="text-[22px] font-semibold tracking-tight text-fg-primary">{title}</h1>
+      <h1 className="text-[20px] sm:text-[22px] font-semibold tracking-tight text-fg-primary">{title}</h1>
       {subtitle && (
-        <div className="text-[12px] text-fg-secondary mt-0.5 flex items-center gap-2">{subtitle}</div>
+        <div className="text-[12px] text-fg-secondary mt-0.5 flex flex-wrap items-center gap-2">{subtitle}</div>
       )}
     </div>
-    {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
+    {actions && (
+      <div className="flex items-center gap-2 shrink-0 overflow-x-auto -mx-1 px-1 sm:mx-0 sm:px-0">
+        {actions}
+      </div>
+    )}
   </div>
 );
 

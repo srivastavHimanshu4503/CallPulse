@@ -102,7 +102,7 @@ export function ContactRecord(): React.JSX.Element {
       <PageWrapper>
         <div className="animate-pulse space-y-3">
           <div className="h-16 bg-bg-muted rounded-xl" />
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="h-80 bg-bg-muted rounded-xl" />
             <div className="h-80 bg-bg-muted rounded-xl" />
             <div className="h-80 bg-bg-muted rounded-xl" />

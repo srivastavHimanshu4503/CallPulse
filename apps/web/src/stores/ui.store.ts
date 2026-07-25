@@ -12,6 +12,8 @@ const initialTheme: Theme =
 interface UIState {
   sidebarMinimized: boolean;
   toggleSidebar: () => void;
+  mobileSidebarOpen: boolean;
+  setMobileSidebarOpen: (open: boolean) => void;
   theme: Theme;
   toggleTheme: () => void;
 }
@@ -25,6 +27,8 @@ export const useUIStore = create<UIState>((set) => ({
       return { sidebarMinimized: next };
     });
   },
+  mobileSidebarOpen: false,
+  setMobileSidebarOpen: (open) => set({ mobileSidebarOpen: open }),
   theme: initialTheme,
   toggleTheme: () => {
     set((state) => {

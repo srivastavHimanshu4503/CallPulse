@@ -18,6 +18,7 @@ import {
   CalendarDays,
   Sun,
   Moon,
+  X,
 } from "lucide-react";
 import { useAuthStore } from "../../stores/auth.store.js";
 import { useUIStore } from "../../stores/ui.store.js";
@@ -48,10 +49,25 @@ export function Sidebar(): React.JSX.Element {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
-  const sidebarMinimized = useUIStore((state) => state.sidebarMinimized);
+  const sidebarMinimizedPref = useUIStore((state) => state.sidebarMinimized);
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
+  const mobileSidebarOpen = useUIStore((state) => state.mobileSidebarOpen);
+  const setMobileSidebarOpen = useUIStore((state) => state.setMobileSidebarOpen);
   const theme = useUIStore((state) => state.theme);
   const toggleTheme = useUIStore((state) => state.toggleTheme);
+
+  // Track viewport ≥lg (1024px) so the "minimized" style only applies on desktop.
+  // Mobile drawer is always the expanded 220px layout regardless of user's desktop preference.
+  const [isDesktop, setIsDesktop] = React.useState<boolean>(() =>
+    typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches
+  );
+  React.useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  const sidebarMinimized = isDesktop && sidebarMinimizedPref;
 
   const entitlements = useEntitlements();
   const [profileOpen, setProfileOpen] = React.useState(false);
@@ -67,6 +83,21 @@ export function Sidebar(): React.JSX.Element {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [profileOpen]);
+
+  // Close mobile drawer on route change
+  React.useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [location.pathname, setMobileSidebarOpen]);
+
+  // Close mobile drawer on Escape
+  React.useEffect(() => {
+    if (!mobileSidebarOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileSidebarOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileSidebarOpen, setMobileSidebarOpen]);
 
   const userName = user?.name || "Workspace Owner";
   const userEmail = user?.email || "";
@@ -108,25 +139,51 @@ export function Sidebar(): React.JSX.Element {
   };
 
   return (
-    <aside
-      className={[
-        "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-line-default bg-bg-raised text-fg-primary transition-all duration-200 select-none",
-        sidebarMinimized ? "w-[68px]" : "w-[220px]",
-      ].join(" ")}
-    >
+    <>
+      {/* Mobile backdrop — visible only when drawer open on <lg */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={[
+          "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-line-default bg-bg-raised text-fg-primary transition-transform duration-200 select-none",
+          // width — on mobile drawer is always full 220px; desktop respects minimize
+          "w-[220px]",
+          sidebarMinimized ? "lg:w-[68px]" : "lg:w-[220px]",
+          // mobile drawer: slide in/out via transform. Desktop always visible.
+          mobileSidebarOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0 lg:transition-all",
+        ].join(" ")}
+      >
       {/* Brand */}
       <div
         className={[
-          "flex h-14 items-center border-b border-line-subtle px-3 shrink-0",
-          sidebarMinimized ? "justify-center" : "justify-between",
+          "flex h-14 items-center border-b border-line-subtle px-3 shrink-0 justify-between",
+          sidebarMinimized ? "lg:justify-center" : "lg:justify-between",
         ].join(" ")}
       >
         {sidebarMinimized ? <Logo variant="mark" height={30} /> : <Logo height={38} />}
+        {/* Mobile close (X) — visible <lg only */}
+        <button
+          type="button"
+          onClick={() => setMobileSidebarOpen(false)}
+          className="lg:hidden text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+          title="Close menu"
+          aria-label="Close menu"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        {/* Desktop minimize toggle — visible ≥lg only, only when expanded */}
         {!sidebarMinimized && (
           <button
             type="button"
             onClick={toggleSidebar}
-            className="text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+            className="hidden lg:inline-flex text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
             title="Minimize sidebar"
           >
             <PanelLeftClose className="h-4 w-4" />
@@ -138,7 +195,7 @@ export function Sidebar(): React.JSX.Element {
         <button
           type="button"
           onClick={toggleSidebar}
-          className="mx-auto mt-1 text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+          className="hidden lg:flex mx-auto mt-1 text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
           title="Expand sidebar"
         >
           <PanelLeftOpen className="h-4 w-4" />
@@ -366,6 +423,7 @@ export function Sidebar(): React.JSX.Element {
         )}
       </div>
     </aside>
+    </>
   );
 }
 

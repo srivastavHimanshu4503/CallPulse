@@ -7,7 +7,7 @@ import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { ConfirmModal } from "../../components/common/ConfirmModal.js";
 import { formatDateTime, formatTime } from "@antigravity/utils";
 import { api } from "../../lib/axios.js";
-import { ArrowLeft, Search, Filter, Phone, PhoneCall, PhoneForwarded, MessageSquare, MessageCircle, Trash2, ShieldCheck, Sparkles, User, FileText, PhoneIncoming, PhoneOutgoing, Activity, X } from "lucide-react";
+import { ArrowLeft, Search, Filter, Phone, PhoneCall, PhoneForwarded, MessageSquare, MessageCircle, Trash2, ShieldCheck, Sparkles, User, FileText, PhoneIncoming, PhoneOutgoing, Activity, X, ChevronLeft } from "lucide-react";
 import type { SerializedAgent } from "@antigravity/types";
 import { toast } from "sonner";
 import { computeLeadScore } from "../../components/ui-ext/index.js";
@@ -459,7 +459,7 @@ export function AgentLogs(): React.JSX.Element {
         <div className="flex-1 flex min-h-0 bg-bg-raised">
           
           {/* LEFT PANE - INBOX STYLE */}
-          <div className="w-[340px] bg-bg-canvas border-r border-border flex flex-col h-full shrink-0">
+          <div className={`${selectedLog ? "hidden lg:flex" : "flex"} w-full lg:w-[340px] bg-bg-canvas lg:border-r border-border flex-col h-full shrink-0`}>
             {/* Search and Filters Header */}
             <div className="p-3 border-b border-border bg-bg-raised flex flex-col gap-2 shrink-0 z-10">
               <div className="relative">
@@ -620,7 +620,7 @@ export function AgentLogs(): React.JSX.Element {
           </div>
 
           {/* RIGHT PANE - DETAILS */}
-          <div className="flex-1 flex flex-col min-w-0 bg-bg-raised border-l border-border">
+          <div className={`${selectedLog ? "flex" : "hidden lg:flex"} flex-1 flex-col min-w-0 bg-bg-raised lg:border-l border-border`}>
             {!selectedLog ? (
               <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface/30">
                 <div className="h-12 w-12 bg-bg-raised rounded-full flex items-center justify-center mb-4 shadow-sm border border-border">
@@ -633,8 +633,16 @@ export function AgentLogs(): React.JSX.Element {
               <div className="flex-1 flex flex-col min-h-0 relative">
                 
                 {/* Ultra Thin Detail Header */}
-                <div className="px-5 py-2 border-b border-border bg-surface/30 shrink-0 flex items-center justify-between z-10 relative">
-                  <div className="flex items-center gap-3">
+                <div className="px-3 sm:px-5 py-2 border-b border-border bg-surface/30 shrink-0 flex items-center justify-between z-10 relative gap-2">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedLog(null)}
+                      className="lg:hidden h-8 w-8 rounded-md flex items-center justify-center text-text-secondary hover:bg-bg-muted shrink-0"
+                      aria-label="Back to inbox"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
                     <div className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs border border-primary/20 shrink-0">
                       {(selectedLog.contact?.name || selectedLog.contact?.firstName || selectedLog.contact?.phones?.[0] || "U").charAt(0).toUpperCase()}
                     </div>
@@ -836,7 +844,7 @@ export function AgentLogs(): React.JSX.Element {
         {viewMode === "chats" && (
           <div className="flex-1 flex min-h-0 bg-bg-raised">
             {/* Conversation list */}
-            <div className="w-[300px] bg-bg-canvas border-r border-border flex flex-col h-full shrink-0">
+            <div className={`${selectedLog?.type === "WHATSAPP" ? "hidden lg:flex" : "flex"} w-full lg:w-[300px] bg-bg-canvas lg:border-r border-border flex-col h-full shrink-0`}>
               <div className="px-3 py-2.5 border-b border-border bg-bg-raised flex items-center justify-between shrink-0">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
                   Customers ({chatsByContact.length})
@@ -936,7 +944,7 @@ export function AgentLogs(): React.JSX.Element {
             </div>
 
             {/* Thread */}
-            <div className="flex-1 flex flex-col min-h-0 bg-[#F7F5F1]">
+            <div className={`${selectedLog?.type === "WHATSAPP" ? "flex" : "hidden lg:flex"} flex-1 flex-col min-h-0 bg-[#F7F5F1]`}>
               {selectedLog?.type === "WHATSAPP" ? (
                 <>
                   <div className="h-12 shrink-0 bg-bg-raised border-b border-border flex items-center px-4 gap-3">

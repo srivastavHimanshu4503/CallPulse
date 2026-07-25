@@ -98,8 +98,8 @@ export function Calendar(): React.JSX.Element {
         <Toolbar label={headerLabel} view={view} onViewChange={changeView} onNavigate={navigate} onToday={goToday} />
 
         <div className="flex-1 min-h-0 flex gap-4">
-          {/* ── Calendar pane — full remaining width ── */}
-          <div className="flex-1 min-w-0 rounded-xl border border-line-default bg-bg-raised shadow-card overflow-hidden flex flex-col">
+          {/* ── Calendar pane — full remaining width. Hidden on mobile when a booking is selected. ── */}
+          <div className={`${selectedBooking ? "hidden lg:flex" : "flex"} flex-1 min-w-0 rounded-xl border border-line-default bg-bg-raised shadow-card overflow-hidden flex-col`}>
             {isLoading ? (
               <div className="flex-1 flex items-center justify-center text-fg-muted text-[13px]">Loading calendar…</div>
             ) : view === "Month" ? (
@@ -124,8 +124,8 @@ export function Calendar(): React.JSX.Element {
             )}
           </div>
 
-          {/* ── Context panel ── */}
-          <aside className="hidden lg:flex w-[320px] xl:w-[340px] shrink-0 rounded-xl border border-line-default bg-bg-raised shadow-card flex-col overflow-hidden">
+          {/* ── Context panel — full width on mobile ONLY when a booking is selected; sidebar on lg+ ── */}
+          <aside className={`${selectedBooking ? "flex w-full" : "hidden"} lg:flex lg:w-[320px] xl:w-[340px] shrink-0 rounded-xl border border-line-default bg-bg-raised shadow-card flex-col overflow-hidden`}>
             {selectedBooking ? (
               <BookingDetails
                 key={selectedBooking.id}

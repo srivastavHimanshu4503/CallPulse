@@ -254,12 +254,12 @@ export function Dashboard(): React.JSX.Element {
   return (
     <PageWrapper noScroll={true}>
       {/* ============ HERO ============ */}
-      <div className="flex items-center justify-between gap-4 shrink-0 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 shrink-0 mb-4">
         <div className="min-w-0">
-          <h1 className="text-[22px] font-semibold tracking-tight text-fg-primary">
+          <h1 className="text-[20px] sm:text-[22px] font-semibold tracking-tight text-fg-primary">
             Good to see you, {firstName}
           </h1>
-          <p className="text-[12px] text-fg-secondary mt-0.5 truncate flex items-center gap-2">
+          <p className="text-[12px] text-fg-secondary mt-0.5 truncate flex items-center gap-2 flex-wrap">
             <span>{tenant?.name || "Workspace"}</span>
             <span className="text-fg-muted">·</span>
             <span className="inline-flex items-center gap-1.5 text-positive-500 font-semibold">
@@ -317,9 +317,9 @@ export function Dashboard(): React.JSX.Element {
                 </button>
               }
             />
-            <div className="grid grid-cols-[1fr_auto] gap-6 items-end flex-1 min-h-0">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 lg:gap-6 items-end flex-1 min-h-0">
               <WeekBars data={weekCalls} />
-              <div className="grid grid-cols-3 gap-4 min-w-[260px]">
+              <div className="grid grid-cols-3 gap-4 lg:min-w-[260px]">
                 <div>
                   <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Total</div>
                   <div className="text-[18px] font-semibold text-fg-primary mt-0.5">
@@ -353,8 +353,8 @@ export function Dashboard(): React.JSX.Element {
                 </button>
               }
             />
-            <div className="flex-1 min-h-0 overflow-hidden -mx-1">
-              <table className="w-full text-[12px]">
+            <div className="flex-1 min-h-0 overflow-x-auto lg:overflow-hidden -mx-1">
+              <table className="w-full text-[12px] min-w-[520px] lg:min-w-0">
                 <thead>
                   <tr className="text-[10px] uppercase tracking-wider text-fg-muted font-semibold border-b border-line-subtle">
                     <th className="text-left font-semibold px-2 py-2">Contact</th>
