@@ -251,6 +251,22 @@ export const PhoneNumberKind: {
 export type PhoneNumberKind = (typeof PhoneNumberKind)[keyof typeof PhoneNumberKind]
 
 
+export const TelephonyProvider: {
+  TWILIO: 'TWILIO',
+  PLIVO: 'PLIVO'
+};
+
+export type TelephonyProvider = (typeof TelephonyProvider)[keyof typeof TelephonyProvider]
+
+
+export const PhoneNumberCountry: {
+  US: 'US',
+  IN: 'IN'
+};
+
+export type PhoneNumberCountry = (typeof PhoneNumberCountry)[keyof typeof PhoneNumberCountry]
+
+
 export const CommType: {
   CALL: 'CALL',
   SMS: 'SMS',
@@ -366,6 +382,14 @@ export const DealHealth: typeof $Enums.DealHealth
 export type PhoneNumberKind = $Enums.PhoneNumberKind
 
 export const PhoneNumberKind: typeof $Enums.PhoneNumberKind
+
+export type TelephonyProvider = $Enums.TelephonyProvider
+
+export const TelephonyProvider: typeof $Enums.TelephonyProvider
+
+export type PhoneNumberCountry = $Enums.PhoneNumberCountry
+
+export const PhoneNumberCountry: typeof $Enums.PhoneNumberCountry
 
 export type CommType = $Enums.CommType
 
@@ -25884,6 +25908,9 @@ export namespace Prisma {
     phoneNumber: string | null
     label: string | null
     kind: $Enums.PhoneNumberKind | null
+    provider: $Enums.TelephonyProvider | null
+    country: $Enums.PhoneNumberCountry | null
+    providerRef: string | null
     twilioSid: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -25895,6 +25922,9 @@ export namespace Prisma {
     phoneNumber: string | null
     label: string | null
     kind: $Enums.PhoneNumberKind | null
+    provider: $Enums.TelephonyProvider | null
+    country: $Enums.PhoneNumberCountry | null
+    providerRef: string | null
     twilioSid: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -25906,6 +25936,9 @@ export namespace Prisma {
     phoneNumber: number
     label: number
     kind: number
+    provider: number
+    country: number
+    providerRef: number
     twilioSid: number
     createdAt: number
     updatedAt: number
@@ -25919,6 +25952,9 @@ export namespace Prisma {
     phoneNumber?: true
     label?: true
     kind?: true
+    provider?: true
+    country?: true
+    providerRef?: true
     twilioSid?: true
     createdAt?: true
     updatedAt?: true
@@ -25930,6 +25966,9 @@ export namespace Prisma {
     phoneNumber?: true
     label?: true
     kind?: true
+    provider?: true
+    country?: true
+    providerRef?: true
     twilioSid?: true
     createdAt?: true
     updatedAt?: true
@@ -25941,6 +25980,9 @@ export namespace Prisma {
     phoneNumber?: true
     label?: true
     kind?: true
+    provider?: true
+    country?: true
+    providerRef?: true
     twilioSid?: true
     createdAt?: true
     updatedAt?: true
@@ -26025,6 +26067,9 @@ export namespace Prisma {
     phoneNumber: string
     label: string | null
     kind: $Enums.PhoneNumberKind
+    provider: $Enums.TelephonyProvider
+    country: $Enums.PhoneNumberCountry
+    providerRef: string | null
     twilioSid: string | null
     createdAt: Date
     updatedAt: Date
@@ -26053,6 +26098,9 @@ export namespace Prisma {
     phoneNumber?: boolean
     label?: boolean
     kind?: boolean
+    provider?: boolean
+    country?: boolean
+    providerRef?: boolean
     twilioSid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -26065,6 +26113,9 @@ export namespace Prisma {
     phoneNumber?: boolean
     label?: boolean
     kind?: boolean
+    provider?: boolean
+    country?: boolean
+    providerRef?: boolean
     twilioSid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -26077,6 +26128,9 @@ export namespace Prisma {
     phoneNumber?: boolean
     label?: boolean
     kind?: boolean
+    provider?: boolean
+    country?: boolean
+    providerRef?: boolean
     twilioSid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -26100,6 +26154,9 @@ export namespace Prisma {
       phoneNumber: string
       label: string | null
       kind: $Enums.PhoneNumberKind
+      provider: $Enums.TelephonyProvider
+      country: $Enums.PhoneNumberCountry
+      providerRef: string | null
       twilioSid: string | null
       createdAt: Date
       updatedAt: Date
@@ -26502,6 +26559,9 @@ export namespace Prisma {
     readonly phoneNumber: FieldRef<"PhoneNumber", 'String'>
     readonly label: FieldRef<"PhoneNumber", 'String'>
     readonly kind: FieldRef<"PhoneNumber", 'PhoneNumberKind'>
+    readonly provider: FieldRef<"PhoneNumber", 'TelephonyProvider'>
+    readonly country: FieldRef<"PhoneNumber", 'PhoneNumberCountry'>
+    readonly providerRef: FieldRef<"PhoneNumber", 'String'>
     readonly twilioSid: FieldRef<"PhoneNumber", 'String'>
     readonly createdAt: FieldRef<"PhoneNumber", 'DateTime'>
     readonly updatedAt: FieldRef<"PhoneNumber", 'DateTime'>
@@ -32577,6 +32637,9 @@ export namespace Prisma {
     phoneNumber: 'phoneNumber',
     label: 'label',
     kind: 'kind',
+    provider: 'provider',
+    country: 'country',
+    providerRef: 'providerRef',
     twilioSid: 'twilioSid',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -32955,6 +33018,34 @@ export namespace Prisma {
    * Reference to a field of type 'PhoneNumberKind[]'
    */
   export type ListEnumPhoneNumberKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhoneNumberKind[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TelephonyProvider'
+   */
+  export type EnumTelephonyProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TelephonyProvider'>
+    
+
+
+  /**
+   * Reference to a field of type 'TelephonyProvider[]'
+   */
+  export type ListEnumTelephonyProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TelephonyProvider[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PhoneNumberCountry'
+   */
+  export type EnumPhoneNumberCountryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhoneNumberCountry'>
+    
+
+
+  /**
+   * Reference to a field of type 'PhoneNumberCountry[]'
+   */
+  export type ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhoneNumberCountry[]'>
     
 
 
@@ -35055,6 +35146,9 @@ export namespace Prisma {
     phoneNumber?: StringFilter<"PhoneNumber"> | string
     label?: StringNullableFilter<"PhoneNumber"> | string | null
     kind?: EnumPhoneNumberKindFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFilter<"PhoneNumber"> | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFilter<"PhoneNumber"> | $Enums.PhoneNumberCountry
+    providerRef?: StringNullableFilter<"PhoneNumber"> | string | null
     twilioSid?: StringNullableFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeFilter<"PhoneNumber"> | Date | string
@@ -35067,6 +35161,9 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     label?: SortOrderInput | SortOrder
     kind?: SortOrder
+    provider?: SortOrder
+    country?: SortOrder
+    providerRef?: SortOrderInput | SortOrder
     twilioSid?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -35082,6 +35179,9 @@ export namespace Prisma {
     tenantId?: StringFilter<"PhoneNumber"> | string
     label?: StringNullableFilter<"PhoneNumber"> | string | null
     kind?: EnumPhoneNumberKindFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFilter<"PhoneNumber"> | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFilter<"PhoneNumber"> | $Enums.PhoneNumberCountry
+    providerRef?: StringNullableFilter<"PhoneNumber"> | string | null
     twilioSid?: StringNullableFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeFilter<"PhoneNumber"> | Date | string
@@ -35094,6 +35194,9 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     label?: SortOrderInput | SortOrder
     kind?: SortOrder
+    provider?: SortOrder
+    country?: SortOrder
+    providerRef?: SortOrderInput | SortOrder
     twilioSid?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -35111,6 +35214,9 @@ export namespace Prisma {
     phoneNumber?: StringWithAggregatesFilter<"PhoneNumber"> | string
     label?: StringNullableWithAggregatesFilter<"PhoneNumber"> | string | null
     kind?: EnumPhoneNumberKindWithAggregatesFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderWithAggregatesFilter<"PhoneNumber"> | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryWithAggregatesFilter<"PhoneNumber"> | $Enums.PhoneNumberCountry
+    providerRef?: StringNullableWithAggregatesFilter<"PhoneNumber"> | string | null
     twilioSid?: StringNullableWithAggregatesFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"PhoneNumber"> | Date | string
@@ -37912,6 +38018,9 @@ export namespace Prisma {
     phoneNumber: string
     label?: string | null
     kind?: $Enums.PhoneNumberKind
+    provider?: $Enums.TelephonyProvider
+    country?: $Enums.PhoneNumberCountry
+    providerRef?: string | null
     twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37924,6 +38033,9 @@ export namespace Prisma {
     phoneNumber: string
     label?: string | null
     kind?: $Enums.PhoneNumberKind
+    provider?: $Enums.TelephonyProvider
+    country?: $Enums.PhoneNumberCountry
+    providerRef?: string | null
     twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37934,6 +38046,9 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
     kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFieldUpdateOperationsInput | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFieldUpdateOperationsInput | $Enums.PhoneNumberCountry
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37946,6 +38061,9 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
     kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFieldUpdateOperationsInput | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFieldUpdateOperationsInput | $Enums.PhoneNumberCountry
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37957,6 +38075,9 @@ export namespace Prisma {
     phoneNumber: string
     label?: string | null
     kind?: $Enums.PhoneNumberKind
+    provider?: $Enums.TelephonyProvider
+    country?: $Enums.PhoneNumberCountry
+    providerRef?: string | null
     twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37967,6 +38088,9 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
     kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFieldUpdateOperationsInput | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFieldUpdateOperationsInput | $Enums.PhoneNumberCountry
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37978,6 +38102,9 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
     kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFieldUpdateOperationsInput | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFieldUpdateOperationsInput | $Enums.PhoneNumberCountry
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40310,12 +40437,29 @@ export namespace Prisma {
     not?: NestedEnumPhoneNumberKindFilter<$PrismaModel> | $Enums.PhoneNumberKind
   }
 
+  export type EnumTelephonyProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.TelephonyProvider | EnumTelephonyProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumTelephonyProviderFilter<$PrismaModel> | $Enums.TelephonyProvider
+  }
+
+  export type EnumPhoneNumberCountryFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberCountry | EnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberCountryFilter<$PrismaModel> | $Enums.PhoneNumberCountry
+  }
+
   export type PhoneNumberCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
     phoneNumber?: SortOrder
     label?: SortOrder
     kind?: SortOrder
+    provider?: SortOrder
+    country?: SortOrder
+    providerRef?: SortOrder
     twilioSid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -40327,6 +40471,9 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     label?: SortOrder
     kind?: SortOrder
+    provider?: SortOrder
+    country?: SortOrder
+    providerRef?: SortOrder
     twilioSid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -40338,6 +40485,9 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     label?: SortOrder
     kind?: SortOrder
+    provider?: SortOrder
+    country?: SortOrder
+    providerRef?: SortOrder
     twilioSid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -40351,6 +40501,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
     _max?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
+  }
+
+  export type EnumTelephonyProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TelephonyProvider | EnumTelephonyProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumTelephonyProviderWithAggregatesFilter<$PrismaModel> | $Enums.TelephonyProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTelephonyProviderFilter<$PrismaModel>
+    _max?: NestedEnumTelephonyProviderFilter<$PrismaModel>
+  }
+
+  export type EnumPhoneNumberCountryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberCountry | EnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberCountryWithAggregatesFilter<$PrismaModel> | $Enums.PhoneNumberCountry
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPhoneNumberCountryFilter<$PrismaModel>
+    _max?: NestedEnumPhoneNumberCountryFilter<$PrismaModel>
   }
 
   export type AIAgentRelationFilter = {
@@ -43389,6 +43559,14 @@ export namespace Prisma {
     set?: $Enums.PhoneNumberKind
   }
 
+  export type EnumTelephonyProviderFieldUpdateOperationsInput = {
+    set?: $Enums.TelephonyProvider
+  }
+
+  export type EnumPhoneNumberCountryFieldUpdateOperationsInput = {
+    set?: $Enums.PhoneNumberCountry
+  }
+
   export type TenantUpdateOneRequiredWithoutPhoneNumbersNestedInput = {
     create?: XOR<TenantCreateWithoutPhoneNumbersInput, TenantUncheckedCreateWithoutPhoneNumbersInput>
     connectOrCreate?: TenantCreateOrConnectWithoutPhoneNumbersInput
@@ -44228,6 +44406,20 @@ export namespace Prisma {
     not?: NestedEnumPhoneNumberKindFilter<$PrismaModel> | $Enums.PhoneNumberKind
   }
 
+  export type NestedEnumTelephonyProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.TelephonyProvider | EnumTelephonyProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumTelephonyProviderFilter<$PrismaModel> | $Enums.TelephonyProvider
+  }
+
+  export type NestedEnumPhoneNumberCountryFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberCountry | EnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberCountryFilter<$PrismaModel> | $Enums.PhoneNumberCountry
+  }
+
   export type NestedEnumPhoneNumberKindWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PhoneNumberKind | EnumPhoneNumberKindFieldRefInput<$PrismaModel>
     in?: $Enums.PhoneNumberKind[] | ListEnumPhoneNumberKindFieldRefInput<$PrismaModel>
@@ -44236,6 +44428,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
     _max?: NestedEnumPhoneNumberKindFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTelephonyProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TelephonyProvider | EnumTelephonyProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TelephonyProvider[] | ListEnumTelephonyProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumTelephonyProviderWithAggregatesFilter<$PrismaModel> | $Enums.TelephonyProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTelephonyProviderFilter<$PrismaModel>
+    _max?: NestedEnumTelephonyProviderFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPhoneNumberCountryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PhoneNumberCountry | EnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    in?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PhoneNumberCountry[] | ListEnumPhoneNumberCountryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPhoneNumberCountryWithAggregatesFilter<$PrismaModel> | $Enums.PhoneNumberCountry
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPhoneNumberCountryFilter<$PrismaModel>
+    _max?: NestedEnumPhoneNumberCountryFilter<$PrismaModel>
   }
 
   export type NestedEnumCommTypeFilter<$PrismaModel = never> = {
@@ -44878,6 +45090,9 @@ export namespace Prisma {
     phoneNumber: string
     label?: string | null
     kind?: $Enums.PhoneNumberKind
+    provider?: $Enums.TelephonyProvider
+    country?: $Enums.PhoneNumberCountry
+    providerRef?: string | null
     twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -44888,6 +45103,9 @@ export namespace Prisma {
     phoneNumber: string
     label?: string | null
     kind?: $Enums.PhoneNumberKind
+    provider?: $Enums.TelephonyProvider
+    country?: $Enums.PhoneNumberCountry
+    providerRef?: string | null
     twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -45667,6 +45885,9 @@ export namespace Prisma {
     phoneNumber?: StringFilter<"PhoneNumber"> | string
     label?: StringNullableFilter<"PhoneNumber"> | string | null
     kind?: EnumPhoneNumberKindFilter<"PhoneNumber"> | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFilter<"PhoneNumber"> | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFilter<"PhoneNumber"> | $Enums.PhoneNumberCountry
+    providerRef?: StringNullableFilter<"PhoneNumber"> | string | null
     twilioSid?: StringNullableFilter<"PhoneNumber"> | string | null
     createdAt?: DateTimeFilter<"PhoneNumber"> | Date | string
     updatedAt?: DateTimeFilter<"PhoneNumber"> | Date | string
@@ -54657,6 +54878,9 @@ export namespace Prisma {
     phoneNumber: string
     label?: string | null
     kind?: $Enums.PhoneNumberKind
+    provider?: $Enums.TelephonyProvider
+    country?: $Enums.PhoneNumberCountry
+    providerRef?: string | null
     twilioSid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -55364,6 +55588,9 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
     kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFieldUpdateOperationsInput | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFieldUpdateOperationsInput | $Enums.PhoneNumberCountry
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55374,6 +55601,9 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
     kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFieldUpdateOperationsInput | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFieldUpdateOperationsInput | $Enums.PhoneNumberCountry
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55384,6 +55614,9 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     label?: NullableStringFieldUpdateOperationsInput | string | null
     kind?: EnumPhoneNumberKindFieldUpdateOperationsInput | $Enums.PhoneNumberKind
+    provider?: EnumTelephonyProviderFieldUpdateOperationsInput | $Enums.TelephonyProvider
+    country?: EnumPhoneNumberCountryFieldUpdateOperationsInput | $Enums.PhoneNumberCountry
+    providerRef?: NullableStringFieldUpdateOperationsInput | string | null
     twilioSid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

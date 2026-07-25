@@ -175,11 +175,13 @@ export class BillingService {
       const credits = Number(order?.notes?.credits || 0);
       if (credits > 0) await this.grantTopup(tenantId, paymentId, credits);
     } else if (product === "phone-number") {
+      const country = (String(order?.notes?.country || "US").toUpperCase() === "IN" ? "IN" : "US") as "US" | "IN";
       await this.provisionPhoneNumber(
         tenantId,
         String(order?.notes?.agentId || ""),
         String(order?.notes?.phoneNumber || ""),
         paymentId,
+        country,
       );
     }
 
@@ -211,16 +213,18 @@ export class BillingService {
   }
 
   /**
-   * Post-payment number provisioning: buy on Twilio, store the number, and
-   * permanently bind it to the agent. Idempotent — the number row acts as
-   * the marker. A Twilio failure after payment is logged loudly and left
-   * for support (payment record stays as the evidence).
+   * Post-payment number provisioning: buy from the right telephony provider
+   * (Twilio for US, Plivo for India), store the number, and permanently bind
+   * it to the agent. Idempotent — the number row acts as the marker. A
+   * provider failure after payment is logged loudly and left for support
+   * (the payment record stays as evidence).
    */
   async provisionPhoneNumber(
     tenantId: string,
     agentId: string,
     phoneNumber: string,
     paymentId: string,
+    country: "US" | "IN" = "US",
   ): Promise<void> {
     if (!agentId || !phoneNumber) return;
 
@@ -234,16 +238,22 @@ export class BillingService {
     if (!agent) throw new Error("Agent not found for number provisioning");
     if (agent.phoneNumberId) return; // number binding is one-time — never overwrite
 
-    const { purchaseNumber, attachNumberToSipTrunk } = await import("../telephony/twilio.js");
+    // Pick the provider based on the country the user chose. Same three-verb
+    // interface (buy, attach, route) — swap the module, keep the flow.
+    const providerName: "TWILIO" | "PLIVO" = country === "IN" ? "PLIVO" : "TWILIO";
+    const providerModule =
+      country === "IN"
+        ? await import("../telephony/plivo.js")
+        : await import("../telephony/twilio.js");
     const { ensureNumberRouted } = await import("../telephony/livekit-sip.js");
 
     // Step 1 — buy the number. A failure here is fatal (they paid!).
-    let twilioSid: string | null = null;
+    let providerRef: string | null = null;
     try {
-      twilioSid = await purchaseNumber(phoneNumber);
+      providerRef = await providerModule.purchaseNumber(phoneNumber);
     } catch (err) {
       console.error(
-        `[billing] PAID BUT TWILIO PURCHASE FAILED — tenant ${tenantId}, payment ${paymentId}, number ${phoneNumber}:`,
+        `[billing] PAID BUT ${providerName} PURCHASE FAILED — tenant ${tenantId}, payment ${paymentId}, number ${phoneNumber}:`,
         (err as Error).message,
       );
       throw new Error(
@@ -252,12 +262,14 @@ export class BillingService {
     }
 
     // Steps 2+3 — wire the call path end to end, zero manual console work:
-    // Twilio number → elastic SIP trunk → LiveKit inbound trunk → agent
+    // provider number → provider SIP trunk → LiveKit inbound trunk → agent
     // dispatch. Failures here are logged loudly but never lose the purchase;
     // the number row records how far provisioning got for support/retry.
     let provisionNote = "Dedicated line";
     try {
-      await attachNumberToSipTrunk(twilioSid);
+      // Twilio takes the sid; Plivo takes the number itself. Both accept a
+      // string, so the interface stays uniform.
+      await providerModule.attachNumberToSipTrunk(providerRef);
       try {
         await ensureNumberRouted(phoneNumber);
       } catch (err) {
@@ -270,14 +282,25 @@ export class BillingService {
     } catch (err) {
       provisionNote = "Dedicated line (trunk attach pending)";
       console.error(
-        `[billing] number bought, TWILIO TRUNK ATTACH FAILED — ${phoneNumber}:`,
+        `[billing] number bought, ${providerName} TRUNK ATTACH FAILED — ${phoneNumber}:`,
         (err as Error).message,
       );
     }
 
     await db.$transaction(async (tx: any) => {
       const row = await tx.phoneNumber.create({
-        data: { tenantId, phoneNumber, label: provisionNote, twilioSid, kind: "AGENT_LINE" },
+        data: {
+          tenantId,
+          phoneNumber,
+          label: provisionNote,
+          provider: providerName,
+          country,
+          providerRef,
+          // Keep populating twilioSid on Twilio purchases for any legacy
+          // code that still reads the old column. Plivo leaves it null.
+          twilioSid: providerName === "TWILIO" ? providerRef : null,
+          kind: "AGENT_LINE",
+        },
       });
       await tx.aIAgent.update({ where: { id: agentId }, data: { phoneNumberId: row.id } });
     });

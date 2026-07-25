@@ -14,6 +14,7 @@
     "@antigravity/db": "workspace:*",
     "@antigravity/errors": "workspace:*",
     "@antigravity/llm": "workspace:*",
+    "@antigravity/observability": "workspace:*",
     "@antigravity/types": "workspace:*",
     "@antigravity/utils": "workspace:*",
     "@antigravity/validators": "workspace:*",
@@ -24,11 +25,11 @@
     "jsonwebtoken": "^9.0.2",
     "livekit-server-sdk": "^2.15.3",
     "pino": "^8.19.0",
+    "plivo": "^4.78.0",
     "razorpay": "^2.9.8",
     "twilio": "^4.23.0",
     "typesense": "^1.8.2",
-    "zod": "^3.22.4",
-    "@antigravity/observability": "workspace:*"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

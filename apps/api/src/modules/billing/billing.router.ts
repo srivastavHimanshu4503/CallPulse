@@ -69,6 +69,7 @@ router.post("/checkout", async (req: Request, res: Response) => {
       }
       const agentId = String(req.body?.agentId || "");
       const phoneNumber = String(req.body?.phoneNumber || "");
+      const country = (String(req.body?.country || "US").toUpperCase() === "IN" ? "IN" : "US") as "US" | "IN";
       if (!agentId || !phoneNumber) {
         sendError(res, "agentId and phoneNumber are required", 400);
         return;
@@ -85,7 +86,7 @@ router.post("/checkout", async (req: Request, res: Response) => {
         sendError(res, "This agent already has a number — numbers can't be changed", 400);
         return;
       }
-      session = await createNumberOrder(tenantId, agentId, phoneNumber);
+      session = await createNumberOrder(tenantId, agentId, phoneNumber, country);
     } else {
       session = await createProOrder(tenantId);
     }

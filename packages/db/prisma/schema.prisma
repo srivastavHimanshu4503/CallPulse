@@ -677,8 +677,18 @@ enum PhoneNumberKind {
   // The owner's own contact number captured at signup — NEVER assignable
   // to an agent; it's where the business is reached, not an AI line.
   BUSINESS
-  // A real telephony line (purchased via Twilio) that an agent answers.
+  // A real telephony line (purchased via Twilio/Plivo) that an agent answers.
   AGENT_LINE
+}
+
+enum TelephonyProvider {
+  TWILIO
+  PLIVO
+}
+
+enum PhoneNumberCountry {
+  US
+  IN
 }
 
 model PhoneNumber {
@@ -687,8 +697,17 @@ model PhoneNumber {
   phoneNumber String          @unique
   label       String?
   kind        PhoneNumberKind @default(AGENT_LINE)
-  // Twilio resource sid for purchased numbers — needed to configure or
-  // release the number later. Null for manually-added legacy numbers.
+  // Which telephony provider owns this DID. Determines which API we hit
+  // for hangup/transfer/release. Defaults to TWILIO for the historical rows.
+  provider    TelephonyProvider @default(TWILIO)
+  // Country the DID belongs to. Drives UI copy, pricing, and provider dispatch.
+  country     PhoneNumberCountry @default(US)
+  // Provider-side resource id (Twilio sid, Plivo number id). Needed to
+  // configure or release the number later.
+  providerRef String?
+  // Legacy Twilio column — kept for existing rows. New Twilio purchases
+  // still populate both `providerRef` and `twilioSid` to avoid breaking
+  // any code that still reads the old column.
   twilioSid   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

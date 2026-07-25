@@ -429,6 +429,9 @@ exports.Prisma.PhoneNumberScalarFieldEnum = {
   phoneNumber: 'phoneNumber',
   label: 'label',
   kind: 'kind',
+  provider: 'provider',
+  country: 'country',
+  providerRef: 'providerRef',
   twilioSid: 'twilioSid',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -612,6 +615,16 @@ exports.DealHealth = exports.$Enums.DealHealth = {
 exports.PhoneNumberKind = exports.$Enums.PhoneNumberKind = {
   BUSINESS: 'BUSINESS',
   AGENT_LINE: 'AGENT_LINE'
+};
+
+exports.TelephonyProvider = exports.$Enums.TelephonyProvider = {
+  TWILIO: 'TWILIO',
+  PLIVO: 'PLIVO'
+};
+
+exports.PhoneNumberCountry = exports.$Enums.PhoneNumberCountry = {
+  US: 'US',
+  IN: 'IN'
 };
 
 exports.CommType = exports.$Enums.CommType = {

@@ -20,7 +20,7 @@ const loadScript = (): Promise<boolean> =>
 export type CheckoutProduct =
   | { product: "pro" }
   | { product: "credits"; packId: string }
-  | { product: "phone-number"; agentId: string; phoneNumber: string };
+  | { product: "phone-number"; agentId: string; phoneNumber: string; country?: "US" | "IN" };
 
 /**
  * One hook for every purchase: opens Razorpay Checkout for the given

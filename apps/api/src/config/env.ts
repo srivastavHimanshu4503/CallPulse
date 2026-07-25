@@ -21,7 +21,7 @@ const envSchema = z.object({
   LIVEKIT_API_SECRET: z.string().min(1).optional(),
   LIVEKIT_AGENT_NAME: z.string().default("inbound-agent"),
 
-  // Twilio — optional; needed only for phone-number purchasing.
+  // Twilio — used for US numbers and WhatsApp.
   TWILIO_ACCOUNT_SID: z.string().min(1).optional(),
   TWILIO_AUTH_TOKEN: z.string().min(1).optional(),
   // WhatsApp Business Account — enables automatic sender registration when
@@ -29,6 +29,19 @@ const envSchema = z.object({
   TWILIO_WABA_ID: z.string().min(1).optional(),
   // Public URL Twilio calls for inbound WhatsApp (set per environment).
   WHATSAPP_WEBHOOK_URL: z.string().url().optional(),
+
+  // Plivo — used for Indian numbers. Both keys required to enable Plivo.
+  PLIVO_AUTH_ID: z.string().min(1).optional(),
+  PLIVO_AUTH_TOKEN: z.string().min(1).optional(),
+  // Plivo application ID that owns the SIP endpoint / voice URL webhook.
+  // Set once in the Plivo console and referenced when creating trunks.
+  PLIVO_APPLICATION_ID: z.string().min(1).optional(),
+  // The trunk (SIP domain) Plivo routes purchased Indian DIDs into.
+  // Optional — if unset, we skip auto-attach and log a warning.
+  PLIVO_TRUNK_ID: z.string().min(1).optional(),
+  // Compliance application ID from Plivo India KYC. India numbers cannot be
+  // purchased without attaching one. Set once after KYC approval.
+  PLIVO_COMPLIANCE_APPLICATION_ID: z.string().min(1).optional(),
 
   // Razorpay — optional so the API boots without payments configured.
   RAZORPAY_KEY_ID: z.string().min(1).optional(),

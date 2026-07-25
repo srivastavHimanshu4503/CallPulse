@@ -1,7 +1,14 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { env } from "../../config/env.js";
-import { PLAN_PRICE_INR, PLAN_CREDITS, getCreditPack, PHONE_NUMBER_PRICE_INR } from "@antigravity/types";
+import {
+  PLAN_PRICE_INR,
+  PLAN_CREDITS,
+  getCreditPack,
+  PHONE_NUMBER_PRICE_INR,
+  PHONE_NUMBER_PRICE_BY_COUNTRY,
+  type PhoneNumberCountry,
+} from "@antigravity/types";
 
 /**
  * Thin Razorpay adapter. Everything provider-specific lives here so a future
@@ -90,9 +97,11 @@ export const createNumberOrder = async (
   tenantId: string,
   agentId: string,
   phoneNumber: string,
+  country: PhoneNumberCountry = "US",
 ): Promise<CheckoutSession> => {
   const rzp = getClient();
-  const amountPaise = PHONE_NUMBER_PRICE_INR * 100;
+  const priceInr = PHONE_NUMBER_PRICE_BY_COUNTRY[country] ?? PHONE_NUMBER_PRICE_INR;
+  const amountPaise = priceInr * 100;
   const order: any = await rzp.orders.create({
     amount: amountPaise,
     currency: "INR",
@@ -102,6 +111,7 @@ export const createNumberOrder = async (
       product: "phone-number",
       agentId,
       phoneNumber,
+      country,
     },
   });
   return {

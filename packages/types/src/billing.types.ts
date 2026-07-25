@@ -21,8 +21,20 @@ export const PLAN_AGENT_LIMITS: Record<PlanKey, number> = {
   PRO: 10,
 };
 
-/** One-time price for a dedicated US phone number. */
+/** One-time price for a dedicated US phone number (Twilio). */
 export const PHONE_NUMBER_PRICE_INR = 299;
+
+/** Country the DID is registered in. Drives provider dispatch and UI copy. */
+export type PhoneNumberCountry = "US" | "IN";
+
+/** One-time price for a dedicated Indian phone number (Plivo, landline STD-code). */
+export const PHONE_NUMBER_PRICE_INR_IN = 499;
+
+/** Country → one-time price. Central lookup so the UI stays in sync with the API. */
+export const PHONE_NUMBER_PRICE_BY_COUNTRY: Record<PhoneNumberCountry, number> = {
+  US: PHONE_NUMBER_PRICE_INR,
+  IN: PHONE_NUMBER_PRICE_INR_IN,
+};
 
 /** Display price in ₹/month. 0 = free, null = not sold yet. */
 export const PLAN_PRICE_INR: Record<PlanKey, number | null> = {
