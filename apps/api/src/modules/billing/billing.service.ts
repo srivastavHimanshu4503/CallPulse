@@ -264,31 +264,43 @@ export class BillingService {
       throw new Error(inner);
     }
 
-    // Steps 2+3 — wire the call path end to end, zero manual console work:
+    // Steps 2 + 3 — wire the call path end to end, zero manual console work:
     // provider number → provider SIP trunk → LiveKit inbound trunk → agent
-    // dispatch. Failures here are logged loudly but never lose the purchase;
+    // dispatch. These two steps are INDEPENDENT — a failure in one must not
+    // skip the other. Both are logged loudly but never lose the purchase;
     // the number row records how far provisioning got for support/retry.
-    let provisionNote = "Dedicated line";
+    let trunkAttached = true;
     try {
       // Twilio takes the sid; Plivo takes the number itself. Both accept a
       // string, so the interface stays uniform.
       await providerModule.attachNumberToSipTrunk(providerRef);
-      try {
-        await ensureNumberRouted(phoneNumber);
-      } catch (err) {
-        provisionNote = "Dedicated line (LiveKit routing pending)";
-        console.error(
-          `[billing] number bought + trunk attached, LIVEKIT ROUTING FAILED — ${phoneNumber}:`,
-          (err as Error).message,
-        );
-      }
     } catch (err) {
-      provisionNote = "Dedicated line (trunk attach pending)";
+      trunkAttached = false;
       console.error(
         `[billing] number bought, ${providerName} TRUNK ATTACH FAILED — ${phoneNumber}:`,
         (err as Error).message,
       );
     }
+
+    let liveKitRouted = true;
+    try {
+      await ensureNumberRouted(phoneNumber);
+    } catch (err) {
+      liveKitRouted = false;
+      console.error(
+        `[billing] number bought, LIVEKIT ROUTING FAILED — ${phoneNumber}:`,
+        (err as Error).message,
+      );
+    }
+
+    const provisionNote =
+      trunkAttached && liveKitRouted
+        ? "Dedicated line"
+        : !trunkAttached && !liveKitRouted
+          ? "Dedicated line (trunk attach + LiveKit routing pending)"
+          : !trunkAttached
+            ? "Dedicated line (trunk attach pending)"
+            : "Dedicated line (LiveKit routing pending)";
 
     await db.$transaction(async (tx: any) => {
       const row = await tx.phoneNumber.create({
