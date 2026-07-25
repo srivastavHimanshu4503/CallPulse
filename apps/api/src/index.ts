@@ -3,6 +3,7 @@ import { app } from "./app.js";
 import { env } from "./config/env.js";
 import { logger } from "./utils/logger.js";
 import { db } from "./config/database.js";
+import { ensureLiveKitInboundReady } from "./modules/telephony/livekit-sip.js";
 
 // Error monitoring — active only when SENTRY_DSN is set (deployed envs).
 initSentry({ service: "api", environment: env.NODE_ENV });
@@ -13,6 +14,14 @@ async function main() {
     logger.info("Connecting to PostgreSQL...");
     await db.$connect();
     logger.info("PostgreSQL Database connected successfully!");
+
+    // Idempotent LiveKit inbound setup — wildcard trunk + dispatch rule.
+    // Non-fatal on failure; existing rules stay in place.
+    try {
+      await ensureLiveKitInboundReady();
+    } catch (err) {
+      logger.warn(`LiveKit inbound setup skipped: ${(err as Error).message}`);
+    }
 
     const server = app.listen(env.PORT, () => {
       logger.info(`🚀 Antigravity Core API started in ${env.NODE_ENV} mode on port ${env.PORT}`);
