@@ -88,7 +88,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-bg-canvas text-fg-primary font-sans antialiased min-h-screen selection:bg-brand-100">
-    <div id="root"></div>
+    <div id="root">
+      <!--
+        Server-rendered fallback for crawlers that don't execute JavaScript
+        (Bing, DuckDuckGo, ChatGPT search, social scrapers that go beyond
+        og-tags). React's createRoot() in main.tsx replaces this on mount, so
+        real users see zero difference. Content mirrors the Hero section
+        (apps/website/src/components/sections/Hero.tsx) — never diverge, or
+        Google can flag it as cloaking.
+      -->
+      <header>
+        <h1>Every call answered. Every customer kept.</h1>
+        <p>DeskBuddy is an AI phone receptionist for Indian businesses. It answers your calls 24/7 in Hindi, English, and 4 more Indian languages — handling bookings, logging leads into your CRM, and sending WhatsApp follow-ups on autopilot.</p>
+      </header>
+      <section>
+        <h2>Built for Indian SMBs</h2>
+        <p>Salons, clinics, real estate, restaurants, coaching centres, tent houses — any small business that runs on phone calls. Never miss a customer during peak hours or after-hours again.</p>
+        <ul>
+          <li>24/7 answering — every ring picked up in under 2 seconds</li>
+          <li>Hindi, English, Marathi, Tamil, Telugu, Bengali, Gujarati and more</li>
+          <li>Books appointments straight into your calendar</li>
+          <li>Captures lead details and syncs to CRM automatically</li>
+          <li>WhatsApp follow-up messages sent after every call</li>
+          <li>Setup in minutes, no phone system replacement needed</li>
+        </ul>
+      </section>
+      <noscript>
+        <p>JavaScript is required for the full DeskBuddy website. Please enable JavaScript or visit our website on a modern browser.</p>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
