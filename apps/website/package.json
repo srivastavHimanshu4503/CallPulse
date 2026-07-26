@@ -5,17 +5,23 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && node scripts/prerender.mjs",
+    "build:no-prerender": "tsc && vite build",
+    "prerender": "node scripts/prerender.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
     "@antigravity/types": "workspace:*",
+    "@vercel/analytics": "^2.0.1",
     "framer-motion": "^12.42.2",
     "lucide-react": "^0.331.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.30.3"
   },
   "devDependencies": {
+    "@prerenderer/prerenderer": "^1.2.5",
+    "@prerenderer/renderer-puppeteer": "^1.2.4",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",

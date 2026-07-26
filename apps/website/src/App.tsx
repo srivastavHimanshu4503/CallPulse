@@ -1,39 +1,18 @@
-import { ScrollProgress } from "./components/common/ScrollProgress";
-import { Nav } from "./components/sections/Nav";
-import { Hero } from "./components/sections/Hero";
-import { SocialProof } from "./components/sections/SocialProof";
-import { Problem } from "./components/sections/Problem";
-import { HowItWorks } from "./components/sections/HowItWorks";
-import { Features } from "./components/sections/Features";
-import { CallJourney } from "./components/sections/CallJourney";
-import { Industries } from "./components/sections/Industries";
-import { Statement } from "./components/sections/Statement";
-import { Languages } from "./components/sections/Languages";
-import { Pricing } from "./components/sections/Pricing";
-import { FAQ } from "./components/sections/FAQ";
-import { FinalCTA } from "./components/sections/FinalCTA";
-import { Footer } from "./components/sections/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
+import { HomePage } from "./pages/HomePage";
+import { VerticalPage } from "./pages/VerticalPage";
+import { CityPage } from "./pages/CityPage";
 
 export default function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <ScrollProgress />
-      <Nav />
-      <main>
-        <Hero />
-        <SocialProof />
-        <Problem />
-        <HowItWorks />
-        <Features />
-        <CallJourney />
-        <Industries />
-        <Languages />
-        <Pricing />
-        <FAQ />
-        <Statement />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/for/:vertical" element={<VerticalPage />} />
+        <Route path="/city/:city" element={<CityPage />} />
+      </Routes>
+      <Analytics />
+    </BrowserRouter>
   );
 }

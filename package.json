@@ -39,6 +39,7 @@
       "@livekit/local-inference",
       "onnxruntime-node",
       "protobufjs",
+      "puppeteer",
       "sharp"
     ]
   }
