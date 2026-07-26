@@ -10,6 +10,7 @@ import {
   PhoneForwarded,
   MessageCircle,
   ClipboardList,
+  ArrowRight,
 } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
 import { EASE, Reveal } from "../motion/primitives";
@@ -19,6 +20,7 @@ const ROTATE_MS = 6000;
 const INDUSTRIES = [
   {
     id: "salon",
+    verticalSlug: "salon",
     icon: Scissors,
     label: "Salon & spa",
     scenario: "A regular calls at 8:40 PM — you're closing up.",
@@ -29,6 +31,7 @@ const INDUSTRIES = [
   },
   {
     id: "clinic",
+    verticalSlug: "clinic",
     icon: Stethoscope,
     label: "Clinic",
     scenario: "A patient calls during consultation hours.",
@@ -39,6 +42,7 @@ const INDUSTRIES = [
   },
   {
     id: "garage",
+    verticalSlug: "automobile",
     icon: Wrench,
     label: "Garage",
     scenario: "A breakdown call while both your hands are inside an engine.",
@@ -49,6 +53,7 @@ const INDUSTRIES = [
   },
   {
     id: "realestate",
+    verticalSlug: "real-estate",
     icon: Building2,
     label: "Real estate",
     scenario: "A buyer calls about a listing at 10 PM.",
@@ -191,10 +196,19 @@ export function Industries() {
                   initial={{ opacity: 0, scale: 0.85 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7, type: "spring", stiffness: 260, damping: 20 }}
-                  className="relative mt-6 inline-flex items-center gap-2 text-[12.5px] font-bold text-positive bg-positive-50 border border-positive/15 rounded-full px-4 py-2"
+                  className="relative mt-6 flex flex-wrap items-center gap-3"
                 >
-                  <active.outcome.icon className="h-3.5 w-3.5" />
-                  {active.outcome.text}
+                  <span className="inline-flex items-center gap-2 text-[12.5px] font-bold text-positive bg-positive-50 border border-positive/15 rounded-full px-4 py-2">
+                    <active.outcome.icon className="h-3.5 w-3.5" />
+                    {active.outcome.text}
+                  </span>
+                  <a
+                    href={`/for/${active.verticalSlug}`}
+                    className="group inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-brand hover:text-brand-600 transition-colors"
+                  >
+                    See the full {active.label.toLowerCase()} guide
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                  </a>
                 </motion.div>
               </motion.div>
             </AnimatePresence>

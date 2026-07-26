@@ -1,6 +1,7 @@
 import { useParams, Navigate } from "react-router-dom";
 import { getCityBySlug } from "../data/cities";
 import { useSeoMeta } from "../hooks/useSeoMeta";
+import { BreadcrumbSchema } from "../components/common/BreadcrumbSchema";
 import { Nav } from "../components/sections/Nav";
 import { LandingHero } from "../components/sections/LandingHero";
 import { HowItWorks } from "../components/sections/HowItWorks";
@@ -29,6 +30,13 @@ export function CityPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollProgress />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://www.deskbuddy.in/" },
+          { name: "By city", url: "https://www.deskbuddy.in/" },
+          { name: city.name, url: canonical },
+        ]}
+      />
       <Nav />
       <main>
         <LandingHero

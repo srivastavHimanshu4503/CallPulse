@@ -1,6 +1,7 @@
 import { useParams, Navigate } from "react-router-dom";
 import { getVerticalBySlug } from "../data/verticals";
 import { useSeoMeta } from "../hooks/useSeoMeta";
+import { BreadcrumbSchema } from "../components/common/BreadcrumbSchema";
 import { Nav } from "../components/sections/Nav";
 import { LandingHero } from "../components/sections/LandingHero";
 import { ExampleCall } from "../components/sections/ExampleCall";
@@ -29,6 +30,13 @@ export function VerticalPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollProgress />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://www.deskbuddy.in/" },
+          { name: "By industry", url: "https://www.deskbuddy.in/" },
+          { name: vertical.name, url: canonical },
+        ]}
+      />
       <Nav />
       <main>
         <LandingHero
