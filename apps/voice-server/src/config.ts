@@ -31,10 +31,13 @@ const envSchema = z.object({
 
   SARVAM_API_KEY: optionalString,
   DEEPGRAM_API_KEY: optionalString,
-  // "deepgram" routes Hindi/Hinglish/English agents to Deepgram nova-3
-  // (interim transcripts → preemptive LLM generation). Languages nova-3
-  // can't serve (Tamil, Telugu, Marathi, ...) stay on Sarvam either way.
-  STT_PROVIDER: z.enum(["sarvam", "deepgram"]).default("sarvam"),
+  SONIOX_API_KEY: optionalString,
+  // "soniox" is the fast path — stt-rt-v5 streams per-token interims AND
+  // handles Hindi/English code-switching in one model, unlocking preemptive
+  // LLM generation on Hinglish (Deepgram nova-3 does interims but chopped
+  // Hinglish into fragments; Sarvam is finals-only). "sarvam" stays the
+  // safe default until Soniox is validated on real Indian call quality.
+  STT_PROVIDER: z.enum(["sarvam", "deepgram", "soniox"]).default("sarvam"),
   OPENAI_API_KEY: optionalString,
   ELEVENLABS_API_KEY: optionalString,
   GEMINI_API_KEY: optionalString,
@@ -79,9 +82,16 @@ import type { LLMProviderName, LLMProviderConfig } from "@antigravity/llm";
 // gpt-4.1 (not mini): tenants paste knowledge bases in raw Devanagari /
 // Tamil / Telugu / Marathi, and mini-class models hallucinate against them
 // on live calls. TTFT is comparable to 4o-mini, so latency is unaffected.
+//
+// Google: `gemini-2.5-flash` is retired for new keys, and
+// `gemini-flash-latest` (currently aliased to gemini-3.6-flash) caps free
+// tier at 20 requests/day — one voice call exhausts it. `gemini-3.1-flash-lite`
+// is on the higher-quota "lite" tier (~15k RPD free), was also the fastest
+// in TTFT tests, and is the default that actually works without paid billing.
+// Override via LLM_MODEL when you have billing enabled and want max quality.
 const DEFAULT_MODELS: Record<LLMProviderName, string> = {
   openai: "gpt-4.1",
-  google: "gemini-2.5-flash",
+  google: "gemini-3.1-flash-lite",
   anthropic: "claude-3-5-haiku-20241022",
 };
 
@@ -184,6 +194,7 @@ export const config = {
   stt: {
     provider: env.STT_PROVIDER,
     deepgramApiKey: env.DEEPGRAM_API_KEY,
+    sonioxApiKey: env.SONIOX_API_KEY,
   },
   tts: {
     sarvamApiKey: env.SARVAM_API_KEY,

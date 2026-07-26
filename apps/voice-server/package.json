@@ -12,6 +12,7 @@
   "dependencies": {
     "@antigravity/db": "workspace:*",
     "@antigravity/llm": "workspace:*",
+    "@antigravity/observability": "workspace:*",
     "@antigravity/types": "workspace:*",
     "@antigravity/utils": "workspace:*",
     "@antigravity/validators": "workspace:*",
@@ -24,6 +25,7 @@
     "@livekit/agents-plugin-openai": "^1.5.1",
     "@livekit/agents-plugin-sarvam": "^1.5.1",
     "@livekit/agents-plugin-silero": "^1.5.1",
+    "@livekit/agents-plugin-soniox": "^1.5.5",
     "@livekit/rtc-node": "latest",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
@@ -31,8 +33,7 @@
     "openai": "^4.28.0",
     "twilio": "^4.22.0",
     "ws": "^8.16.0",
-    "zod": "^3.22.4",
-    "@antigravity/observability": "workspace:*"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

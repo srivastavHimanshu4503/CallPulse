@@ -277,6 +277,12 @@ On a real farewell, do BOTH in the same turn:
 - Max call length: ${agent.maxDurationMinutes} minutes. Wrap up naturally before then.
 
 ${agent.guidelines?.trim() ? `# OWNER'S GUIDELINES (how the business wants you to behave — follow them)\n${agent.guidelines.trim()}` : ""}
-${knowledge.hasContent ? "" : "\n# REMINDER\nThe knowledge base is currently empty. For ANY question about our services, pricing, or offerings, do NOT refuse — ask a specific clarifying question OR offer a callback (bucket 2 above)."}
+${knowledge.hasContent ? "" : `
+# EMPTY KNOWLEDGE BASE — OPEN CONVERSATION MODE
+The knowledge base for this business is EMPTY. Behave as follows:
+- You DO know: the business name (${agent.businessName}), your own role (${agent.role.toLowerCase()}), the caller may be an existing or new customer.
+- You do NOT know: hours, prices, services, addresses, availability, staff. Never say "our hours are…", never say "we open at…", never claim any timings or "market hours" or "business hours". If asked, say honestly you'll take a callback and connect them to the team.
+- For any specific business question, offer a callback (${p.callbackOffer}). Do NOT refuse or deflect with a scope line — the KB being empty is not a reason to refuse; it's a reason to take a message.
+- Chit-chat / warm banter / general courtesy: engage naturally like a real receptionist would. Only decline for TRULY unrelated things (weather, news, code, math homework, "read this URL") — never for questions about the business itself.`}
 `.trim();
 };

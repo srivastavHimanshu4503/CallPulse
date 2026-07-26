@@ -36,20 +36,48 @@ const registerWhatsAppSenderInBackground = (agent: AIAgent, tenantId: string): v
 
 /**
  * New tenants have no knowledge base, so a fresh agent would answer calls with
- * zero business context. Generate a starter KB from the tenant's signup info
- * with one LLM call. Fire-and-forget: agent creation must never fail or slow
- * down because of an LLM hiccup — worst case the agent starts without a KB,
- * same as before.
+ * zero business context. When the tenant has given us real business info
+ * (type, website, or a description), generate a starter KB from it with one
+ * LLM call. Fire-and-forget: agent creation must never fail or slow down
+ * because of an LLM hiccup — worst case the agent starts without a KB.
+ *
+ * If the tenant has NO usable business info, we deliberately do NOT auto-fill
+ * with "sample business hours" boilerplate — an owner then hearing the agent
+ * confidently claim "we open at 9am" on a call is the worst kind of KB bug.
+ * A blank starter KB with the placeholder prompt is safer than a hallucinated
+ * one, and prompts the owner to fill it in.
  */
 export const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantId: string): void => {
   const log = logger.child({ module: "agents-default-kb" });
   void (async () => {
-    if (!env.OPENAI_API_KEY) return;
     const tenant = await db.tenant.findUnique({
       where: { id: tenantId },
       select: { name: true, businessType: true, teamSize: true, websiteUrl: true },
     });
     if (!tenant) return;
+
+    const hasRealInfo = Boolean(
+      tenant.businessType?.trim() ||
+        tenant.websiteUrl?.trim() ||
+        agent.websiteUrl?.trim() ||
+        agent.businessInfo?.trim()
+    );
+
+    // Always create a KB row so the dashboard shows one and the owner has a
+    // place to write in; content is filled by the LLM only when we have real
+    // info, otherwise it stays blank with a helpful placeholder.
+    if (!env.OPENAI_API_KEY || !hasRealInfo) {
+      await db.knowledgeBase.create({
+        data: {
+          tenantId,
+          agentId: agent.id,
+          name: `${agent.name} Knowledge Base`,
+          content: "",
+        },
+      });
+      log.info("starter knowledge base row created (blank — no business info yet)", { agentId: agent.id });
+      return;
+    }
 
     const businessFacts = [
       `Business name: ${tenant.name}`,
@@ -72,9 +100,10 @@ export const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantI
       },
       "You write starter knowledge bases for AI phone receptionists of Indian small businesses. " +
         "From the business facts given, write a concise knowledge base the receptionist can rely on during calls: " +
-        "a short business overview, likely services/offerings for this business type, typical customer questions with sensible answers, " +
-        "and how the receptionist should handle bookings, pricing questions (never invent exact prices — offer a callback), and business hours (assume standard Indian hours unless stated). " +
-        "Plain text with simple section headings. No preamble, no markdown symbols other than headings.",
+        "a short business overview, plausible services or offerings for this business type, and typical customer questions with sensible answers. " +
+        "STRICT RULES: (1) NEVER invent specific business hours, prices, phone numbers, addresses, or availability windows — for any of those, tell the receptionist to ask the caller for a callback with the team. " +
+        "(2) Do NOT include a 'Business Hours' or 'Market Hours' or 'Timings' section at all unless the facts explicitly gave hours. " +
+        "(3) Keep it under ~500 words. Plain text with simple section headings. No preamble, no markdown symbols other than headings.",
       [{ role: "user", content: businessFacts }],
     );
 
@@ -295,7 +324,7 @@ export class AgentsService {
           dndCompliance: dndCompliance ?? true,
           recordingConsent: recordingConsent ?? true,
           isActive: isActive ?? true,
-          voice: voice || "sarvam:priya",
+          voice: voice || "sarvam:shubh",
           voiceSpeed: voiceSpeed ?? null,
           voiceSettings: voiceSettings ?? undefined,
           pronunciations: pronunciations ?? undefined,
@@ -332,17 +361,10 @@ export class AgentsService {
         },
       });
 
-      // Create a KnowledgeBase entry if websiteUrl is provided
-      if (websiteUrl) {
-        await tx.knowledgeBase.create({
-          data: {
-            tenantId,
-            agentId: newAgent.id,
-            name: `${name} Website Scraping Context`,
-            content: `Pending content extraction for site: ${websiteUrl}`,
-          },
-        });
-      }
+      // Knowledge base row is created outside the transaction by the
+      // background generator below (blank when we don't have real business
+      // info, LLM-populated when we do). Keeps the KB list clean and the
+      // owner never sees a "Pending extraction..." placeholder.
 
       return newAgent;
     });
@@ -576,24 +598,10 @@ export class AgentsService {
         },
       });
 
-      // Update or create KnowledgeBase entry if websiteUrl has changed and is now provided
-      if (websiteUrl && websiteUrl !== existing.websiteUrl) {
-        await tx.knowledgeBase.deleteMany({
-          where: {
-            agentId: id,
-            tenantId,
-          },
-        });
-
-        await tx.knowledgeBase.create({
-          data: {
-            tenantId,
-            agentId: id,
-            name: `${updatedAgent.name} Website Scraping Context`,
-            content: `Pending content extraction for updated site: ${websiteUrl}`,
-          },
-        });
-      }
+      // Website URL changes: we no longer wipe the KB and replace it with a
+      // "Pending extraction..." placeholder — the owner may have already
+      // filled in real content. If they want a fresh KB from the new URL
+      // they can edit or clear the KB explicitly.
 
       return updatedAgent;
     });

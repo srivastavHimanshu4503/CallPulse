@@ -1,5 +1,6 @@
 import * as sarvam from "@livekit/agents-plugin-sarvam";
 import * as deepgram from "@livekit/agents-plugin-deepgram";
+import * as soniox from "@livekit/agents-plugin-soniox";
 import type { stt as agentsSTT } from "@livekit/agents";
 import { config } from "../config.js";
 import { createLogger } from "../logger.js";
@@ -78,6 +79,36 @@ export class FlushableDeepgramSTT extends deepgram.STT {
 }
 
 /**
+ * Soniox STT with the same flushActive() surface. Soniox `stt-rt-v5` is the
+ * candidate that combines both wins:
+ *   - streams per-token interims with an `is_final` flag → SDK preemptive
+ *     generation fires the LLM while the caller is still finishing,
+ *   - native code-switching in a single model → Hinglish transcribes
+ *     correctly without dropping to fragments the way Deepgram did,
+ *   - sub-200ms endpointing latency claimed (tunable via
+ *     `endpointLatencyAdjustmentLevel` 0-3).
+ * Language hints are non-strict so the model still auto-detects when the
+ * caller code-switches — the hints just seed the language prior.
+ */
+export class FlushableSonioxSTT extends soniox.STT {
+  #active: agentsSTT.SpeechStream | null = null;
+
+  stream(options?: Parameters<soniox.STT["stream"]>[0]): ReturnType<soniox.STT["stream"]> {
+    const s = super.stream(options);
+    this.#active = s;
+    return s;
+  }
+
+  flushActive(): void {
+    try {
+      this.#active?.flush();
+    } catch {
+      /* stream may already be closed at call teardown — nothing to flush */
+    }
+  }
+}
+
+/**
  * Languages Deepgram nova-3 can serve. `multi` (nova-3 multilingual) covers
  * Hindi + English code-switching — Hinglish. Everything else (Tamil, Telugu,
  * Marathi, Bengali, ...) is NOT in nova-3 multilingual's language set and
@@ -86,6 +117,27 @@ export class FlushableDeepgramSTT extends deepgram.STT {
 const DEEPGRAM_LANGUAGE_MAP: Record<string, string> = {
   "hi-IN": "multi",
   "en-IN": "multi",
+};
+
+/**
+ * BCP-47 → Soniox language code. Soniox uses simple ISO-639 codes (no
+ * region suffix). All major Indian languages are supported by the same
+ * `stt-rt-v5` model, so language hints are enough — no per-language model
+ * swap. Hindi calls always include English as a hint so Hinglish
+ * code-switching is expected by the model.
+ */
+const SONIOX_LANGUAGE_HINTS: Record<string, string[]> = {
+  "hi-IN": ["hi", "en"],
+  "en-IN": ["en", "hi"],
+  "en-US": ["en"],
+  "ta-IN": ["ta", "en"],
+  "te-IN": ["te", "en"],
+  "bn-IN": ["bn", "en"],
+  "mr-IN": ["mr", "en"],
+  "gu-IN": ["gu", "en"],
+  "kn-IN": ["kn", "en"],
+  "ml-IN": ["ml", "en"],
+  "pa-IN": ["pa", "en"],
 };
 
 /**
@@ -99,6 +151,45 @@ const DEEPGRAM_LANGUAGE_MAP: Record<string, string> = {
  * plan. `nova-2` falls back to English-only recognition and butchers Hinglish.
  */
 export const createSTT = (opts: STTBuildOptions): PipelineSTT => {
+  // Soniox path — the intended default going forward. `stt-rt-v5` streams
+  // per-token interims with `is_final` flags AND handles Hindi/English
+  // code-switching in one model, which the pipeline needs to actually
+  // benefit from `preemptiveGeneration` on Hinglish calls. Endpoint latency
+  // adjustment 3 (max) minimizes finalization delay — pair with tight
+  // maxEndpointDelayMs so the SDK doesn't wait for Soniox's own finalizer.
+  if (config.stt.provider === "soniox" && config.stt.sonioxApiKey) {
+    const hints = SONIOX_LANGUAGE_HINTS[opts.language] ?? ["en", "hi"];
+    log.info("initializing stt provider", {
+      provider: "soniox",
+      model: "stt-rt-v5",
+      languageHints: hints,
+      requestedLanguage: opts.language,
+    });
+    return new FlushableSonioxSTT({
+      apiKey: config.stt.sonioxApiKey,
+      model: "stt-rt-v5",
+      languageHints: hints,
+      // Non-strict: allow the model to still code-switch naturally. Strict
+      // hints occasionally cause the model to force-map a mid-sentence
+      // English word into the primary language.
+      languageHintsStrict: false,
+      // Push the endpointer as aggressive as it allows (0-3). The pipeline
+      // still applies its own VAD-based turn detection on top, so any
+      // over-eager Soniox endpointing gets rescued by our end-of-utterance
+      // logic in the agent session.
+      endpointLatencyAdjustmentLevel: 3,
+      // Cap finalization wait — Soniox's default is longer than the SDK's
+      // preemptive window needs. 500 is the plugin's enforced floor; combined
+      // with endpointLatencyAdjustmentLevel: 3 above, typical finalization
+      // still lands ~150-300ms — the cap is only a worst-case guard.
+      maxEndpointDelayMs: 500,
+      enableLanguageIdentification: true,
+    });
+  }
+  if (config.stt.provider === "soniox" && !config.stt.sonioxApiKey) {
+    log.warn("STT_PROVIDER=soniox but SONIOX_API_KEY missing — falling back to default provider");
+  }
+
   const deepgramLanguage = DEEPGRAM_LANGUAGE_MAP[opts.language];
   if (config.stt.provider === "deepgram" && config.stt.deepgramApiKey && deepgramLanguage) {
     log.info("initializing stt provider", {

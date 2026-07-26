@@ -601,7 +601,7 @@ model AIAgent {
   name             String
   role             String             @default("Support")
   language         String             @default("Hinglish")
-  greetingMessage  String             @default("Namaste! Main aapki kaise help kar sakti hoon?")
+  greetingMessage  String             @default("Namaste! Main aapki kaise help kar sakta hoon?")
   tone             String             @default("Friendly")
   fallbackMessage  String             @default("I'll connect you with our team for this. One moment please.")
   businessInfo     String?
@@ -614,7 +614,7 @@ model AIAgent {
   // the dashboard, injected into the live call prompt as its own section.
   agentGuidelines  String?
   modelName        String
-  voice            String             @default("sarvam:priya")
+  voice            String             @default("sarvam:shubh")
   // Speaking-speed multiplier. Null = per-provider default (providers pace
   // the same nominal speed very differently, so a single global constant
   // made Sarvam drag and ElevenLabs rush).

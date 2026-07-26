@@ -59,28 +59,30 @@ const VOICE_LIBRARY = [
   // { id: "elevenlabs:iP95p4xoKVk53GoZ742B", name: "Chris", gender: "Male", accent: "Hindi + English", description: "Charming, casual, down-to-earth voice.", languages: ["English", "Hindi", "Hinglish", "Tamil"] },
 ];
 
-// Per-language recommended voices (female first, then male). These get a
-// "Recommended" badge, sort to the top, and are the auto-pick when the user
-// switches to a language the current voice doesn't support.
+// Per-language recommended voices. Order matters — the first entry is the
+// auto-pick when the user switches to a language the current voice can't
+// speak. For Hindi/Hinglish (our biggest audience) the male voice is picked
+// first because owners consistently prefer the male receptionist tone for
+// business calls; the female voice stays one tap away in the grid.
 const RECOMMENDED_BY_LANGUAGE: Record<string, string[]> = {
   English: ["sarvam:ishita", "sarvam:ratan"],
-  Hindi: ["sarvam:priya", "sarvam:shubh"],
-  Hinglish: ["sarvam:priya", "sarvam:shubh"],
+  Hindi: ["sarvam:shubh", "sarvam:priya"],
+  Hinglish: ["sarvam:shubh", "sarvam:priya"],
   Marathi: ["sarvam:priya", "sarvam:ratan"],
   Tamil: ["sarvam:ishita", "sarvam:ratan"],
-  Telugu: ["sarvam:priya", "sarvam:shubh"],
-  Bengali: ["sarvam:roopa", "sarvam:rehan"],
+  Telugu: ["sarvam:shubh", "sarvam:priya"],
+  Bengali: ["sarvam:rehan", "sarvam:roopa"],
   Gujarati: ["sarvam:priya", "sarvam:ratan"],
-  Kannada: ["sarvam:neha", "sarvam:shubh"],
-  Malayalam: ["sarvam:pooja", "sarvam:shubh"],
-  Punjabi: ["sarvam:roopa", "sarvam:mani"],
-  Odia: ["sarvam:ritu", "sarvam:shubh"],
+  Kannada: ["sarvam:shubh", "sarvam:neha"],
+  Malayalam: ["sarvam:shubh", "sarvam:pooja"],
+  Punjabi: ["sarvam:mani", "sarvam:roopa"],
+  Odia: ["sarvam:shubh", "sarvam:ritu"],
 };
 
 const recommendedFor = (language: string): string[] =>
   RECOMMENDED_BY_LANGUAGE[language] ?? RECOMMENDED_BY_LANGUAGE.Hinglish!;
 
-const DEFAULT_VOICE = "sarvam:priya";
+const DEFAULT_VOICE = "sarvam:shubh";
 
 const normalizeVoiceId = (id: string): string => {
   if (!id) return DEFAULT_VOICE;

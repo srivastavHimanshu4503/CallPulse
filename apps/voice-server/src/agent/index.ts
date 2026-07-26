@@ -88,12 +88,14 @@ export default defineAgent({
       // Instantiating the provider primes its module graph + Prisma client.
       agentConfigProvider;
       // Explicit Silero VAD: the plugin default of 550ms min-silence is the
-      // single biggest fixed cost in perceived response latency. 300ms sits
-      // right at the top of natural intra-sentence pauses (~200-300ms) —
-      // deliberate latency/barge-in tradeoff for the <1s target; revert to
-      // 400 if callers get cut off mid-sentence. Loaded once per child
-      // process — the ONNX model load is too slow to do per-call.
-      proc.userData.vad = await silero.VAD.load({ minSilenceDuration: 300 });
+      // single biggest fixed cost in perceived response latency. 200ms sits
+      // inside natural intra-sentence pauses — deliberate tradeoff for the
+      // sub-1s target on real phone calls (carrier RTT already spends
+      // ~300ms of the caller's silence budget, so every ms shaved here is
+      // felt). Revert to 300-400 if callers get cut off mid-sentence.
+      // Loaded once per child process — the ONNX model load is too slow to
+      // do per-call.
+      proc.userData.vad = await silero.VAD.load({ minSilenceDuration: 200 });
       log.info("child process prewarmed");
     } catch (err) {
       log.error("child process prewarm failed", { message: (err as Error)?.message });
@@ -615,7 +617,7 @@ export default defineAgent({
     let vad = ctx.proc.userData.vad as voice.AgentSessionOptions["vad"] | undefined;
     if (!vad) {
       callLog.warn("prewarmed VAD missing — loading in-call");
-      vad = (await silero.VAD.load({ minSilenceDuration: 300 })) as voice.AgentSessionOptions["vad"];
+      vad = (await silero.VAD.load({ minSilenceDuration: 200 })) as voice.AgentSessionOptions["vad"];
     }
 
     const agentSession = new voice.AgentSession({
@@ -627,11 +629,18 @@ export default defineAgent({
         // the "reply lands one turn late" bug when using "stt" mode.
         turnDetection: "vad",
         // maxDelay caps how long we wait for Sarvam's FINAL_TRANSCRIPT after
-        // VAD says the caller stopped. Sarvam finals routinely lag END_SPEECH
-        // (see comment above), so the old 2500ms cap turned into a regular
-        // 2.5s dead-air stall before the LLM even started. 1200ms bounds the
-        // worst case; preemptive generation below covers transcript revisions.
-        endpointing: { mode: "fixed", minDelay: 200, maxDelay: 1200 },
+        // VAD says the caller stopped. Sarvam finals routinely lag END_SPEECH,
+        // so the old 2500ms cap turned into a regular 2.5s dead-air stall
+        // before the LLM even started.
+        //
+        // On real phone calls (SIP through the carrier) every millisecond
+        // here is added on TOP of the ~200-400ms round-trip the caller
+        // already pays for the carrier link — so a browser test call at
+        // 1200ms cap feels ~800ms, but a real call feels ~1500-1600ms. Since
+        // we also force Sarvam to finalize on Silero VAD close (see
+        // UserStateChanged handler below) the final almost always arrives
+        // well under 800ms, so the cap can be tighter without losing content.
+        endpointing: { mode: "fixed", minDelay: 150, maxDelay: 800 },
         // Barge-in with matched thresholds from the reference production
         // system (Python `min_interruption_words=2`, which maps to
         // `min_duration = 0.2 + 0.15*sensitivity = 0.5s` in their v2

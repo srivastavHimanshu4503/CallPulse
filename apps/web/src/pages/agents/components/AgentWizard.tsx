@@ -73,8 +73,12 @@ export function AgentWizard({
   const [name, setName] = React.useState(editingAgent?.name || "");
   const [role, setRole] = React.useState(editingAgent?.role || "");
   const [language, setLanguage] = React.useState(editingAgent?.language || "Hinglish");
+  // Male-voice default: our default voice for Hinglish/Hindi is now Shubh
+  // (male), so the seeded greeting must use masculine first-person forms
+  // ("kar sakta hoon", not "kar sakti hoon") — a female greeting on a male
+  // voice is the most-noticed "sounds broken" bug on Indian calls.
   const [greetingMessage, setGreetingMessage] = React.useState(
-    editingAgent?.greetingMessage || "Namaste! Main aapki kaise help kar sakti hoon?"
+    editingAgent?.greetingMessage || "Namaste! Main aapki kaise help kar sakta hoon?"
   );
   const [tone, setTone] = React.useState<"Friendly" | "Professional" | "Casual">(
     (editingAgent?.tone as any) || "Friendly"
@@ -92,7 +96,7 @@ export function AgentWizard({
   const [agentGuidelines, setAgentGuidelines] = React.useState(editingAgent?.agentGuidelines || "");
 
   // STEP 2: Audio & Telephony States
-  const [voice, setVoice] = React.useState(editingAgent?.voice || "priya");
+  const [voice, setVoice] = React.useState(editingAgent?.voice || "sarvam:shubh");
   // null = provider default speed
   const [voiceSpeed, setVoiceSpeed] = React.useState<number | null>(
     editingAgent?.voiceSpeed ?? null
@@ -191,10 +195,14 @@ export function AgentWizard({
       const res = await api.put(`/agents/${effectiveAgentId}`, payload);
       return res.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (updated: SerializedAgent) => {
+      // Refresh the list in the background but stay in the editor — closing
+      // the modal on save loses the user's context (which tab they were on,
+      // what they were about to change next). The success toast is enough
+      // acknowledgement; the user closes when they're done editing.
       queryClient.invalidateQueries({ queryKey: ["agents"] });
+      queryClient.setQueryData(["agent", updated.id], updated);
       toast.success("AI Agent settings updated successfully!");
-      onClose();
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.error || "Failed to update agent");
