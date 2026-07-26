@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node scripts/prerender.mjs",
-    "build:no-prerender": "tsc && vite build",
+    "build": "tsc && vite build && node scripts/prerender.mjs && node scripts/generate-sitemap.mjs",
+    "build:no-prerender": "tsc && vite build && node scripts/generate-sitemap.mjs",
     "prerender": "node scripts/prerender.mjs",
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "audit": "node scripts/audit-indexability.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -53,6 +53,7 @@ const ROUTES = [
   "/",
   ...VERTICAL_SLUGS.map((s) => `/for/${s}`),
   ...CITY_SLUGS.map((s) => `/city/${s}`),
+  "/sitemap",
 ];
 
 async function resolveChrome() {
