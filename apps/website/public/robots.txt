@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://deskbuddy.in/sitemap.xml
+Sitemap: https://www.deskbuddy.in/sitemap.xml
