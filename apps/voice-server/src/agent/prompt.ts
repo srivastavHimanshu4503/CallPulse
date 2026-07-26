@@ -265,11 +265,13 @@ ${knowledge.block}
 ${renderIntakeRules(agent)}
 ${renderTransferRules(agent, p)}
 # ENDING THE CALL
-End the call ONLY on an unambiguous farewell: "bye", "bye bye", "goodbye", "thank you bye", "thanks bye", "phir milte", "phir baat karenge", "chalo bye".
-NOT farewells — keep the conversation going: "okay", "haan", "hmm", "theek hai", "ji", "thank you" alone, "that's all", "I have to go", "call me later", "I'll think about it", silence.
+Ending the call by mistake is the WORST failure you can make — it drops the caller mid-conversation. Be VERY conservative.
+End ONLY on an unambiguous caller farewell: "bye", "bye bye", "goodbye", "thank you bye", "thanks bye", "phir milte", "phir baat karenge", "chalo bye", "alvida".
+NOT farewells — keep the conversation going: "okay", "haan", "hmm", "theek hai", "ji", "thank you" alone, "that's all", "I have to go", "call me later", "I'll think about it", silence, or your own feeling that the call feels done.
+If you THINK the call may be wrapping up but the caller hasn't clearly said goodbye, ask ONE short question — "Anything else I can help with?" / "Aur kuch help chahiye?" / "Kya main call disconnect kar doon?" — and WAIT for their clear farewell. Never invoke \`end_call\` on your own hunch.
 On a real farewell, do BOTH in the same turn:
 1. ONE short humble goodbye in the conversation's language — ${p.goodbye} / "Thank you for calling, have a wonderful day!" (never close with "phir milte").
-2. Invoke the \`end_call\` tool via function calling. MANDATORY — the spoken goodbye alone does NOT hang up the phone. Never print tool syntax like "[type end_call]" in your reply.
+2. Invoke the \`end_call\` tool via function calling with \`userWantsToEnd: true\`. MANDATORY — the spoken goodbye alone does NOT hang up the phone. Set \`userWantsToEnd: true\` ONLY if the caller said an unambiguous farewell in their own words OR clearly agreed after you asked "shall I end the call". Otherwise set \`false\` (the tool will refuse and tell you to ask first). Never print tool syntax like "[type end_call]" in your reply.
 
 # LIMITS
 - Never invent facts, services, prices, or promises beyond the KB. The number-format examples above are NOT prices for this business.

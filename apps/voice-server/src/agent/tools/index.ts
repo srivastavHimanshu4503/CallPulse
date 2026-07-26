@@ -58,20 +58,57 @@ export const buildTools = (ctx: ToolContext) => {
 
     end_call: llm.tool({
       description:
-        "Hang up the phone call — the ONLY way to actually end it. Whenever your reply contains a closing farewell, invoke this in the SAME turn via function calling. Invoke only for the unambiguous farewells listed in your ENDING THE CALL instructions (a leading 'okay'/'haan' before the farewell still counts); never for bare acknowledgments, 'thank you' alone, or silence.",
+        "Hang up the phone call — the ONLY way to actually end it. Invoke ONLY when the caller has clearly signaled they want to end the call (an unambiguous farewell like 'bye', 'goodbye', 'chalo bye', 'thanks bye', 'phir milte'). Speak your short goodbye in the SAME turn. NEVER invoke on bare 'ok'/'haan'/'hmm'/'theek hai'/'thank you'/'that's all'/'I have to go'/'I'll think about it'/silence — those are NOT farewells. If unsure, ask 'kya main call disconnect kar doon?' (or 'anything else I can help with?') and only invoke after they clearly agree.",
       parameters: z.object({
         reason: z.string().describe(
-          "One short phrase describing why the call is ending, e.g. 'caller said bye', 'query resolved and caller said thanks bye'."
+          "One short phrase quoting the caller's farewell, e.g. 'caller said bye', 'caller said thanks bye after quote confirmed'."
         ),
+        userWantsToEnd: z
+          .boolean()
+          .describe(
+            "true ONLY if the caller explicitly said an unambiguous farewell in their own words ('bye', 'goodbye', 'okay bye', 'chalo bye', 'thanks bye', 'phir milte', 'alvida'), OR clearly agreed after YOU asked 'shall I end the call / kya main call disconnect kar doon'. NEVER guess true from bare 'ok', 'haan', 'hmm', 'theek hai', 'thank you' alone, 'that's all', 'I have to go', 'call me later', 'I'll think about it', silence, or your own judgment that the call feels done."
+          ),
       }),
-      execute: async (args) => {
-        log.warn("end_call TOOL FIRED — hanging up call", {
+      // Confirmation gate mirrors transfer_call. Same failure mode: an
+      // unwanted end_call drops the caller mid-conversation, which is worse
+      // than a slightly-too-long call. If userWantsToEnd is false the tool
+      // refuses and tells the LLM to ask for confirmation first.
+      //
+      // On the happy path, block on the goodbye playing out BEFORE we trigger
+      // teardown. Tool + TTS run in parallel inside the same LLM turn, so
+      // returning immediately (fire-and-forget teardown) races the audio and
+      // clips the last sentence. `RunContext.waitForPlayout` is the SDK's own
+      // primitive for this: it waits for THIS step's spoken response only,
+      // so there's no circular wait. Capped so a stuck TTS can't strand the
+      // caller in dead air.
+      execute: async (args, { ctx: runCtx }) => {
+        if (!args.userWantsToEnd) {
+          log.warn("end_call blocked — userWantsToEnd=false", {
+            callSid: ctx.callSid,
+            reason: args.reason,
+          });
+          return "Do NOT end the call yet. The caller has not given a clear farewell. Ask them briefly if there's anything else you can help with, or 'kya main call disconnect kar doon?', and only invoke end_call again AFTER they say a clear farewell in response.";
+        }
+        log.warn("end_call TOOL FIRED — waiting for goodbye playout", {
           callSid: ctx.callSid,
           reason: args.reason,
         });
-        // Fire and forget — the LLM finishes speaking its goodbye first,
-        // then the telephony provider tears down the call. Awaiting here
-        // would delay the goodbye playback.
+        const waitStart = Date.now();
+        try {
+          await Promise.race([
+            runCtx.waitForPlayout(),
+            new Promise((resolve) => setTimeout(resolve, 15_000)),
+          ]);
+        } catch (err) {
+          log.warn("end_call: waitForPlayout rejected — proceeding to teardown", {
+            callSid: ctx.callSid,
+            message: (err as Error)?.message,
+          });
+        }
+        log.info("end_call goodbye played out — triggering teardown", {
+          callSid: ctx.callSid,
+          waitedMs: Date.now() - waitStart,
+        });
         void ctx.endCall(args.reason);
         return "Call ended.";
       },
