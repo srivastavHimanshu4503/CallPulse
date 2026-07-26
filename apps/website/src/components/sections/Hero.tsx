@@ -444,6 +444,21 @@ export function Hero() {
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-16 items-center">
         <div className="text-center lg:text-left">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: EASE }}
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 bg-bg-raised border border-line-default shadow-sm"
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-positive animate-ping opacity-60" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-positive" />
+            </span>
+            <span className="text-[12px] font-semibold text-fg-primary tracking-normal">
+              Built for Indian businesses
+            </span>
+          </motion.div>
+
           <h1 className="text-[38px] sm:text-[50px] lg:text-[60px] font-extrabold tracking-[-0.03em] leading-[1.08] text-fg-primary">
             <SplitWords text="Every call is a" delay={0.05} />
             <br />
