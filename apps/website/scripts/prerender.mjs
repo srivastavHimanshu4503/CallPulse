@@ -38,10 +38,13 @@ const CITY_SLUGS = [
 // LinkedIn) see the full page; hydration on real browsers is a no-op.
 //
 // Chrome resolution order:
-//   1. $PUPPETEER_EXECUTABLE_PATH (explicit override, e.g. Vercel)
-//   2. macOS system Chrome (fast local dev, avoids re-downloading chromium)
-//   3. puppeteer's bundled chromium (default on Linux/Vercel builds — requires
-//      `puppeteer` to be in root pnpm.onlyBuiltDependencies so postinstall runs)
+//   1. $PUPPETEER_EXECUTABLE_PATH (explicit override)
+//   2. macOS: system Chrome (fast local dev, avoids downloading chromium)
+//   3. Linux (Vercel): @sparticuz/chromium — a self-contained chromium
+//      binary that bundles the shared libs Amazon Linux is missing
+//      (libnspr4, libatk, libcups, etc.). puppeteer's own bundled chromium
+//      does NOT work on Vercel because those libs aren't installed.
+//   4. Fallback: puppeteer's bundled chromium (works on desktop Linux).
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.resolve(__dirname, "..", "dist");
@@ -54,19 +57,31 @@ const ROUTES = [
 
 async function resolveChrome() {
   if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-    return process.env.PUPPETEER_EXECUTABLE_PATH;
+    return { executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, extraArgs: [] };
   }
   if (process.platform === "darwin") {
     const macChrome =
       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
     try {
       await fs.access(macChrome);
-      return macChrome;
+      return { executablePath: macChrome, extraArgs: [] };
     } catch {
-      // fall through to bundled chromium
+      // fall through
     }
   }
-  return undefined; // let puppeteer use its bundled chromium
+  if (process.platform === "linux") {
+    // @sparticuz/chromium ships a chromium that includes its own shared libs,
+    // so it works on serverless Linux (Vercel, AWS Lambda) where libnspr4 &
+    // friends aren't installed system-wide.
+    try {
+      const { default: chromium } = await import("@sparticuz/chromium");
+      const executablePath = await chromium.executablePath();
+      return { executablePath, extraArgs: chromium.args };
+    } catch (err) {
+      console.warn("@sparticuz/chromium unavailable, falling back to puppeteer bundle:", err.message);
+    }
+  }
+  return { executablePath: undefined, extraArgs: [] };
 }
 
 async function main() {
@@ -74,11 +89,15 @@ async function main() {
     throw new Error(`dist not found at ${distDir} — run 'vite build' first.`);
   });
 
+  const { executablePath, extraArgs } = await resolveChrome();
   const launchOptions = {
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      ...extraArgs,
+    ],
   };
-  const executablePath = await resolveChrome();
   if (executablePath) {
     launchOptions.executablePath = executablePath;
   }
