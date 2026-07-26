@@ -11,11 +11,8 @@ import {
   IndianRupee,
   Languages as LanguagesIcon,
   Phone,
-  PhoneIncoming,
-  Sparkles,
   Star,
   Timer,
-  UserCheck,
 } from "lucide-react";
 import { CountUp, EASE, SplitWords } from "../motion/primitives";
 
@@ -290,9 +287,8 @@ function LiveCallScene() {
                 SS
               </span>
               <span
-                className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-bg-raised ${
-                  ringing ? "bg-attention" : "bg-positive"
-                }`}
+                className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-bg-raised ${ringing ? "bg-attention" : "bg-positive"
+                  }`}
               />
             </div>
             <div className="min-w-0">
@@ -305,9 +301,8 @@ function LiveCallScene() {
             </div>
           </div>
           <span
-            className={`inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-2.5 py-1 ${
-              ringing ? "text-attention bg-attention-50" : "text-positive bg-positive-50"
-            }`}
+            className={`inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-2.5 py-1 ${ringing ? "text-attention bg-attention-50" : "text-positive bg-positive-50"
+              }`}
           >
             <Phone className="h-3 w-3" />
             {ringing ? "Ringing" : <CallTimer running={!ringing} />}
@@ -328,23 +323,20 @@ function LiveCallScene() {
                 className={m.kind === "caller" ? "flex justify-start" : "flex justify-end"}
               >
                 <div
-                  className={`max-w-[85%] px-4 py-2.5 rounded-[14px] ${
-                    m.kind === "caller"
-                      ? "bg-bg-muted rounded-bl-[4px]"
-                      : "bg-brand text-white rounded-br-[4px] shadow-[0_6px_16px_-6px_rgba(37,99,235,0.45)]"
-                  }`}
+                  className={`max-w-[85%] px-4 py-2.5 rounded-[14px] ${m.kind === "caller"
+                    ? "bg-bg-muted rounded-bl-[4px]"
+                    : "bg-brand text-white rounded-br-[4px] shadow-[0_6px_16px_-6px_rgba(37,99,235,0.45)]"
+                    }`}
                 >
                   <p
-                    className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
-                      m.kind === "caller" ? "text-fg-muted" : "text-white/70"
-                    }`}
+                    className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${m.kind === "caller" ? "text-fg-muted" : "text-white/70"
+                      }`}
                   >
                     {m.kind === "caller" ? "Caller" : "DeskBuddy"}
                   </p>
                   <p
-                    className={`text-[13.5px] leading-relaxed ${
-                      m.kind === "caller" ? "text-fg-primary" : "text-white"
-                    }`}
+                    className={`text-[13.5px] leading-relaxed ${m.kind === "caller" ? "text-fg-primary" : "text-white"
+                      }`}
                   >
                     {"text" in m ? m.text : null}
                   </p>
@@ -452,21 +444,6 @@ export function Hero() {
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-16 items-center">
         <div className="text-center lg:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: EASE }}
-            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 bg-bg-raised border border-line-default shadow-sm"
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-positive animate-ping opacity-60" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-positive" />
-            </span>
-            <span className="text-[12px] font-semibold text-fg-primary tracking-normal">
-              Built for Indian businesses
-            </span>
-          </motion.div>
-
           <h1 className="text-[38px] sm:text-[50px] lg:text-[60px] font-extrabold tracking-[-0.03em] leading-[1.08] text-fg-primary">
             <SplitWords text="Every call is a" delay={0.05} />
             <br />
@@ -490,37 +467,6 @@ export function Hero() {
             <b className="text-fg-primary">happy customer</b>. 24/7, in Hindi,
             English and 4 more Indian languages.
           </motion.p>
-
-          {/* conversion pipeline chip */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.62, ease: EASE }}
-            className="mt-6 inline-flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-2 text-[12.5px] font-semibold"
-          >
-            <span className="inline-flex items-center gap-1.5 bg-bg-raised border border-line-default rounded-full px-3 py-1.5 shadow-sm">
-              <PhoneIncoming className="h-3.5 w-3.5 text-brand" />
-              <span className="text-fg-primary">Every call</span>
-            </span>
-            <ArrowRight className="h-3.5 w-3.5 text-fg-muted" />
-            <span className="inline-flex items-center gap-1.5 bg-bg-raised border border-line-default rounded-full px-3 py-1.5 shadow-sm">
-              <Sparkles className="h-3.5 w-3.5 text-[rgb(var(--saffron-500))]" />
-              <span className="text-fg-primary">Answered instantly</span>
-            </span>
-            <ArrowRight className="h-3.5 w-3.5 text-fg-muted" />
-            <span className="inline-flex items-center gap-1.5 bg-bg-raised border border-line-default rounded-full px-3 py-1.5 shadow-sm">
-              <CalendarCheck className="h-3.5 w-3.5 text-positive" />
-              <span className="text-fg-primary">Booked or qualified</span>
-            </span>
-            <ArrowRight className="h-3.5 w-3.5 text-fg-muted" />
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm text-white"
-              style={{ background: "linear-gradient(100deg, #1d4ed8, #f97316)" }}
-            >
-              <UserCheck className="h-3.5 w-3.5" />
-              <span>Happy customer</span>
-            </span>
-          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 14 }}
