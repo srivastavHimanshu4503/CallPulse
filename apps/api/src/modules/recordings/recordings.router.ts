@@ -1,6 +1,8 @@
 import { Router } from "express";
 import type { Request, Response } from "express";
 import crypto from "crypto";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { authMiddleware } from "../../middleware/auth.middleware.js";
 import { tenantMiddleware } from "../../middleware/tenant.middleware.js";
 import { db } from "../../config/database.js";
@@ -10,21 +12,87 @@ import { sendSuccess, sendError } from "../../utils/response.js";
 /**
  * Call-recording playback.
  *
- * Media lives with the provider (Twilio today, S3 later) and always needs
- * credentials — so the browser never gets the raw provider URL. Instead:
+ * Two backends live behind the same interface:
+ *   • S3 — LiveKit-egress recordings written to our own bucket. The media
+ *     endpoint issues a 302 to a fresh pre-signed GET URL; the browser
+ *     talks to S3 directly (native Range support → free seeking + duration).
+ *   • Provider — legacy Twilio URLs already stored on old rows. We proxy
+ *     these through with Basic Auth. Plivo also went through this path
+ *     briefly before egress rolled out.
  *
- *   1. GET /recordings/:logId/url  (authed)  → short-lived signed link
- *   2. GET /recordings/:logId/media?exp&sig  → verifies the signature and
- *      STREAMS the audio from the provider.
- *
- * S3 migration plan: step 2's provider fetch becomes an S3 presigned
- * redirect — steps 1, the UI, and the stored data don't change at all.
+ * Same two-step flow either way, so the UI + stored data never change:
+ *   1. GET /recordings/:logId/url   (authed)   → short-lived signed link
+ *   2. GET /recordings/:logId/media?exp&sig    → 302 to S3, or stream provider
  */
 
 const SIGNED_TTL_MS = 60 * 60 * 1000; // 1 hour
+const S3_PRESIGN_TTL_SEC = 15 * 60; // 15 min — long enough to load + seek
 
 const sign = (logId: string, exp: number): string =>
   crypto.createHmac("sha256", env.JWT_SECRET).update(`recording:${logId}:${exp}`).digest("hex");
+
+// Lazily-built S3 client. `env.RECORDINGS_S3_REGION` is optional so we boot
+// without recordings configured; the client is only ever used inside the
+// S3 branch of the media proxy after we confirm the URL host matches.
+let s3Client: S3Client | null = null;
+const getS3Client = (): S3Client => {
+  if (!s3Client) {
+    s3Client = new S3Client({
+      region: env.RECORDINGS_S3_REGION || process.env.AWS_REGION,
+    });
+  }
+  return s3Client;
+};
+
+/**
+ * Detect whether a stored recording URL points at our own S3 bucket.
+ * Handles both the virtual-hosted style (`<bucket>.s3.<region>.amazonaws.com`)
+ * and the path style (`s3.<region>.amazonaws.com/<bucket>/…`).
+ */
+const parseS3Url = (url: string): { bucket: string; key: string } | null => {
+  if (!env.RECORDINGS_S3_BUCKET) return null;
+  try {
+    const u = new URL(url);
+    const host = u.hostname;
+    const region = env.RECORDINGS_S3_REGION || process.env.AWS_REGION || "";
+    if (host === `${env.RECORDINGS_S3_BUCKET}.s3.${region}.amazonaws.com`) {
+      return { bucket: env.RECORDINGS_S3_BUCKET, key: u.pathname.replace(/^\//, "") };
+    }
+    if (host.startsWith("s3.") && host.endsWith(".amazonaws.com")) {
+      const [, bucket, ...rest] = u.pathname.split("/");
+      if (bucket === env.RECORDINGS_S3_BUCKET) {
+        return { bucket, key: rest.join("/") };
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Pick the Basic Auth header for a stored recording URL by host. Twilio
+ * media lives behind api.twilio.com and requires the account creds; Plivo
+ * media is delivered from a public S3 bucket (recordings.plivo.com /
+ * s3.amazonaws.com) and takes no auth. Any other host — e.g. a future S3
+ * of our own — falls through with no header.
+ */
+const pickProviderAuth = (url: string): string | null => {
+  try {
+    const host = new URL(url).hostname;
+    if (host.endsWith("twilio.com")) {
+      if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN) return null;
+      return (
+        "Basic " +
+        Buffer.from(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`).toString("base64")
+      );
+    }
+    // Plivo recording_urls are public S3; no header needed.
+    return null;
+  } catch {
+    return null;
+  }
+};
 
 const router: Router = Router();
 
@@ -75,14 +143,31 @@ router.get("/:logId/media", async (req: Request, res: Response) => {
       return;
     }
 
-    // Provider adapter — Twilio basic-auth fetch today, S3 redirect later.
-    // Range support is ESSENTIAL: without it the <audio> element can't
-    // determine total duration or seek, so the player shows no timeline.
-    const auth = Buffer.from(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`).toString("base64");
+    // Fast path — our own S3 bucket. Redirect the browser to a fresh
+    // pre-signed GET. S3 handles Range natively, so seeking + duration work
+    // without any proxy buffering on our side. The pre-sign uses ambient
+    // AWS creds (AWS_PROFILE=indiai locally, ECS task role in prod).
+    const s3 = parseS3Url(log.recordingUrl);
+    if (s3) {
+      const presigned = await getSignedUrl(
+        getS3Client(),
+        new GetObjectCommand({ Bucket: s3.bucket, Key: s3.key }),
+        { expiresIn: S3_PRESIGN_TTL_SEC },
+      );
+      res.redirect(302, presigned);
+      return;
+    }
+
+    // Provider adapter — pick auth based on the stored URL host. Twilio
+    // recordings need Basic Auth against api.twilio.com; Plivo returns a
+    // public S3 URL that needs no auth at all. Range support is ESSENTIAL:
+    // without it the <audio> element can't determine total duration or
+    // seek, so the player shows no timeline.
     const range = req.header("range");
+    const authHeader = pickProviderAuth(log.recordingUrl);
     const upstream = await fetch(log.recordingUrl, {
       headers: {
-        Authorization: `Basic ${auth}`,
+        ...(authHeader ? { Authorization: authHeader } : {}),
         ...(range ? { Range: range } : {}),
       },
     });

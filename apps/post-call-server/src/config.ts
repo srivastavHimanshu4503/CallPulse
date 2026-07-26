@@ -31,6 +31,10 @@ const envSchema = z.object({
   TWILIO_ACCOUNT_SID: optionalString,
   TWILIO_AUTH_TOKEN: optionalString,
 
+  // Plivo — used to fetch trunk recordings for Indian DIDs.
+  PLIVO_AUTH_ID: optionalString,
+  PLIVO_AUTH_TOKEN: optionalString,
+
   // Which model runs post-call extraction. Must be a registered model id
   // from @antigravity/llm — typos fail fast at boot instead of at call time.
   POST_CALL_LLM_MODEL: z.enum(OPENAI_MODEL_IDS).default(DEFAULT_STRUCTURED_MODEL),
@@ -72,6 +76,10 @@ export const config = {
   twilio: {
     accountSid: env.TWILIO_ACCOUNT_SID,
     authToken: env.TWILIO_AUTH_TOKEN,
+  },
+  plivo: {
+    authId: env.PLIVO_AUTH_ID,
+    authToken: env.PLIVO_AUTH_TOKEN,
   },
   chat: {
     idleMinutes: env.CHAT_SESSION_IDLE_MINUTES,

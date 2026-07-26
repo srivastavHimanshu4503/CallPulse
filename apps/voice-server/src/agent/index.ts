@@ -21,6 +21,7 @@ import { createTTS, getVoiceGender, type TTSBuildOptions } from "../tts/index.js
 import { getAgentConfigProvider } from "../agent-config/index.js";
 import { TwilioTelephonyProvider } from "../telephony/twilio/provider.js";
 import { resolveLanguageCodes, type VoiceKey } from "../voices/config.js";
+import { startCallEgress, stopCallEgress } from "../recording/egress.js";
 
 const log = createLogger("agent");
 // This module runs inside LiveKit's child job processes — init Sentry here
@@ -275,6 +276,21 @@ export default defineAgent({
     await connectPromise;
     callLog.info("participant connected", { agent: persona.agentName, tenant: persona.businessName });
 
+    // Kick off S3 recording via LiveKit egress. SIP-only: browser test calls
+    // don't need recordings (per product decision, and the room name doesn't
+    // survive their lifecycle anyway). Fire-and-forget: a failed egress must
+    // never take the call down.
+    let recordingEgressId: string | null = null;
+    let recordingMediaUrl: string | null = null;
+    if (callSource === "sip") {
+      const started = await startCallEgress(roomName, callSid, persona.ids.tenantId);
+      if (started) {
+        recordingEgressId = started.egressId;
+        recordingMediaUrl = started.mediaUrl;
+        session.metadata.recordingUrl = started.mediaUrl;
+      }
+    }
+
     // Twilio provider retained only for feature-flagged fallback; hangups use
     // `RoomServiceClient.deleteRoom` and transfers use SIP REFER via
     // LiveKit's SipClient — neither needs Twilio REST from the agent.
@@ -297,8 +313,10 @@ export default defineAgent({
     const FAREWELL_MAX_WAIT_MS = 6000;
     // Extra drain time after the local playout event, so in-flight RTP
     // packets can actually reach the caller on SIP (LiveKit → SIP trunk →
-    // carrier → phone) before we drop the room.
-    const SIP_DRAIN_MS = 700;
+    // carrier → phone) before we drop the room. 700ms was clipping the last
+    // syllable of goodbye phrases on real calls — real trunks tail longer
+    // than local playout completion implies.
+    const SIP_DRAIN_MS = 1500;
 
     // Unified hangup path. Whether the LLM invoked `end_call`, the assistant
     // heuristic fired, the caller said goodbye, the idle timer expired, or
@@ -948,6 +966,13 @@ export default defineAgent({
       callLog.info("shutdown", { jobId: ctx.job.id });
       endSession(callSid);
 
+      // Stop the S3 egress before we let the room drain, so LiveKit finalizes
+      // the MP3 upload promptly. The URL was decided at start time, so it's
+      // already on session.metadata.recordingUrl for persistence below.
+      if (recordingEgressId) {
+        await stopCallEgress(recordingEgressId);
+      }
+
       const durationSeconds = Math.round((Date.now() - session.startedAt.getTime()) / 1000);
       const persistInput = {
         callSid,
@@ -964,6 +989,7 @@ export default defineAgent({
         direction: "INBOUND" as const,
         callSource,
         transcript: session.conversationHistory,
+        recordingUrl: recordingMediaUrl,
         metadata: { ...session.metadata, room: roomName },
       };
 

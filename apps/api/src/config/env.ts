@@ -49,6 +49,12 @@ const envSchema = z.object({
   // Speech APIs
   SARVAM_API_KEY: z.string().min(1).optional(),
   OPENAI_API_KEY: z.string().min(1).optional(),
+
+  // Recording playback: the S3 bucket the voice-server egress writes to.
+  // Only needed for pre-signing GETs; the api server uses ambient AWS creds
+  // (AWS_PROFILE locally, ECS task role in prod).
+  RECORDINGS_S3_BUCKET: z.string().min(1).optional(),
+  RECORDINGS_S3_REGION: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

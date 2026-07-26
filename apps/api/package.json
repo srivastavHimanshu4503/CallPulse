@@ -18,6 +18,8 @@
     "@antigravity/types": "workspace:*",
     "@antigravity/utils": "workspace:*",
     "@antigravity/validators": "workspace:*",
+    "@aws-sdk/client-s3": "^3.1095.0",
+    "@aws-sdk/s3-request-presigner": "^3.1095.0",
     "axios": "^1.18.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

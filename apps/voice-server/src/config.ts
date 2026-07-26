@@ -29,6 +29,14 @@ const envSchema = z.object({
   TWILIO_AUTH_TOKEN: optionalString,
   TWILIO_PHONE_NUMBER: optionalString,
 
+  // ── LiveKit-egress → S3 for call recordings. All four required to enable.
+  // Provider-agnostic: works for both Twilio and Plivo trunks since every
+  // call already lands in a LiveKit room.
+  RECORDINGS_S3_BUCKET: optionalString,
+  RECORDINGS_S3_REGION: optionalString,
+  RECORDINGS_S3_ACCESS_KEY: optionalString,
+  RECORDINGS_S3_SECRET: optionalString,
+
   SARVAM_API_KEY: optionalString,
   DEEPGRAM_API_KEY: optionalString,
   SONIOX_API_KEY: optionalString,
@@ -190,6 +198,18 @@ export const config = {
     authToken: env.TWILIO_AUTH_TOKEN,
     phoneNumber: env.TWILIO_PHONE_NUMBER,
     isConfigured: !!(env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_PHONE_NUMBER),
+  },
+  recordings: {
+    bucket: env.RECORDINGS_S3_BUCKET,
+    region: env.RECORDINGS_S3_REGION,
+    accessKey: env.RECORDINGS_S3_ACCESS_KEY,
+    secret: env.RECORDINGS_S3_SECRET,
+    isConfigured: !!(
+      env.RECORDINGS_S3_BUCKET &&
+      env.RECORDINGS_S3_REGION &&
+      env.RECORDINGS_S3_ACCESS_KEY &&
+      env.RECORDINGS_S3_SECRET
+    ),
   },
   stt: {
     provider: env.STT_PROVIDER,

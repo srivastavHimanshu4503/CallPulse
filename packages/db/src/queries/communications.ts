@@ -18,6 +18,10 @@ export const logCall = async (input: {
   durationSeconds: number;
   transcript?: string;
   transcriptJson?: Prisma.InputJsonValue;
+  /** MP3 URL for the call recording. When LiveKit egress → S3 is enabled,
+   *  this is a deterministic https URL the voice-server computes before
+   *  the upload finishes; playback pre-signs it on demand. */
+  recordingUrl?: string;
   provider?: string;
   providerRef?: string;
   metadata?: Prisma.InputJsonValue;
@@ -39,6 +43,7 @@ export const logCall = async (input: {
         duration: input.durationSeconds,
         transcript: input.transcript,
         transcriptJson: input.transcriptJson,
+        recordingUrl: input.recordingUrl,
         provider: input.provider,
         providerRef: input.providerRef,
         metadata: input.metadata,

@@ -18,6 +18,8 @@ export interface PersistCallLogInput {
   direction: "INBOUND" | "OUTBOUND";
   callSource: "sip" | "browser";
   transcript: TranscriptTurn[];
+  /** Pre-computed S3 URL when LiveKit egress recording is enabled. */
+  recordingUrl?: string | null;
   metadata: Record<string, unknown>;
 }
 
@@ -78,6 +80,7 @@ export const persistCallLog = async (input: PersistCallLogInput): Promise<Persis
         text: t.text,
         at: t.at.toISOString(),
       })) as any,
+      recordingUrl: input.recordingUrl ?? undefined,
       provider: isBrowser ? "livekit-browser" : "livekit-sip",
       providerRef: input.callSid,
       metadata: input.metadata as any,
