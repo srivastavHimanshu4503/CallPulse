@@ -55,9 +55,26 @@
           "@id": "https://www.deskbuddy.in/#organization",
           "name": "DeskBuddy",
           "url": "https://www.deskbuddy.in/",
-          "logo": "https://www.deskbuddy.in/logo.png",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.deskbuddy.in/logo.png",
+            "width": 512,
+            "height": 512
+          },
+          "image": "https://www.deskbuddy.in/og-image.png",
           "description": "AI phone receptionist for Indian small businesses. Answers calls 24/7 in Hindi, English, and 4 more Indian languages.",
-          "areaServed": "IN",
+          "areaServed": {
+            "@type": "Country",
+            "name": "India"
+          },
+          "email": "hello@deskbuddy.in",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "hello@deskbuddy.in",
+            "contactType": "customer support",
+            "availableLanguage": ["English", "Hindi", "Marathi", "Tamil", "Telugu", "Bengali", "Gujarati"]
+          },
+          "knowsLanguage": ["en-IN", "hi-IN", "mr-IN", "ta-IN", "te-IN", "bn-IN", "gu-IN"],
           "sameAs": []
         },
         {
@@ -70,14 +87,25 @@
         },
         {
           "@type": "SoftwareApplication",
+          "@id": "https://www.deskbuddy.in/#software",
           "name": "DeskBuddy AI Receptionist",
+          "url": "https://www.deskbuddy.in/",
+          "image": "https://www.deskbuddy.in/og-image.png",
+          "screenshot": "https://www.deskbuddy.in/og-image.png",
           "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "AnsweringService",
           "operatingSystem": "Web, iOS, Android",
+          "inLanguage": ["en-IN", "hi-IN", "mr-IN", "ta-IN", "te-IN", "bn-IN", "gu-IN"],
+          "author": { "@id": "https://www.deskbuddy.in/#organization" },
+          "publisher": { "@id": "https://www.deskbuddy.in/#organization" },
           "offers": {
             "@type": "Offer",
+            "url": "https://app.deskbuddy.in/register",
             "price": "0",
             "priceCurrency": "INR",
-            "description": "Free trial available"
+            "description": "Free plan with 30 credits, no card required",
+            "availability": "https://schema.org/InStock",
+            "seller": { "@id": "https://www.deskbuddy.in/#organization" }
           },
           "description": "AI voice receptionist that answers business calls 24/7 in Hindi, English, and other Indian languages. Handles bookings, CRM, and WhatsApp follow-ups."
         }
