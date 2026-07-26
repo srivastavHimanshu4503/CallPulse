@@ -199,6 +199,9 @@ importers:
       '@livekit/agents-plugin-silero':
         specifier: ^1.5.1
         version: 1.5.1(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
+      '@livekit/agents-plugin-soniox':
+        specifier: ^1.5.5
+        version: 1.5.5(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)
       '@livekit/rtc-node':
         specifier: latest
         version: 0.13.31
@@ -1178,6 +1181,12 @@ packages:
     resolution: {integrity: sha512-xmo98uybp9kMBHViYQCY5uajx9MQL5VWDNsL1Ow7EZpK2maSaSWf65TG0KKNZz60bL0ypzJ7+ef3NdXBsj0t0Q==}
     peerDependencies:
       '@livekit/agents': 1.5.1
+      '@livekit/rtc-node': ^0.13.31
+
+  '@livekit/agents-plugin-soniox@1.5.5':
+    resolution: {integrity: sha512-CzDzSpZ0s+Z0LFtih0if7stw2LUNJl82Y3NxcuxI4Y4+VfsEwZCdPvb2pRx+d9Czi6bfeGJuyUQMZ6hel+FkLw==}
+    peerDependencies:
+      '@livekit/agents': 1.5.5
       '@livekit/rtc-node': ^0.13.31
 
   '@livekit/agents@1.5.1':
@@ -4423,6 +4432,15 @@ snapshots:
       '@livekit/agents': 1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)
       '@livekit/rtc-node': 0.13.31
       onnxruntime-node: 1.23.2
+      ws: 8.21.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@livekit/agents-plugin-soniox@1.5.5(@livekit/agents@1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76))(@livekit/rtc-node@0.13.31)':
+    dependencies:
+      '@livekit/agents': 1.5.1(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)
+      '@livekit/rtc-node': 0.13.31
       ws: 8.21.0
     transitivePeerDependencies:
       - bufferutil
