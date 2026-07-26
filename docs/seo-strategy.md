@@ -81,9 +81,15 @@ Each geo page targets `"AI receptionist {city}"` + `"virtual receptionist {city}
 - ✅ Complete Open Graph tags (title, description, type, url, site_name, locale, image, image:width, image:height, image:alt)
 - ✅ Twitter Card tags (summary_large_image)
 - ✅ Verification tokens embedded: Google Search Console (`DsrTLg...`), Facebook (`5rtp58...`), Bing (`59049A...`)
-- ✅ JSON-LD structured data: Organization + WebSite + SoftwareApplication (parses in Rich Results Test)
+- ✅ JSON-LD structured data: Organization + WebSite + SoftwareApplication + **FAQPage** (parses in Rich Results Test)
+- ✅ **BreadcrumbList JSON-LD** on all vertical + city landing pages
 - ✅ Branded 1200×630 `og-image.png` and 512×512 `logo.png` shipping as real image files
-- ✅ Crawler-visible fallback H1 + features list inside `<div id="root">` for non-JS crawlers (Bing, DuckDuckGo, ChatGPT search)
+- ✅ **Build-time prerender via puppeteer** — crawlers now see the full React tree, not `<div id="root">`. Runs on default `pnpm build`; verified locally producing 174KB static HTML.
+- ✅ **hreflang** `en-IN` + `x-default` set per-page via `useSeoMeta` hook
+- ✅ **20 landing pages built**: 8 verticals (`/for/{salon,clinic,restaurant,real-estate,coaching,gym,automobile,laundry}`) + 12 cities (`/city/{mumbai,delhi,bengaluru,hyderabad,chennai,pune,ahmedabad,jaipur,kolkata,lucknow,chandigarh,kochi}`). Each has vertical/city-specific H1, meta title, canonical, and (verticals) example call transcript.
+- ✅ **Sitemap** now lists 24 URLs (homepage + 20 landing pages + 4 anchor deep-links) — resubmit in GSC after next deploy.
+- ✅ **Footer internal linking** — every page links to all 8 verticals and all 12 cities.
+- ✅ **Vercel Web Analytics** wired via `@vercel/analytics/react`.
 
 **Property submissions:**
 
