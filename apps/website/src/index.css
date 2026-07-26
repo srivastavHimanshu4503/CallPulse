@@ -4,6 +4,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ────────────────────────────────────────────────────────────
+   Website-local design tokens. Adds a warm saffron accent on
+   top of the shared theme so the marketing site can feel
+   distinctly Indian without touching the dashboard palette.
+   ──────────────────────────────────────────────────────────── */
+:root {
+  --saffron-50: 255 247 237;   /* #FFF7ED */
+  --saffron-100: 255 237 213;  /* #FFEDD5 */
+  --saffron-200: 254 215 170;  /* #FED7AA */
+  --saffron-300: 253 186 116;  /* #FDBA74 */
+  --saffron-400: 251 146 60;   /* #FB923C */
+  --saffron-500: 249 115 22;   /* #F97316 */
+  --saffron-600: 234 88 12;    /* #EA580C */
+  --saffron-700: 194 65 12;    /* #C2410C */
+  --deep-ink: 12 20 46;        /* #0C142E */
+}
+
 html {
   scroll-behavior: smooth;
   color-scheme: light;
@@ -38,16 +55,43 @@ section[id] {
   mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 75%);
 }
 
-/* Brand gradient headline text */
+/* Warm gradient headline — blue → saffron. The Indian sunrise. */
 .text-gradient-brand {
-  background: linear-gradient(100deg, #1d4ed8 0%, #2563eb 45%, #60a5fa 100%);
+  background: linear-gradient(100deg, #1d4ed8 0%, #2563eb 40%, #f97316 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
-/* Continuous marquee (pairs with a duplicated track) */
+.text-gradient-warm {
+  background: linear-gradient(100deg, #ea580c 0%, #f97316 55%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Primary CTA — deep blue → saffron gradient. Warm, distinctive, Indian. */
+.btn-primary {
+  background: linear-gradient(100deg, #1d4ed8 0%, #2563eb 45%, #f97316 100%);
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  color: #fff;
+  transition:
+    background-position 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  box-shadow: 0 10px 28px -10px rgba(37, 99, 235, 0.55);
+}
+
+.btn-primary:hover {
+  background-position: 100% 50%;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px -10px rgba(249, 115, 22, 0.55);
+}
+
+/* Continuous marquee */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -59,11 +103,11 @@ section[id] {
 }
 
 .animate-marquee {
-  animation: marquee 32s linear infinite;
+  animation: marquee 40s linear infinite;
 }
 
 .animate-marquee-reverse {
-  animation: marquee-reverse 38s linear infinite;
+  animation: marquee-reverse 46s linear infinite;
 }
 
 .marquee-mask:hover .animate-marquee,
@@ -72,8 +116,8 @@ section[id] {
 }
 
 .marquee-mask {
-  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
-  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
 /* Voice waveform bars */
@@ -111,26 +155,6 @@ section[id] {
   animation: floaty 7s ease-in-out infinite;
 }
 
-/* Shine sweep on primary buttons */
-.btn-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-shine::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
-  transform: translateX(-130%);
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
-}
-
-.btn-shine:hover::after {
-  transform: translateX(130%);
-}
-
 /* Rotating conic border for the highlighted pricing card */
 @keyframes border-spin {
   to { transform: rotate(360deg); }
@@ -152,16 +176,16 @@ section[id] {
   background: conic-gradient(
     from 0deg,
     #2563eb,
-    #93c5fd,
-    #dbeafe,
+    #f97316,
+    #fbbf24,
     #2563eb,
-    #93c5fd,
+    #f97316,
     #2563eb
   );
   animation: border-spin 6s linear infinite;
 }
 
-/* Mouse-tracking spotlight surface (set --spot-x/--spot-y from JS) */
+/* Mouse-tracking spotlight surface */
 .spotlight {
   position: relative;
 }
@@ -175,7 +199,7 @@ section[id] {
   transition: opacity 0.35s ease;
   background: radial-gradient(
     480px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-    rgba(37, 99, 235, 0.08),
+    rgba(249, 115, 22, 0.08),
     transparent 65%
   );
   pointer-events: none;
@@ -185,37 +209,7 @@ section[id] {
   opacity: 1;
 }
 
-/* Slow drifting glow blobs */
-@keyframes drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -24px) scale(1.08); }
-  66% { transform: translate(-22px, 18px) scale(0.95); }
-}
-
-.animate-drift {
-  animation: drift 16s ease-in-out infinite;
-}
-
-/* ── Navbar accents ── */
-
-/* Animated multicolor hairline across the top of the navbar */
-@keyframes gradient-pan {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-
-.nav-hairline {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2.5px;
-  background: linear-gradient(90deg, #2563eb, #8b5cf6, #ec4899, #f59e0b, #14b8a6, #2563eb);
-  background-size: 200% 100%;
-  animation: gradient-pan 8s linear infinite;
-}
-
-/* Gradient underline that slides in on nav-link hover */
+/* Nav underline that slides in on hover */
 .nav-link {
   position: relative;
 }
@@ -225,10 +219,10 @@ section[id] {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -5px;
+  bottom: -6px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #2563eb, #8b5cf6);
+  background: linear-gradient(90deg, #2563eb, #f97316);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
@@ -238,101 +232,33 @@ section[id] {
   transform: scaleX(1);
 }
 
-/* ── Ambient shape animations (decor.tsx) ── */
+/* Warm saffron tokens as utilities */
+.text-saffron { color: rgb(var(--saffron-500)); }
+.text-saffron-600 { color: rgb(var(--saffron-600)); }
+.bg-saffron { background-color: rgb(var(--saffron-500)); }
+.bg-saffron-50 { background-color: rgb(var(--saffron-50)); }
+.bg-saffron-100 { background-color: rgb(var(--saffron-100)); }
+.border-saffron { border-color: rgb(var(--saffron-500)); }
+.ring-saffron { --tw-ring-color: rgb(var(--saffron-500)); }
 
-/* Bubbles / half-circles: clearly visible vertical wander */
-@keyframes float-soft {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 10px -22px; }
+/* Tiny status pulse used in the "live" indicator */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
-.animate-float-soft {
-  animation: float-soft 8s ease-in-out infinite;
-}
-
-/* Rings: wander plus a slow tilt */
-@keyframes float-drift {
-  0%, 100% { translate: 0 0; rotate: 0deg; }
-  33% { translate: -14px -20px; rotate: 6deg; }
-  66% { translate: 12px 14px; rotate: -5deg; }
-}
-
-.animate-float-drift {
-  animation: float-drift 12s ease-in-out infinite;
-}
-
-/* Large orbs: big slow drift */
-@keyframes orb-drift {
-  0%, 100% { translate: 0 0; scale: 1; }
-  33% { translate: 50px -40px; scale: 1.12; }
-  66% { translate: -40px 30px; scale: 0.92; }
-}
-
-.animate-orb-drift {
-  animation: orb-drift 18s ease-in-out infinite;
-}
-
-/* Dotted rings: constant slow rotation */
-@keyframes spin-slower {
-  to { rotate: 360deg; }
-}
-
-.animate-spin-slower {
-  animation: spin-slower 30s linear infinite;
-}
-
-/* Sparkles: twinkle in and out */
-@keyframes twinkle {
-  0%, 100% { opacity: 0.25; scale: 0.55; rotate: 0deg; }
-  50% { opacity: 1; scale: 1; rotate: 18deg; }
-}
-
-.animate-twinkle {
-  animation: twinkle 3.6s ease-in-out infinite;
-}
-
-/* Sunlight beams: slow sway from the top edge + breathing glow */
-@keyframes rays-sway {
-  0%, 100% { transform: rotate(-2deg); }
-  50% { transform: rotate(2.4deg); }
-}
-
-.animate-rays-sway {
-  animation: rays-sway 18s ease-in-out infinite;
-}
-
-@keyframes rays-breathe {
-  0%, 100% { opacity: 0.45; }
-  50% { opacity: 1; }
-}
-
-.animate-rays-breathe {
-  animation: rays-breathe 10s ease-in-out infinite;
-}
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  html { scroll-behavior: auto; }
   .animate-marquee,
   .animate-marquee-reverse,
   .wave-bar,
   .ring-pulse,
   .animate-floaty,
   .animate-floaty-slow,
-  .animate-drift,
-  .nav-hairline,
-  .animate-float-soft,
-  .animate-float-drift,
-  .animate-orb-drift,
-  .animate-spin-slower,
-  .animate-twinkle,
-  .animate-rays-sway,
-  .animate-rays-breathe,
-  .card-glow-border::before {
+  .card-glow-border::before,
+  .pulse-dot {
     animation: none;
-  }
-  .btn-shine::after {
-    display: none;
   }
 }

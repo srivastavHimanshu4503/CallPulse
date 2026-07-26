@@ -1,19 +1,25 @@
+import { lazy, Suspense } from "react";
 import { useSeoMeta } from "../hooks/useSeoMeta";
 import { ScrollProgress } from "../components/common/ScrollProgress";
 import { Nav } from "../components/sections/Nav";
 import { Hero } from "../components/sections/Hero";
 import { SocialProof } from "../components/sections/SocialProof";
-import { Problem } from "../components/sections/Problem";
-import { HowItWorks } from "../components/sections/HowItWorks";
-import { Features } from "../components/sections/Features";
-import { CallJourney } from "../components/sections/CallJourney";
-import { Industries } from "../components/sections/Industries";
-import { Statement } from "../components/sections/Statement";
-import { Languages } from "../components/sections/Languages";
-import { Pricing } from "../components/sections/Pricing";
-import { FAQ } from "../components/sections/FAQ";
-import { FinalCTA } from "../components/sections/FinalCTA";
-import { Footer } from "../components/sections/Footer";
+
+// Below-the-fold sections lazy-load so the hero + call scene ships first.
+const Problem = lazy(() => import("../components/sections/Problem").then((m) => ({ default: m.Problem })));
+const HowItWorks = lazy(() => import("../components/sections/HowItWorks").then((m) => ({ default: m.HowItWorks })));
+const Features = lazy(() => import("../components/sections/Features").then((m) => ({ default: m.Features })));
+const Industries = lazy(() => import("../components/sections/Industries").then((m) => ({ default: m.Industries })));
+const Languages = lazy(() => import("../components/sections/Languages").then((m) => ({ default: m.Languages })));
+const Testimonials = lazy(() => import("../components/sections/Testimonials").then((m) => ({ default: m.Testimonials })));
+const Pricing = lazy(() => import("../components/sections/Pricing").then((m) => ({ default: m.Pricing })));
+const FAQ = lazy(() => import("../components/sections/FAQ").then((m) => ({ default: m.FAQ })));
+const FinalCTA = lazy(() => import("../components/sections/FinalCTA").then((m) => ({ default: m.FinalCTA })));
+const Footer = lazy(() => import("../components/sections/Footer").then((m) => ({ default: m.Footer })));
+
+function SectionSkeleton({ h = "60vh" }: { h?: string }) {
+  return <div className="bg-bg-canvas" style={{ minHeight: h }} aria-hidden />;
+}
 
 export function HomePage() {
   useSeoMeta({
@@ -29,18 +35,21 @@ export function HomePage() {
       <main>
         <Hero />
         <SocialProof />
-        <Problem />
-        <HowItWorks />
-        <Features />
-        <CallJourney />
-        <Industries />
-        <Languages />
-        <Pricing />
-        <FAQ />
-        <Statement />
-        <FinalCTA />
+        <Suspense fallback={<SectionSkeleton />}>
+          <Problem />
+          <HowItWorks />
+          <Features />
+          <Industries />
+          <Languages />
+          <Testimonials />
+          <Pricing />
+          <FAQ />
+          <FinalCTA />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={<SectionSkeleton h="30vh" />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

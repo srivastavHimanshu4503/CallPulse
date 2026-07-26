@@ -1,7 +1,6 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { EASE } from "../motion/primitives";
-import { Bubble, DottedRing, Orb, Ring, Sparkle } from "../motion/decor";
 
 // Lightweight, data-driven hero for vertical + city landing pages. Keeps
 // the same visual identity as the homepage Hero, but uses a static (non-
@@ -23,21 +22,26 @@ export function LandingHero({
 }) {
   return (
     <section className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 pt-24 sm:pt-28 pb-16 sm:pb-20">
-      <Orb className="hidden md:block top-[8%] right-[-160px]" size={480} tone="blue" opacity={0.18} />
-      <Orb className="hidden md:block bottom-[-160px] left-[-120px]" size={360} tone="violet" opacity={0.14} />
-      <DottedRing className="hidden lg:block top-32 left-[8%]" size={120} tone="blue" delay={-3} />
-      <Ring className="hidden lg:block top-[35%] right-[12%]" size={140} tone="sky" delay={-4} />
-      <Bubble className="hidden sm:block top-[22%] left-[6%]" size={22} tone="amber" delay={-6} />
-      <Sparkle className="hidden sm:block bottom-[18%] right-[10%]" size={22} tone="blue" delay={-1} />
+      <div aria-hidden className="absolute inset-0 bg-grid opacity-60" />
+      <div
+        aria-hidden
+        className="absolute -top-40 -right-20 h-[420px] w-[420px] rounded-full opacity-35 blur-[100px]"
+        style={{ background: "radial-gradient(circle, rgba(249,115,22,0.3), transparent 70%)" }}
+      />
+      <div
+        aria-hidden
+        className="absolute -bottom-40 -left-20 h-[420px] w-[420px] rounded-full opacity-35 blur-[100px]"
+        style={{ background: "radial-gradient(circle, rgba(37,99,235,0.3), transparent 70%)" }}
+      />
 
       <div className="relative max-w-3xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE }}
-          className="inline-flex items-center gap-2 bg-bg-highlight border border-brand/10 text-brand rounded-full px-3.5 py-1.5 mb-7"
+          className="inline-flex items-center gap-2 bg-bg-raised border border-line-default text-fg-primary rounded-full px-3.5 py-1.5 mb-7 shadow-sm"
         >
-          <Sparkles className="h-3.5 w-3.5" />
+          <Sparkles className="h-3.5 w-3.5 text-[rgb(var(--saffron-500))]" />
           <span className="text-[11px] font-semibold tracking-wide">{eyebrow}</span>
         </motion.div>
 
@@ -67,7 +71,7 @@ export function LandingHero({
         >
           <a
             href={primaryCta.href}
-            className="btn-shine group w-full sm:w-auto h-[52px] px-8 inline-flex items-center justify-center gap-2 text-[15.5px] font-semibold text-white bg-brand hover:bg-brand-600 rounded-[10px] transition-all shadow-[0_10px_28px_-10px_rgba(37,99,235,0.55)] hover:shadow-[0_14px_36px_-10px_rgba(37,99,235,0.65)] hover:-translate-y-0.5"
+            className="btn-primary group w-full sm:w-auto h-[52px] px-8 inline-flex items-center justify-center gap-2 text-[15.5px] font-semibold rounded-[10px]"
           >
             {primaryCta.label}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Zap } from "lucide-react";
-import { Bubble, DottedRing, HalfCircle, Orb, Ring, Sparkle } from "../motion/decor";
+import { Check, Zap, Phone, MessageCircle, Send } from "lucide-react";
 import {
   PLAN_PRICE_INR,
   PLAN_CREDITS,
@@ -36,10 +35,10 @@ const PLANS = [
     features: [
       `${PLAN_CREDITS.PRO} credits every month`,
       `Up to ${PLAN_AGENT_LIMITS.PRO} AI agents`,
-      "Bookings, CRM & workflows",
-      "WhatsApp & SMS follow-ups",
+      "Bookings, CRM and workflows",
+      "WhatsApp and SMS follow-ups",
       "Call transfer to your phone",
-      "Call recordings & analytics",
+      "Call recordings and analytics",
     ],
     cta: "Upgrade to Pro",
     highlight: true,
@@ -64,27 +63,27 @@ function PlanCard({ p }: { p: (typeof PLANS)[number] }) {
   const price = PLAN_PRICE_INR[p.key];
   return (
     <motion.div
-      whileHover={p.comingSoon ? undefined : { y: -6 }}
-      transition={{ duration: 0.3 }}
-      className={`relative h-full flex flex-col bg-bg-raised rounded-[12.5px] p-6 sm:p-7 ${
+      whileHover={p.comingSoon ? undefined : { y: -4 }}
+      transition={{ duration: 0.25 }}
+      className={`relative h-full flex flex-col bg-bg-raised rounded-[14px] p-7 ${
         p.highlight ? "" : "border border-line-default shadow-sm"
       } ${p.comingSoon ? "opacity-70" : ""}`}
     >
-      <h3 className="text-[15px] font-bold text-fg-primary">{p.name}</h3>
-      <p className="text-[12.5px] text-fg-muted mt-0.5">{p.blurb}</p>
+      <h3 className="text-[16px] font-bold text-fg-primary">{p.name}</h3>
+      <p className="text-[13px] text-fg-muted mt-1">{p.blurb}</p>
 
-      <div className="mt-4 mb-5">
+      <div className="mt-5 mb-6 pb-6 border-b border-line-subtle">
         {p.comingSoon || price === null ? (
-          <span className="text-2xl font-extrabold text-fg-muted">Coming soon</span>
+          <span className="text-[22px] font-extrabold text-fg-muted">Coming soon</span>
         ) : (
-          <>
-            <span className="text-[36px] font-extrabold text-fg-primary tracking-tight">
+          <div className="flex items-baseline gap-1">
+            <span className="text-[40px] font-extrabold text-fg-primary tracking-tight leading-none">
               {inr(price)}
             </span>
             <span className="text-[13px] text-fg-muted font-medium">
-              {price === 0 ? " forever" : "/month"}
+              {price === 0 ? "forever" : "/month"}
             </span>
-          </>
+          </div>
         )}
       </div>
 
@@ -108,8 +107,8 @@ function PlanCard({ p }: { p: (typeof PLANS)[number] }) {
           href="https://app.deskbuddy.in/register"
           className={`block text-center text-[14px] font-semibold rounded-[8px] px-4 py-3 transition-all ${
             p.highlight
-              ? "btn-shine text-white bg-brand hover:bg-brand-600 shadow-[0_10px_24px_-10px_rgba(37,99,235,0.6)]"
-              : "text-fg-primary border border-line-default hover:bg-bg-muted hover:border-brand/30"
+              ? "btn-primary"
+              : "text-fg-primary border border-line-default hover:bg-bg-muted"
           }`}
         >
           {p.cta}
@@ -119,24 +118,33 @@ function PlanCard({ p }: { p: (typeof PLANS)[number] }) {
   );
 }
 
+const CREDIT_ROWS = [
+  {
+    icon: Phone,
+    label: "Voice calls",
+    cost: `${CREDIT_COSTS.VOICE_PER_MINUTE} credits / minute`,
+  },
+  {
+    icon: MessageCircle,
+    label: "WhatsApp message",
+    cost: `${CREDIT_COSTS.WHATSAPP} credit`,
+  },
+  {
+    icon: Send,
+    label: "SMS message",
+    cost: `${CREDIT_COSTS.SMS} credit`,
+  },
+];
+
 export function Pricing() {
   return (
-    <section id="pricing" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
-      <Orb className="top-[-140px] right-[10%]" size={460} tone="amber" opacity={0.16} />
-      <Orb className="hidden md:block bottom-[-160px] -left-32" size={440} tone="blue" opacity={0.22} delay={-8} />
-      <Ring className="hidden md:block top-14 left-[7%]" size={110} tone="amber" delay={-2} />
-      <DottedRing className="hidden lg:block bottom-24 right-[3%]" size={140} tone="blue" duration={28} />
-      <Bubble className="hidden sm:block bottom-44 right-[8%]" size={32} tone="sky" delay={-4} />
-      <Bubble className="top-32 right-[16%]" size={18} tone="pink" delay={-1} />
-      <Bubble className="hidden md:block top-[55%] left-[3%]" size={24} tone="violet" delay={-6} />
-      <Sparkle className="hidden sm:block top-24 left-[24%]" size={20} tone="amber" delay={-2} />
-      <HalfCircle className="hidden lg:block -top-px left-[38%]" size={100} tone="pink" flip />
+    <section id="pricing" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16">
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Pricing"
           title="Simple pricing, in rupees"
-          sub="Start free. Upgrade when the calls do. Credits are the only meter — no per-seat charges, no surprise bills."
-          className="mb-12"
+          sub="Start free. Upgrade when the calls do. Credits are the only meter, so no per-seat charges and no surprise bills."
+          className="mb-8"
         />
 
         <Stagger className="grid sm:grid-cols-3 gap-5 items-stretch">
@@ -158,12 +166,48 @@ export function Pricing() {
           ))}
         </Stagger>
 
-        <Reveal delay={0.2}>
-          <p className="mt-10 text-center text-[12.5px] text-fg-muted leading-relaxed">
-            Calls use {CREDIT_COSTS.VOICE_PER_MINUTE} credits/minute · WhatsApp{" "}
-            {CREDIT_COSTS.WHATSAPP} · SMS {CREDIT_COSTS.SMS}. Need more? Top-up packs
-            start at {inr(CREDIT_PACKS[0].priceInr)} for {CREDIT_PACKS[0].credits} credits.
-          </p>
+        {/* Credit cost breakdown, its own block so it does not feel bolted onto pricing */}
+        <Reveal delay={0.15}>
+          <div className="mt-14 bg-bg-raised border border-line-default rounded-[14px] p-6 sm:p-7 max-w-4xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[rgb(var(--saffron-600))] mb-1.5">
+                  How credits work
+                </p>
+                <h3 className="text-[18px] font-bold text-fg-primary">
+                  One credit meter. Every plan.
+                </h3>
+              </div>
+              <p className="text-[13px] text-fg-muted max-w-sm">
+                Credits are shared across voice, WhatsApp and SMS. Buy more only if
+                you run out during the month.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
+              {CREDIT_ROWS.map((row) => (
+                <div
+                  key={row.label}
+                  className="flex items-center gap-3 bg-bg-subtle border border-line-subtle rounded-[10px] px-4 py-3.5"
+                >
+                  <span className="h-9 w-9 rounded-[9px] bg-bg-highlight text-brand flex items-center justify-center shrink-0">
+                    <row.icon className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-bold text-fg-primary leading-tight">
+                      {row.label}
+                    </p>
+                    <p className="text-[12px] text-fg-muted mt-0.5">{row.cost}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 pt-5 border-t border-line-subtle text-[12.5px] text-fg-muted text-center">
+              Need more? Top-up packs start at{" "}
+              <b className="text-fg-primary">{inr(CREDIT_PACKS[0].priceInr)}</b> for{" "}
+              <b className="text-fg-primary">{CREDIT_PACKS[0].credits} credits</b>. Cancel
+              anytime, no lock-in.
+            </p>
+          </div>
         </Reveal>
       </div>
     </section>

@@ -1,50 +1,48 @@
 import {
   AnimatePresence,
   motion,
-  useMotionValue,
   useReducedMotion,
-  useSpring,
-  useTransform,
 } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
   CalendarCheck,
   CheckCheck,
-  Languages,
+  IndianRupee,
+  Languages as LanguagesIcon,
   Phone,
-  PhoneCall,
+  PhoneIncoming,
+  Sparkles,
+  Star,
   Timer,
-  UserPlus,
+  UserCheck,
 } from "lucide-react";
 import { CountUp, EASE, SplitWords } from "../motion/primitives";
-import { Bubble, DottedRing, HalfCircle, Orb, Ring, Sparkle, SunRays } from "../motion/decor";
 
 /* ─────────────────── scripted live call ─────────────────── */
 
 type ScriptStep =
   | { kind: "caller"; text: string; hold: number }
   | { kind: "agent"; text: string; hold: number; speakFor: number }
-  | { kind: "event"; id: "booked" | "whatsapp" | "crm"; hold: number };
+  | { kind: "event"; id: "booked" | "whatsapp"; hold: number };
 
 const SCRIPT: ScriptStep[] = [
-  { kind: "caller", text: "Kal shaam haircut ke liye slot milega?", hold: 1500 },
+  { kind: "caller", text: "Kal shaam haircut ke liye slot milega?", hold: 1400 },
   {
     kind: "agent",
-    text: "Ji bilkul! Kal shaam 5 baje free hai. Kis naam se book karoon?",
-    hold: 2000,
-    speakFor: 1300,
+    text: "Ji bilkul! Kal 5 baje free hai. Kis naam se book karoon?",
+    hold: 1800,
+    speakFor: 1200,
   },
-  { kind: "caller", text: "Priya. Aur keratin ka charge kya hai?", hold: 1500 },
+  { kind: "caller", text: "Priya. Aur keratin ka charge kya hai?", hold: 1400 },
   {
     kind: "agent",
-    text: "Keratin ₹2,499 se start hota hai, Priya ji. Kal 5 baje aapka slot pakka — details WhatsApp par bhej rahi hoon.",
-    hold: 2200,
-    speakFor: 1600,
+    text: "Keratin ₹2,499 se start hota hai, Priya ji. Kal 5 baje slot pakka. WhatsApp bhej rahi hoon.",
+    hold: 1900,
+    speakFor: 1500,
   },
-  { kind: "event", id: "booked", hold: 1100 },
-  { kind: "event", id: "whatsapp", hold: 1100 },
-  { kind: "event", id: "crm", hold: 4800 },
+  { kind: "event", id: "booked", hold: 900 },
+  { kind: "event", id: "whatsapp", hold: 4200 },
 ];
 
 function Waveform({ bars = 5, light = false }: { bars?: number; light?: boolean }) {
@@ -103,13 +101,13 @@ function useCallLoop() {
       setSpeaking(false);
       setCallerTyping(false);
       setPhase("ringing");
-      await wait(2100); // phone rings
+      await wait(1800);
       if (cancelled) return;
-      setPhase("answering"); // the "answer" tap
-      await wait(650);
+      setPhase("answering");
+      await wait(550);
       if (cancelled) return;
       setPhase("live");
-      await wait(500);
+      await wait(400);
       for (let i = 0; i < SCRIPT.length; i++) {
         if (cancelled) return;
         const step = SCRIPT[i]!;
@@ -120,7 +118,7 @@ function useCallLoop() {
         }
         if (step.kind === "caller") {
           setCallerTyping(true);
-          await wait(850);
+          await wait(750);
           setCallerTyping(false);
         }
         if (cancelled) return;
@@ -158,48 +156,11 @@ function CallTimer({ running }: { running: boolean }) {
   );
 }
 
-/* ─────────────── floating outcome cards (desktop) ─────────────── */
-
-function FloatingCard({
-  show,
-  className,
-  floatClass = "animate-floaty",
-  children,
-}: {
-  show: boolean;
-  className: string;
-  floatClass?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 14 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ type: "spring", stiffness: 260, damping: 22 }}
-          className={`absolute z-20 hidden lg:block ${className}`}
-        >
-          <div className={floatClass}>{children}</div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-/* ─────────────────────── live call scene ─────────────────────── */
-
-const ORBIT_CHIPS = [
-  { text: "नमस्ते", className: "-top-4 left-6", float: "animate-floaty" },
-  { text: "Vanakkam", className: "top-1/4 -left-16", float: "animate-floaty-slow" },
-  { text: "Hello ji!", className: "-bottom-4 right-8", float: "animate-floaty" },
-];
+/* ─────────────── live call scene ─────────────── */
 
 function LiveCallScene() {
   const { stepIndex, speaking, callerTyping, phase } = useCallLoop();
   const ringing = phase !== "live";
-  const reduce = useReducedMotion();
 
   const visible = SCRIPT.slice(0, stepIndex + 1);
   const messages = visible.filter((s) => s.kind !== "event");
@@ -207,110 +168,67 @@ function LiveCallScene() {
     .filter((s): s is Extract<ScriptStep, { kind: "event" }> => s.kind === "event")
     .map((e) => e.id);
 
-  /* 3D tilt */
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [5, -5]), { stiffness: 140, damping: 18 });
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-6, 6]), { stiffness: 140, damping: 18 });
-
   return (
-    <div
-      className="relative lg:[perspective:1400px]"
-      onMouseMove={(e) => {
-        if (reduce) return;
-        const rect = e.currentTarget.getBoundingClientRect();
-        mx.set((e.clientX - rect.left) / rect.width - 0.5);
-        my.set((e.clientY - rect.top) / rect.height - 0.5);
-      }}
-      onMouseLeave={() => {
-        mx.set(0);
-        my.set(0);
-      }}
-    >
-      {/* ambient glow */}
-      <div aria-hidden className="absolute -inset-10 rounded-[48px] bg-brand/[0.08] blur-3xl" />
+    <div className="relative">
+      {/* soft ambient glow — one, not three */}
+      <div
+        aria-hidden
+        className="absolute -inset-8 rounded-[48px] bg-gradient-to-br from-brand/[0.08] via-transparent to-[rgb(var(--saffron-500))]/[0.08] blur-3xl"
+      />
 
-      {/* expanding rings while ringing */}
-      {ringing && !reduce && (
-        <div aria-hidden className="absolute inset-0 flex items-center justify-center">
-          <span className="ring-pulse absolute h-72 w-72 rounded-full border-2 border-brand/25" />
-          <span
-            className="ring-pulse absolute h-72 w-72 rounded-full border-2 border-brand/15"
-            style={{ animationDelay: "0.7s" }}
-          />
-        </div>
-      )}
-
-      {/* orbiting greeting chips */}
-      {ORBIT_CHIPS.map((c) => (
-        <motion.span
-          key={c.text}
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.2, duration: 0.6, ease: EASE }}
-          className={`absolute z-20 hidden lg:block ${c.className}`}
-          aria-hidden
-        >
-          <span
-            className={`${c.float} inline-block text-[12px] font-bold text-brand bg-bg-canvas border border-brand/15 rounded-full px-3.5 py-1.5 shadow-[0_8px_24px_-10px_rgba(37,99,235,0.35)]`}
+      {/* floating outcome cards — reduced to just two, warmer accents */}
+      <AnimatePresence>
+        {eventIds.includes("booked") && (
+          <motion.div
+            key="booked"
+            initial={{ opacity: 0, scale: 0.85, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", stiffness: 280, damping: 22 }}
+            className="absolute -top-6 -right-6 z-20 hidden md:block"
           >
-            {c.text}
-          </span>
-        </motion.span>
-      ))}
+            <div className="animate-floaty flex items-center gap-2.5 bg-bg-raised border border-line-default rounded-[12px] shadow-[0_14px_36px_-14px_rgba(15,23,42,0.25)] px-4 py-3">
+              <span className="h-8 w-8 rounded-[8px] bg-positive-50 text-positive flex items-center justify-center">
+                <CalendarCheck className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-[12px] font-bold text-fg-primary leading-tight">Appointment booked</p>
+                <p className="text-[11px] text-fg-muted">Kal · 5:00 PM</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
-      {/* floating outcome cards */}
-      <FloatingCard show={eventIds.includes("booked")} className="-top-7 -right-9">
-        <div className="flex items-center gap-2.5 bg-bg-raised border border-line-default rounded-[12px] shadow-[0_14px_36px_-14px_rgba(15,23,42,0.25)] px-4 py-3">
-          <span className="h-8 w-8 rounded-[8px] bg-positive-50 text-positive flex items-center justify-center">
-            <CalendarCheck className="h-4 w-4" />
-          </span>
-          <div>
-            <p className="text-[12px] font-bold text-fg-primary leading-tight">Appointment booked</p>
-            <p className="text-[11px] text-fg-muted">Tomorrow · 5:00 PM</p>
-          </div>
-        </div>
-      </FloatingCard>
+        {eventIds.includes("whatsapp") && (
+          <motion.div
+            key="whatsapp"
+            initial={{ opacity: 0, scale: 0.85, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", stiffness: 280, damping: 22 }}
+            className="absolute -bottom-6 -left-6 z-20 hidden md:block"
+          >
+            <div className="animate-floaty-slow max-w-[240px] bg-bg-raised border border-line-default rounded-[12px] rounded-bl-[4px] shadow-[0_14px_36px_-14px_rgba(15,23,42,0.25)] px-4 py-3">
+              <p className="text-[10.5px] font-bold uppercase tracking-wide text-positive mb-1">
+                WhatsApp · sent
+              </p>
+              <p className="text-[12px] text-fg-primary leading-relaxed">
+                Namaste Priya ji! Aapka appointment kal 5 PM confirm hai ✅
+              </p>
+              <p className="text-right mt-0.5">
+                <CheckCheck className="inline h-3.5 w-3.5 text-brand" />
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <FloatingCard
-        show={eventIds.includes("whatsapp")}
-        className="-bottom-8 -left-10"
-        floatClass="animate-floaty-slow"
-      >
-        <div className="max-w-[240px] bg-bg-raised border border-line-default rounded-[12px] rounded-bl-[4px] shadow-[0_14px_36px_-14px_rgba(15,23,42,0.25)] px-4 py-3">
-          <p className="text-[10.5px] font-bold uppercase tracking-wide text-positive mb-1">
-            WhatsApp · sent
-          </p>
-          <p className="text-[12px] text-fg-primary leading-relaxed">
-            Namaste Priya ji! Aapka appointment kal 5 PM confirm hai ✅
-          </p>
-          <p className="text-right mt-0.5">
-            <CheckCheck className="inline h-3.5 w-3.5 text-brand" />
-          </p>
-        </div>
-      </FloatingCard>
-
-      <FloatingCard show={eventIds.includes("crm")} className="top-1/2 -right-14">
-        <div className="flex items-center gap-2.5 bg-bg-raised border border-line-default rounded-full shadow-[0_14px_36px_-14px_rgba(15,23,42,0.25)] pl-2 pr-4 py-2">
-          <span className="h-7 w-7 rounded-full bg-bg-highlight text-brand text-[10px] font-bold flex items-center justify-center">
-            PV
-          </span>
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] font-bold text-fg-primary">Priya Verma</span>
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-brand bg-bg-highlight rounded-full px-2 py-0.5">
-              <UserPlus className="h-2.5 w-2.5" /> CRM
-            </span>
-          </div>
-        </div>
-      </FloatingCard>
-
-      {/* tilting card */}
+      {/* the phone card */}
       <motion.div
-        style={reduce ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
-        initial={{ opacity: 0, y: 40, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 1, delay: 0.35, ease: EASE }}
-        className="relative bg-bg-raised/95 backdrop-blur border border-line-default rounded-[20px] shadow-[0_30px_80px_-30px_rgba(15,23,42,0.3)] overflow-hidden"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
+        className="relative bg-bg-raised border border-line-default rounded-[20px] shadow-[0_30px_80px_-30px_rgba(15,23,42,0.3)] overflow-hidden"
       >
         {/* incoming-call overlay */}
         <AnimatePresence>
@@ -323,10 +241,13 @@ function LiveCallScene() {
               <div className="relative flex items-center justify-center mb-6">
                 <span className="ring-pulse absolute h-28 w-28 rounded-full border-2 border-brand/30" />
                 <span
-                  className="ring-pulse absolute h-28 w-28 rounded-full border-2 border-brand/20"
+                  className="ring-pulse absolute h-28 w-28 rounded-full border-2 border-[rgb(var(--saffron-500))]/25"
                   style={{ animationDelay: "0.7s" }}
                 />
-                <span className="relative h-[76px] w-[76px] rounded-full bg-brand text-white text-xl font-extrabold flex items-center justify-center shadow-[0_14px_36px_-12px_rgba(37,99,235,0.6)]">
+                <span
+                  className="relative h-[76px] w-[76px] rounded-full text-white text-xl font-extrabold flex items-center justify-center shadow-[0_14px_36px_-12px_rgba(37,99,235,0.6)]"
+                  style={{ background: "linear-gradient(135deg, #1d4ed8, #f97316)" }}
+                >
                   SS
                 </span>
               </div>
@@ -362,7 +283,10 @@ function LiveCallScene() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-line-subtle bg-bg-subtle/80">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative">
-              <span className="h-9 w-9 rounded-full bg-brand text-white text-[12px] font-bold flex items-center justify-center">
+              <span
+                className="h-9 w-9 rounded-full text-white text-[12px] font-bold flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #1d4ed8, #f97316)" }}
+              >
                 SS
               </span>
               <span
@@ -400,7 +324,7 @@ function LiveCallScene() {
                 initial={{ opacity: 0, y: 18, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.45, ease: EASE }}
+                transition={{ duration: 0.4, ease: EASE }}
                 className={m.kind === "caller" ? "flex justify-start" : "flex justify-end"}
               >
                 <div
@@ -432,7 +356,7 @@ function LiveCallScene() {
               <motion.div
                 key="caller-typing"
                 layout="position"
-                initial={{ opacity: 0, y: 14 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.12 } }}
                 className="flex justify-start"
@@ -447,7 +371,7 @@ function LiveCallScene() {
               <motion.div
                 key="speaking"
                 layout="position"
-                initial={{ opacity: 0, y: 14 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.12 } }}
                 className="flex justify-end"
@@ -461,24 +385,23 @@ function LiveCallScene() {
           </AnimatePresence>
         </div>
 
-        {/* outcome chips — mobile/tablet only (desktop gets floating cards) */}
-        <div className="px-5 pb-5 space-y-2 lg:hidden min-h-[40px]">
+        {/* mobile-only outcome chips */}
+        <div className="px-5 pb-5 space-y-2 md:hidden min-h-[40px]">
           <AnimatePresence initial={false}>
             {eventIds.map((id) => {
               const meta = {
-                booked: { icon: CalendarCheck, label: "Appointment booked · tomorrow, 5 PM" },
-                whatsapp: { icon: CheckCheck, label: "Confirmation sent on WhatsApp" },
-                crm: { icon: UserPlus, label: "Priya added to your CRM" },
+                booked: { icon: CalendarCheck, label: "Appointment booked · kal 5 PM" },
+                whatsapp: { icon: CheckCheck, label: "WhatsApp confirmation sent" },
               }[id];
               const Icon = meta.icon;
               return (
                 <motion.div
                   key={id}
                   layout="position"
-                  initial={{ opacity: 0, x: -14 }}
+                  initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4, ease: EASE }}
+                  transition={{ duration: 0.35, ease: EASE }}
                   className="flex items-center gap-2.5 bg-positive-50 border border-positive/15 rounded-[8px] px-3.5 py-2"
                 >
                   <Icon className="h-3.5 w-3.5 text-positive shrink-0" />
@@ -490,7 +413,7 @@ function LiveCallScene() {
         </div>
 
         {/* bottom bar */}
-        <div className="hidden lg:flex items-center justify-between px-5 py-3 border-t border-line-subtle bg-bg-subtle/60">
+        <div className="hidden md:flex items-center justify-between px-5 py-3 border-t border-line-subtle bg-bg-subtle/60">
           <span className="text-[11px] font-medium text-fg-muted">
             Live transcript · Hinglish
           </span>
@@ -506,137 +429,142 @@ function LiveCallScene() {
 /* ───────────────────────── hero ───────────────────────── */
 
 const STATS = [
-  { icon: PhoneCall, value: "24/7", label: "Always answering", isText: true },
-  { icon: Languages, to: 6, label: "Languages spoken" },
+  { icon: Phone, value: "24/7", label: "Always answering", isText: true },
+  { icon: LanguagesIcon, to: 6, label: "Indian languages" },
   { icon: Timer, to: 10, prefix: "<", suffix: " min", label: "To go live" },
 ] as const;
 
 export function Hero() {
-  const glowX = useMotionValue(-600);
-  const glowY = useMotionValue(-600);
-  const gx = useSpring(glowX, { stiffness: 55, damping: 20, mass: 0.6 });
-  const gy = useSpring(glowY, { stiffness: 55, damping: 20, mass: 0.6 });
-
   return (
-    <section
-      className="relative overflow-hidden bg-bg-canvas"
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        glowX.set(e.clientX - rect.left);
-        glowY.set(e.clientY - rect.top);
-      }}
-    >
-      <div aria-hidden className="absolute inset-0 bg-grid" />
-      <motion.div
+    <section className="relative overflow-hidden bg-bg-canvas">
+      {/* clean gradient wash — no dozens of orbs */}
+      <div aria-hidden className="absolute inset-0 bg-grid opacity-70" />
+      <div
         aria-hidden
-        style={{ left: gx, top: gy, x: "-50%", y: "-50%" }}
-        className="pointer-events-none absolute hidden lg:block h-[520px] w-[520px] rounded-full bg-brand/[0.06] blur-[90px]"
+        className="absolute -top-40 -right-20 h-[520px] w-[520px] rounded-full opacity-40 blur-[100px]"
+        style={{ background: "radial-gradient(circle, rgba(249,115,22,0.35), transparent 70%)" }}
       />
       <div
         aria-hidden
-        className="animate-drift absolute -top-32 -left-24 h-[420px] w-[420px] rounded-full bg-brand/[0.07] blur-[100px]"
-      />
-      <div
-        aria-hidden
-        className="animate-drift absolute top-24 -right-32 h-[480px] w-[480px] rounded-full bg-brand/[0.09] blur-[110px]"
-        style={{ animationDelay: "-8s" }}
+        className="absolute -bottom-40 -left-20 h-[520px] w-[520px] rounded-full opacity-40 blur-[100px]"
+        style={{ background: "radial-gradient(circle, rgba(37,99,235,0.35), transparent 70%)" }}
       />
 
-      {/* vivid color wash */}
-      <Orb className="-top-40 -left-32" size={520} tone="blue" opacity={0.28} />
-      <Orb className="top-10 right-[-140px]" size={560} tone="violet" opacity={0.26} delay={-7} />
-      <Orb className="hidden md:block bottom-[-180px] left-[30%]" size={480} tone="pink" opacity={0.16} delay={-12} />
-
-      {/* sunlight falling across the hero */}
-      <SunRays className="left-[18%] top-0" />
-
-      {/* colored shapes */}
-      <DottedRing className="hidden lg:block -top-14 left-[42%]" size={190} tone="blue" />
-      <Ring className="hidden sm:block bottom-28 left-10" size={84} tone="violet" delay={-4} />
-      <Ring className="hidden lg:block top-[26%] right-[3%]" size={56} tone="amber" delay={-2} duration={10} />
-      <Bubble className="hidden sm:block top-32 left-[6%]" size={34} tone="sky" delay={-2} />
-      <Bubble className="hidden lg:block bottom-44 right-[4%]" size={52} tone="blue" delay={-6} duration={10} />
-      <Bubble className="top-20 right-[10%]" size={20} tone="amber" delay={-3} />
-      <Bubble className="hidden md:block top-[60%] left-[40%]" size={14} tone="pink" delay={-1} />
-      <Sparkle className="hidden sm:block top-[18%] left-[36%]" size={24} tone="amber" />
-      <Sparkle className="hidden lg:block bottom-36 left-[46%]" size={16} tone="blue" delay={-1.6} />
-      <Sparkle className="top-[46%] right-[6%]" size={18} tone="violet" delay={-2.4} />
-      <HalfCircle className="hidden md:block -bottom-px left-[12%]" size={130} tone="sky" duration={11} />
-
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 grid lg:grid-cols-[1.02fr_0.98fr] gap-14 lg:gap-16 items-center">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-16 items-center">
         <div className="text-center lg:text-left">
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE }}
-            className="inline-flex items-center gap-2 bg-bg-highlight border border-brand/10 text-brand rounded-full px-3.5 py-1.5 mb-7"
+            transition={{ duration: 0.5, ease: EASE }}
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 bg-bg-raised border border-line-default shadow-sm"
           >
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-brand animate-ping opacity-60" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-brand" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-positive animate-ping opacity-60" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-positive" />
             </span>
-            <span className="text-[11px] font-semibold tracking-wide">
-              AI receptionist · Made for Indian businesses 🇮🇳
+            <span className="text-[12px] font-semibold text-fg-primary tracking-normal">
+              Built for Indian businesses
             </span>
           </motion.div>
 
-          <h1 className="text-[42px] sm:text-[54px] lg:text-[62px] font-extrabold tracking-[-0.03em] leading-[1.04] text-fg-primary">
-            <SplitWords text="Every call answered." delay={0.05} />
+          <h1 className="text-[38px] sm:text-[50px] lg:text-[60px] font-extrabold tracking-[-0.03em] leading-[1.08] text-fg-primary">
+            <SplitWords text="Every call is a" delay={0.05} />
             <br />
             <SplitWords
-              text="Every customer kept."
-              delay={0.3}
+              text="new opportunity."
+              delay={0.28}
               wordClassName={() => "text-gradient-brand"}
             />
           </h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.55, ease: EASE }}
-            className="mt-6 max-w-xl mx-auto lg:mx-0 text-base sm:text-lg text-fg-secondary leading-relaxed"
+            transition={{ duration: 0.6, delay: 0.5, ease: EASE }}
+            className="mt-6 max-w-xl mx-auto lg:mx-0 text-[15.5px] sm:text-[17px] text-fg-secondary leading-relaxed"
           >
-            DeskBuddy picks up 24/7 in your customer's language, books the
-            appointment, and follows up on WhatsApp — while you run your
-            business.
+            DeskBuddy is your AI phone receptionist. Every incoming call turns
+            into a{" "}
+            <b className="text-fg-primary">booked appointment</b>, a{" "}
+            <b className="text-fg-primary">qualified lead</b> and a{" "}
+            <b className="text-fg-primary">happy customer</b>. 24/7, in Hindi,
+            English and 4 more Indian languages.
           </motion.p>
 
+          {/* conversion pipeline chip */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.68, ease: EASE }}
-            className="mt-9 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3"
+            transition={{ duration: 0.6, delay: 0.62, ease: EASE }}
+            className="mt-6 inline-flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-2 text-[12.5px] font-semibold"
+          >
+            <span className="inline-flex items-center gap-1.5 bg-bg-raised border border-line-default rounded-full px-3 py-1.5 shadow-sm">
+              <PhoneIncoming className="h-3.5 w-3.5 text-brand" />
+              <span className="text-fg-primary">Every call</span>
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-fg-muted" />
+            <span className="inline-flex items-center gap-1.5 bg-bg-raised border border-line-default rounded-full px-3 py-1.5 shadow-sm">
+              <Sparkles className="h-3.5 w-3.5 text-[rgb(var(--saffron-500))]" />
+              <span className="text-fg-primary">Answered instantly</span>
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-fg-muted" />
+            <span className="inline-flex items-center gap-1.5 bg-bg-raised border border-line-default rounded-full px-3 py-1.5 shadow-sm">
+              <CalendarCheck className="h-3.5 w-3.5 text-positive" />
+              <span className="text-fg-primary">Booked or qualified</span>
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-fg-muted" />
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm text-white"
+              style={{ background: "linear-gradient(100deg, #1d4ed8, #f97316)" }}
+            >
+              <UserCheck className="h-3.5 w-3.5" />
+              <span>Happy customer</span>
+            </span>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.78, ease: EASE }}
+            className="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3"
           >
             <a
               href="https://app.deskbuddy.in/register"
-              className="btn-shine group w-full sm:w-auto h-[52px] px-8 inline-flex items-center justify-center gap-2 text-[15.5px] font-semibold text-white bg-brand hover:bg-brand-600 rounded-[10px] transition-all shadow-[0_10px_28px_-10px_rgba(37,99,235,0.55)] hover:shadow-[0_14px_36px_-10px_rgba(37,99,235,0.65)] hover:-translate-y-0.5"
+              className="btn-primary group w-full sm:w-auto h-[54px] px-8 inline-flex items-center justify-center gap-2 text-[15.5px] font-semibold rounded-[10px]"
             >
               Get started free
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
             <a
               href="#how-it-works"
-              className="group w-full sm:w-auto h-[52px] px-8 inline-flex items-center justify-center gap-2 text-[15.5px] font-semibold text-fg-primary bg-bg-canvas/80 backdrop-blur hover:bg-bg-muted border border-line-default rounded-[10px] transition-all hover:-translate-y-0.5"
+              className="group w-full sm:w-auto h-[54px] px-8 inline-flex items-center justify-center gap-2 text-[15.5px] font-semibold text-fg-primary bg-bg-canvas hover:bg-bg-muted border border-line-default rounded-[10px] transition-all hover:-translate-y-0.5"
             >
               See how it works
             </a>
           </motion.div>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.85 }}
-            className="mt-4 text-[12.5px] text-fg-muted"
+            transition={{ duration: 0.6, delay: 0.92 }}
+            className="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-[12.5px] text-fg-muted"
           >
-            Free plan · 30 credits · no card required
-          </motion.p>
+            <span className="inline-flex items-center gap-1.5">
+              <IndianRupee className="h-3.5 w-3.5 text-positive" />
+              Free plan, 30 credits included
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Star className="h-3.5 w-3.5 text-[rgb(var(--saffron-500))]" fill="currentColor" />
+              No credit card needed
+            </span>
+          </motion.div>
 
-          {/* animated stats */}
+          {/* stats */}
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.95, ease: EASE }}
-            className="mt-10 grid grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0"
+            transition={{ duration: 0.6, delay: 1.0, ease: EASE }}
+            className="mt-9 grid grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0"
           >
             {STATS.map((s) => (
               <div

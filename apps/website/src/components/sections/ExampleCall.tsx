@@ -1,6 +1,5 @@
 import { PhoneCall } from "lucide-react";
 import { Reveal, StaggerItem, Stagger } from "../motion/primitives";
-import { Bubble, Orb, Sparkle } from "../motion/decor";
 
 // Vertical-specific example call flow. Renders a 2-turn transcript showing
 // how DeskBuddy handles a real customer call for that vertical. Provides
@@ -13,11 +12,7 @@ export function ExampleCall({
   script: { caller: string; agent: string }[];
 }) {
   return (
-    <section className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
-      <Orb className="hidden md:block top-[15%] left-[-140px]" size={380} tone="sky" opacity={0.14} />
-      <Bubble className="hidden sm:block bottom-24 right-[10%]" size={24} tone="blue" delay={-2} />
-      <Sparkle className="hidden md:block top-[20%] right-[8%]" size={16} tone="violet" delay={-4} />
-
+    <section className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16">
       <div className="relative max-w-3xl mx-auto">
         <Reveal className="text-center mb-10">
           <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.14em] uppercase text-brand bg-bg-highlight border border-brand/10 rounded-full px-3.5 py-1.5 mb-5">

@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='white' text-anchor='middle'%3EDB%3C/text%3E%3C/svg%3E" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1d4ed8" media="(prefers-color-scheme: dark)" />
 
     <!-- Search engine directives -->
     <link rel="canonical" href="https://www.deskbuddy.in/" />
@@ -127,7 +128,7 @@
           "name": "Does it really speak Hindi?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes — Hindi, Hinglish, English, Marathi, Tamil, and Telugu. The voices are natural and conversational, and your agent replies in the language the caller uses."
+            "text": "Yes. Hindi, Hinglish, English, Marathi, Tamil and Telugu. The voices are natural and conversational, and your agent replies in the language the caller uses."
           }
         },
         {
@@ -135,7 +136,7 @@
           "name": "What happens when it can't answer something?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "It doesn't guess. Depending on your setup, it either warm-transfers the call to your phone or politely takes a message with the caller's details — which lands in your CRM."
+            "text": "It doesn't guess. Depending on your setup, it either warm-transfers the call to your phone or politely takes a message with the caller's details, which lands in your CRM."
           }
         },
         {
@@ -143,7 +144,7 @@
           "name": "Do callers know they're talking to an AI?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "You decide. You control the greeting and how your agent introduces itself. Either way, the voice is natural enough that conversations stay comfortable — callers just get helped."
+            "text": "You decide. You control the greeting and how your agent introduces itself. Either way, the voice is natural enough that callers just get helped without any awkwardness."
           }
         },
         {
@@ -159,7 +160,7 @@
           "name": "Can I hear what my agent said on calls?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Every call comes with a recording and a full transcript in your dashboard, so you can review conversations and improve your agent's answers."
+            "text": "Every call comes with a recording and a full transcript in your dashboard, so you can review conversations and refine your agent's answers."
           }
         },
         {
@@ -167,7 +168,7 @@
           "name": "How long does setup take?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Under 10 minutes. Your agent's knowledge base is generated automatically at signup — most owners make a browser test call within their first five minutes."
+            "text": "Under 10 minutes. Your agent's knowledge base is generated automatically at signup, and most owners make a browser test call within their first five minutes."
           }
         },
         {
@@ -175,7 +176,15 @@
           "name": "Can I cancel anytime?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. There's no lock-in and no cancellation fee. The free plan stays free forever."
+            "text": "Yes. There is no lock-in and no cancellation fee. The free plan stays free forever."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my customer data safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every call, transcript and contact stays inside your account. We never resell data, and you can export or delete anything from your dashboard."
           }
         }
       ]
@@ -184,7 +193,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-bg-canvas text-fg-primary font-sans antialiased min-h-screen selection:bg-brand-100">
     <div id="root"></div>

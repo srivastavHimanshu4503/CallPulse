@@ -1,107 +1,130 @@
-import { PhoneMissed, PhoneIncoming, Wallet, ArrowRight, X, Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  PhoneMissed,
+  UserX,
+  Clock,
+  IndianRupee,
+  TrendingDown,
+  ArrowRight,
+} from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
-import { Reveal, Stagger, StaggerItem } from "../motion/primitives";
-import { Bubble, Orb, Ring, Sparkle } from "../motion/decor";
+import { EASE, Reveal, Stagger, StaggerItem } from "../motion/primitives";
 
-const BAD_OPTIONS = [
+const PAIN_STATS = [
   {
     icon: PhoneMissed,
-    title: "Let it ring",
-    body: "No voicemail. They dial the next shop on Google and book there.",
+    value: "1 in 3",
+    label: "business calls go unanswered during peak hours",
   },
   {
-    icon: PhoneIncoming,
-    title: "Answer it yourself",
-    body: "The paying customer in front of you waits while you quote prices.",
+    icon: UserX,
+    value: "62%",
+    label: "of callers hang up and dial your competitor instead",
   },
   {
-    icon: Wallet,
-    title: "Hire a receptionist",
-    body: "A full salary for one shift — and the 9 PM calls still go unanswered.",
+    icon: Clock,
+    value: "45%",
+    label: "of enquiry calls come in outside business hours",
   },
 ];
 
-const DESKBUDDY_WINS = [
-  "Picks up on the first ring, 24/7",
-  "Speaks Hindi, Hinglish + 4 more languages",
-  "Books the slot, saves the lead, follows up",
-];
+// Ticker that counts missed rupees while the visitor is on the page.
+// Uses a realistic ballpark of ₹1,000 per missed lead, one every 4 seconds.
+function LostRevenueTicker() {
+  const reduce = useReducedMotion();
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (reduce) {
+      setCount(12000);
+      return;
+    }
+    const id = setInterval(() => setCount((c) => c + 1000), 4000);
+    return () => clearInterval(id);
+  }, [reduce]);
+
+  return (
+    <div className="relative h-full overflow-hidden rounded-[16px] p-6 sm:p-7 bg-bg-inverse">
+      <div aria-hidden className="absolute inset-0 bg-grid-dark opacity-60" />
+      <div
+        aria-hidden
+        className="absolute -right-16 -top-20 h-64 w-64 rounded-full opacity-60 blur-[80px]"
+        style={{ background: "radial-gradient(circle, rgba(249,115,22,0.45), transparent 70%)" }}
+      />
+      <div className="relative h-full flex flex-col">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[rgb(var(--saffron-300))] mb-3 inline-flex items-center gap-2">
+          <TrendingDown className="h-3.5 w-3.5" />
+          Missed while you read this page
+        </p>
+        <div className="flex items-baseline gap-1">
+          <IndianRupee className="h-8 w-8 sm:h-10 sm:w-10 text-white self-center" strokeWidth={2.5} />
+          <motion.span
+            key={count}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: EASE }}
+            className="text-[42px] sm:text-[56px] font-extrabold tracking-tight text-white leading-none tabular-nums"
+          >
+            {count.toLocaleString("en-IN")}
+          </motion.span>
+        </div>
+        <p className="mt-3 text-[13.5px] text-white/70 leading-relaxed max-w-sm">
+          At about ₹1,000 per missed lead. That's revenue walking away every four
+          seconds while a phone rings out somewhere in India.
+        </p>
+
+        <div className="mt-auto pt-6 flex flex-wrap items-center gap-3">
+          <a
+            href="https://app.deskbuddy.in/register"
+            className="btn-primary group inline-flex items-center gap-2 h-11 px-5 text-[13.5px] font-semibold rounded-[10px]"
+          >
+            Stop losing calls
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </a>
+          <span className="text-[12px] text-white/50">Free to start, 5 minutes to set up</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Problem() {
   return (
-    <section className="relative bg-bg-canvas px-4 sm:px-6 py-16 sm:py-24 overflow-hidden">
-      <Orb className="top-[-140px] right-[-120px]" size={420} tone="pink" opacity={0.15} />
-      <Ring className="hidden md:block bottom-20 left-[4%]" size={90} tone="sky" delay={-3} />
-      <Bubble className="hidden sm:block top-24 left-[10%]" size={26} tone="violet" delay={-4} />
-      <Bubble className="hidden md:block bottom-[30%] right-[5%]" size={18} tone="amber" delay={-2} />
-      <Sparkle className="hidden sm:block top-[40%] right-[14%]" size={18} tone="pink" delay={-1.5} />
+    <section className="relative bg-bg-canvas px-4 sm:px-6 py-12 sm:py-16 overflow-hidden">
+      <div
+        aria-hidden
+        className="absolute -top-20 right-0 h-[320px] w-[320px] rounded-full opacity-25 blur-[100px]"
+        style={{ background: "radial-gradient(circle, rgba(249,115,22,0.25), transparent 70%)" }}
+      />
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="The problem"
-          title="Every missed call is a customer you paid to lose"
-          sub="Ads, boards, word of mouth — you spend to make the phone ring. Then it rings at the worst moment."
-          className="mb-12"
+          title="Every missed call is a customer who found someone else"
+          sub="Ads, boards, Google, referrals. You spend all that money to make the phone ring. Then it rings when you can't pick up, and that customer never calls back."
+          className="mb-8"
         />
 
-        <div className="grid lg:grid-cols-[1fr_1.05fr] gap-5 lg:gap-8 items-stretch">
-          {/* the three old options */}
-          <Stagger className="flex flex-col gap-3">
-            {BAD_OPTIONS.map((o) => (
-              <StaggerItem key={o.title} className="flex-1">
-                <div className="group h-full flex items-center gap-4 bg-bg-subtle border border-line-default rounded-[14px] px-5 py-4 transition-colors hover:border-negative/25">
-                  <div className="h-10 w-10 shrink-0 rounded-[10px] bg-bg-muted text-fg-muted flex items-center justify-center transition-colors group-hover:bg-negative-50 group-hover:text-negative">
-                    <o.icon className="h-[18px] w-[18px]" />
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-5 lg:gap-6 items-stretch">
+          <Stagger className="grid grid-cols-1 gap-3">
+            {PAIN_STATS.map((s) => (
+              <StaggerItem key={s.label}>
+                <div className="flex items-center gap-4 bg-bg-subtle border border-line-default rounded-[14px] px-5 py-4 h-full">
+                  <div className="h-11 w-11 shrink-0 rounded-[10px] bg-negative-50 text-negative flex items-center justify-center">
+                    <s.icon className="h-5 w-5" />
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="text-[15px] font-bold text-fg-primary flex items-center gap-2">
-                      {o.title}
-                    </h3>
-                    <p className="text-[13px] text-fg-secondary leading-snug mt-0.5">{o.body}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[24px] sm:text-[28px] font-extrabold text-fg-primary leading-none tabular-nums">
+                      {s.value}
+                    </p>
+                    <p className="text-[13px] text-fg-secondary leading-snug mt-1">{s.label}</p>
                   </div>
-                  <span className="ml-auto h-6 w-6 shrink-0 rounded-full bg-negative-50 text-negative flex items-center justify-center">
-                    <X className="h-3.5 w-3.5" />
-                  </span>
                 </div>
               </StaggerItem>
             ))}
           </Stagger>
 
-          {/* option four */}
           <Reveal delay={0.15}>
-            <div className="relative h-full overflow-hidden bg-bg-inverse rounded-[16px] p-7 sm:p-8 flex flex-col justify-between">
-              <div aria-hidden className="absolute inset-0 bg-grid-dark" />
-              <div
-                aria-hidden
-                className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-brand/25 blur-[80px]"
-              />
-              <div className="relative">
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand-300 mb-3">
-                  The fourth option
-                </p>
-                <p className="text-[22px] sm:text-[26px] font-extrabold tracking-tight text-white leading-tight">
-                  DeskBuddy answers.
-                  <br />
-                  Every single time.
-                </p>
-                <ul className="mt-5 space-y-2.5">
-                  {DESKBUDDY_WINS.map((w) => (
-                    <li key={w} className="flex items-center gap-2.5 text-[13.5px] text-white/80">
-                      <span className="h-[18px] w-[18px] rounded-full bg-brand/25 flex items-center justify-center shrink-0">
-                        <Check className="h-3 w-3 text-brand-300" />
-                      </span>
-                      {w}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <a
-                href="https://app.deskbuddy.in/register"
-                className="btn-shine group relative mt-7 inline-flex items-center justify-center gap-2 self-start text-[14px] font-semibold text-white bg-brand hover:bg-brand-600 rounded-[10px] px-6 py-3 transition-all shadow-[0_10px_28px_-10px_rgba(37,99,235,0.6)]"
-              >
-                Try it free
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </a>
-            </div>
+            <LostRevenueTicker />
           </Reveal>
         </div>
       </div>

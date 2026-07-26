@@ -147,7 +147,7 @@ export function SplitWords({
     <span className={className} aria-label={text} role="text">
       {words.map((w, i) => (
         <span key={i}>
-          <span className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-bottom">
+          <span className="inline-block overflow-hidden pb-[0.24em] -mb-[0.24em] align-bottom">
             <motion.span
               className={`inline-block ${wordClassName(w, i)}`}
               initial={reduce ? false : { y: "110%" }}

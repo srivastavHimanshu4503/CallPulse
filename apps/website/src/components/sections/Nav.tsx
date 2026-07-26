@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Logo } from "../common/Logo";
 import { EASE } from "../motion/primitives";
-import { Sparkle } from "../motion/decor";
 import { VERTICALS } from "../../data/verticals";
 import { CITIES } from "../../data/cities";
 
@@ -42,11 +41,9 @@ export function Nav() {
           : "border-b border-transparent"
       }`}
     >
-      <span aria-hidden className="nav-hairline" />
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <a href="/" aria-label="DeskBuddy home" className="relative">
+        <a href="/" aria-label="DeskBuddy home" className="relative inline-flex items-center">
           <Logo height={26} />
-          <Sparkle className="-top-1.5 -right-4" size={13} tone="amber" />
         </a>
 
         <div className="hidden md:flex items-center gap-6">
@@ -84,8 +81,7 @@ export function Nav() {
           </a>
           <a
             href="https://app.deskbuddy.in/register"
-            className="btn-shine text-[13.5px] font-semibold text-white rounded-[8px] px-4 py-2 transition-all shadow-[0_6px_18px_-6px_rgba(124,58,237,0.5)] hover:shadow-[0_8px_24px_-6px_rgba(124,58,237,0.65)] hover:-translate-y-px"
-            style={{ background: "linear-gradient(100deg, #2563eb, #7c3aed)" }}
+            className="btn-primary text-[13.5px] font-semibold rounded-[8px] px-4 py-2"
           >
             Get started
           </a>
@@ -154,8 +150,7 @@ export function Nav() {
                 </a>
                 <a
                   href="https://app.deskbuddy.in/register"
-                  className="text-center text-[14px] font-semibold text-white rounded-[6px] px-4 py-2.5"
-                  style={{ background: "linear-gradient(100deg, #2563eb, #7c3aed)" }}
+                  className="btn-primary text-center text-[14px] font-semibold rounded-[6px] px-4 py-2.5"
                 >
                   Get started
                 </a>

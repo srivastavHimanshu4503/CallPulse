@@ -2,7 +2,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles, MonitorSmartphone, PhoneCall, Check, Play } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
 import { EASE, Stagger, StaggerItem } from "../motion/primitives";
-import { Bubble, DottedRing, HalfCircle, Orb, Ring, Sparkle } from "../motion/decor";
 
 function KbVisual() {
   return (
@@ -77,7 +76,7 @@ const STEPS = [
     icon: Sparkles,
     n: "01",
     title: "Create your agent",
-    body: "Tell us your business name — DeskBuddy writes your agent's knowledge base automatically.",
+    body: "Enter your business name. DeskBuddy writes your agent's knowledge base automatically.",
     visual: KbVisual,
   },
   {
@@ -99,21 +98,13 @@ const STEPS = [
 export function HowItWorks() {
   const reduce = useReducedMotion();
   return (
-    <section id="how-it-works" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-16 sm:py-24">
-      <Orb className="-top-52 right-[-160px]" size={480} tone="teal" opacity={0.2} />
-      <Orb className="hidden md:block bottom-[-200px] -left-40" size={460} tone="blue" opacity={0.22} delay={-9} />
-      <DottedRing className="hidden md:block -top-12 right-[12%]" size={160} tone="teal" />
-      <Ring className="hidden sm:block top-1/3 left-6" size={64} tone="pink" delay={-3} />
-      <Bubble className="hidden sm:block top-[22%] left-[12%]" size={30} tone="violet" delay={-3} />
-      <Bubble className="bottom-24 right-10" size={24} tone="amber" delay={-5} />
-      <Sparkle className="hidden md:block top-[45%] right-[5%]" size={20} tone="teal" delay={-1.2} />
-      <HalfCircle className="hidden lg:block -bottom-px right-[22%]" size={110} tone="violet" />
+    <section id="how-it-works" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16">
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="How it works"
           title="Live in under 10 minutes"
-          sub="No hardware, no new SIM, no training sessions. Three steps and your front desk never sleeps again."
-          className="mb-12"
+          sub="No hardware, no new SIM, no training sessions. Three steps and your business phone never stops answering."
+          className="mb-8"
         />
 
         <div className="relative">
