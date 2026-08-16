@@ -48,7 +48,10 @@ const envSchema = z.object({
   CHAT_SWEEP_INTERVAL_MINUTES: z.coerce.number().int().positive().default(10),
 });
 
-const parsed = envSchema.safeParse(process.env);
+const parsed = envSchema.safeParse({
+  ...process.env,
+  PORT: process.env.POST_CALL_PORT || process.env.POST_CALL_SERVER_PORT || 3002,
+});
 if (!parsed.success) {
   const details = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join(", ");
   throw new Error(`Invalid environment configuration: ${details}`);

@@ -78,7 +78,10 @@ const envSchema = z.object({
   POST_CALL_SERVER_SECRET: optionalString,
 });
 
-const parsed = envSchema.safeParse(process.env);
+const parsed = envSchema.safeParse({
+  ...process.env,
+  PORT: process.env.VOICE_PORT || process.env.VOICE_SERVER_PORT || 3001,
+});
 if (!parsed.success) {
   const details = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join(", ");
   throw new Error(`Invalid environment configuration: ${details}`);
