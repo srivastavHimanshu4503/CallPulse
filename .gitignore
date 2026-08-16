@@ -38,6 +38,8 @@ pnpm-debug.log*
 # Database/Prisma
 /apps/api/prisma/dev.db
 /apps/api/prisma/dev.db-journal
+packages/db/generated/prisma-client/*.node
+*.node
 
 # Typesense local files
 /typesense-data/
