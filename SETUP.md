@@ -78,11 +78,12 @@ To verify containers are running:
 docker compose ps
 ```
 
-### Step 2.5: Generate Prisma Client & Apply Migrations
-Generate the Prisma types and apply the database schema migrations to PostgreSQL:
+### Step 2.5: Generate Prisma Client, Apply Migrations & Build Packages
+Generate the Prisma types, apply database schema migrations, and build workspace packages:
 ```bash
 pnpm db:generate
 pnpm db:migrate
+pnpm build
 ```
 
 ---
