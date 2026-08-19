@@ -43,8 +43,10 @@ GOOGLE_OAUTH_REDIRECT_URL: z.string().url().optional(),
 **Flow A — Sign in with Google** (platform login, narrow scope: `openid email profile`)
 
 - New route, e.g. `GET /auth/google` → redirect to Google consent → `GET /auth/google/callback`.
-- On callback: look up `User` by the Google account's email. If found, log in (issue tokens via the existing `generateTokens()` helper, same as `AuthService.login()`). If not found, this is a new signup — create `Tenant` + `User` the same way `AuthService.register()` does today, minus password (no `passwordHash` needed for a Google-only account — needs a schema decision, see §5).
+- On callback: look up `User` by `googleId` first (not email — see below). If found, log in (issue tokens via the existing `generateTokens()` helper, same as `AuthService.login()`). If not found, this is a new signup — create `Tenant` + `User` the same way `AuthService.register()` does today, minus password (no `passwordHash` needed for a Google-only account — needs a schema decision, see §5).
 - Needs a `User.googleId String? @unique` column to link the Google account id to the row, so re-logins don't depend on email matching alone.
+
+**Account linking when the Google email matches an existing password account — resolved (raised in review by Himanshu):** don't auto-link silently. If the Google callback's email matches an existing `User` row that has no `googleId` set yet, do **not** treat this as "log the user in" automatically — show an explicit "an account with this email already exists — log in with your password, then connect Google from Settings" message instead, and only set `googleId` on that row once the user does so while already authenticated. Auto-linking purely by email match is the more convenient default, and would be fine if this codebase verified email ownership at password signup — but it doesn't (confirmed: no `emailVerified` field or verification flow exists anywhere in `apps/api/src/modules/auth/`). Without that, someone could pre-register a victim's email via the password flow with no proof they own it, and silent auto-linking would then hand that same account over to whoever later signs in with the real Google account for that email — while the original password-flow registrant still holds a valid password to the same account. Requiring an explicit, already-authenticated linking step avoids that entirely. Revisit allowing auto-link once password signup gets real email verification (a separate, existing gap — not something to bundle into this doc).
 
 **Flow B — Connect Google Calendar** (tenant-level, broader scope: `calendar.readonly` + `calendar.events`)
 
@@ -100,7 +102,41 @@ model CalendarConnection {
 
 `User` gains `googleId String? @unique` for Flow A.
 
-### 3.3.1 Timezone & working hours — resolved (raised in review by Kapil)
+**Tenant calendar scope — resolved (raised in review by Himanshu), documented explicitly rather than left implicit:** `CalendarConnection.tenantId` being `@unique` is deliberate — v1 supports exactly **one connected Google Calendar per tenant**, used for every agent and every booking that tenant makes. There is no per-agent or per-team-member calendar routing (e.g. "Sales agent books on Priya's calendar, Support agent books on Raj's calendar") — that's a real feature some tenants will eventually want, but it's a materially bigger change (multiple `CalendarConnection` rows per tenant, a routing rule to pick which one applies per agent/booking) and is explicitly out of scope here. Flagging now so it's a known, intentional v1 boundary rather than something discovered later as a surprise limitation.
+
+### 3.3.1 Calendar provider abstraction — resolved (raised in review by Himanshu)
+
+Good catch on keeping this contained: Google-specific OAuth/token/API logic should sit behind a dedicated interface, not be scattered directly into the voice-server tools or the API routes that call it. This codebase already has the exact precedent to follow — `apps/voice-server/src/telephony/interface.ts` defines `ITelephonyProvider`, and `TwilioTelephonyProvider`/`PlivoTelephonyProvider` implement it, so the voice-server's call-handling code never talks to Twilio or Plivo directly. Same shape here:
+
+```ts
+interface ICalendarProvider {
+  checkAvailability(params: {
+    connection: CalendarConnection;
+    date: string;
+    timezone: string;
+    workingHours: AgentBookingConfig["workingHours"];
+    durationMin: number;
+  }): Promise<{ slots: string[] } | { error: string }>;
+
+  createEvent(params: {
+    connection: CalendarConnection;
+    startTime: Date;
+    endTime: Date;
+    timezone: string;
+    purpose: string;
+    customerName: string;
+    customerEmail?: string;
+  }): Promise<{ externalEventId: string } | { error: string }>;
+
+  refreshAccessToken(
+    connection: CalendarConnection,
+  ): Promise<{ accessToken: string; expiresAt: Date }>;
+}
+```
+
+`GoogleCalendarProvider implements ICalendarProvider` is the only thing that imports `googleapis`/knows Google's request/response shapes. The voice-server tools (§3.4), the Calendar page's sync fetch (§3.2), and Settings' connect flow all go through this interface, not through Google's SDK directly. This is also what makes the "Cal.com can follow the same pattern later" line in §2 actually true rather than aspirational — a `CalComProvider implements ICalendarProvider` slots in beside the Google one without touching any of the calling code.
+
+### 3.3.2 Timezone & working hours — resolved (raised in review by Kapil)
 
 `AgentBookingConfig.workingHoursNote` is a free-text string today ("Mon–Sat, 10:00 AM – 7:00 PM IST") — fine for display, useless for computing availability, since `check_calendar_availability` needs to reliably intersect real open slots with business hours and cannot parse arbitrary text. This needs structuring, and it's in scope for this doc, not deferred — the availability tool genuinely doesn't work without it.
 
@@ -140,8 +176,9 @@ if (ctx.booking) {
       preferredTime: z.string().optional().describe("Caller's preferred time of day, if mentioned"),
     }),
     execute: async (args) => {
-      // Query Google Calendar freebusy for the connected calendar on `args.date`,
-      // intersected with AIAgent.bookingConfig.workingHoursNote and meetingDurationMin.
+      // Calls ICalendarProvider.checkAvailability() (§3.3.1) — Google FreeBusy
+      // for the connected calendar on `args.date`, intersected with
+      // AgentBookingConfig.workingHours/timezone (§3.3.2) and meetingDurationMin.
       // Returns a short list of open slots as a string for the LLM to read aloud.
       //
       // Failure handling (raised in review by Arjun): one retry with a short
@@ -170,18 +207,24 @@ if (ctx.booking) {
       purpose: z.string().describe("Short reason for the appointment, in the caller's words"),
     }),
     execute: async (args) => {
-      // 1. Create the internal Booking row (mirrors crm.service.ts createBooking()).
-      // 2. Create the Google Calendar event via the tenant's CalendarConnection,
+      // 1. Re-check availability for this exact date/time — see "Final
+      //    availability check" below. Abort with a "someone else just took
+      //    that slot" result if it's no longer free; never create a
+      //    conflicting event.
+      // 2. Create the internal Booking row (mirrors crm.service.ts createBooking()).
+      // 3. Call ICalendarProvider.createEvent() (§3.3.1) to create the real event,
       //    store externalEventId/externalProvider/externalSyncStatus on the Booking.
-      // 3. Trigger a confirmation email to customerEmail (depends on DES-44/DES-12 —
+      // 4. Trigger a confirmation email to customerEmail (depends on DES-44/DES-12 —
       //    see cross-project dependency below).
-      // 4. Return a confirmation string for the LLM to relay to the caller.
+      // 5. Return a confirmation string for the LLM to relay to the caller.
     },
   });
 }
 ```
 
 Two tools rather than one, because a real conversation needs to present options before confirming — matches the flow described: check availability → tell the caller the slot → get explicit confirmation → book.
+
+**Final availability check — resolved (raised in review by Himanshu):** a real gap in the original draft. Availability can change between `check_calendar_availability` returning a slot and the caller actually confirming it seconds or minutes later — another caller, or a manually-created event, could take it first. `book_appointment` re-runs the same FreeBusy check for the exact requested slot as its first step, immediately before creating the event — not a full re-scan of the day, just a narrow check on the one slot being booked, so it's cheap. If that check finds a conflict, `book_appointment` returns a "that time was just taken" result instead of creating the event, and the agent tells the caller and re-offers `check_calendar_availability`. This narrows the race window from "however long the caller takes to confirm" down to "the gap between the final check and the create call" — genuinely eliminating the race isn't possible without a provider-side atomic "create if free" operation, which Google's Calendar API doesn't offer; the failure mode on the remaining, much smaller window is a double-booking that a human would need to notice and resolve, same as it would be if two humans booked the same slot by phone at the same moment.
 
 **Booking works independently of the email step — resolved (raised in review by Kapil):** confirming this explicitly rather than leaving it implied. Step 3 (confirmation email) needs real email-sending infrastructure, which doesn't exist yet anywhere in the codebase — it's the same gap tracked in the Notifications project (DES-44) and the Onboarding project (DES-12). `book_appointment`'s steps 1-2 (the internal `Booking` row and the real Google Calendar event) are **not gated on step 3 succeeding or even existing yet** — the appointment is genuinely booked, on the real calendar, whether or not the email goes out. If email infra isn't live, step 3 logs/no-ops rather than throwing, so it can never fail the booking that already happened — same "recordings are a nice-to-have, don't break the pipeline" pattern already used in `apps/post-call-server/src/jobs/recording-fetch.ts`. This means the in-call booking flow can ship and be fully usable before DES-44/DES-12 land; the email is a backfilled enhancement, not a blocking dependency.
 
