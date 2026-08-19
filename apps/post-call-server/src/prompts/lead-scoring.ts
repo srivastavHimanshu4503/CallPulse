@@ -6,9 +6,7 @@ export const LeadScoreSchema = z.object({
     .min(0)
     .max(100)
     .describe("Lead quality score 0-100 following the scoring rubric exactly"),
-  reasoning: z
-    .string()
-    .describe("One sentence citing the transcript evidence for this score"),
+  reasoning: z.string().describe("One sentence citing the transcript evidence for this score"),
 });
 
 export type LeadScoreResult = z.infer<typeof LeadScoreSchema>;
@@ -20,7 +18,8 @@ export interface LeadScoringContext {
   extractedFields?: Record<string, unknown>;
 }
 
-export const buildLeadScoringSystemPrompt = (): string => `You are a sales lead scorer for a business phone answering service. You will receive the transcript of a completed call between a CALLER (potential customer) and an AGENT (our AI receptionist), plus pre-computed context about the call.
+export const buildLeadScoringSystemPrompt =
+  (): string => `You are a sales lead scorer for a business phone answering service. You will receive the transcript of a completed call between a CALLER (potential customer) and an AGENT (our AI receptionist), plus pre-computed context about the call.
 
 Score the CALLER as a sales lead from 0 to 100 using this rubric:
 

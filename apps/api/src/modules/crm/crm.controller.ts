@@ -7,7 +7,7 @@ import {
   createCustomFieldSchema,
   createNoteSchema,
   createBookingSchema,
-  createPipelineSchema
+  createPipelineSchema,
 } from "@antigravity/validators";
 import { getCleanErrorMessage } from "@antigravity/utils";
 
@@ -29,7 +29,9 @@ export class CrmController {
       const tenantId = (req as any).tenantId;
       const parsed = createContactSchema.safeParse(req.body);
       if (!parsed.success) {
-        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
         return;
       }
 
@@ -92,7 +94,9 @@ export class CrmController {
       const tenantId = (req as any).tenantId;
       const parsed = createDealSchema.safeParse(req.body);
       if (!parsed.success) {
-        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
         return;
       }
 
@@ -110,7 +114,9 @@ export class CrmController {
       const { id } = req.params;
       const { stage, comment } = req.body;
       if (!id || !stage) {
-        res.status(400).json({ success: false, data: null, error: "Deal ID and stage are required" });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: "Deal ID and stage are required" });
         return;
       }
 
@@ -166,7 +172,9 @@ export class CrmController {
       const tenantId = (req as any).tenantId;
       const parsed = createCustomFieldSchema.safeParse(req.body);
       if (!parsed.success) {
-        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
         return;
       }
 
@@ -183,7 +191,11 @@ export class CrmController {
       const { contactId } = req.params;
       const parsed = createNoteSchema.safeParse(req.body);
       if (!contactId || !parsed.success) {
-        res.status(400).json({ success: false, data: null, error: parsed.success ? "Contact ID required" : getCleanErrorMessage(parsed.error) });
+        res.status(400).json({
+          success: false,
+          data: null,
+          error: parsed.success ? "Contact ID required" : getCleanErrorMessage(parsed.error),
+        });
         return;
       }
 
@@ -200,7 +212,11 @@ export class CrmController {
       const { contactId } = req.params;
       const parsed = createBookingSchema.safeParse(req.body);
       if (!contactId || !parsed.success) {
-        res.status(400).json({ success: false, data: null, error: parsed.success ? "Contact ID required" : getCleanErrorMessage(parsed.error) });
+        res.status(400).json({
+          success: false,
+          data: null,
+          error: parsed.success ? "Contact ID required" : getCleanErrorMessage(parsed.error),
+        });
         return;
       }
 
@@ -222,7 +238,11 @@ export class CrmController {
       const { contactId } = req.params;
       const { values } = req.body; // array of { fieldDefinitionId: string, value: any }
       if (!contactId || !Array.isArray(values)) {
-        res.status(400).json({ success: false, data: null, error: "Contact ID and custom field values array are required" });
+        res.status(400).json({
+          success: false,
+          data: null,
+          error: "Contact ID and custom field values array are required",
+        });
         return;
       }
 
@@ -248,7 +268,9 @@ export class CrmController {
       const tenantId = (req as any).tenantId;
       const parsed = createPipelineSchema.safeParse(req.body);
       if (!parsed.success) {
-        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
         return;
       }
 
@@ -286,7 +308,9 @@ export class CrmController {
 
       const parsed = createPipelineSchema.safeParse(req.body);
       if (!parsed.success) {
-        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
         return;
       }
 
@@ -326,7 +350,9 @@ export class CrmController {
 
       const parsed = updateDealSchema.safeParse(req.body);
       if (!parsed.success) {
-        res.status(400).json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: getCleanErrorMessage(parsed.error) });
         return;
       }
 
@@ -405,7 +431,9 @@ export class CrmController {
       const tenantId = (req as any).tenantId;
       const { targetId, sourceId } = req.body as { targetId?: string; sourceId?: string };
       if (!targetId || !sourceId) {
-        res.status(400).json({ success: false, data: null, error: "targetId and sourceId required" });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: "targetId and sourceId required" });
         return;
       }
       await crmService.mergeContacts(tenantId, targetId, sourceId);
@@ -428,7 +456,9 @@ export class CrmController {
         extractedFields?: Record<string, any>;
       };
       if (!contactId || !extractedFields) {
-        res.status(400).json({ success: false, data: null, error: "contactId and extractedFields required" });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: "contactId and extractedFields required" });
         return;
       }
       const result = await crmService.applyPostCallRule(tenantId, contactId, extractedFields);

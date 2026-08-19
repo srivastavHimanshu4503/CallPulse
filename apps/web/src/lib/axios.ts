@@ -21,7 +21,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Interceptor to handle JWT access token expiration (401 status)
@@ -29,12 +29,13 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
+
     // Check if the request is to a core authentication route
-    const isAuthRoute = originalRequest.url?.includes("/auth/login") || 
-                        originalRequest.url?.includes("/auth/register") ||
-                        originalRequest.url?.includes("/auth/forgot-password") ||
-                        originalRequest.url?.includes("/auth/reset-password");
+    const isAuthRoute =
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/register") ||
+      originalRequest.url?.includes("/auth/forgot-password") ||
+      originalRequest.url?.includes("/auth/reset-password");
 
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthRoute) {
       originalRequest._retry = true;
@@ -48,9 +49,9 @@ api.interceptors.response.use(
           });
 
           const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
-          
+
           useAuthStore.getState().setTokens(newAccessToken, newRefreshToken);
-          
+
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return api(originalRequest);
         } catch (refreshError) {
@@ -65,8 +66,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
-

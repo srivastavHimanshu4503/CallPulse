@@ -43,7 +43,8 @@ export function BulkDeleteWorkflowsModal({
     >
       <div className="p-5 space-y-3 font-sans">
         <p className="text-[13px] text-fg-primary leading-relaxed">
-          You're about to delete <b>{total}</b> workflow{total === 1 ? "" : "s"}. This cannot be undone.
+          You're about to delete <b>{total}</b> workflow{total === 1 ? "" : "s"}. This cannot be
+          undone.
         </p>
 
         {/* Consequence list */}
@@ -59,7 +60,8 @@ export function BulkDeleteWorkflowsModal({
               <History className="h-3.5 w-3.5 text-fg-muted mt-0.5 shrink-0" />
               <div className="leading-relaxed">
                 <b className="text-fg-primary">{totalRuns.toLocaleString("en-IN")}</b> combined past
-                run{totalRuns === 1 ? "" : "s"} will be removed. Call logs on individual contacts stay.
+                run{totalRuns === 1 ? "" : "s"} will be removed. Call logs on individual contacts
+                stay.
               </div>
             </li>
           )}

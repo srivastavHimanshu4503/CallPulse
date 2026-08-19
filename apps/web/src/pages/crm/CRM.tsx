@@ -14,7 +14,11 @@ type ActiveTab = "contacts" | "pipeline" | "custom-fields";
 export function CRM(): React.JSX.Element {
   const [activeTab, setActiveTab] = React.useState<ActiveTab>("contacts");
 
-  const { data: contacts = [], isLoading: isContactsLoading, refetch: refetchContacts } = useQuery({
+  const {
+    data: contacts = [],
+    isLoading: isContactsLoading,
+    refetch: refetchContacts,
+  } = useQuery({
     queryKey: ["contacts"],
     queryFn: async () => {
       const res = await api.get("/crm/contacts");
@@ -33,7 +37,12 @@ export function CRM(): React.JSX.Element {
   const tabs = [
     { id: "contacts" as const, label: "Contacts", icon: Users, count: contacts.length },
     { id: "pipeline" as const, label: "Pipelines", icon: FolderKanban },
-    { id: "custom-fields" as const, label: "Custom fields", icon: Sliders, count: customFields.length },
+    {
+      id: "custom-fields" as const,
+      label: "Custom fields",
+      icon: Sliders,
+      count: customFields.length,
+    },
   ];
 
   return (
@@ -43,10 +52,13 @@ export function CRM(): React.JSX.Element {
           title="Smart CRM"
           subtitle={
             <span>
-              Every call auto-updates contacts, scores leads and creates deals — no manual data entry.
+              Every call auto-updates contacts, scores leads and creates deals — no manual data
+              entry.
             </span>
           }
-          actions={<Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} variant="segmented" />}
+          actions={
+            <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} variant="segmented" />
+          }
         />
 
         {/* Tab body — occupies all remaining height */}

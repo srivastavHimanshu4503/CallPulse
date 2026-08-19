@@ -73,7 +73,9 @@ export function AddContactModal({
       <form onSubmit={handleSubmit} className="p-5 space-y-4 font-sans">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-[11.5px] font-semibold text-fg-primary mb-1.5">First name *</label>
+            <label className="block text-[11.5px] font-semibold text-fg-primary mb-1.5">
+              First name *
+            </label>
             <input
               type="text"
               required
@@ -84,7 +86,9 @@ export function AddContactModal({
             />
           </div>
           <div>
-            <label className="block text-[11.5px] font-semibold text-fg-primary mb-1.5">Last name *</label>
+            <label className="block text-[11.5px] font-semibold text-fg-primary mb-1.5">
+              Last name *
+            </label>
             <input
               type="text"
               required
@@ -120,10 +124,14 @@ export function AddContactModal({
 
         {customFields.length > 0 && (
           <div className="space-y-3 pt-3 border-t border-line-subtle max-h-52 overflow-y-auto pr-1">
-            <h4 className="text-[10px] font-bold text-fg-muted uppercase tracking-wider">Custom fields</h4>
+            <h4 className="text-[10px] font-bold text-fg-muted uppercase tracking-wider">
+              Custom fields
+            </h4>
             {customFields.map((def: any) => (
               <div key={def.id}>
-                <label className="block text-[11.5px] font-semibold text-fg-primary mb-1.5">{def.name}</label>
+                <label className="block text-[11.5px] font-semibold text-fg-primary mb-1.5">
+                  {def.name}
+                </label>
                 {def.type === "DROPDOWN" ? (
                   <select
                     value={fieldValues[def.id] || ""}
@@ -149,7 +157,13 @@ export function AddContactModal({
                   </select>
                 ) : (
                   <input
-                    type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "datetime-local" : "text"}
+                    type={
+                      def.type === "NUMBER"
+                        ? "number"
+                        : def.type === "DATE"
+                          ? "datetime-local"
+                          : "text"
+                    }
                     placeholder={`Enter ${def.name.toLowerCase()}`}
                     value={fieldValues[def.id] || ""}
                     onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}

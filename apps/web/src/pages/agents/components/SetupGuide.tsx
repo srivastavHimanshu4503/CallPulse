@@ -21,16 +21,17 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
   general: {
     en: {
       title: "Set up your agent's identity",
-      intro: "This is who answers your calls. Callers will hear this name and greeting on every call.",
+      intro:
+        "This is who answers your calls. Callers will hear this name and greeting on every call.",
       steps: [
-        "Give the agent a human name — like \"Priya\" or \"Rahul\". Callers feel comfortable with real names.",
+        'Give the agent a human name — like "Priya" or "Rahul". Callers feel comfortable with real names.',
         "Pick a role — what this agent does for you (Receptionist, Sales, Support).",
         "Choose the language your callers speak. You can also change this later in the Voice tab.",
         "Write the greeting — the exact first line spoken on every call. Keep it short and in the caller's language.",
         "Pick a tone — Friendly works best for most businesses.",
       ],
       tips: [
-        "Keep the greeting under 15 words and include your business name: \"Namaste! Sharma Tent House mein aapka swagat hai.\"",
+        'Keep the greeting under 15 words and include your business name: "Namaste! Sharma Tent House mein aapka swagat hai."',
         "The fallback message is what the agent says when it can't help — keep it reassuring.",
       ],
     },
@@ -38,14 +39,14 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
       title: "अपने agent की पहचान set करें",
       intro: "यही आपके calls उठाएगा। हर call पर caller को यही नाम और greeting सुनाई देगी।",
       steps: [
-        "Agent को इंसानी नाम दें — जैसे \"प्रिया\" या \"राहुल\"। असली नाम से caller को अच्छा लगता है।",
+        'Agent को इंसानी नाम दें — जैसे "प्रिया" या "राहुल"। असली नाम से caller को अच्छा लगता है।',
         "Role चुनें — यह agent आपके लिए क्या करेगा (Receptionist, Sales, Support)।",
         "वो भाषा चुनें जो आपके customers बोलते हैं। इसे बाद में Voice tab से भी बदल सकते हैं।",
         "Greeting लिखें — हर call की पहली line यही बोली जाएगी। छोटी रखें और caller की भाषा में लिखें।",
         "Tone चुनें — ज़्यादातर businesses के लिए Friendly सबसे अच्छा है।",
       ],
       tips: [
-        "Greeting 15 शब्दों से छोटी रखें और business का नाम ज़रूर डालें: \"नमस्ते! शर्मा टेंट हाउस में आपका स्वागत है।\"",
+        'Greeting 15 शब्दों से छोटी रखें और business का नाम ज़रूर डालें: "नमस्ते! शर्मा टेंट हाउस में आपका स्वागत है।"',
         "Fallback message वो है जो agent तब बोलता है जब वो help नहीं कर पाता — भरोसा दिलाने वाली रखें।",
       ],
     },
@@ -53,33 +54,35 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
   knowledge: {
     en: {
       title: "Teach the agent your business",
-      intro: "The agent answers ONLY from what you write here. The better your data, the better every call.",
+      intro:
+        "The agent answers ONLY from what you write here. The better your data, the better every call.",
       steps: [
         "In Business information, paste your raw data: services, full price list, packages, timings, address.",
-        "Write facts only — \"Plastic chair ₹12 per chair\", \"Open 9am–8pm, Tuesday closed\".",
+        'Write facts only — "Plastic chair ₹12 per chair", "Open 9am–8pm, Tuesday closed".',
         "Add your website (optional) — we pull services and FAQs from it.",
         "In Agent guidelines, write how the agent should treat callers — like briefing a new receptionist.",
       ],
       tips: [
-        "Always write per-unit prices (\"₹12 per chair\", \"₹3,500 per day\") — the agent quotes them exactly.",
+        'Always write per-unit prices ("₹12 per chair", "₹3,500 per day") — the agent quotes them exactly.',
         "Anything NOT written here, the agent will politely offer a callback for — it never invents prices.",
-        "Good guideline examples: \"Always ask the event date before quoting\", \"Never promise same-day delivery\".",
+        'Good guideline examples: "Always ask the event date before quoting", "Never promise same-day delivery".',
         "Update prices here the moment they change — the agent uses them on the very next call.",
       ],
     },
     hi: {
       title: "Agent को अपना business सिखाएँ",
-      intro: "Agent सिर्फ़ वही जवाब देता है जो आप यहाँ लिखेंगे। जितना अच्छा data, उतनी अच्छी हर call।",
+      intro:
+        "Agent सिर्फ़ वही जवाब देता है जो आप यहाँ लिखेंगे। जितना अच्छा data, उतनी अच्छी हर call।",
       steps: [
         "Business information में अपना raw data paste करें: services, पूरी price list, packages, timings, address।",
-        "सिर्फ़ facts लिखें — \"Plastic chair ₹12 प्रति chair\", \"सुबह 9 से रात 8, मंगलवार बंद\"।",
+        'सिर्फ़ facts लिखें — "Plastic chair ₹12 प्रति chair", "सुबह 9 से रात 8, मंगलवार बंद"।',
         "Website डालें (optional) — हम उससे services और FAQs निकाल लेते हैं।",
         "Agent guidelines में लिखें कि agent callers से कैसे बात करे — जैसे नए receptionist को समझा रहे हों।",
       ],
       tips: [
-        "Price हमेशा per-unit लिखें (\"₹12 प्रति chair\", \"₹3,500 प्रति दिन\") — agent वही exact बताता है।",
+        'Price हमेशा per-unit लिखें ("₹12 प्रति chair", "₹3,500 प्रति दिन") — agent वही exact बताता है।',
         "जो यहाँ नहीं लिखा, उसके लिए agent politely callback offer करेगा — कभी अपने से price नहीं बनाएगा।",
-        "अच्छी guidelines: \"Quote देने से पहले हमेशा event की date पूछो\", \"Same-day delivery का promise कभी मत करो\"।",
+        'अच्छी guidelines: "Quote देने से पहले हमेशा event की date पूछो", "Same-day delivery का promise कभी मत करो"।',
         "Price बदलते ही यहाँ update करें — अगली ही call से agent नई price बताएगा।",
       ],
     },
@@ -87,18 +90,19 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
   voice: {
     en: {
       title: "Choose how your agent sounds",
-      intro: "Language decides which voices you see — every voice shown is tested to sound natural in it.",
+      intro:
+        "Language decides which voices you see — every voice shown is tested to sound natural in it.",
       steps: [
         "Pick the agent's language — the voice list updates instantly.",
         "Press the play button on any voice to hear a sample.",
-        "Start with a \"Recommended\" voice — these are the best match for your language.",
+        'Start with a "Recommended" voice — these are the best match for your language.',
         "Adjust speaking speed if needed — 1× is natural; most businesses stay between 0.9× and 1.1×.",
         "If the agent says your brand name or any word wrong, add it in Pronunciation: word → how to say it.",
       ],
       tips: [
         "Preview voices with YOUR language selected — the same voice sounds different per language.",
         "Expressiveness: higher sounds more lively, lower sounds calmer and steadier.",
-        "Pronunciation example: NAIC → \"N A I C\", PhonePe → \"फ़ोन पे\".",
+        'Pronunciation example: NAIC → "N A I C", PhonePe → "फ़ोन पे".',
       ],
     },
     hi: {
@@ -107,14 +111,14 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
       steps: [
         "Agent की भाषा चुनें — voice list तुरंत update हो जाएगी।",
         "किसी भी voice पर play button दबाकर sample सुनें।",
-        "\"Recommended\" voice से शुरू करें — ये आपकी भाषा के लिए सबसे अच्छी हैं।",
+        '"Recommended" voice से शुरू करें — ये आपकी भाषा के लिए सबसे अच्छी हैं।',
         "ज़रूरत हो तो speaking speed adjust करें — 1× natural है; ज़्यादातर businesses 0.9× से 1.1× रखते हैं।",
         "अगर agent आपका brand name या कोई word ग़लत बोले, तो Pronunciation में डालें: word → कैसे बोलना है।",
       ],
       tips: [
         "अपनी भाषा select करके ही voices preview करें — वही voice हर भाषा में अलग लगती है।",
         "Expressiveness: ज़्यादा = ज़्यादा lively, कम = शांत और stable।",
-        "Pronunciation का example: NAIC → \"N A I C\", PhonePe → \"फ़ोन पे\"।",
+        'Pronunciation का example: NAIC → "N A I C", PhonePe → "फ़ोन पे"।',
       ],
     },
   },
@@ -136,7 +140,8 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
     },
     hi: {
       title: "Phone number जोड़ें और limits set करें",
-      intro: "असली calls लेने के लिए agent को अपना number चाहिए। Limits से आप control में रहते हैं।",
+      intro:
+        "असली calls लेने के लिए agent को अपना number चाहिए। Limits से आप control में रहते हैं।",
       steps: [
         "Agent के लिए number खरीदें या attach करें — customers इसी पर call करेंगे।",
         "Max call duration set करें — इसके बाद call अपने आप कट जाती है, ताकि cost control में रहे।",
@@ -161,7 +166,7 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
         "Calendar booking: let the agent book appointments directly into your calendar.",
       ],
       tips: [
-        "Make transfer conditions specific: \"caller asks for the owner\" works better than \"important call\".",
+        'Make transfer conditions specific: "caller asks for the owner" works better than "important call".',
         "Add a fallback transfer number for when the first person doesn't pick up.",
         "After saving, always make one browser test call to check the full flow end-to-end.",
       ],
@@ -176,7 +181,7 @@ const GUIDE: Record<string, Record<GuideLang, GuideContent>> = {
         "Calendar booking: agent सीधे आपके calendar में appointment book कर सकता है।",
       ],
       tips: [
-        "Transfer condition specific रखें: \"caller मालिक से बात माँगे\" — \"important call\" जैसा vague नहीं।",
+        'Transfer condition specific रखें: "caller मालिक से बात माँगे" — "important call" जैसा vague नहीं।',
         "Fallback transfer number भी डालें — पहला व्यक्ति न उठाए तो दूसरे पर try होगा।",
         "Save के बाद एक browser test call ज़रूर करें — पूरा flow end-to-end check हो जाता है।",
       ],
@@ -254,7 +259,10 @@ export function SetupGuide({ tab }: { tab: string }): React.JSX.Element | null {
           </span>
           <ul className="space-y-1.5">
             {content.tips.map((tip, i) => (
-              <li key={i} className="text-[11px] text-text-secondary leading-relaxed flex items-start gap-1.5">
+              <li
+                key={i}
+                className="text-[11px] text-text-secondary leading-relaxed flex items-start gap-1.5"
+              >
                 <span className="text-attention-500 mt-[2px] shrink-0">•</span>
                 <span>{tip}</span>
               </li>

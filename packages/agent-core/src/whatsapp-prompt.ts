@@ -3,12 +3,12 @@ import type { ChatAgentPersona } from "@antigravity/types";
 const LANGUAGE_STYLE: Record<string, string> = {
   Hinglish:
     "Write natural Hinglish — the way Indians actually text: Hindi words in Roman script mixed with English ('haan ji, main check karke batata hoon').",
-  Hindi: "Write simple, warm spoken-style Hindi in Roman script unless the customer writes in Devanagari.",
+  Hindi:
+    "Write simple, warm spoken-style Hindi in Roman script unless the customer writes in Devanagari.",
   English: "Write clear, warm Indian English. No slang, no jargon.",
 };
 
-const styleFor = (language: string): string =>
-  LANGUAGE_STYLE[language] ?? LANGUAGE_STYLE.Hinglish!;
+const styleFor = (language: string): string => LANGUAGE_STYLE[language] ?? LANGUAGE_STYLE.Hinglish!;
 
 const renderKnowledge = (persona: ChatAgentPersona): { hasContent: boolean; block: string } => {
   const filled = persona.knowledge.filter((kb) => kb.content.trim().length > 0);

@@ -37,7 +37,9 @@ export function DayAgenda({
           {isSameDay(day, today) ? "Today" : fmtLongDate(day)}
         </div>
         <div className="text-[11px] text-fg-muted mt-0.5">
-          {bookings.length === 0 ? "No appointments" : `${bookings.length} appointment${bookings.length > 1 ? "s" : ""}`}
+          {bookings.length === 0
+            ? "No appointments"
+            : `${bookings.length} appointment${bookings.length > 1 ? "s" : ""}`}
         </div>
       </div>
 
@@ -46,7 +48,9 @@ export function DayAgenda({
           <span className="h-12 w-12 rounded-full bg-bg-subtle flex items-center justify-center mb-3">
             <CalendarIcon className="h-5 w-5 text-fg-muted/50" />
           </span>
-          <div className="text-[12.5px] font-semibold text-fg-primary">No appointments for this day</div>
+          <div className="text-[12.5px] font-semibold text-fg-primary">
+            No appointments for this day
+          </div>
           <p className="text-[11.5px] text-fg-muted mt-1 leading-relaxed max-w-[220px]">
             When your AI agent books a lead, it will appear here automatically.
           </p>
@@ -61,7 +65,9 @@ export function DayAgenda({
                 className="w-full text-left px-4 py-3 hover:bg-bg-subtle/60 transition-colors group"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[12.5px] font-semibold text-fg-primary truncate">{b.title}</span>
+                  <span className="text-[12.5px] font-semibold text-fg-primary truncate">
+                    {b.title}
+                  </span>
                   <ChevronRight className="h-3.5 w-3.5 text-fg-muted/40 group-hover:text-fg-muted shrink-0 transition-colors" />
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-fg-muted mt-1">
@@ -131,7 +137,9 @@ export function BookingDetails({
   const [ccInput, setCcInput] = React.useState("");
   const [notes, setNotes] = React.useState(booking.notes ?? "");
 
-  const contactName = booking.contact ? `${booking.contact.firstName} ${booking.contact.lastName}`.trim() : "Unknown";
+  const contactName = booking.contact
+    ? `${booking.contact.firstName} ${booking.contact.lastName}`.trim()
+    : "Unknown";
   const phone = booking.contact?.phones?.[0];
   const statusLower = booking.status?.toLowerCase();
 
@@ -207,23 +215,50 @@ export function BookingDetails({
             <Clock className="inline h-3 w-3 mr-1 -mt-px" />
             Date &amp; time
           </label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} disabled={saving} className={FIELD_CLS} />
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            disabled={saving}
+            className={FIELD_CLS}
+          />
           <div className="flex items-center gap-2 mt-2">
-            <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} disabled={saving} className={`${FIELD_CLS} tabular-nums`} />
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              disabled={saving}
+              className={`${FIELD_CLS} tabular-nums`}
+            />
             <span className="text-fg-muted text-[12px] shrink-0">to</span>
-            <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} disabled={saving} className={`${FIELD_CLS} tabular-nums ${!timesValid ? "border-red-400" : ""}`} />
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              disabled={saving}
+              className={`${FIELD_CLS} tabular-nums ${!timesValid ? "border-red-400" : ""}`}
+            />
           </div>
-          {!timesValid && <p className="text-[10.5px] text-red-600 font-medium mt-1">End time must be after start time.</p>}
+          {!timesValid && (
+            <p className="text-[10.5px] text-red-600 font-medium mt-1">
+              End time must be after start time.
+            </p>
+          )}
         </div>
 
         {/* Contact */}
         <div className="rounded-lg border border-line-subtle bg-bg-subtle/50 p-3 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-fg-muted uppercase tracking-wider">Contact</span>
+            <span className="text-[10px] font-bold text-fg-muted uppercase tracking-wider">
+              Contact
+            </span>
             <span className="text-[12px] font-semibold text-fg-primary">{contactName}</span>
           </div>
           {phone && (
-            <a href={`tel:${phone}`} className="flex items-center gap-1.5 text-[12px] text-fg-secondary hover:text-brand-600 transition-colors">
+            <a
+              href={`tel:${phone}`}
+              className="flex items-center gap-1.5 text-[12px] text-fg-secondary hover:text-brand-600 transition-colors"
+            >
               <Phone className="h-3 w-3" /> {phone}
             </a>
           )}
@@ -239,7 +274,11 @@ export function BookingDetails({
               disabled={saving}
               className={`${FIELD_CLS} ${!emailValid ? "border-red-400" : ""}`}
             />
-            {!emailValid && <p className="text-[10.5px] text-red-600 font-medium mt-1">Enter a valid email address.</p>}
+            {!emailValid && (
+              <p className="text-[10.5px] text-red-600 font-medium mt-1">
+                Enter a valid email address.
+              </p>
+            )}
           </div>
         </div>
 
@@ -247,10 +286,17 @@ export function BookingDetails({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={LABEL_CLS}>Owner</label>
-            <select value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)} disabled={saving} className={FIELD_CLS}>
+            <select
+              value={assigneeId}
+              onChange={(e) => setAssigneeId(e.target.value)}
+              disabled={saving}
+              className={FIELD_CLS}
+            >
               <option value="">Unassigned</option>
               {team.map((m) => (
-                <option key={m.id} value={m.id}>{m.name}</option>
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
               ))}
             </select>
           </div>
@@ -258,7 +304,8 @@ export function BookingDetails({
             <label className={LABEL_CLS}>Booked by</label>
             {booking.agent ? (
               <span className="inline-flex items-center gap-1.5 h-9 text-[12px] font-semibold text-brand-700 bg-brand-50 border border-brand-500/15 rounded-lg px-2.5 max-w-full">
-                <Bot className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{booking.agent.name}</span>
+                <Bot className="h-3.5 w-3.5 shrink-0" />{" "}
+                <span className="truncate">{booking.agent.name}</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1.5 h-9 text-[12px] font-semibold text-fg-secondary bg-bg-subtle border border-line-subtle rounded-lg px-2.5">
@@ -274,7 +321,10 @@ export function BookingDetails({
           {ccEmails.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-2">
               {ccEmails.map((email) => (
-                <span key={email} className="inline-flex items-center gap-1 text-[11px] font-medium text-fg-secondary bg-bg-subtle border border-line-subtle rounded-full pl-2 pr-1 py-0.5 max-w-full">
+                <span
+                  key={email}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-fg-secondary bg-bg-subtle border border-line-subtle rounded-full pl-2 pr-1 py-0.5 max-w-full"
+                >
                   <span className="truncate">{email}</span>
                   <button
                     type="button"

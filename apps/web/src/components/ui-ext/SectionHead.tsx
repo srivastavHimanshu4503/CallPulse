@@ -8,7 +8,12 @@ interface SectionHeadProps {
   className?: string;
 }
 
-export function SectionHead({ title, hint, action, className }: SectionHeadProps): React.JSX.Element {
+export function SectionHead({
+  title,
+  hint,
+  action,
+  className,
+}: SectionHeadProps): React.JSX.Element {
   return (
     <div className={cn("flex items-center justify-between mb-3 shrink-0", className)}>
       <div className="min-w-0">

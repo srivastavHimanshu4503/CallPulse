@@ -15,9 +15,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    const githubToken = cdk.SecretValue.secretsManager(
-      "indiai/github-token"
-    );
+    const githubToken = cdk.SecretValue.secretsManager("indiai/github-token");
 
     const sourceArtifact = new codepipeline.Artifact("SourceArtifact");
 
@@ -52,7 +50,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
                 `--build-arg BUILDKIT_INLINE_CACHE=1 ` +
                 `--cache-from ${ecrRegistry}/indiai/${app}:latest ` +
                 `-t ${ecrRegistry}/indiai/${app}:latest . && ` +
-                `docker push ${ecrRegistry}/indiai/${app}:latest`
+                `docker push ${ecrRegistry}/indiai/${app}:latest`,
             ),
           },
         },
@@ -63,7 +61,7 @@ export class AntigravityPipelineStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["ecr:GetAuthorizationToken"],
         resources: ["*"],
-      })
+      }),
     );
     buildProject.addToRolePolicy(
       new iam.PolicyStatement({
@@ -76,10 +74,8 @@ export class AntigravityPipelineStack extends cdk.Stack {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload",
         ],
-        resources: [
-          `arn:aws:ecr:${ecrRegion}:${this.account}:repository/indiai/*`,
-        ],
-      })
+        resources: [`arn:aws:ecr:${ecrRegion}:${this.account}:repository/indiai/*`],
+      }),
     );
 
     const deployRole = new iam.Role(this, "PipelineDeployRole", {
@@ -88,13 +84,9 @@ export class AntigravityPipelineStack extends cdk.Stack {
 
     deployRole.addToPolicy(
       new iam.PolicyStatement({
-        actions: [
-          "ssm:SendCommand",
-          "ssm:GetCommandInvocation",
-          "ssm:GetParameter",
-        ],
+        actions: ["ssm:SendCommand", "ssm:GetCommandInvocation", "ssm:GetParameter"],
         resources: ["*"],
-      })
+      }),
     );
 
     const createDeployProject = (env: string) => {
@@ -171,7 +163,8 @@ export class AntigravityPipelineStack extends cdk.Stack {
 
     const approvalAction = new codepipeline_actions.ManualApprovalAction({
       actionName: "Approve_Prod_Deployment",
-      additionalInformation: "Verify Dev environment testing has passed successfully before approving.",
+      additionalInformation:
+        "Verify Dev environment testing has passed successfully before approving.",
     });
 
     pipeline.addStage({

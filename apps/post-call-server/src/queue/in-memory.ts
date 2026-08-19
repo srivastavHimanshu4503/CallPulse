@@ -2,13 +2,7 @@ import { EventEmitter } from "events";
 import { randomUUID } from "crypto";
 
 import { createLogger } from "../logger.js";
-import type {
-  EnqueueOptions,
-  JobHandle,
-  JobProcessor,
-  Queue,
-  QueueMetrics,
-} from "./types.js";
+import type { EnqueueOptions, JobHandle, JobProcessor, Queue, QueueMetrics } from "./types.js";
 
 interface InternalJob<T> extends JobHandle<T> {
   maxAttempts: number;
@@ -42,7 +36,10 @@ export class InMemoryQueue<T> implements Queue<T> {
   private counts = { completed: 0, failed: 0 };
   private closed = false;
 
-  constructor(public readonly name: string, private readonly opts: Options) {}
+  constructor(
+    public readonly name: string,
+    private readonly opts: Options,
+  ) {}
 
   async add(jobName: string, data: T, opts: EnqueueOptions = {}): Promise<JobHandle<T>> {
     if (this.closed) throw new Error(`Queue "${this.name}" is closed`);

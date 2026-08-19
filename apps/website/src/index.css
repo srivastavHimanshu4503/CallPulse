@@ -10,15 +10,15 @@
    distinctly Indian without touching the dashboard palette.
    ──────────────────────────────────────────────────────────── */
 :root {
-  --saffron-50: 255 247 237;   /* #FFF7ED */
-  --saffron-100: 255 237 213;  /* #FFEDD5 */
-  --saffron-200: 254 215 170;  /* #FED7AA */
-  --saffron-300: 253 186 116;  /* #FDBA74 */
-  --saffron-400: 251 146 60;   /* #FB923C */
-  --saffron-500: 249 115 22;   /* #F97316 */
-  --saffron-600: 234 88 12;    /* #EA580C */
-  --saffron-700: 194 65 12;    /* #C2410C */
-  --deep-ink: 12 20 46;        /* #0C142E */
+  --saffron-50: 255 247 237; /* #FFF7ED */
+  --saffron-100: 255 237 213; /* #FFEDD5 */
+  --saffron-200: 254 215 170; /* #FED7AA */
+  --saffron-300: 253 186 116; /* #FDBA74 */
+  --saffron-400: 251 146 60; /* #FB923C */
+  --saffron-500: 249 115 22; /* #F97316 */
+  --saffron-600: 234 88 12; /* #EA580C */
+  --saffron-700: 194 65 12; /* #C2410C */
+  --deep-ink: 12 20 46; /* #0C142E */
 }
 
 html {
@@ -93,13 +93,21 @@ section[id] {
 
 /* Continuous marquee */
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes marquee-reverse {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .animate-marquee {
@@ -122,8 +130,13 @@ section[id] {
 
 /* Voice waveform bars */
 @keyframes wave {
-  0%, 100% { transform: scaleY(0.35); }
-  50% { transform: scaleY(1); }
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
 }
 
 .wave-bar {
@@ -133,8 +146,14 @@ section[id] {
 
 /* Expanding ring pulse (incoming call) */
 @keyframes ring-pulse {
-  0% { transform: scale(0.6); opacity: 0.55; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% {
+    transform: scale(0.6);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 
 .ring-pulse {
@@ -143,8 +162,13 @@ section[id] {
 
 /* Gentle float for decorative cards */
 @keyframes floaty {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-9px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
 }
 
 .animate-floaty {
@@ -157,7 +181,9 @@ section[id] {
 
 /* Rotating conic border for the highlighted pricing card */
 @keyframes border-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .card-glow-border {
@@ -173,15 +199,7 @@ section[id] {
   position: absolute;
   inset: -60%;
   z-index: -1;
-  background: conic-gradient(
-    from 0deg,
-    #2563eb,
-    #f97316,
-    #fbbf24,
-    #2563eb,
-    #f97316,
-    #2563eb
-  );
+  background: conic-gradient(from 0deg, #2563eb, #f97316, #fbbf24, #2563eb, #f97316, #2563eb);
   animation: border-spin 6s linear infinite;
 }
 
@@ -233,24 +251,47 @@ section[id] {
 }
 
 /* Warm saffron tokens as utilities */
-.text-saffron { color: rgb(var(--saffron-500)); }
-.text-saffron-600 { color: rgb(var(--saffron-600)); }
-.bg-saffron { background-color: rgb(var(--saffron-500)); }
-.bg-saffron-50 { background-color: rgb(var(--saffron-50)); }
-.bg-saffron-100 { background-color: rgb(var(--saffron-100)); }
-.border-saffron { border-color: rgb(var(--saffron-500)); }
-.ring-saffron { --tw-ring-color: rgb(var(--saffron-500)); }
+.text-saffron {
+  color: rgb(var(--saffron-500));
+}
+.text-saffron-600 {
+  color: rgb(var(--saffron-600));
+}
+.bg-saffron {
+  background-color: rgb(var(--saffron-500));
+}
+.bg-saffron-50 {
+  background-color: rgb(var(--saffron-50));
+}
+.bg-saffron-100 {
+  background-color: rgb(var(--saffron-100));
+}
+.border-saffron {
+  border-color: rgb(var(--saffron-500));
+}
+.ring-saffron {
+  --tw-ring-color: rgb(var(--saffron-500));
+}
 
 /* Tiny status pulse used in the "live" indicator */
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
-.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+.pulse-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
   .animate-marquee,
   .animate-marquee-reverse,
   .wave-bar,

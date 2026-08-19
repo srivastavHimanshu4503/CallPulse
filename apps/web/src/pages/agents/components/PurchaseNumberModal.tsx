@@ -111,9 +111,15 @@ export function PurchaseNumberModal({
     staleTime: 5 * 60_000,
   });
 
-  const isCountryEnabled = country === "US" ? providers?.twilio !== false : providers?.plivo === true;
+  const isCountryEnabled =
+    country === "US" ? providers?.twilio !== false : providers?.plivo === true;
 
-  const { data: numbers = [], isLoading, isError, error } = useQuery({
+  const {
+    data: numbers = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["available-numbers", country, searchApplied],
     queryFn: async () => {
       const q =
@@ -212,7 +218,8 @@ export function PurchaseNumberModal({
                 {(["IN", "US"] as Country[]).map((c) => {
                   const m = COUNTRY_META[c];
                   const active = country === c;
-                  const available = c === "US" ? providers?.twilio !== false : providers?.plivo === true;
+                  const available =
+                    c === "US" ? providers?.twilio !== false : providers?.plivo === true;
                   return (
                     <button
                       key={c}
@@ -352,7 +359,8 @@ export function PurchaseNumberModal({
                 </div>
               ) : numbers.length === 0 ? (
                 <div className="h-full flex items-center justify-center text-[12px] text-fg-muted text-center px-4">
-                  No numbers found{searchApplied ? ` for "${searchApplied}"` : ""} — try a different {country === "IN" ? "city code" : "area code"}.
+                  No numbers found{searchApplied ? ` for "${searchApplied}"` : ""} — try a different{" "}
+                  {country === "IN" ? "city code" : "area code"}.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

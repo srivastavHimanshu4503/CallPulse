@@ -71,7 +71,9 @@ export function ApiScenarioCard({
           type="text"
           placeholder="e.g. When the caller asks about their order status"
           value={scenario.triggerCondition}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => set("triggerCondition", e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            set("triggerCondition", e.target.value)
+          }
           disabled={disabled}
           required
           className="bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] h-10 px-3 w-full shadow-none"
@@ -92,7 +94,9 @@ export function ApiScenarioCard({
             className="h-10 w-[92px] shrink-0 px-2 text-[12px] font-semibold text-text-primary bg-surface border border-border rounded-[6px] focus:outline-none focus:border-brand-500"
           >
             {METHODS.map((m) => (
-              <option key={m} value={m}>{m}</option>
+              <option key={m} value={m}>
+                {m}
+              </option>
             ))}
           </select>
           <Input
@@ -113,14 +117,18 @@ export function ApiScenarioCard({
         onClick={() => setShowAdvanced(!showAdvanced)}
         className="flex items-center gap-1 text-[11px] font-semibold text-text-secondary hover:text-text-primary transition-colors"
       >
-        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`h-3.5 w-3.5 transition-transform ${showAdvanced ? "rotate-180" : ""}`}
+        />
         Headers &amp; request body {showAdvanced ? "" : "(optional)"}
       </button>
 
       {showAdvanced && (
         <div className="space-y-4 animate-in fade-in duration-150">
           <div>
-            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">Headers</label>
+            <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
+              Headers
+            </label>
             <textarea
               value={scenario.headers}
               onChange={(e) => set("headers", e.target.value)}
@@ -129,7 +137,10 @@ export function ApiScenarioCard({
               rows={2}
               className="w-full bg-bg-raised border border-border focus:border-brand-500 text-[12px] font-mono text-text-primary placeholder-text-placeholder rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
             />
-            <p className="text-[11px] text-text-placeholder mt-1">One header per line as <code className="bg-surface px-1 rounded text-[10px] font-mono">Name: value</code>.</p>
+            <p className="text-[11px] text-text-placeholder mt-1">
+              One header per line as{" "}
+              <code className="bg-surface px-1 rounded text-[10px] font-mono">Name: value</code>.
+            </p>
           </div>
           <div>
             <label className="block text-[12px] font-semibold text-text-primary mb-1.5">
@@ -144,9 +155,16 @@ export function ApiScenarioCard({
               className="w-full bg-bg-raised border border-border focus:border-brand-500 text-[12px] font-mono text-text-primary placeholder-text-placeholder rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
             />
             <p className="text-[11px] text-text-placeholder mt-1">
-              Variables: <code className="bg-surface px-1 rounded text-[10px] font-mono">{"{caller_name}"}</code>{" "}
-              <code className="bg-surface px-1 rounded text-[10px] font-mono">{"{caller_number}"}</code>{" "}
-              <code className="bg-surface px-1 rounded text-[10px] font-mono">{"{conversation_summary}"}</code>
+              Variables:{" "}
+              <code className="bg-surface px-1 rounded text-[10px] font-mono">
+                {"{caller_name}"}
+              </code>{" "}
+              <code className="bg-surface px-1 rounded text-[10px] font-mono">
+                {"{caller_number}"}
+              </code>{" "}
+              <code className="bg-surface px-1 rounded text-[10px] font-mono">
+                {"{conversation_summary}"}
+              </code>
             </p>
           </div>
         </div>
@@ -161,7 +179,9 @@ export function ApiScenarioCard({
           </label>
           <span
             className={`text-[10px] font-medium tabular-nums ${
-              scenario.agentReply.length >= AGENT_REPLY_MAX ? "text-negative-500" : "text-text-placeholder"
+              scenario.agentReply.length >= AGENT_REPLY_MAX
+                ? "text-negative-500"
+                : "text-text-placeholder"
             }`}
           >
             {scenario.agentReply.length}/{AGENT_REPLY_MAX}

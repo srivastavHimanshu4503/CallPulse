@@ -89,7 +89,8 @@ export class WorkflowsService {
     if (!existing) throw new Error("Workflow not found");
 
     const stored: StoredWorkflow = (existing.actions as any) || {};
-    const nextTrigger = input.trigger || stored.trigger || { type: existing.triggerType || "MANUAL", config: {} };
+    const nextTrigger = input.trigger ||
+      stored.trigger || { type: existing.triggerType || "MANUAL", config: {} };
 
     const updated = await db.workflowDefinition.update({
       where: { id },
@@ -99,7 +100,8 @@ export class WorkflowsService {
         actions: {
           trigger: nextTrigger,
           steps: input.steps !== undefined ? input.steps : stored.steps || [],
-          description: input.description !== undefined ? input.description : stored.description || "",
+          description:
+            input.description !== undefined ? input.description : stored.description || "",
           isActive: input.isActive !== undefined ? input.isActive : stored.isActive !== false,
         } as any,
       },

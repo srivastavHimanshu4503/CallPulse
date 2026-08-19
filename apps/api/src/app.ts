@@ -40,7 +40,6 @@ app.use("/api/v1/recordings", recordingsRouter);
 app.use("/api/v1/webhooks/whatsapp", whatsappRouter);
 app.use("/api/v1/whatsapp", whatsappConversationsRouter);
 
-
 // Health Check Route - returns { success: true, version: "1.0.0" } as requested
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({

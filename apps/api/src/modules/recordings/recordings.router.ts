@@ -97,29 +97,28 @@ const pickProviderAuth = (url: string): string | null => {
 const router: Router = Router();
 
 // ── Step 1: authed → signed link ──
-router.get(
-  "/:logId/url",
-  authMiddleware,
-  tenantMiddleware,
-  async (req: Request, res: Response) => {
-    try {
-      const tenantId = (req as any).tenantId;
-      const { logId } = req.params;
-      const log = await db.communicationLog.findFirst({
-        where: { id: logId, tenantId },
-        select: { recordingUrl: true },
-      });
-      if (!log?.recordingUrl) {
-        sendError(res, "No recording for this call", 404);
-        return;
-      }
-      const exp = Date.now() + SIGNED_TTL_MS;
-      sendSuccess(res, { url: `/api/v1/recordings/${logId}/media?exp=${exp}&sig=${sign(logId!, exp)}` }, 200);
-    } catch (err: any) {
-      sendError(res, err.message || "Failed to create recording link", 500);
+router.get("/:logId/url", authMiddleware, tenantMiddleware, async (req: Request, res: Response) => {
+  try {
+    const tenantId = (req as any).tenantId;
+    const { logId } = req.params;
+    const log = await db.communicationLog.findFirst({
+      where: { id: logId, tenantId },
+      select: { recordingUrl: true },
+    });
+    if (!log?.recordingUrl) {
+      sendError(res, "No recording for this call", 404);
+      return;
     }
-  },
-);
+    const exp = Date.now() + SIGNED_TTL_MS;
+    sendSuccess(
+      res,
+      { url: `/api/v1/recordings/${logId}/media?exp=${exp}&sig=${sign(logId!, exp)}` },
+      200,
+    );
+  } catch (err: any) {
+    sendError(res, err.message || "Failed to create recording link", 500);
+  }
+});
 
 // ── Step 2: signed → stream from the provider ──
 // No auth middleware: <audio> tags can't send headers; the HMAC + expiry in

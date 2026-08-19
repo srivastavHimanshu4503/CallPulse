@@ -61,8 +61,7 @@ async function resolveChrome() {
     return { executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, extraArgs: [] };
   }
   if (process.platform === "darwin") {
-    const macChrome =
-      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+    const macChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
     try {
       await fs.access(macChrome);
       return { executablePath: macChrome, extraArgs: [] };
@@ -79,7 +78,10 @@ async function resolveChrome() {
       const executablePath = await chromium.executablePath();
       return { executablePath, extraArgs: chromium.args };
     } catch (err) {
-      console.warn("@sparticuz/chromium unavailable, falling back to puppeteer bundle:", err.message);
+      console.warn(
+        "@sparticuz/chromium unavailable, falling back to puppeteer bundle:",
+        err.message,
+      );
     }
   }
   return { executablePath: undefined, extraArgs: [] };
@@ -93,11 +95,7 @@ async function main() {
   const { executablePath, extraArgs } = await resolveChrome();
   const launchOptions = {
     headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      ...extraArgs,
-    ],
+    args: ["--no-sandbox", "--disable-setuid-sandbox", ...extraArgs],
   };
   if (executablePath) {
     launchOptions.executablePath = executablePath;

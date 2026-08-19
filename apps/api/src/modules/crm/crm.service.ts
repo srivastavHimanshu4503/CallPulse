@@ -1,11 +1,5 @@
 import { db } from "../../config/database.js";
-import type {
-  Contact,
-  Deal,
-  Booking,
-  Note,
-  SerializedContactDetails
-} from "@antigravity/types";
+import type { Contact, Deal, Booking, Note, SerializedContactDetails } from "@antigravity/types";
 import type { CreateDealInput, UpdateDealInput } from "@antigravity/validators";
 import {
   DEFAULT_PIPELINE_NAME,
@@ -68,7 +62,10 @@ function computeScore(args: {
   return Math.max(0, Math.min(100, Math.round(s)));
 }
 
-async function loadEnrichmentSignals(tenantId: string, contactId: string): Promise<EnrichmentSignals> {
+async function loadEnrichmentSignals(
+  tenantId: string,
+  contactId: string,
+): Promise<EnrichmentSignals> {
   const logs = await db.communicationLog.findMany({
     where: { tenantId, contactId },
     orderBy: { occurredAt: "desc" },
@@ -224,11 +221,11 @@ export class CrmService {
     await db.$transaction(async (tx: any) => {
       const existing = await tx.contact.findFirst({ where: { id, tenantId, deletedAt: null } });
       if (!existing) throw new Error("Contact not found");
-      
+
       const updateData: any = {};
       if (data.firstName !== undefined) updateData.firstName = data.firstName;
       if (data.lastName !== undefined) updateData.lastName = data.lastName;
-      
+
       if (data.email !== undefined) {
         if (!data.email) updateData.emails = [];
         else updateData.emails = [data.email];
@@ -313,7 +310,9 @@ export class CrmService {
     tenantId: string,
     rows: Array<{ firstName: string; lastName: string; email?: string; phone?: string }>,
   ): Promise<{ imported: number; merged: number; skipped: number }> {
-    let imported = 0, merged = 0, skipped = 0;
+    let imported = 0,
+      merged = 0,
+      skipped = 0;
 
     for (const raw of rows) {
       const firstName = (raw.firstName || "").trim();
@@ -337,12 +336,10 @@ export class CrmService {
       });
 
       if (existing) {
-        const nextEmails = email && !existing.emails.includes(email)
-          ? [...existing.emails, email]
-          : existing.emails;
-        const nextPhones = phone && !existing.phones.includes(phone)
-          ? [...existing.phones, phone]
-          : existing.phones;
+        const nextEmails =
+          email && !existing.emails.includes(email) ? [...existing.emails, email] : existing.emails;
+        const nextPhones =
+          phone && !existing.phones.includes(phone) ? [...existing.phones, phone] : existing.phones;
 
         await db.contact.update({
           where: { id: existing.id },
@@ -390,8 +387,12 @@ export class CrmService {
       ]);
       if (!target || !source) throw new Error("Contact not found");
 
-      const mergedEmails = Array.from(new Set([...(target.emails || []), ...(source.emails || [])]));
-      const mergedPhones = Array.from(new Set([...(target.phones || []), ...(source.phones || [])]));
+      const mergedEmails = Array.from(
+        new Set([...(target.emails || []), ...(source.emails || [])]),
+      );
+      const mergedPhones = Array.from(
+        new Set([...(target.phones || []), ...(source.phones || [])]),
+      );
 
       await tx.contact.update({
         where: { id: target.id },
@@ -401,8 +402,14 @@ export class CrmService {
       // Reassign all children
       await tx.deal.updateMany({ where: { contactId: sourceId }, data: { contactId: targetId } });
       await tx.note.updateMany({ where: { contactId: sourceId }, data: { contactId: targetId } });
-      await tx.booking.updateMany({ where: { contactId: sourceId }, data: { contactId: targetId } });
-      await tx.activity.updateMany({ where: { contactId: sourceId }, data: { contactId: targetId } });
+      await tx.booking.updateMany({
+        where: { contactId: sourceId },
+        data: { contactId: targetId },
+      });
+      await tx.activity.updateMany({
+        where: { contactId: sourceId },
+        data: { contactId: targetId },
+      });
       await tx.communicationLog.updateMany({
         where: { contactId: sourceId },
         data: { contactId: targetId },
@@ -430,14 +437,23 @@ export class CrmService {
    * Find likely duplicate pairs by shared phone or email. Returns pairs
    * (target, source) so the UI can offer a "merge" flow.
    */
-  async findDuplicates(tenantId: string): Promise<Array<{ a: any; b: any; via: string; matchValue: string }>> {
+  async findDuplicates(
+    tenantId: string,
+  ): Promise<Array<{ a: any; b: any; via: string; matchValue: string }>> {
     const contacts = await db.contact.findMany({
       where: { tenantId, deletedAt: null },
-      select: { id: true, firstName: true, lastName: true, emails: true, phones: true, createdAt: true },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        emails: true,
+        phones: true,
+        createdAt: true,
+      },
     });
 
-    const seenPhone = new Map<string, typeof contacts[number]>();
-    const seenEmail = new Map<string, typeof contacts[number]>();
+    const seenPhone = new Map<string, (typeof contacts)[number]>();
+    const seenEmail = new Map<string, (typeof contacts)[number]>();
     const pairs: Array<{ a: any; b: any; via: string; matchValue: string }> = [];
     const seenPairs = new Set<string>();
 
@@ -512,7 +528,11 @@ export class CrmService {
         name: cv.fieldDefinition.name,
         type: cv.fieldDefinition.type,
         source: cv.source,
-        value: cv.textValue ?? cv.numberValue ?? cv.booleanValue ?? (cv.dateValue ? Math.floor(cv.dateValue.getTime() / 1000) : ""),
+        value:
+          cv.textValue ??
+          cv.numberValue ??
+          cv.booleanValue ??
+          (cv.dateValue ? Math.floor(cv.dateValue.getTime() / 1000) : ""),
       })) as any,
       deals: contact.deals.map((d: any) => ({
         id: d.id,
@@ -696,7 +716,7 @@ export class CrmService {
     id: string,
     stage: string,
     userId?: string,
-    comment?: string
+    comment?: string,
   ): Promise<Deal> {
     return db.$transaction(async (tx: any) => {
       const existing = await tx.deal.findFirst({ where: { id, tenantId, deletedAt: null } });
@@ -731,16 +751,30 @@ export class CrmService {
 
       // Actor-attributed diary entry: a human moving an AI-placed deal is an
       // implicit "the AI was wrong" label for quality measurement.
-      await tx.dealEvent.create({
-        data: {
-          tenantId,
-          dealId: id,
-          actor: userId ? `user:${userId}` : "user:unknown",
-          eventType: "STAGE_CHANGED",
-          before: { stage: existing.stage, value: existing.value, probability: existing.probability, title: existing.title, pipelineId: existing.pipelineId },
-          after: { stage: updated.stage, value: updated.value, probability: updated.probability, title: updated.title, pipelineId: updated.pipelineId },
-        },
-      }).catch(() => undefined);
+      await tx.dealEvent
+        .create({
+          data: {
+            tenantId,
+            dealId: id,
+            actor: userId ? `user:${userId}` : "user:unknown",
+            eventType: "STAGE_CHANGED",
+            before: {
+              stage: existing.stage,
+              value: existing.value,
+              probability: existing.probability,
+              title: existing.title,
+              pipelineId: existing.pipelineId,
+            },
+            after: {
+              stage: updated.stage,
+              value: updated.value,
+              probability: updated.probability,
+              title: updated.title,
+              pipelineId: updated.pipelineId,
+            },
+          },
+        })
+        .catch(() => undefined);
 
       return this.serializeDeal(updated);
     });
@@ -771,7 +805,10 @@ export class CrmService {
   }
 
   async getCustomFields(tenantId: string): Promise<any[]> {
-    return db.customFieldDefinition.findMany({ where: { tenantId }, orderBy: { createdAt: "desc" } });
+    return db.customFieldDefinition.findMany({
+      where: { tenantId },
+      orderBy: { createdAt: "desc" },
+    });
   }
 
   async createCustomField(
@@ -954,13 +991,21 @@ export class CrmService {
         lostDeals: lost.length,
         pipelineValue: open.reduce((s: number, d: any) => s + d.value, 0),
         weightedRevenue: open.reduce((s: number, d: any) => s + d.weightedValue, 0),
-        winRate: won.length + lost.length > 0 ? Math.round((won.length / (won.length + lost.length)) * 100) : 0,
-        avgDealValue: deals.length ? deals.reduce((s: number, d: any) => s + d.value, 0) / deals.length : 0,
+        winRate:
+          won.length + lost.length > 0
+            ? Math.round((won.length / (won.length + lost.length)) * 100)
+            : 0,
+        avgDealValue: deals.length
+          ? deals.reduce((s: number, d: any) => s + d.value, 0) / deals.length
+          : 0,
         avgSalesCycleDays: cycleDays.length
           ? Math.round(cycleDays.reduce((s: number, v: number) => s + v, 0) / cycleDays.length)
           : 0,
         closingThisMonth: open.filter(
-          (d: any) => d.expectedCloseDate && d.expectedCloseDate >= monthStart && d.expectedCloseDate < monthEnd
+          (d: any) =>
+            d.expectedCloseDate &&
+            d.expectedCloseDate >= monthStart &&
+            d.expectedCloseDate < monthEnd,
         ).length,
       },
     };
@@ -1063,9 +1108,13 @@ export class CrmService {
 
         const isUnset = item.value === "" || item.value === null || item.value === undefined;
 
-        const textVal = isUnset ? null : (def.type === "TEXT" || def.type === "DROPDOWN" ? String(item.value) : null);
-        const numVal = isUnset ? null : (def.type === "NUMBER" ? Number(item.value) : null);
-        const boolVal = isUnset ? null : (def.type === "BOOLEAN" ? Boolean(item.value) : null);
+        const textVal = isUnset
+          ? null
+          : def.type === "TEXT" || def.type === "DROPDOWN"
+            ? String(item.value)
+            : null;
+        const numVal = isUnset ? null : def.type === "NUMBER" ? Number(item.value) : null;
+        const boolVal = isUnset ? null : def.type === "BOOLEAN" ? Boolean(item.value) : null;
 
         let dateVal: Date | null = null;
         if (!isUnset && def.type === "DATE" && item.value) {
@@ -1084,12 +1133,20 @@ export class CrmService {
 
         let oldDisplayVal: string | null = null;
         if (match) {
-          oldDisplayVal = match.textValue ?? (match.numberValue !== null ? String(match.numberValue) : null) ?? (match.booleanValue !== null ? String(match.booleanValue) : null) ?? (match.dateValue ? match.dateValue.toISOString() : null);
+          oldDisplayVal =
+            match.textValue ??
+            (match.numberValue !== null ? String(match.numberValue) : null) ??
+            (match.booleanValue !== null ? String(match.booleanValue) : null) ??
+            (match.dateValue ? match.dateValue.toISOString() : null);
         }
 
         let newDisplayVal: string | null = null;
         if (!isUnset) {
-          newDisplayVal = textVal ?? (numVal !== null ? String(numVal) : null) ?? (boolVal !== null ? String(boolVal) : null) ?? (dateVal ? dateVal.toISOString() : null);
+          newDisplayVal =
+            textVal ??
+            (numVal !== null ? String(numVal) : null) ??
+            (boolVal !== null ? String(boolVal) : null) ??
+            (dateVal ? dateVal.toISOString() : null);
         }
 
         if (oldDisplayVal !== newDisplayVal) {
@@ -1165,11 +1222,23 @@ export class CrmService {
     let title: string | null = null;
     for (const [k, v] of Object.entries(extractedFields)) {
       const lk = k.toLowerCase();
-      if (!value && (lk.includes("budget") || lk.includes("value") || lk.includes("price") || lk.includes("amount"))) {
+      if (
+        !value &&
+        (lk.includes("budget") ||
+          lk.includes("value") ||
+          lk.includes("price") ||
+          lk.includes("amount"))
+      ) {
         const n = typeof v === "number" ? v : Number(String(v).replace(/[^\d.]/g, ""));
         if (!Number.isNaN(n) && n > 0) value = n;
       }
-      if (!title && (lk.includes("interest") || lk.includes("product") || lk.includes("service") || lk.includes("requirement"))) {
+      if (
+        !title &&
+        (lk.includes("interest") ||
+          lk.includes("product") ||
+          lk.includes("service") ||
+          lk.includes("requirement"))
+      ) {
         title = String(v).slice(0, 120);
       }
     }
@@ -1188,14 +1257,19 @@ export class CrmService {
       return { dealId: null, skipped: "duplicate" };
     }
 
-    const pipelines = await db.pipeline.findMany({ where: { tenantId }, orderBy: { createdAt: "asc" } });
-    const pipeline = pipelines[0] || (await db.pipeline.create({
-      data: {
-        tenantId,
-        name: "Sales Pipeline",
-        stages: ["New lead", "Contacted", "Qualified", "Booked", "Closed won"],
-      },
-    }));
+    const pipelines = await db.pipeline.findMany({
+      where: { tenantId },
+      orderBy: { createdAt: "asc" },
+    });
+    const pipeline =
+      pipelines[0] ||
+      (await db.pipeline.create({
+        data: {
+          tenantId,
+          name: "Sales Pipeline",
+          stages: ["New lead", "Contacted", "Qualified", "Booked", "Closed won"],
+        },
+      }));
 
     const deal = await db.$transaction(async (tx: any) => {
       const created = await tx.deal.create({
@@ -1244,15 +1318,23 @@ export class CrmService {
       });
 
       // A deleted AI-created deal is the strongest wrong-deal signal we get.
-      await tx.dealEvent.create({
-        data: {
-          tenantId,
-          dealId: existing.id,
-          actor: "user:unknown",
-          eventType: "DELETED",
-          before: { stage: existing.stage, value: existing.value, probability: existing.probability, title: existing.title, pipelineId: existing.pipelineId },
-        },
-      }).catch(() => undefined);
+      await tx.dealEvent
+        .create({
+          data: {
+            tenantId,
+            dealId: existing.id,
+            actor: "user:unknown",
+            eventType: "DELETED",
+            before: {
+              stage: existing.stage,
+              value: existing.value,
+              probability: existing.probability,
+              title: existing.title,
+              pipelineId: existing.pipelineId,
+            },
+          },
+        })
+        .catch(() => undefined);
     });
   }
 
@@ -1306,16 +1388,30 @@ export class CrmService {
       });
 
       // Actor-attributed diary entry for quality measurement.
-      await tx.dealEvent.create({
-        data: {
-          tenantId,
-          dealId: id,
-          actor: userId ? `user:${userId}` : "user:unknown",
-          eventType: "UPDATED",
-          before: { stage: existing.stage, value: existing.value, probability: existing.probability, title: existing.title, pipelineId: existing.pipelineId },
-          after: { stage: updated.stage, value: updated.value, probability: updated.probability, title: updated.title, pipelineId: updated.pipelineId },
-        },
-      }).catch(() => undefined);
+      await tx.dealEvent
+        .create({
+          data: {
+            tenantId,
+            dealId: id,
+            actor: userId ? `user:${userId}` : "user:unknown",
+            eventType: "UPDATED",
+            before: {
+              stage: existing.stage,
+              value: existing.value,
+              probability: existing.probability,
+              title: existing.title,
+              pipelineId: existing.pipelineId,
+            },
+            after: {
+              stage: updated.stage,
+              value: updated.value,
+              probability: updated.probability,
+              title: updated.title,
+              pipelineId: updated.pipelineId,
+            },
+          },
+        })
+        .catch(() => undefined);
 
       return this.serializeDeal(updated);
     });

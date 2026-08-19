@@ -35,19 +35,25 @@ export function KnowledgeBaseSetup({
           hint="Paste your raw business data: services, price list, packages, timings, address. Just the facts — no instructions."
         >
           <div className="relative">
-             <FileText className="absolute left-3 top-3 h-4 w-4 text-text-placeholder pointer-events-none" />
+            <FileText className="absolute left-3 top-3 h-4 w-4 text-text-placeholder pointer-events-none" />
             <textarea
               value={businessInfo}
               onChange={(e) => setBusinessInfo(e.target.value)}
               disabled={disabled}
-              placeholder={"E.g.\nPlastic chair ₹12 per chair. Cushion chair ₹25.\nSmall tent ₹2,500 onwards.\nOpen 9am–8pm, closed Tuesday.\nWe serve Jaipur and nearby areas."}
+              placeholder={
+                "E.g.\nPlastic chair ₹12 per chair. Cushion chair ₹25.\nSmall tent ₹2,500 onwards.\nOpen 9am–8pm, closed Tuesday.\nWe serve Jaipur and nearby areas."
+              }
               rows={8}
               className="w-full bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] pl-9 p-3 focus:outline-none leading-relaxed resize-y"
             />
           </div>
         </Field>
 
-        <Field label="Website URL (optional)" hint="We crawl this page to pull FAQs and services." error={errors.websiteUrl}>
+        <Field
+          label="Website URL (optional)"
+          hint="We crawl this page to pull FAQs and services."
+          error={errors.websiteUrl}
+        >
           <div className="relative">
             <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-placeholder pointer-events-none" />
             <Input
@@ -68,7 +74,9 @@ export function KnowledgeBaseSetup({
         >
           <div className="border-2 border-dashed border-border rounded-[8px] p-6 flex flex-col items-center justify-center bg-bg-subtle text-center hover:bg-brand-50 hover:border-brand-500/40 transition-colors cursor-not-allowed">
             <UploadCloud className="h-8 w-8 text-text-placeholder mb-2" />
-            <p className="text-sm font-semibold text-text-primary">Click to upload or drag and drop</p>
+            <p className="text-sm font-semibold text-text-primary">
+              Click to upload or drag and drop
+            </p>
             <p className="text-[11px] text-text-secondary mt-1">PDF, DOCX, TXT up to 10MB</p>
           </div>
         </Field>
@@ -90,7 +98,9 @@ export function KnowledgeBaseSetup({
               onChange={(e) => setAgentGuidelines(e.target.value)}
               disabled={disabled}
               maxLength={4000}
-              placeholder={"E.g.\nAlways ask for the event date before quoting a package.\nNever promise same-day delivery.\nIf someone asks for the owner, take their number politely.\nAddress regular customers by name."}
+              placeholder={
+                "E.g.\nAlways ask for the event date before quoting a package.\nNever promise same-day delivery.\nIf someone asks for the owner, take their number politely.\nAddress regular customers by name."
+              }
               rows={7}
               className="w-full bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] pl-9 p-3 focus:outline-none leading-relaxed resize-y"
             />

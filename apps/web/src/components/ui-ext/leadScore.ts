@@ -10,7 +10,11 @@ interface ScoreableContact {
   deals?: Array<{ deletedAt?: string | null; value?: number | null; stage?: string | null }> | null;
   activities?: Array<{ occurredAt?: string | null; type?: string | null }> | null;
   createdAt?: string | null;
-  customFields?: Array<{ fieldName?: string; textValue?: string | null; numberValue?: number | null }> | null;
+  customFields?: Array<{
+    fieldName?: string;
+    textValue?: string | null;
+    numberValue?: number | null;
+  }> | null;
 }
 
 export interface ScoreBreakdown {
@@ -108,7 +112,10 @@ export const BAND_LABEL: Record<ScoreBreakdown["band"], string> = {
   cold: "Cold",
 };
 
-export const BAND_TONE: Record<ScoreBreakdown["band"], "positive" | "attention" | "brand" | "muted"> = {
+export const BAND_TONE: Record<
+  ScoreBreakdown["band"],
+  "positive" | "attention" | "brand" | "muted"
+> = {
   hot: "positive",
   warm: "attention",
   cool: "brand",

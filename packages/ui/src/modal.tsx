@@ -75,7 +75,7 @@ export function Modal({
         className={cn(
           "fixed inset-0 bg-black/40 transition-opacity duration-150 ease-out",
           backdropBlur && "backdrop-blur-[2px]",
-          visible ? "opacity-100" : "opacity-0"
+          visible ? "opacity-100" : "opacity-0",
         )}
         onClick={closeOnBackdrop ? onClose : undefined}
       />
@@ -87,12 +87,14 @@ export function Modal({
           "transition-opacity duration-150 ease-out",
           visible ? "opacity-100" : "opacity-0",
           sizeClass[size],
-          className
+          className,
         )}
       >
         {(header ?? title) && (
           <div className="h-14 border-b border-border px-5 flex items-center justify-between shrink-0 bg-background">
-            {header ?? <h2 className="text-sm font-semibold text-text-primary truncate">{title}</h2>}
+            {header ?? (
+              <h2 className="text-sm font-semibold text-text-primary truncate">{title}</h2>
+            )}
             {!header && (
               <button
                 type="button"

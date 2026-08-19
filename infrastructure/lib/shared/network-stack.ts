@@ -34,19 +34,19 @@ export class NetworkStack extends cdk.Stack {
     this.appSecurityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(80),
-      "Allow HTTP inbound web traffic"
+      "Allow HTTP inbound web traffic",
     );
 
     this.appSecurityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(443),
-      "Allow HTTPS inbound web traffic"
+      "Allow HTTPS inbound web traffic",
     );
 
     this.appSecurityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(3000),
-      "Allow inbound web traffic to Express Backend API"
+      "Allow inbound web traffic to Express Backend API",
     );
 
     new cdk.CfnOutput(this, "VpcIdOutput", {

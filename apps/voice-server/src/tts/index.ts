@@ -28,21 +28,66 @@ export interface TTSBuildOptions {
 // wrong-gender complaint is diagnosable at a glance, and (b) map legacy /
 // display names to the current speaker id.
 const SARVAM_FEMALE = new Set([
-  "priya", "ritu", "neha", "pooja", "simran", "kavya", "ishita", "shreya",
-  "roopa", "amelia", "sophia", "tanya", "shruti", "suhani", "kavitha", "rupali",
+  "priya",
+  "ritu",
+  "neha",
+  "pooja",
+  "simran",
+  "kavya",
+  "ishita",
+  "shreya",
+  "roopa",
+  "amelia",
+  "sophia",
+  "tanya",
+  "shruti",
+  "suhani",
+  "kavitha",
+  "rupali",
 ]);
 const SARVAM_MALE = new Set([
-  "shubh", "aditya", "rahul", "rohan", "amit", "dev", "ratan", "varun",
-  "manan", "sumit", "kabir", "aayan", "ashutosh", "advait", "anand", "tarun",
-  "sunny", "mani", "gokul", "vijay", "mohit", "rehan", "soham",
+  "shubh",
+  "aditya",
+  "rahul",
+  "rohan",
+  "amit",
+  "dev",
+  "ratan",
+  "varun",
+  "manan",
+  "sumit",
+  "kabir",
+  "aayan",
+  "ashutosh",
+  "advait",
+  "anand",
+  "tarun",
+  "sunny",
+  "mani",
+  "gokul",
+  "vijay",
+  "mohit",
+  "rehan",
+  "soham",
 ]);
 
 // Legacy OpenAI TTS voice ids. OpenAI TTS was removed as a provider (its
 // Hindi is unusable on real calls) — old agent rows carrying these values
 // fall back to the Sarvam default voice.
 const LEGACY_OPENAI_VOICES = new Set([
-  "alloy", "shimmer", "nova", "coral", "sage", "marin",
-  "echo", "fable", "onyx", "ash", "ballad", "verse", "cedar",
+  "alloy",
+  "shimmer",
+  "nova",
+  "coral",
+  "sage",
+  "marin",
+  "echo",
+  "fable",
+  "onyx",
+  "ash",
+  "ballad",
+  "verse",
+  "cedar",
 ]);
 
 const SARVAM_LEGACY_MAP: Record<string, string> = {
@@ -56,15 +101,24 @@ const SARVAM_LEGACY_MAP: Record<string, string> = {
 // case-sensitive): Sarah, Matilda, Jessica, Bella, Alice / Brian, Eric,
 // George, Daniel, Chris.
 const ELEVENLABS_FEMALE = new Set([
-  "EXAVITQu4vr4xnSDxMaL", "XrExE9yKIg1WjnnlVkGX", "cgSgspJ2msm6clMCkdW9",
-  "hpp4J3VqNfWAUOO0d1Us", "Xb7hH8MSUJpSbSDYk0k2",
+  "EXAVITQu4vr4xnSDxMaL",
+  "XrExE9yKIg1WjnnlVkGX",
+  "cgSgspJ2msm6clMCkdW9",
+  "hpp4J3VqNfWAUOO0d1Us",
+  "Xb7hH8MSUJpSbSDYk0k2",
 ]);
 const ELEVENLABS_MALE = new Set([
-  "nPczCjzI2devNBz1zQrb", "cjVigY5qzO86Huf0OWal", "JBFqnCBsd6RMkjVDRZzb",
-  "onwK4e9ZLuTAKqWW03F9", "iP95p4xoKVk53GoZ742B",
+  "nPczCjzI2devNBz1zQrb",
+  "cjVigY5qzO86Huf0OWal",
+  "JBFqnCBsd6RMkjVDRZzb",
+  "onwK4e9ZLuTAKqWW03F9",
+  "iP95p4xoKVk53GoZ742B",
 ]);
 
-const inferGender = (provider: "sarvam" | "elevenlabs", voiceId: string): "male" | "female" | "unknown" => {
+const inferGender = (
+  provider: "sarvam" | "elevenlabs",
+  voiceId: string,
+): "male" | "female" | "unknown" => {
   if (provider === "sarvam") {
     if (SARVAM_FEMALE.has(voiceId)) return "female";
     if (SARVAM_MALE.has(voiceId)) return "male";
@@ -122,7 +176,9 @@ export const getVoiceGender = (voiceStr: string): "male" | "female" | "unknown" 
  * default (`shubh`, male), which would otherwise be picked up silently and
  * present as "I selected a female voice but a male is speaking."
  */
-export const parseVoiceString = (voiceStr: string): { provider: "sarvam" | "elevenlabs"; voiceId: string } => {
+export const parseVoiceString = (
+  voiceStr: string,
+): { provider: "sarvam" | "elevenlabs"; voiceId: string } => {
   const normalized = (voiceStr || "").toLowerCase().trim();
   if (!normalized) {
     return { provider: "sarvam", voiceId: DEFAULT_SARVAM_VOICE };

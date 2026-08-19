@@ -30,31 +30,29 @@ export class ComputeStack extends cdk.Stack {
       description: "IAM Role for Antigravity EC2 instance",
     });
 
-    role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
+    role.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"),
+    );
 
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ["s3:PutObject", "s3:GetObject"],
         resources: [props.recordingsBucketArn, `${props.recordingsBucketArn}/*`],
-      })
+      }),
     );
 
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:SendMessage"],
-        resources: [
-          `arn:aws:sqs:${this.region}:${this.account}:indiai-${env}-*`,
-        ],
-      })
+        resources: [`arn:aws:sqs:${this.region}:${this.account}:indiai-${env}-*`],
+      }),
     );
 
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ["ssm:GetParameter"],
-        resources: [
-          `arn:aws:ssm:${this.region}:${this.account}:parameter/indiai/*`,
-        ],
-      })
+        resources: [`arn:aws:ssm:${this.region}:${this.account}:parameter/indiai/*`],
+      }),
     );
 
     role.addToPolicy(
@@ -64,7 +62,7 @@ export class ComputeStack extends cdk.Stack {
           // Any region: env secrets live in ap-south-1, github-token in us-east-1
           `arn:aws:secretsmanager:*:${this.account}:secret:indiai/*`,
         ],
-      })
+      }),
     );
 
     // Deploys pull prebuilt images from ECR instead of building on the box
@@ -78,14 +76,14 @@ export class ComputeStack extends cdk.Stack {
           "ecr:BatchCheckLayerAvailability",
         ],
         resources: ["*"],
-      })
+      }),
     );
 
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ["cloudwatch:PutMetricData", "logs:PutLogEvents", "logs:CreateLogStream"],
         resources: ["*"],
-      })
+      }),
     );
 
     const instanceType = ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL);
@@ -120,8 +118,8 @@ export class ComputeStack extends cdk.Stack {
       "chmod +x /usr/local/lib/docker/cli-plugins/docker-compose",
       "fnm_installed=$(which fnm 2>/dev/null)",
       "curl -fsSL https://fnm.vercel.app/install | bash",
-      "export PATH=\"/root/.local/share/fnm:$PATH\"",
-      "eval \"$(fnm env --use-on-cd)\"",
+      'export PATH="/root/.local/share/fnm:$PATH"',
+      'eval "$(fnm env --use-on-cd)"',
       "fnm install 20",
       "npm install -g pnpm",
       "mkdir -p /app",
@@ -131,7 +129,7 @@ export class ComputeStack extends cdk.Stack {
       `git config --global credential.helper '!f() { echo "username=x-access-token"; echo "password=$(aws secretsmanager get-secret-value --secret-id indiai/github-token --region us-east-1 --query SecretString --output text)"; }; f'`,
       "git clone https://github.com/yogendraft21/IndiAi.git indiAi || true",
       "cd indiAi",
-      "echo 'UserData initial setup done! Ready for pipeline commands.' > /var/log/userdata_antigravity.log"
+      "echo 'UserData initial setup done! Ready for pipeline commands.' > /var/log/userdata_antigravity.log",
     );
     this.instance.addUserData(userData.render());
 

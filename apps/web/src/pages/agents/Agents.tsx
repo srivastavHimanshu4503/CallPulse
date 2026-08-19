@@ -98,7 +98,11 @@ export function Agents(): React.JSX.Element {
   const [viewMode, setViewMode] = React.useState<ViewMode>("grid");
   const [deleteTargetId, setDeleteTargetId] = React.useState<string | null>(null);
 
-  const { data: agents, isLoading, error } = useQuery({
+  const {
+    data: agents,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["agents"],
     queryFn: async () => (await api.get("/agents")).data.data as SerializedAgent[],
   });
@@ -122,7 +126,9 @@ export function Agents(): React.JSX.Element {
   }, [phoneNumbers, agents, editingAgent]);
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => { await api.delete(`/agents/${id}`); },
+    mutationFn: async (id: string) => {
+      await api.delete(`/agents/${id}`);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agents"] });
       toast.success("Agent deleted");
@@ -147,7 +153,11 @@ export function Agents(): React.JSX.Element {
     },
     onSuccess: (_d, { enabled }) => {
       queryClient.invalidateQueries({ queryKey: ["agents"] });
-      toast.success(enabled ? "WhatsApp bot is on — number registration runs automatically" : "WhatsApp bot turned off");
+      toast.success(
+        enabled
+          ? "WhatsApp bot is on — number registration runs automatically"
+          : "WhatsApp bot turned off",
+      );
     },
     onError: (err: any) => toast.error(err.response?.data?.error || "Failed to update WhatsApp"),
   });
@@ -156,8 +166,14 @@ export function Agents(): React.JSX.Element {
     setDeleteTargetId(id);
   };
 
-  const handleOpenCreate = () => { setEditingAgent(null); setIsWizardOpen(true); };
-  const handleOpenConfigure = (agent: SerializedAgent) => { setEditingAgent(agent); setIsWizardOpen(true); };
+  const handleOpenCreate = () => {
+    setEditingAgent(null);
+    setIsWizardOpen(true);
+  };
+  const handleOpenConfigure = (agent: SerializedAgent) => {
+    setEditingAgent(agent);
+    setIsWizardOpen(true);
+  };
 
   const filteredAgents = React.useMemo(() => {
     if (!agents) return [];
@@ -182,7 +198,9 @@ export function Agents(): React.JSX.Element {
     const active = agents.filter((a) => a.isActive).length;
     const callsToday = agents.reduce((sum, a) => sum + (a.callsToday || 0), 0);
     const durations = agents.filter((a) => (a.callsToday || 0) > 0).map((a) => a.avgDuration || 0);
-    const avgDuration = durations.length ? durations.reduce((s, d) => s + d, 0) / durations.length : 0;
+    const avgDuration = durations.length
+      ? durations.reduce((s, d) => s + d, 0) / durations.length
+      : 0;
     return { total, active, callsToday, avgDuration };
   }, [agents]);
 
@@ -251,11 +269,26 @@ export function Agents(): React.JSX.Element {
           className="rounded-lg border bg-bg-raised flex items-center gap-3 px-3 py-2 mb-3 overflow-x-auto"
           style={{ borderColor: "rgb(var(--line-default))" }}
         >
-          <InlineStat icon={Users} label="Agents" value={stats.total.toString()} tint={{ bg: "#EFF6FF", fg: "#2563EB" }} />
+          <InlineStat
+            icon={Users}
+            label="Agents"
+            value={stats.total.toString()}
+            tint={{ bg: "#EFF6FF", fg: "#2563EB" }}
+          />
           <Divider />
-          <InlineStat icon={Radio} label="Live now" value={stats.active.toString()} tint={{ bg: "#ECFDF5", fg: "#059669" }} />
+          <InlineStat
+            icon={Radio}
+            label="Live now"
+            value={stats.active.toString()}
+            tint={{ bg: "#ECFDF5", fg: "#059669" }}
+          />
           <Divider />
-          <InlineStat icon={PhoneCall} label="Calls today" value={stats.callsToday.toString()} tint={{ bg: "#FEF3C7", fg: "#B45309" }} />
+          <InlineStat
+            icon={PhoneCall}
+            label="Calls today"
+            value={stats.callsToday.toString()}
+            tint={{ bg: "#FEF3C7", fg: "#B45309" }}
+          />
           <Divider />
         </div>
       )}
@@ -290,7 +323,10 @@ export function Agents(): React.JSX.Element {
       {isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-lg border border-line-default bg-bg-raised h-[124px] animate-pulse" />
+            <div
+              key={i}
+              className="rounded-lg border border-line-default bg-bg-raised h-[124px] animate-pulse"
+            />
           ))}
         </div>
       )}
@@ -311,7 +347,9 @@ export function Agents(): React.JSX.Element {
       {/* Filtered empty */}
       {agents && agents.length > 0 && filteredAgents.length === 0 && (
         <div className="rounded-lg border border-dashed border-line-strong bg-bg-subtle p-6 text-center">
-          <div className="text-[12.5px] font-semibold text-fg-primary">No agents match your filters</div>
+          <div className="text-[12.5px] font-semibold text-fg-primary">
+            No agents match your filters
+          </div>
           <div className="text-[11px] text-fg-secondary mt-1">
             Try clearing search or switching the status filter.
           </div>
@@ -345,12 +383,24 @@ export function Agents(): React.JSX.Element {
           <table className="w-full text-[12.5px]">
             <thead className="bg-bg-subtle border-b border-line-subtle">
               <tr className="text-left">
-                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">Agent</th>
-                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">Line</th>
-                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">Lang</th>
-                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2 text-right">Calls</th>
-                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2 text-right">Avg</th>
-                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">Status</th>
+                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">
+                  Agent
+                </th>
+                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">
+                  Line
+                </th>
+                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">
+                  Lang
+                </th>
+                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2 text-right">
+                  Calls
+                </th>
+                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2 text-right">
+                  Avg
+                </th>
+                <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2">
+                  Status
+                </th>
                 <th className="text-[10px] font-bold text-fg-muted uppercase tracking-wider px-3 py-2 text-right"></th>
               </tr>
             </thead>
@@ -358,17 +408,24 @@ export function Agents(): React.JSX.Element {
               {filteredAgents.map((agent) => {
                 const c = colorForAgent();
                 return (
-                  <tr key={agent.id} className="border-b border-line-subtle last:border-b-0 hover:bg-bg-muted/50 transition-colors">
+                  <tr
+                    key={agent.id}
+                    className="border-b border-line-subtle last:border-b-0 hover:bg-bg-muted/50 transition-colors"
+                  >
                     <td className="px-3 py-2">
                       <div className="flex items-center gap-2 min-w-0">
                         <div
                           className="h-7 w-7 rounded-md text-white font-bold text-[10.5px] flex items-center justify-center shrink-0"
-                          style={{ background: `linear-gradient(135deg, ${c.from} 0%, ${c.to} 100%)` }}
+                          style={{
+                            background: `linear-gradient(135deg, ${c.from} 0%, ${c.to} 100%)`,
+                          }}
                         >
                           {initialsOf(agent.name)}
                         </div>
                         <div className="min-w-0">
-                          <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">{agent.name}</div>
+                          <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">
+                            {agent.name}
+                          </div>
                           <div className="text-[10.5px] text-fg-muted truncate">{agent.role}</div>
                         </div>
                       </div>
@@ -393,10 +450,18 @@ export function Agents(): React.JSX.Element {
                         </button>
                       )}
                     </td>
-                    <td className="px-3 py-2"><LanguagePill language={agent.language} /></td>
-                    <td className="px-3 py-2 text-right font-semibold text-fg-primary tabular-nums">{agent.callsToday || 0}</td>
-                    <td className="px-3 py-2 text-right text-fg-secondary tabular-nums">{formatDuration(agent.avgDuration || 0)}</td>
-                    <td className="px-3 py-2"><StatusPill active={agent.isActive} /></td>
+                    <td className="px-3 py-2">
+                      <LanguagePill language={agent.language} />
+                    </td>
+                    <td className="px-3 py-2 text-right font-semibold text-fg-primary tabular-nums">
+                      {agent.callsToday || 0}
+                    </td>
+                    <td className="px-3 py-2 text-right text-fg-secondary tabular-nums">
+                      {formatDuration(agent.avgDuration || 0)}
+                    </td>
+                    <td className="px-3 py-2">
+                      <StatusPill active={agent.isActive} />
+                    </td>
                     <td className="px-3 py-2 text-right">
                       <RowActionsCompact
                         agent={agent}
@@ -431,9 +496,7 @@ export function Agents(): React.JSX.Element {
         />
       )}
 
-      {waAgent && (
-        <WhatsAppSetupModal agent={waAgent} onClose={() => setWaAgent(null)} />
-      )}
+      {waAgent && <WhatsAppSetupModal agent={waAgent} onClose={() => setWaAgent(null)} />}
 
       {aiOpen && (
         <AiCreateModal
@@ -479,7 +542,22 @@ interface AgentCardProps {
   isToggling: boolean;
 }
 
-function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActive, isToggling, onBuyNumber, onWhatsApp, onToggleWhatsApp }: AgentCardProps & { onBuyNumber: () => void; onWhatsApp: () => void; onToggleWhatsApp: (enabled: boolean) => void }): React.JSX.Element {
+function AgentCard({
+  agent,
+  onTest,
+  onConfigure,
+  onLogs,
+  onDelete,
+  onToggleActive,
+  isToggling,
+  onBuyNumber,
+  onWhatsApp,
+  onToggleWhatsApp,
+}: AgentCardProps & {
+  onBuyNumber: () => void;
+  onWhatsApp: () => void;
+  onToggleWhatsApp: (enabled: boolean) => void;
+}): React.JSX.Element {
   const c = colorForAgent();
   const initials = initialsOf(agent.name);
   const gradient = `linear-gradient(135deg, ${c.from} 0%, ${c.to} 100%)`;
@@ -507,13 +585,18 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
             <div className="flex items-center gap-1.5 min-w-0">
               <span className="text-[14px] font-bold text-fg-primary truncate">{agent.name}</span>
             </div>
-            <div className="text-[11.5px] font-medium text-fg-muted truncate mt-0.5">{agent.role}</div>
+            <div className="text-[11.5px] font-medium text-fg-muted truncate mt-0.5">
+              {agent.role}
+            </div>
           </div>
         </div>
 
         {/* Actions (Toggle & Delete) */}
         <div className="flex items-center gap-1 shrink-0">
-          <label className="relative inline-flex items-center cursor-pointer" title="Toggle active status">
+          <label
+            className="relative inline-flex items-center cursor-pointer"
+            title="Toggle active status"
+          >
             <input
               type="checkbox"
               className="sr-only peer"
@@ -560,12 +643,13 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
             <MessageCircle
               className={`h-3.5 w-3.5 shrink-0 ${agent.whatsappEnabled ? "text-emerald-600" : "text-fg-muted"}`}
             />
-            <span className="text-[11px] font-bold text-fg-secondary">
-              WhatsApp Bot
-            </span>
+            <span className="text-[11px] font-bold text-fg-secondary">WhatsApp Bot</span>
             <span
-              className={`text-[9px] font-bold uppercase tracking-wide px-1.5 py-px rounded ${agent.whatsappEnabled ? "bg-emerald-100 text-emerald-700" : "bg-bg-muted text-fg-muted"
-                }`}
+              className={`text-[9px] font-bold uppercase tracking-wide px-1.5 py-px rounded ${
+                agent.whatsappEnabled
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-bg-muted text-fg-muted"
+              }`}
             >
               {agent.whatsappEnabled ? "On" : "Off"}
             </span>
@@ -611,7 +695,9 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
               <Phone className="h-3 w-3" /> Number
             </div>
             {agent.phoneNumberId ? (
-              <span className="text-[12px] font-bold text-fg-primary truncate">{agent.phoneNumber}</span>
+              <span className="text-[12px] font-bold text-fg-primary truncate">
+                {agent.phoneNumber}
+              </span>
             ) : (
               <button
                 type="button"
@@ -630,7 +716,9 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
               <Activity className="h-3 w-3" /> Today
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-bold text-fg-primary truncate">{agent.callsToday || 0} calls</span>
+              <span className="text-[12px] font-bold text-fg-primary truncate">
+                {agent.callsToday || 0} calls
+              </span>
             </div>
           </div>
         </div>
@@ -640,7 +728,10 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
       <div className="p-3 pt-0 mt-auto relative z-10 grid grid-cols-3 gap-2">
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onTest(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onTest();
+          }}
           disabled={!agent.isActive}
           className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-bg-raised border border-line-default hover:bg-bg-subtle hover:text-fg-primary transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
@@ -649,7 +740,10 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         </button>
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onLogs(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onLogs();
+          }}
           className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-fg-secondary bg-bg-raised border border-line-default hover:bg-bg-subtle hover:text-fg-primary transition-all"
         >
           <ListIcon className="h-3.5 w-3.5" />
@@ -657,7 +751,10 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
         </button>
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onConfigure(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onConfigure();
+          }}
           className="col-span-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11.5px] font-bold text-white bg-primary hover:bg-primary-hover shadow-sm transition-all"
         >
           <Pencil className="h-3.5 w-3.5" />
@@ -673,12 +770,36 @@ function AgentCard({ agent, onTest, onConfigure, onLogs, onDelete, onToggleActiv
 // ═════════════════════════════════════════════════════════════
 
 const SENDER_STATUS_UI: Record<string, { label: string; cls: string; dot: string }> = {
-  ONLINE: { label: "WhatsApp number live", cls: "bg-emerald-50 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
-  CREATING: { label: "Registering with WhatsApp…", cls: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-500" },
-  UPDATING: { label: "Updating registration…", cls: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-500" },
-  PENDING_VERIFICATION: { label: "Pending Meta review", cls: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-500" },
-  OFFLINE: { label: "Sender offline — check Twilio Console", cls: "bg-red-50 text-red-700 border-red-200", dot: "bg-red-500" },
-  NOT_REGISTERED: { label: "Will be registered automatically on save", cls: "bg-bg-muted text-fg-secondary border-line-default", dot: "bg-fg-muted" },
+  ONLINE: {
+    label: "WhatsApp number live",
+    cls: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    dot: "bg-emerald-500",
+  },
+  CREATING: {
+    label: "Registering with WhatsApp…",
+    cls: "bg-amber-50 text-amber-700 border-amber-200",
+    dot: "bg-amber-500",
+  },
+  UPDATING: {
+    label: "Updating registration…",
+    cls: "bg-amber-50 text-amber-700 border-amber-200",
+    dot: "bg-amber-500",
+  },
+  PENDING_VERIFICATION: {
+    label: "Pending Meta review",
+    cls: "bg-amber-50 text-amber-700 border-amber-200",
+    dot: "bg-amber-500",
+  },
+  OFFLINE: {
+    label: "Sender offline — check Twilio Console",
+    cls: "bg-red-50 text-red-700 border-red-200",
+    dot: "bg-red-500",
+  },
+  NOT_REGISTERED: {
+    label: "Will be registered automatically on save",
+    cls: "bg-bg-muted text-fg-secondary border-line-default",
+    dot: "bg-fg-muted",
+  },
 };
 
 function WhatsAppSetupModal({
@@ -744,7 +865,11 @@ function WhatsAppSetupModal({
                 and knowledge base as calls.
               </div>
             </div>
-            <button type="button" onClick={onClose} className="opacity-80 hover:opacity-100 transition-opacity p-1">
+            <button
+              type="button"
+              onClick={onClose}
+              className="opacity-80 hover:opacity-100 transition-opacity p-1"
+            >
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -756,15 +881,17 @@ function WhatsAppSetupModal({
             <div className="flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2.5">
               <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
               <p className="text-[11.5px] text-amber-800 leading-snug">
-                This agent has no phone number yet. WhatsApp needs a number — get one from the
-                agent card first.
+                This agent has no phone number yet. WhatsApp needs a number — get one from the agent
+                card first.
               </p>
             </div>
           )}
 
           {agent.phoneNumberId && senderUi && (
             <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${senderUi.cls}`}>
-              <span className={`h-2 w-2 rounded-full ${senderUi.dot} ${sender?.status !== "ONLINE" && sender?.status !== "NOT_REGISTERED" ? "animate-pulse" : ""}`} />
+              <span
+                className={`h-2 w-2 rounded-full ${senderUi.dot} ${sender?.status !== "ONLINE" && sender?.status !== "NOT_REGISTERED" ? "animate-pulse" : ""}`}
+              />
               <span className="text-[11.5px] font-semibold">{senderUi.label}</span>
             </div>
           )}
@@ -799,7 +926,8 @@ function WhatsAppSetupModal({
                 className="w-full text-[12px] bg-bg-raised border border-line-default rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[76px]"
               />
               <p className="text-[10.5px] text-fg-muted mt-1">
-                Works out of the box without this — add guidance only if you want channel-specific behavior.
+                Works out of the box without this — add guidance only if you want channel-specific
+                behavior.
               </p>
             </div>
           )}
@@ -807,7 +935,10 @@ function WhatsAppSetupModal({
 
         {/* Footer */}
         <div className="px-5 py-3.5 bg-bg-subtle border-t border-line-subtle flex items-center justify-between">
-          <a href="/chats" className="text-[11.5px] font-semibold text-emerald-700 hover:text-emerald-800">
+          <a
+            href="/chats"
+            className="text-[11.5px] font-semibold text-emerald-700 hover:text-emerald-800"
+          >
             View chats →
           </a>
           <div className="flex items-center gap-2">
@@ -999,8 +1130,12 @@ function InlineStat({
         <Icon className="h-3 w-3" />
       </span>
       <div className="flex items-baseline gap-1.5">
-        <span className="text-[13px] font-semibold text-fg-primary tabular-nums leading-none">{value}</span>
-        <span className="text-[10.5px] font-medium text-fg-muted uppercase tracking-wider">{label}</span>
+        <span className="text-[13px] font-semibold text-fg-primary tabular-nums leading-none">
+          {value}
+        </span>
+        <span className="text-[10.5px] font-medium text-fg-muted uppercase tracking-wider">
+          {label}
+        </span>
       </div>
     </div>
   );
@@ -1016,8 +1151,16 @@ function StatusPill({ active }: { active: boolean }): React.JSX.Element {
       className="inline-flex items-center gap-1 px-1.5 py-[1px] rounded text-[9px] font-bold uppercase tracking-wider"
       style={
         active
-          ? { backgroundColor: "#DCFCE7", color: "#15803D", boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.25)" }
-          : { backgroundColor: "rgb(var(--line-subtle))", color: "rgb(var(--slate-500))", boxShadow: "inset 0 0 0 1px rgb(var(--line-default))" }
+          ? {
+              backgroundColor: "#DCFCE7",
+              color: "#15803D",
+              boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.25)",
+            }
+          : {
+              backgroundColor: "rgb(var(--line-subtle))",
+              color: "rgb(var(--slate-500))",
+              boxShadow: "inset 0 0 0 1px rgb(var(--line-default))",
+            }
       }
     >
       <span
@@ -1029,11 +1172,20 @@ function StatusPill({ active }: { active: boolean }): React.JSX.Element {
   );
 }
 
-function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMode) => void }): React.JSX.Element {
+function ViewToggle({
+  value,
+  onChange,
+}: {
+  value: ViewMode;
+  onChange: (v: ViewMode) => void;
+}): React.JSX.Element {
   return (
     <div
       className="inline-flex items-center gap-1 rounded-lg p-1 border"
-      style={{ backgroundColor: "rgb(var(--line-subtle))", borderColor: "rgb(var(--line-default))" }}
+      style={{
+        backgroundColor: "rgb(var(--line-subtle))",
+        borderColor: "rgb(var(--line-default))",
+      }}
     >
       {[
         { value: "grid" as ViewMode, icon: LayoutGrid },
@@ -1049,10 +1201,10 @@ function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMo
             style={
               active
                 ? {
-                  backgroundColor: "#2563EB",
-                  color: "#FFFFFF",
-                  boxShadow: "0 1px 2px rgba(37,99,235,0.35), 0 1px 3px rgba(0,0,0,0.08)",
-                }
+                    backgroundColor: "#2563EB",
+                    color: "#FFFFFF",
+                    boxShadow: "0 1px 2px rgba(37,99,235,0.35), 0 1px 3px rgba(0,0,0,0.08)",
+                  }
                 : { backgroundColor: "transparent", color: "rgb(var(--fg-secondary))" }
             }
           >
@@ -1068,17 +1220,30 @@ function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMo
 // Empty state
 // ═════════════════════════════════════════════════════════════
 
-function EmptyState({ onCreate, onAiCreate }: { onCreate: () => void; onAiCreate: () => void }): React.JSX.Element {
+function EmptyState({
+  onCreate,
+  onAiCreate,
+}: {
+  onCreate: () => void;
+  onAiCreate: () => void;
+}): React.JSX.Element {
   return (
     <div
       className="relative rounded-2xl overflow-hidden p-8"
       style={{
-        background: "linear-gradient(135deg, rgb(var(--indigo-50)) 0%, rgb(var(--bg-muted)) 55%, rgb(var(--rose-50)) 100%)",
+        background:
+          "linear-gradient(135deg, rgb(var(--indigo-50)) 0%, rgb(var(--bg-muted)) 55%, rgb(var(--rose-50)) 100%)",
         border: "1px solid rgba(139,92,246,0.2)",
       }}
     >
-      <div className="absolute -top-12 -right-8 h-40 w-40 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(236,72,153,0.28)" }} />
-      <div className="absolute -bottom-16 -left-8 h-40 w-40 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: "rgba(99,102,241,0.28)" }} />
+      <div
+        className="absolute -top-12 -right-8 h-40 w-40 rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: "rgba(236,72,153,0.28)" }}
+      />
+      <div
+        className="absolute -bottom-16 -left-8 h-40 w-40 rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: "rgba(99,102,241,0.28)" }}
+      />
 
       <div className="relative flex flex-col items-center text-center max-w-lg mx-auto">
         <div
@@ -1091,7 +1256,8 @@ function EmptyState({ onCreate, onAiCreate }: { onCreate: () => void; onAiCreate
           Deploy your first AI receptionist
         </h3>
         <p className="text-[12.5px] text-fg-secondary mt-1.5 leading-relaxed">
-          Answer every customer call in Hindi, Tamil, Bengali, Marathi and 10+ Indian languages, 24 × 7. Or let AI set one up from your prompt.
+          Answer every customer call in Hindi, Tamil, Bengali, Marathi and 10+ Indian languages, 24
+          × 7. Or let AI set one up from your prompt.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4">
@@ -1122,7 +1288,11 @@ function EmptyState({ onCreate, onAiCreate }: { onCreate: () => void; onAiCreate
             type="button"
             onClick={onCreate}
             className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg text-[12.5px] font-semibold border transition-all hover:bg-white"
-            style={{ backgroundColor: "rgba(255,255,255,0.7)", borderColor: "rgb(var(--line-default))", color: "rgb(var(--fg-primary))" }}
+            style={{
+              backgroundColor: "rgba(255,255,255,0.7)",
+              borderColor: "rgb(var(--line-default))",
+              color: "rgb(var(--fg-primary))",
+            }}
           >
             <Plus className="h-3.5 w-3.5" />
             Manual setup
@@ -1145,7 +1315,13 @@ interface RowActionsProps {
   onDelete: () => void;
 }
 
-function RowActionsCompact({ agent, onTest, onConfigure, onLogs, onDelete }: RowActionsProps): React.JSX.Element {
+function RowActionsCompact({
+  agent,
+  onTest,
+  onConfigure,
+  onLogs,
+  onDelete,
+}: RowActionsProps): React.JSX.Element {
   return (
     <div className="inline-flex items-center gap-1.5">
       <button
@@ -1153,7 +1329,11 @@ function RowActionsCompact({ agent, onTest, onConfigure, onLogs, onDelete }: Row
         onClick={onTest}
         disabled={!agent.isActive}
         className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] font-semibold border transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-        style={{ backgroundColor: "rgb(var(--bg-subtle))", borderColor: "rgb(var(--line-default))", color: "rgb(var(--fg-primary))" }}
+        style={{
+          backgroundColor: "rgb(var(--bg-subtle))",
+          borderColor: "rgb(var(--line-default))",
+          color: "rgb(var(--fg-primary))",
+        }}
       >
         <Radio className="h-3 w-3" />
         Test
@@ -1213,7 +1393,10 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
 
   const handleToggle = () => {
     if (open) setOpen(false);
-    else { positionMenu(); setOpen(true); }
+    else {
+      positionMenu();
+      setOpen(true);
+    }
   };
 
   React.useEffect(() => {
@@ -1224,7 +1407,9 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
       if (menuRef.current?.contains(target)) return;
       setOpen(false);
     };
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     const onWinChange = () => setOpen(false);
     document.addEventListener("mousedown", onDocClick);
     document.addEventListener("keydown", onKey);
@@ -1257,7 +1442,8 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
         <MoreHorizontal className="h-3.5 w-3.5" />
       </button>
 
-      {open && coords &&
+      {open &&
+        coords &&
         createPortal(
           <div
             ref={menuRef}
@@ -1280,16 +1466,25 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
               const isDestructive = item.destructive;
               return (
                 <React.Fragment key={item.label}>
-                  {isDestructive && idx > 0 && <div className="h-px bg-line-subtle my-1" aria-hidden />}
+                  {isDestructive && idx > 0 && (
+                    <div className="h-px bg-line-subtle my-1" aria-hidden />
+                  )}
                   <button
                     type="button"
                     role="menuitem"
-                    onClick={() => { setOpen(false); item.onClick(); }}
+                    onClick={() => {
+                      setOpen(false);
+                      item.onClick();
+                    }}
                     disabled={item.disabled}
                     className="w-full flex items-center gap-2 px-3 py-2 text-[12px] font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={isDestructive ? { color: "#DC2626" } : { color: "rgb(var(--fg-primary))" }}
+                    style={
+                      isDestructive ? { color: "#DC2626" } : { color: "rgb(var(--fg-primary))" }
+                    }
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = isDestructive ? "#FEF2F2" : "rgb(var(--bg-subtle))";
+                      e.currentTarget.style.backgroundColor = isDestructive
+                        ? "#FEF2F2"
+                        : "rgb(var(--bg-subtle))";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = "transparent";
@@ -1302,7 +1497,7 @@ function ActionMenu({ items }: { items: ActionMenuItem[] }): React.JSX.Element {
               );
             })}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

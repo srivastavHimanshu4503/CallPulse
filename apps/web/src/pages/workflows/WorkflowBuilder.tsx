@@ -6,13 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { api } from "../../lib/axios.js";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  Save,
-  Trash2,
-  Check,
-  Zap,
-} from "lucide-react";
+import { ArrowLeft, Save, Trash2, Check, Zap } from "lucide-react";
 import { Button } from "@antigravity/ui";
 import { StatusPill } from "../../components/ui-ext/index.js";
 import type { WorkflowDef, BlockNode, BlockType, Trigger } from "./types.js";
@@ -136,7 +130,11 @@ function WorkflowBuilderInner(): React.JSX.Element {
     if (!def || def.category !== "trigger") return;
     setWf({
       ...wf,
-      trigger: { type: type as any, config: { ...def.defaultConfig }, filter: wf.trigger.filter || null },
+      trigger: {
+        type: type as any,
+        config: { ...def.defaultConfig },
+        filter: wf.trigger.filter || null,
+      },
     });
     setIsTriggerSelected(true);
     setSelectedId(null);
@@ -175,7 +173,9 @@ function WorkflowBuilderInner(): React.JSX.Element {
       setIsTriggerSelected(false);
       return;
     }
-    commitSteps(afterId === "__start__" ? [step, ...wf.steps] : insertAfter(wf.steps, afterId, step));
+    commitSteps(
+      afterId === "__start__" ? [step, ...wf.steps] : insertAfter(wf.steps, afterId, step),
+    );
     setSelectedId(step.id);
     setIsTriggerSelected(false);
   };
@@ -243,7 +243,10 @@ function WorkflowBuilderInner(): React.JSX.Element {
     if (!wf) return;
     setWf({
       ...wf,
-      steps: patchStep(wf.steps, stepId, (s) => ({ ...s, ui: { x: Math.round(x), y: Math.round(y) } })),
+      steps: patchStep(wf.steps, stepId, (s) => ({
+        ...s,
+        ui: { x: Math.round(x), y: Math.round(y) },
+      })),
     });
   };
 
@@ -264,11 +267,12 @@ function WorkflowBuilderInner(): React.JSX.Element {
     return findStep(wf.steps, selectedId);
   }, [wf, selectedId]);
 
-  const inspectorTarget = isTriggerSelected && wf
-    ? { kind: "trigger" as const, trigger: wf.trigger }
-    : selectedStep
-      ? { kind: "step" as const, step: selectedStep }
-      : null;
+  const inspectorTarget =
+    isTriggerSelected && wf
+      ? { kind: "trigger" as const, trigger: wf.trigger }
+      : selectedStep
+        ? { kind: "step" as const, step: selectedStep }
+        : null;
 
   // ───────────── Render ─────────────
 
@@ -358,7 +362,10 @@ function WorkflowBuilderInner(): React.JSX.Element {
                   onChange={(e) => {
                     if (e.target.checked && !entitlements.can("WORKFLOW_ACTIVATION")) {
                       toast.error("Activating workflows needs the Pro plan", {
-                        action: { label: "Upgrade", onClick: () => navigate("/settings?tab=billing") },
+                        action: {
+                          label: "Upgrade",
+                          onClick: () => navigate("/settings?tab=billing"),
+                        },
                       });
                       return;
                     }
@@ -399,7 +406,9 @@ function WorkflowBuilderInner(): React.JSX.Element {
         <div className="flex-1 flex overflow-hidden min-h-0">
           <BlockLibrary
             onAddBlock={(t) => {
-              const afterId = selectedStep?.id || (wf.steps.length > 0 ? wf.steps[wf.steps.length - 1]!.id : null);
+              const afterId =
+                selectedStep?.id ||
+                (wf.steps.length > 0 ? wf.steps[wf.steps.length - 1]!.id : null);
               handleAddByType(afterId, t);
             }}
             activeType={selectedStep?.type || null}
@@ -568,7 +577,13 @@ function normalizeTree(steps: BlockNode[]): BlockNode[] {
     }
     out.push(
       s.children
-        ? { ...s, children: { then: normalizeTree(s.children.then), else: normalizeTree(s.children.else) } }
+        ? {
+            ...s,
+            children: {
+              then: normalizeTree(s.children.then),
+              else: normalizeTree(s.children.else),
+            },
+          }
         : s,
     );
   }

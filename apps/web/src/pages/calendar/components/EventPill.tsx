@@ -28,7 +28,9 @@ export function EventPill({
       }`}
     >
       <Icon className="h-2.5 w-2.5 shrink-0" />
-      <span className="text-[10.5px] font-bold truncate leading-none tabular-nums">{fmtTime(booking.startTime)}</span>
+      <span className="text-[10.5px] font-bold truncate leading-none tabular-nums">
+        {fmtTime(booking.startTime)}
+      </span>
       <span className="text-[10.5px] font-medium truncate leading-none">{booking.title}</span>
     </button>
   );
@@ -67,7 +69,9 @@ export function EventBlock({
         <Icon className="h-2.5 w-2.5 shrink-0" />
         <span className="text-[10.5px] font-bold truncate leading-tight">{booking.title}</span>
       </div>
-      <div className={`text-[9.5px] font-medium tabular-nums leading-tight truncate ${cancelled ? "" : selected ? "text-white/85" : "text-brand-600/80"}`}>
+      <div
+        className={`text-[9.5px] font-medium tabular-nums leading-tight truncate ${cancelled ? "" : selected ? "text-white/85" : "text-brand-600/80"}`}
+      >
         {fmtTime(booking.startTime)} – {fmtTime(booking.endTime)}
       </div>
     </button>

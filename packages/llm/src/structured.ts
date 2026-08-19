@@ -18,7 +18,7 @@ export const generateStructuredOutput = async <T extends z.ZodType>(
   systemPrompt: string,
   userPrompt: string,
   schema: T,
-  schemaName: string
+  schemaName: string,
 ): Promise<z.infer<T>> => {
   // Always use OpenAI for structured output for now since it has robust native support
   const openai = new OpenAI({ apiKey: config.apiKey, maxRetries: 0 });
@@ -45,12 +45,12 @@ export const generateStructuredOutput = async <T extends z.ZodType>(
         const refusal = completion.choices[0]?.message.refusal;
         throw new LLMError(
           `Structured output "${schemaName}" returned no parsed result${refusal ? ` (refusal: ${refusal})` : ""}`,
-          { retryable: true, context: { schemaName } }
+          { retryable: true, context: { schemaName } },
         );
       }
       return parsed;
     },
-    { attempts: 3, baseDelayMs: 750, label: `structured:${schemaName}` }
+    { attempts: 3, baseDelayMs: 750, label: `structured:${schemaName}` },
   );
 };
 

@@ -34,4 +34,3 @@ export interface AuthResponseData {
   tenant: SerializedTenant;
   tokens: AuthTokens;
 }
-

@@ -60,8 +60,8 @@ export function DeleteContactModal({
                   Also delete {dealCount} linked deal{dealCount === 1 ? "" : "s"}
                 </span>
                 <span className="block text-[11px] text-fg-muted mt-0.5 leading-relaxed">
-                  Unchecked, the deal{dealCount === 1 ? " stays" : "s stay"} on your pipeline
-                  board so you don't lose the opportunity.
+                  Unchecked, the deal{dealCount === 1 ? " stays" : "s stay"} on your pipeline board
+                  so you don't lose the opportunity.
                 </span>
               </span>
             </label>

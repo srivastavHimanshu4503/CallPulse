@@ -110,7 +110,7 @@ export const dispatchPostCall = async (input: PostCallDispatchInput): Promise<vo
     });
     console.error(
       "[CRITICAL] POST CALL WEBHOOK FAILED TO SEND!",
-      aborted ? `timed out after ${DISPATCH_TIMEOUT_MS}ms` : message
+      aborted ? `timed out after ${DISPATCH_TIMEOUT_MS}ms` : message,
     );
   } finally {
     clearTimeout(timeout);

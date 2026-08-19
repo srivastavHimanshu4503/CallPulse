@@ -29,18 +29,18 @@ export interface LanguageCodes {
 // language, and the old blanket "priya" default was audibly wrong for
 // Bengali/Tamil/Malayalam/Odia.
 const CODES: Record<VoiceKey, LanguageCodes> = {
-  hinglish:  { stt: "hi-IN", tts: "hi-IN", speaker: "shubh" },
-  hindi:     { stt: "hi-IN", tts: "hi-IN", speaker: "shubh" },
-  english:   { stt: "en-IN", tts: "en-IN", speaker: "ratan" },
-  marathi:   { stt: "mr-IN", tts: "mr-IN", speaker: "priya" },
-  tamil:     { stt: "ta-IN", tts: "ta-IN", speaker: "ishita" },
-  telugu:    { stt: "te-IN", tts: "te-IN", speaker: "priya" },
-  bengali:   { stt: "bn-IN", tts: "bn-IN", speaker: "roopa" },
-  gujarati:  { stt: "gu-IN", tts: "gu-IN", speaker: "priya" },
-  kannada:   { stt: "kn-IN", tts: "kn-IN", speaker: "neha" },
+  hinglish: { stt: "hi-IN", tts: "hi-IN", speaker: "shubh" },
+  hindi: { stt: "hi-IN", tts: "hi-IN", speaker: "shubh" },
+  english: { stt: "en-IN", tts: "en-IN", speaker: "ratan" },
+  marathi: { stt: "mr-IN", tts: "mr-IN", speaker: "priya" },
+  tamil: { stt: "ta-IN", tts: "ta-IN", speaker: "ishita" },
+  telugu: { stt: "te-IN", tts: "te-IN", speaker: "priya" },
+  bengali: { stt: "bn-IN", tts: "bn-IN", speaker: "roopa" },
+  gujarati: { stt: "gu-IN", tts: "gu-IN", speaker: "priya" },
+  kannada: { stt: "kn-IN", tts: "kn-IN", speaker: "neha" },
   malayalam: { stt: "ml-IN", tts: "ml-IN", speaker: "pooja" },
-  punjabi:   { stt: "pa-IN", tts: "pa-IN", speaker: "roopa" },
-  odia:      { stt: "od-IN", tts: "od-IN", speaker: "ritu" },
+  punjabi: { stt: "pa-IN", tts: "pa-IN", speaker: "roopa" },
+  odia: { stt: "od-IN", tts: "od-IN", speaker: "ritu" },
 };
 
 export const resolveLanguageCodes = (key: VoiceKey): LanguageCodes => CODES[key];

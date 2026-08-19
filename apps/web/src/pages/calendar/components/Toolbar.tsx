@@ -11,13 +11,21 @@ interface ToolbarProps {
   onToday: () => void;
 }
 
-export function Toolbar({ label, view, onViewChange, onNavigate, onToday }: ToolbarProps): React.JSX.Element {
+export function Toolbar({
+  label,
+  view,
+  onViewChange,
+  onNavigate,
+  onToday,
+}: ToolbarProps): React.JSX.Element {
   return (
     <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 shrink-0">
       <div className="flex items-center gap-3 min-w-0">
         <h1 className="text-[20px] font-bold text-fg-primary tracking-tight shrink-0">Calendar</h1>
         <span className="hidden md:block h-5 w-px bg-line-default" />
-        <span className="hidden md:block text-[13.5px] font-semibold text-fg-secondary truncate tabular-nums">{label}</span>
+        <span className="hidden md:block text-[13.5px] font-semibold text-fg-secondary truncate tabular-nums">
+          {label}
+        </span>
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
@@ -47,7 +55,9 @@ export function Toolbar({ label, view, onViewChange, onNavigate, onToday }: Tool
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-        <span className="md:hidden text-[12.5px] font-semibold text-fg-secondary tabular-nums">{label}</span>
+        <span className="md:hidden text-[12.5px] font-semibold text-fg-secondary tabular-nums">
+          {label}
+        </span>
         <Segmented<ViewMode>
           options={[
             { value: "Month", label: "Month" },

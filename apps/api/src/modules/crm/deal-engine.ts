@@ -24,12 +24,54 @@ export interface StageConfig {
 export const DEFAULT_PIPELINE_NAME = "Sales Pipeline";
 export const DEFAULT_STAGES: StageConfig[] = [
   { name: "New Lead", color: "#64748b", position: 0, probability: 10, isWon: false, isLost: false },
-  { name: "Qualified", color: "#0ea5e9", position: 1, probability: 30, isWon: false, isLost: false },
-  { name: "Discovery", color: "#6366f1", position: 2, probability: 45, isWon: false, isLost: false },
-  { name: "Proposal Sent", color: "#f59e0b", position: 3, probability: 70, isWon: false, isLost: false },
-  { name: "Negotiation", color: "#f97316", position: 4, probability: 90, isWon: false, isLost: false },
-  { name: "Closed Won", color: "#10b981", position: 5, probability: 100, isWon: true, isLost: false },
-  { name: "Closed Lost", color: "#ef4444", position: 6, probability: 0, isWon: false, isLost: true },
+  {
+    name: "Qualified",
+    color: "#0ea5e9",
+    position: 1,
+    probability: 30,
+    isWon: false,
+    isLost: false,
+  },
+  {
+    name: "Discovery",
+    color: "#6366f1",
+    position: 2,
+    probability: 45,
+    isWon: false,
+    isLost: false,
+  },
+  {
+    name: "Proposal Sent",
+    color: "#f59e0b",
+    position: 3,
+    probability: 70,
+    isWon: false,
+    isLost: false,
+  },
+  {
+    name: "Negotiation",
+    color: "#f97316",
+    position: 4,
+    probability: 90,
+    isWon: false,
+    isLost: false,
+  },
+  {
+    name: "Closed Won",
+    color: "#10b981",
+    position: 5,
+    probability: 100,
+    isWon: true,
+    isLost: false,
+  },
+  {
+    name: "Closed Lost",
+    color: "#ef4444",
+    position: 6,
+    probability: 0,
+    isWon: false,
+    isLost: true,
+  },
 ];
 
 export const weightedRevenue = (value: number, probability: number): number =>
@@ -41,9 +83,7 @@ export const weightedRevenue = (value: number, probability: number): number =>
  * probability ramp, with won/lost inferred from conventional names so legacy
  * pipelines still forecast sensibly.
  */
-export const normalizeStageInput = (
-  stages: Array<string | PipelineStageInput>
-): StageConfig[] => {
+export const normalizeStageInput = (stages: Array<string | PipelineStageInput>): StageConfig[] => {
   const openCount = Math.max(1, stages.length - 1);
   return stages.map((s, i) => {
     const cfg = typeof s === "string" ? { name: s } : s;
@@ -72,7 +112,7 @@ export const syncPipelineStages = async (
   tx: any,
   tenantId: string,
   pipelineId: string,
-  configs: StageConfig[]
+  configs: StageConfig[],
 ): Promise<void> => {
   const existing = await tx.pipelineStage.findMany({ where: { pipelineId } });
   const byName = new Map(existing.map((s: any) => [s.name, s]));
@@ -111,7 +151,7 @@ export const syncPipelineStages = async (
 export const findStage = async (
   tx: any,
   pipelineId: string | null | undefined,
-  stageName: string
+  stageName: string,
 ): Promise<any | null> => {
   if (!pipelineId) return null;
   return tx.pipelineStage.findFirst({
@@ -130,15 +170,15 @@ export const findStage = async (
 export const stageMovePatch = (
   deal: { probability: number; probabilitySource: string; value: number },
   stage: { name: string; probability: number; isWon: boolean; isLost: boolean } | null,
-  stageName: string
+  stageName: string,
 ): Record<string, unknown> => {
   const probability =
     deal.probabilitySource === "MANUAL"
       ? deal.probability
-      : stage?.probability ?? deal.probability;
+      : (stage?.probability ?? deal.probability);
   return {
     stage: stage?.name ?? stageName,
-    stageId: stage ? (stage as any).id ?? undefined : null,
+    stageId: stage ? ((stage as any).id ?? undefined) : null,
     probability,
     weightedValue: weightedRevenue(deal.value, probability),
     actualCloseDate: stage && (stage.isWon || stage.isLost) ? new Date() : null,

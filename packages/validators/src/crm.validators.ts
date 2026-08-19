@@ -53,12 +53,15 @@ export const createPipelineSchema = z.object({
   stages: z
     .array(z.union([z.string().min(1, "Stage name cannot be empty"), pipelineStageInputSchema]))
     .min(1, "Pipeline must have at least one stage"),
-  filters: z.array(
-    z.object({
-      fieldDefinitionId: z.string(),
-      value: z.string(),
-    })
-  ).optional().nullable(),
+  filters: z
+    .array(
+      z.object({
+        fieldDefinitionId: z.string(),
+        value: z.string(),
+      }),
+    )
+    .optional()
+    .nullable(),
 });
 
 export const createNoteSchema = z.object({

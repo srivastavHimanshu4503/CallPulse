@@ -92,7 +92,7 @@ if (agentsPkg && config.livekit.isConfigured) {
         // WebSocket has silently died (observed zombie connections in dev).
         // Docker's healthcheck probes this so autoheal can restart us.
         port: 8081,
-      })
+      }),
     );
     worker
       .run()

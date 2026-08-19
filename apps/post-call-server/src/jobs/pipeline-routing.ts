@@ -93,7 +93,7 @@ const loadCatalog = async (tenantId: string): Promise<CatalogEntry> => {
       stageConfigs: p.stageConfigs,
       filters: Array.isArray(p.filters)
         ? (p.filters as { fieldDefinitionId: string; value: string }[]).filter(
-            (f) => f && f.fieldDefinitionId
+            (f) => f && f.fieldDefinitionId,
           )
         : [],
       recentTitles: titlesByPipeline.get(p.id) ?? [],
@@ -108,7 +108,7 @@ const loadCatalog = async (tenantId: string): Promise<CatalogEntry> => {
 /** Contact custom-field values, stringified+lowercased for rule comparison. */
 const loadContactFieldValues = async (
   tenantId: string,
-  contactId: string
+  contactId: string,
 ): Promise<Map<string, string>> => {
   const values = await db.customFieldValue.findMany({ where: { tenantId, contactId } });
   const map = new Map<string, string>();
@@ -128,7 +128,7 @@ const RoutePickSchema = z.object({
     .string()
     .nullable()
     .describe(
-      "The id of the best-matching pipeline, copied EXACTLY from the list. Null when you are genuinely unsure which pipeline this deal belongs in."
+      "The id of the best-matching pipeline, copied EXACTLY from the list. Null when you are genuinely unsure which pipeline this deal belongs in.",
     ),
   reasoning: z.string().describe("One sentence"),
 });
@@ -156,8 +156,12 @@ export const routeNewDeal = async (input: {
     const fieldValues = await loadContactFieldValues(input.tenantId, input.contactId);
     const matches = ruled.filter((p) =>
       p.filters.every(
-        (f) => fieldValues.get(f.fieldDefinitionId) === String(f.value ?? "").toLowerCase().trim()
-      )
+        (f) =>
+          fieldValues.get(f.fieldDefinitionId) ===
+          String(f.value ?? "")
+            .toLowerCase()
+            .trim(),
+      ),
     );
     if (matches.length === 1) return { pipeline: matches[0]!, method: "rule", flagged: false };
     if (matches.length > 1) {
@@ -184,14 +188,15 @@ export const routeNewDeal = async (input: {
 
 const llmPick = async (
   candidates: CatalogEntry["pipelines"],
-  input: { intent: string; summary: string | null; logId: string }
+  input: { intent: string; summary: string | null; logId: string },
 ): Promise<RoutingResult | null> => {
   if (!llmEnabled()) return null;
   try {
     const cards = candidates
       .map((p) => {
         const stages = p.stageConfigs.map((s) => s.name).join(" → ");
-        const evidence = p.recentTitles.length > 0 ? ` | recent deals: ${p.recentTitles.join("; ")}` : "";
+        const evidence =
+          p.recentTitles.length > 0 ? ` | recent deals: ${p.recentTitles.join("; ")}` : "";
         return `- id: ${p.id} | name: ${p.name} | stages: ${stages}${evidence}`;
       })
       .join("\n");
@@ -237,13 +242,17 @@ const llmPick = async (
 export const validatePlacement = async (
   tenantId: string,
   contactId: string,
-  pipeline: RoutedPipeline
+  pipeline: RoutedPipeline,
 ): Promise<boolean> => {
   const catalog = await loadCatalog(tenantId);
   const full = catalog.pipelines.find((p) => p.id === pipeline.id);
   if (!full || full.filters.length === 0) return true;
   const fieldValues = await loadContactFieldValues(tenantId, contactId);
   return full.filters.every(
-    (f) => fieldValues.get(f.fieldDefinitionId) === String(f.value ?? "").toLowerCase().trim()
+    (f) =>
+      fieldValues.get(f.fieldDefinitionId) ===
+      String(f.value ?? "")
+        .toLowerCase()
+        .trim(),
   );
 };

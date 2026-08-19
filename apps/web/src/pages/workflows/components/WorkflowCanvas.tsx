@@ -540,7 +540,12 @@ export function WorkflowCanvas(props: WorkflowCanvasProps): React.JSX.Element {
 
   const onNodesChange = React.useCallback(
     (changes: NodeChange[]) =>
-      setNodes((nds) => applyNodeChanges(changes.filter((c) => c.type !== "remove"), nds)),
+      setNodes((nds) =>
+        applyNodeChanges(
+          changes.filter((c) => c.type !== "remove"),
+          nds,
+        ),
+      ),
     [],
   );
 
@@ -548,7 +553,8 @@ export function WorkflowCanvas(props: WorkflowCanvasProps): React.JSX.Element {
     (conn: Connection) => {
       const { source, target, sourceHandle } = conn;
       if (!source || !target) return;
-      if (target === "trigger" || target.startsWith("ghost-") || source.startsWith("ghost-")) return;
+      if (target === "trigger" || target.startsWith("ghost-") || source.startsWith("ghost-"))
+        return;
       if (source === target) return;
       if (source === "trigger") {
         onReattachAfter(target, "__start__");
@@ -570,7 +576,13 @@ export function WorkflowCanvas(props: WorkflowCanvasProps): React.JSX.Element {
       onDeleteStep: props.onDeleteStep,
       openMenu: (insert, anchor) => setMenu({ insert, anchor }),
     }),
-    [props.onSelectTrigger, props.onSelectStep, props.onChangeTriggerType, props.onMoveStep, props.onDeleteStep],
+    [
+      props.onSelectTrigger,
+      props.onSelectStep,
+      props.onChangeTriggerType,
+      props.onMoveStep,
+      props.onDeleteStep,
+    ],
   );
 
   return (
@@ -595,14 +607,21 @@ export function WorkflowCanvas(props: WorkflowCanvasProps): React.JSX.Element {
           nodesDraggable
           elementsSelectable
         >
-          <Background variant={BackgroundVariant.Dots} gap={22} size={1.5} color="rgba(15,23,42,0.08)" />
+          <Background
+            variant={BackgroundVariant.Dots}
+            gap={22}
+            size={1.5}
+            color="rgba(15,23,42,0.08)"
+          />
           <Controls showInteractive={false} position="bottom-left" />
           <MiniMap
             pannable
             zoomable
             position="bottom-right"
             className="!h-24 !w-36 rounded-lg border border-line-default overflow-hidden"
-            nodeColor={(n) => (n.type === "trigger" ? "#10b981" : n.type === "ghost" ? "#e2e8f0" : "#3b82f6")}
+            nodeColor={(n) =>
+              n.type === "trigger" ? "#10b981" : n.type === "ghost" ? "#e2e8f0" : "#3b82f6"
+            }
           />
           {props.hasCustomPositions && (
             <Panel position="top-right">

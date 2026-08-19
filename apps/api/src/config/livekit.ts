@@ -15,7 +15,7 @@ export const isLivekitConfigured = (): boolean =>
 const assertConfigured = (): void => {
   if (!isLivekitConfigured()) {
     throw new Error(
-      "LiveKit is not configured — set LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET"
+      "LiveKit is not configured — set LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET",
     );
   }
 };
@@ -57,7 +57,7 @@ export const createTestCallCredentials = async (input: {
   const roomService = new RoomServiceClient(
     httpUrlFromWs(env.LIVEKIT_URL!),
     env.LIVEKIT_API_KEY!,
-    env.LIVEKIT_API_SECRET!
+    env.LIVEKIT_API_SECRET!,
   );
   await roomService.createRoom({
     name: roomName,
@@ -69,7 +69,7 @@ export const createTestCallCredentials = async (input: {
   const dispatch = new AgentDispatchClient(
     httpUrlFromWs(env.LIVEKIT_URL!),
     env.LIVEKIT_API_KEY!,
-    env.LIVEKIT_API_SECRET!
+    env.LIVEKIT_API_SECRET!,
   );
   await dispatch.createDispatch(roomName, agentName, {
     metadata: roomMetadata,

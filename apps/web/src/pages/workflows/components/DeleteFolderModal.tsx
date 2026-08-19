@@ -57,18 +57,19 @@ export function DeleteFolderModal({
                 <>
                   {workflowCount > 0 && (
                     <>
-                      <b className="text-fg-primary">{workflowCount}</b>{" "}
-                      workflow{workflowCount === 1 ? "" : "s"}
+                      <b className="text-fg-primary">{workflowCount}</b> workflow
+                      {workflowCount === 1 ? "" : "s"}
                     </>
                   )}
                   {workflowCount > 0 && subfolderCount > 0 && " and "}
                   {subfolderCount > 0 && (
                     <>
-                      <b className="text-fg-primary">{subfolderCount}</b>{" "}
-                      sub-folder{subfolderCount === 1 ? "" : "s"}
+                      <b className="text-fg-primary">{subfolderCount}</b> sub-folder
+                      {subfolderCount === 1 ? "" : "s"}
                     </>
                   )}{" "}
-                  will move to <b className="text-fg-primary">{target}</b>. No workflows are deleted.
+                  will move to <b className="text-fg-primary">{target}</b>. No workflows are
+                  deleted.
                 </>
               )}
             </div>

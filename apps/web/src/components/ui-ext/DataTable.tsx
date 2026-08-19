@@ -91,7 +91,9 @@ export function DataTable<T>({
   };
 
   const allSelected =
-    selectable && selectedIds!.length > 0 && sortedRows.every((r) => selectedIds!.includes(getRowId(r)));
+    selectable &&
+    selectedIds!.length > 0 &&
+    sortedRows.every((r) => selectedIds!.includes(getRowId(r)));
   const someSelected = selectable && selectedIds!.length > 0 && !allSelected;
 
   const toggleAll = () => {
@@ -122,7 +124,12 @@ export function DataTable<T>({
     >
       <div className={cn("overflow-auto", scrollClassName)}>
         <table className="w-full text-[12px] border-collapse">
-          <thead className={cn("bg-bg-subtle border-b border-line-default", stickyHeader && "sticky top-0 z-10")}>
+          <thead
+            className={cn(
+              "bg-bg-subtle border-b border-line-default",
+              stickyHeader && "sticky top-0 z-10",
+            )}
+          >
             <tr>
               {selectable && (
                 <th className="px-3 py-2.5 w-10 text-left">
@@ -140,7 +147,12 @@ export function DataTable<T>({
               )}
               {columns.map((col) => {
                 const isSorted = sort?.columnId === col.id;
-                const align = col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left";
+                const align =
+                  col.align === "right"
+                    ? "text-right"
+                    : col.align === "center"
+                      ? "text-center"
+                      : "text-left";
                 return (
                   <th
                     key={col.id}
@@ -163,7 +175,9 @@ export function DataTable<T>({
                         <span>{col.header}</span>
                         {!isSorted && <ChevronsUpDown className="h-3 w-3 opacity-50" />}
                         {isSorted && sort!.direction === "asc" && <ArrowUp className="h-3 w-3" />}
-                        {isSorted && sort!.direction === "desc" && <ArrowDown className="h-3 w-3" />}
+                        {isSorted && sort!.direction === "desc" && (
+                          <ArrowDown className="h-3 w-3" />
+                        )}
                       </button>
                     ) : (
                       col.header
@@ -188,7 +202,9 @@ export function DataTable<T>({
               <tr>
                 <td colSpan={columns.length + (selectable ? 1 : 0)} className="p-0">
                   {emptyState || (
-                    <div className="p-12 text-center text-xs text-fg-muted">No records to show.</div>
+                    <div className="p-12 text-center text-xs text-fg-muted">
+                      No records to show.
+                    </div>
                   )}
                 </td>
               </tr>

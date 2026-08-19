@@ -51,7 +51,10 @@ export function Calendar(): React.JSX.Element {
   });
 
   const byDay = React.useMemo(() => groupByDay(bookings), [bookings]);
-  const bookingsFor = React.useCallback((d: Date): Booking[] => byDay.get(dayKey(d)) ?? [], [byDay]);
+  const bookingsFor = React.useCallback(
+    (d: Date): Booking[] => byDay.get(dayKey(d)) ?? [],
+    [byDay],
+  );
   const selectedBooking = bookings.find((b) => b.id === selectedBookingId) ?? null;
 
   const navigate = (dir: -1 | 1) => {
@@ -95,13 +98,23 @@ export function Calendar(): React.JSX.Element {
   return (
     <PageWrapper noScroll={true}>
       <div className="flex flex-col h-full min-h-0">
-        <Toolbar label={headerLabel} view={view} onViewChange={changeView} onNavigate={navigate} onToday={goToday} />
+        <Toolbar
+          label={headerLabel}
+          view={view}
+          onViewChange={changeView}
+          onNavigate={navigate}
+          onToday={goToday}
+        />
 
         <div className="flex-1 min-h-0 flex gap-4">
           {/* ── Calendar pane — full remaining width. Hidden on mobile when a booking is selected. ── */}
-          <div className={`${selectedBooking ? "hidden lg:flex" : "flex"} flex-1 min-w-0 rounded-xl border border-line-default bg-bg-raised shadow-card overflow-hidden flex-col`}>
+          <div
+            className={`${selectedBooking ? "hidden lg:flex" : "flex"} flex-1 min-w-0 rounded-xl border border-line-default bg-bg-raised shadow-card overflow-hidden flex-col`}
+          >
             {isLoading ? (
-              <div className="flex-1 flex items-center justify-center text-fg-muted text-[13px]">Loading calendar…</div>
+              <div className="flex-1 flex items-center justify-center text-fg-muted text-[13px]">
+                Loading calendar…
+              </div>
             ) : view === "Month" ? (
               <MonthView
                 anchor={anchor}
@@ -125,7 +138,9 @@ export function Calendar(): React.JSX.Element {
           </div>
 
           {/* ── Context panel — full width on mobile ONLY when a booking is selected; sidebar on lg+ ── */}
-          <aside className={`${selectedBooking ? "flex w-full" : "hidden"} lg:flex lg:w-[320px] xl:w-[340px] shrink-0 rounded-xl border border-line-default bg-bg-raised shadow-card flex-col overflow-hidden`}>
+          <aside
+            className={`${selectedBooking ? "flex w-full" : "hidden"} lg:flex lg:w-[320px] xl:w-[340px] shrink-0 rounded-xl border border-line-default bg-bg-raised shadow-card flex-col overflow-hidden`}
+          >
             {selectedBooking ? (
               <BookingDetails
                 key={selectedBooking.id}
@@ -136,7 +151,12 @@ export function Calendar(): React.JSX.Element {
                 saving={updateBooking.isPending}
               />
             ) : (
-              <DayAgenda day={selectedDate} today={today} bookings={bookingsFor(selectedDate)} onPickBooking={pickBooking} />
+              <DayAgenda
+                day={selectedDate}
+                today={today}
+                bookings={bookingsFor(selectedDate)}
+                onPickBooking={pickBooking}
+              />
             )}
           </aside>
         </div>

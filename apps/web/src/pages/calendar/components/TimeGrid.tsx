@@ -56,7 +56,10 @@ export function TimeGrid({
   return (
     <div className="flex flex-col h-full min-h-0">
       {/* Sticky day headers */}
-      <div className="flex border-b border-line-subtle bg-bg-raised shrink-0" style={{ paddingLeft: GUTTER_WIDTH }}>
+      <div
+        className="flex border-b border-line-subtle bg-bg-raised shrink-0"
+        style={{ paddingLeft: GUTTER_WIDTH }}
+      >
         {days.map((d, i) => {
           const isToday = isSameDay(d, today);
           const isSelected = isSameDay(d, selectedDate);
@@ -141,7 +144,10 @@ export function TimeGrid({
 
                 {/* Now indicator */}
                 {isToday && (
-                  <div className="absolute left-0 right-0 z-30 pointer-events-none" style={{ top: nowTop }}>
+                  <div
+                    className="absolute left-0 right-0 z-30 pointer-events-none"
+                    style={{ top: nowTop }}
+                  >
                     <div className="relative h-[2px] bg-red-500">
                       <span className="absolute -left-[5px] -top-[3px] h-2 w-2 rounded-full bg-red-500" />
                     </div>

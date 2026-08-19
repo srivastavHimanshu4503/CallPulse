@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  generateStructuredOutput,
-  type OpenAIModelId,
-} from "@antigravity/llm";
+import { generateStructuredOutput, type OpenAIModelId } from "@antigravity/llm";
 import { ConfigError } from "@antigravity/errors";
 import { config } from "../config.js";
 
@@ -23,7 +20,7 @@ export interface ExtractionRequest<T extends z.ZodType> {
 }
 
 export const extractStructured = async <T extends z.ZodType>(
-  req: ExtractionRequest<T>
+  req: ExtractionRequest<T>,
 ): Promise<z.infer<T>> => {
   if (!config.llm.openaiApiKey) {
     throw new ConfigError("OPENAI_API_KEY is not configured", {
@@ -40,6 +37,6 @@ export const extractStructured = async <T extends z.ZodType>(
     req.system,
     req.user,
     req.schema,
-    req.schemaName
+    req.schemaName,
   );
 };

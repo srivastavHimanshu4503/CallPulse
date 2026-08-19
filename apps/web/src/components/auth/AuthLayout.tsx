@@ -54,7 +54,12 @@ const BUSINESS_TYPES = [
       <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
         <circle cx="6" cy="7" r="3" stroke="currentColor" strokeWidth="1.6" />
         <circle cx="6" cy="17" r="3" stroke="currentColor" strokeWidth="1.6" />
-        <path d="M20 5L8.5 15.5M20 19L8.5 8.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <path
+          d="M20 5L8.5 15.5M20 19L8.5 8.5"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
       </svg>
     ),
   },
@@ -71,7 +76,12 @@ const BUSINESS_TYPES = [
     label: "Real Estate",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
-        <path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1v-9z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <path
+          d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1v-9z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
       </svg>
     ),
   },
@@ -79,7 +89,13 @@ const BUSINESS_TYPES = [
     label: "Restaurants",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
-        <path d="M5 3v18M5 3c1.5 0 3 1 3 3v4c0 1-1 2-3 2M19 3v18M19 3c-1 3-2 5-2 7 0 2 1 3 2 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M5 3v18M5 3c1.5 0 3 1 3 3v4c0 1-1 2-3 2M19 3v18M19 3c-1 3-2 5-2 7 0 2 1 3 2 3"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     ),
   },
@@ -87,7 +103,12 @@ const BUSINESS_TYPES = [
     label: "Repair",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
-        <path d="M14 6a4 4 0 015 5l-9 9-5-5 9-9z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <path
+          d="M14 6a4 4 0 015 5l-9 9-5-5 9-9z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
         <path d="M13 8l3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
     ),
@@ -96,7 +117,12 @@ const BUSINESS_TYPES = [
     label: "Coaching",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
-        <path d="M4 6l8-3 8 3-8 3-8-3zM6 8v6c0 1.5 3 3 6 3s6-1.5 6-3V8" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <path
+          d="M4 6l8-3 8 3-8 3-8-3zM6 8v6c0 1.5 3 3 6 3s6-1.5 6-3V8"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
       </svg>
     ),
   },
@@ -114,15 +140,14 @@ const TESTIMONIAL = {
 function LiveVisualizer(): React.JSX.Element {
   const bars = React.useMemo(
     () => Array.from({ length: 36 }, (_, i) => 8 + Math.abs(Math.sin(i * 0.6)) * 22 + (i % 3) * 3),
-    []
+    [],
   );
   return (
     <div className="relative rounded-lg border border-white/10 bg-black/45 px-2.5 py-2 overflow-hidden">
       <div
         className="absolute inset-0 opacity-40"
         style={{
-          background:
-            "radial-gradient(ellipse at center, rgba(37,99,235,0.4) 0%, transparent 75%)",
+          background: "radial-gradient(ellipse at center, rgba(37,99,235,0.4) 0%, transparent 75%)",
           animation: "authBreathe 2s ease-in-out infinite",
         }}
       />
@@ -259,7 +284,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
       <div className="relative hidden lg:flex lg:w-1/2 overflow-hidden">
         {/* Clean minimal dark background (Linear style) */}
         <div className="absolute inset-0 bg-[#0A0A0A]" />
-        
+
         {/* Subtle dot grid */}
         <div
           className="absolute inset-0 opacity-20"
@@ -270,7 +295,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
             WebkitMaskImage: "radial-gradient(ellipse at center, black 50%, transparent 80%)",
           }}
         />
-        
+
         {/* Subtle brand glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-brand-500/10 blur-[100px] rounded-full pointer-events-none" />
 
@@ -297,15 +322,15 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
                 <div className="space-y-3">
                   <h1 className="text-[32px] xl:text-[38px] leading-[1.1] font-bold tracking-tight text-white">
                     Answer every call —{" "}
-                    <span className="text-brand-400">
-                      in every Indian language.
-                    </span>
+                    <span className="text-brand-400">in every Indian language.</span>
                   </h1>
                   <p
                     className="text-[13.5px] xl:text-[14.5px] leading-[1.6] text-white/85"
                     style={{ textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}
                   >
-                    Always-on receptionist that greets customers in Hindi, Tamil, Bengali, Marathi and 10+ regional languages — books appointments, answers queries, captures leads.
+                    Always-on receptionist that greets customers in Hindi, Tamil, Bengali, Marathi
+                    and 10+ regional languages — books appointments, answers queries, captures
+                    leads.
                   </p>
                 </div>
 
@@ -316,9 +341,7 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
                       key={s.label}
                       className="rounded-xl border border-white/15 bg-black/35 backdrop-blur px-3 py-2.5"
                     >
-                      <div className="text-[20px] font-bold leading-none text-white">
-                        {s.value}
-                      </div>
+                      <div className="text-[20px] font-bold leading-none text-white">{s.value}</div>
                       <div className="mt-1.5 text-[10px] text-white/70 font-semibold uppercase tracking-wider">
                         {s.label}
                       </div>
@@ -384,7 +407,9 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
                       <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0a0416]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-white text-[12.5px] font-semibold leading-tight">Voice preview</div>
+                      <div className="text-white text-[12.5px] font-semibold leading-tight">
+                        Voice preview
+                      </div>
                       <div className="text-white/65 text-[10.5px]">
                         {isPlaying ? "Speaking now…" : `${g.native} · Sarvam bulbul v3`}
                       </div>
@@ -471,24 +496,24 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
               <div className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-white/55 mb-3">
                 Speaks natively in
               </div>
-            <div className="relative overflow-hidden">
-              <div
-                className="flex gap-2 whitespace-nowrap w-max"
-                style={{ animation: "authMarquee 30s linear infinite" }}
-              >
-                {[...LANGUAGES, ...LANGUAGES].map((item, i) => (
-                  <span
-                    key={i}
-                    className="rounded-full border border-white/20 bg-black/35 backdrop-blur px-3 py-1.5 text-[12px] text-white font-medium"
-                  >
-                    {item}
-                  </span>
-                ))}
+              <div className="relative overflow-hidden">
+                <div
+                  className="flex gap-2 whitespace-nowrap w-max"
+                  style={{ animation: "authMarquee 30s linear infinite" }}
+                >
+                  {[...LANGUAGES, ...LANGUAGES].map((item, i) => (
+                    <span
+                      key={i}
+                      className="rounded-full border border-white/20 bg-black/35 backdrop-blur px-3 py-1.5 text-[12px] text-white font-medium"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#050214] to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#050214] to-transparent" />
               </div>
-              <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#050214] to-transparent" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#050214] to-transparent" />
             </div>
-          </div>
           </div>
         </div>
       </div>
@@ -507,9 +532,15 @@ export function AuthLayout({ children }: AuthLayoutProps): React.JSX.Element {
         <div className="px-6 sm:px-10 pb-5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-placeholder">
           <div>© {new Date().getFullYear()} DeskBuddy · Made in India</div>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-text-primary transition-colors">Privacy</a>
-            <a href="#" className="hover:text-text-primary transition-colors">Terms</a>
-            <a href="#" className="hover:text-text-primary transition-colors">Support</a>
+            <a href="#" className="hover:text-text-primary transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-text-primary transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-text-primary transition-colors">
+              Support
+            </a>
           </div>
         </div>
       </div>

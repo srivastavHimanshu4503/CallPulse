@@ -69,12 +69,15 @@ router.post("/checkout", async (req: Request, res: Response) => {
       }
       const agentId = String(req.body?.agentId || "");
       const phoneNumber = String(req.body?.phoneNumber || "");
-      const country = (String(req.body?.country || "US").toUpperCase() === "IN" ? "IN" : "US") as "US" | "IN";
+      const country = (String(req.body?.country || "US").toUpperCase() === "IN" ? "IN" : "US") as
+        "US" | "IN";
       if (!agentId || !phoneNumber) {
         sendError(res, "agentId and phoneNumber are required", 400);
         return;
       }
-      const agent = await (await import("../../config/database.js")).db.aIAgent.findFirst({
+      const agent = await (
+        await import("../../config/database.js")
+      ).db.aIAgent.findFirst({
         where: { id: agentId, tenantId, deletedAt: null },
         select: { phoneNumberId: true },
       });

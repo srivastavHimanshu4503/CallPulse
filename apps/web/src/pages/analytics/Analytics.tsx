@@ -27,17 +27,17 @@ import {
 type Period = "today" | "7d" | "30d" | "90d";
 
 const PERIODS = [
-  { label: "Today",   value: "today" as Period },
-  { label: "7 days",  value: "7d"    as Period },
-  { label: "30 days", value: "30d"   as Period },
-  { label: "90 days", value: "90d"   as Period },
+  { label: "Today", value: "today" as Period },
+  { label: "7 days", value: "7d" as Period },
+  { label: "30 days", value: "30d" as Period },
+  { label: "90 days", value: "90d" as Period },
 ];
 
 const OUTCOME_HEX = {
-  booked:   "#16A34A", // null sentiment (handled/booked)
-  lead:     "#2563EB", // >= 70
+  booked: "#16A34A", // null sentiment (handled/booked)
+  lead: "#2563EB", // >= 70
   followup: "#D97706", // 40-69
-  missed:   "#DC2626", // < 40
+  missed: "#DC2626", // < 40
 };
 
 const HEAT_HEX = ["#F1F5F9", "#DBEAFE", "#93C5FD", "#2563EB", "#1E40AF"];
@@ -88,7 +88,10 @@ function StackedBars({ data }: { data: SeriesRow[] }): React.JSX.Element {
         {data.map((d) => {
           const h = d.total === 0 ? 2 : Math.max(8, (d.total / max) * 100);
           return (
-            <div key={d.date} className="flex-1 flex flex-col items-center group h-full justify-end">
+            <div
+              key={d.date}
+              className="flex-1 flex flex-col items-center group h-full justify-end"
+            >
               <span className="text-[10px] font-bold text-fg-primary tabular-nums opacity-0 group-hover:opacity-100 transition-opacity">
                 {d.total}
               </span>
@@ -183,7 +186,10 @@ function Heatmap({
     <div className="flex gap-2.5">
       <div className="flex flex-col gap-1.5 pt-5">
         {days.map((d, i) => (
-          <span key={i} className="h-6 flex items-center text-[10px] font-semibold text-fg-secondary">
+          <span
+            key={i}
+            className="h-6 flex items-center text-[10px] font-semibold text-fg-secondary"
+          >
             {d}
           </span>
         ))}
@@ -238,7 +244,9 @@ const AgentFilter: React.FC<{
         }}
       >
         {agents.map((a) => (
-          <option key={a.id} value={a.id}>{a.name === "All agents" ? a.name : `${a.name} · ${a.role}`}</option>
+          <option key={a.id} value={a.id}>
+            {a.name === "All agents" ? a.name : `${a.name} · ${a.role}`}
+          </option>
         ))}
       </select>
       <div
@@ -299,19 +307,38 @@ export function Analytics(): React.JSX.Element {
   });
 
   const stats = analyticsData?.stats || {
-    calls: 0, callsDelta: { pct: 0, direction: "up" },
-    whatsapp: 0, whatsappDelta: { pct: 0, direction: "up" },
-    conv: 0, convDelta: { pct: 0, direction: "up" },
-    duration: "0s", durationDelta: { pct: 0, direction: "up" },
-    minutes: 0, rating: "0.0", daily: [], sentiment: [], funnel: []
+    calls: 0,
+    callsDelta: { pct: 0, direction: "up" },
+    whatsapp: 0,
+    whatsappDelta: { pct: 0, direction: "up" },
+    conv: 0,
+    convDelta: { pct: 0, direction: "up" },
+    duration: "0s",
+    durationDelta: { pct: 0, direction: "up" },
+    minutes: 0,
+    rating: "0.0",
+    daily: [],
+    sentiment: [],
+    funnel: [],
   };
 
   const zeroGrid = React.useMemo(() => Array.from({ length: 7 }, () => Array(12).fill(0)), []);
   const heatmapGrid: number[][] = analyticsData?.heatmap || zeroGrid;
   const heatmapCounts: number[][] = analyticsData?.heatmapCounts || zeroGrid;
-  const heatmapHours: string[] =
-    analyticsData?.heatmapHours ||
-    ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM"];
+  const heatmapHours: string[] = analyticsData?.heatmapHours || [
+    "9 AM",
+    "10 AM",
+    "11 AM",
+    "12 PM",
+    "1 PM",
+    "2 PM",
+    "3 PM",
+    "4 PM",
+    "5 PM",
+    "6 PM",
+    "7 PM",
+    "8 PM",
+  ];
   const rangeLabel: string = analyticsData?.range?.label || "";
   const isAll = agentId === "all";
   const agent = agents.find((a) => a.id === agentId) || agents[0]!;
@@ -430,13 +457,20 @@ export function Analytics(): React.JSX.Element {
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
                   {k.label}
                 </span>
-                <span className={[
-                  "inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1",
-                  k.tone === "positive"  && "bg-positive-50 text-positive-500 ring-positive-500/15",
-                  (k.tone as string) === "negative"  && "bg-negative-50 text-negative-500 ring-negative-500/15",
-                  k.tone === "brand"     && "bg-brand-50 text-brand-600 ring-brand-500/15",
-                  k.tone === "attention" && "bg-attention-50 text-attention-500 ring-attention-500/15",
-                ].filter(Boolean).join(" ")}>
+                <span
+                  className={[
+                    "inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1",
+                    k.tone === "positive" &&
+                      "bg-positive-50 text-positive-500 ring-positive-500/15",
+                    (k.tone as string) === "negative" &&
+                      "bg-negative-50 text-negative-500 ring-negative-500/15",
+                    k.tone === "brand" && "bg-brand-50 text-brand-600 ring-brand-500/15",
+                    k.tone === "attention" &&
+                      "bg-attention-50 text-attention-500 ring-attention-500/15",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
                   <k.icon className="h-3.5 w-3.5" />
                 </span>
               </div>
@@ -444,11 +478,15 @@ export function Analytics(): React.JSX.Element {
                 <span className="text-[22px] font-semibold text-fg-primary tracking-tight leading-none">
                   {k.value}
                 </span>
-                <span className={[
-                  "inline-flex items-center gap-0.5 text-[10.5px] font-semibold",
-                  k.delta.direction === "up" ? "text-positive-500" : "text-negative-500",
-                ].join(" ")}>
-                  <ArrowUpRight className={`h-3 w-3 ${k.delta.direction === "down" ? "rotate-90" : ""}`} />
+                <span
+                  className={[
+                    "inline-flex items-center gap-0.5 text-[10.5px] font-semibold",
+                    k.delta.direction === "up" ? "text-positive-500" : "text-negative-500",
+                  ].join(" ")}
+                >
+                  <ArrowUpRight
+                    className={`h-3 w-3 ${k.delta.direction === "down" ? "rotate-90" : ""}`}
+                  />
                   {k.delta.pct}%
                 </span>
               </div>
@@ -473,7 +511,9 @@ export function Analytics(): React.JSX.Element {
             <Sparkles className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider opacity-80">AI Insight</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider opacity-80">
+              AI Insight
+            </div>
             <p className="text-[12.5px] font-bold leading-snug">
               {isAll
                 ? "Your agents are actively engaging leads. Consider routing weekend spillover to your primary agent."
@@ -499,10 +539,10 @@ export function Analytics(): React.JSX.Element {
               hint={`What each call turned into${rangeLabel ? ` · ${rangeLabel}` : ""}`}
               action={
                 <div className="hidden md:flex items-center gap-3 text-[10px] font-semibold">
-                  <Legend color={OUTCOME_HEX.booked}   label="Completed/Unknown" />
-                  <Legend color={OUTCOME_HEX.lead}     label="Hot Lead" />
+                  <Legend color={OUTCOME_HEX.booked} label="Completed/Unknown" />
+                  <Legend color={OUTCOME_HEX.lead} label="Hot Lead" />
                   <Legend color={OUTCOME_HEX.followup} label="Follow-up" />
-                  <Legend color={OUTCOME_HEX.missed}   label="Negative" />
+                  <Legend color={OUTCOME_HEX.missed} label="Negative" />
                 </div>
               }
             />
@@ -527,15 +567,28 @@ export function Analytics(): React.JSX.Element {
           </Card>
 
           <Card>
-            <SectionHead title="Caller sentiment" hint="How callers felt, judged by AI after each call" />
+            <SectionHead
+              title="Caller sentiment"
+              hint="How callers felt, judged by AI after each call"
+            />
             <div className="space-y-2">
               {stats.sentiment.map((s: any) => (
                 <div key={s.label} className="flex items-center gap-3">
-                  <span className="text-[11px] font-semibold text-fg-secondary w-14">{s.label}</span>
-                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgb(var(--line-subtle))" }}>
-                    <div className="h-full rounded-full" style={{ width: `${s.pct}%`, backgroundColor: s.color }} />
+                  <span className="text-[11px] font-semibold text-fg-secondary w-14">
+                    {s.label}
+                  </span>
+                  <div
+                    className="flex-1 h-2 rounded-full overflow-hidden"
+                    style={{ backgroundColor: "rgb(var(--line-subtle))" }}
+                  >
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${s.pct}%`, backgroundColor: s.color }}
+                    />
                   </div>
-                  <span className="text-[11px] font-semibold text-fg-primary tabular-nums w-8 text-right">{s.pct}%</span>
+                  <span className="text-[11px] font-semibold text-fg-primary tabular-nums w-8 text-right">
+                    {s.pct}%
+                  </span>
                 </div>
               ))}
             </div>
@@ -554,7 +607,11 @@ export function Analytics(): React.JSX.Element {
             <SectionHead
               title="Agent performance"
               hint={`Each agent's totals${rangeLabel ? ` · ${rangeLabel}` : ""} — click a row to see just that agent`}
-              action={<span className="text-[10.5px] font-semibold text-fg-muted">{agents.length - 1} agents</span>}
+              action={
+                <span className="text-[10.5px] font-semibold text-fg-muted">
+                  {agents.length - 1} agents
+                </span>
+              }
             />
             <div className="overflow-x-auto -mx-1">
               <table className="w-full text-[12px]">
@@ -569,49 +626,53 @@ export function Analytics(): React.JSX.Element {
                   </tr>
                 </thead>
                 <tbody>
-                  {agents.filter((a) => a.id !== "all").map((a) => {
-                    const perf = stats.agentPerformance?.find((p: any) => p.agentId === a.id);
-                    return (
-                      <tr
-                        key={a.id}
-                        onClick={() => setAgentId(a.id)}
-                        className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors cursor-pointer"
-                      >
-                        <td className="px-2 py-2.5">
-                          <div className="flex items-center gap-2.5">
-                            <span
-                              className="h-7 w-7 rounded-full text-white text-[11px] font-semibold flex items-center justify-center"
-                              style={{ backgroundColor: a.hex }}
-                            >
-                              {a.name.charAt(0)}
-                            </span>
-                            <div>
-                              <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">{a.name}</div>
-                              <div className="text-[10.5px] text-fg-muted">{a.role}</div>
+                  {agents
+                    .filter((a) => a.id !== "all")
+                    .map((a) => {
+                      const perf = stats.agentPerformance?.find((p: any) => p.agentId === a.id);
+                      return (
+                        <tr
+                          key={a.id}
+                          onClick={() => setAgentId(a.id)}
+                          className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors cursor-pointer"
+                        >
+                          <td className="px-2 py-2.5">
+                            <div className="flex items-center gap-2.5">
+                              <span
+                                className="h-7 w-7 rounded-full text-white text-[11px] font-semibold flex items-center justify-center"
+                                style={{ backgroundColor: a.hex }}
+                              >
+                                {a.name.charAt(0)}
+                              </span>
+                              <div>
+                                <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">
+                                  {a.name}
+                                </div>
+                                <div className="text-[10.5px] text-fg-muted">{a.role}</div>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="text-right px-2 py-2.5 font-semibold text-fg-primary tabular-nums">
-                          {perf?.calls ?? 0}
-                        </td>
-                        <td className="text-right px-2 py-2.5 text-fg-secondary tabular-nums">
-                          {perf?.minutes ?? 0} min
-                        </td>
-                        <td className="text-right px-2 py-2.5 font-semibold text-brand-600 tabular-nums">
-                          {perf?.leads ?? 0}
-                        </td>
-                        <td className="text-right px-2 py-2.5">
-                          <span className="inline-flex items-center gap-0.5 text-[11.5px] font-semibold text-attention-500">
-                            <Star className="h-3 w-3 fill-attention-500 stroke-attention-500" />
-                            {perf?.rating ?? "0.0"}
-                          </span>
-                        </td>
-                        <td className="text-right px-2 py-2.5">
-                          <ArrowUpRight className="h-3.5 w-3.5 text-fg-muted inline-block" />
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          </td>
+                          <td className="text-right px-2 py-2.5 font-semibold text-fg-primary tabular-nums">
+                            {perf?.calls ?? 0}
+                          </td>
+                          <td className="text-right px-2 py-2.5 text-fg-secondary tabular-nums">
+                            {perf?.minutes ?? 0} min
+                          </td>
+                          <td className="text-right px-2 py-2.5 font-semibold text-brand-600 tabular-nums">
+                            {perf?.leads ?? 0}
+                          </td>
+                          <td className="text-right px-2 py-2.5">
+                            <span className="inline-flex items-center gap-0.5 text-[11.5px] font-semibold text-attention-500">
+                              <Star className="h-3 w-3 fill-attention-500 stroke-attention-500" />
+                              {perf?.rating ?? "0.0"}
+                            </span>
+                          </td>
+                          <td className="text-right px-2 py-2.5">
+                            <ArrowUpRight className="h-3.5 w-3.5 text-fg-muted inline-block" />
+                          </td>
+                        </tr>
+                      );
+                    })}
                   {agents.length === 1 && (
                     <tr>
                       <td colSpan={6} className="px-2 py-6 text-center text-[11.5px] text-fg-muted">
@@ -633,7 +694,9 @@ export function Analytics(): React.JSX.Element {
             />
             <div className="space-y-2">
               {stats.funnel.map((f: any, i: number) => {
-                const shade = ["bg-brand-500", "bg-brand-500/85", "bg-brand-500/70", "bg-brand-500/55"][i] || "bg-brand-500";
+                const shade =
+                  ["bg-brand-500", "bg-brand-500/85", "bg-brand-500/70", "bg-brand-500/55"][i] ||
+                  "bg-brand-500";
                 return (
                   <div key={f.label}>
                     <div className="flex items-center justify-between text-[11.5px] mb-1">
@@ -656,7 +719,6 @@ export function Analytics(): React.JSX.Element {
             </div>
           </Card>
         </div>
-
       </div>
     </PageWrapper>
   );

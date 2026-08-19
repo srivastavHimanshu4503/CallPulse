@@ -1,9 +1,17 @@
 import * as React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { api } from "../../../lib/axios.js";
-import { 
-  X, User, Mail, Phone, ClipboardList, 
-  MessageSquare, Layers, Sparkles, Plus, PhoneCall
+import {
+  X,
+  User,
+  Mail,
+  Phone,
+  ClipboardList,
+  MessageSquare,
+  Layers,
+  Sparkles,
+  Plus,
+  PhoneCall,
 } from "lucide-react";
 import { Button } from "@antigravity/ui";
 import { toast } from "sonner";
@@ -18,12 +26,12 @@ interface ContactDetailsDrawerProps {
 export function ContactDetailsDrawer({
   contactId,
   onClose,
-  customFieldDefs
+  customFieldDefs,
 }: ContactDetailsDrawerProps): React.JSX.Element {
   // Action state managers
   const [noteContent, setNoteContent] = React.useState("");
   const [isNoteOpen, setIsNoteOpen] = React.useState(false);
-  
+
   const [bookingTitle, setBookingTitle] = React.useState("");
   const [bookingStart, setBookingStart] = React.useState("");
   const [isBookingOpen, setIsBookingOpen] = React.useState(false);
@@ -48,7 +56,11 @@ export function ContactDetailsDrawer({
   const [fieldValues, setFieldValues] = React.useState<Record<string, string>>({});
 
   // 1. Fetch High-Density Contact Details (includes timeline activities, deals, notes, bookings)
-  const { data: details, isLoading, refetch } = useQuery({
+  const {
+    data: details,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["contact-details", contactId],
     queryFn: async () => {
       const res = await api.get(`/crm/contacts/${contactId}`);
@@ -78,7 +90,8 @@ export function ContactDetailsDrawer({
           try {
             const d = parseDateVal(cf.value);
             const pad = (num: number) => String(num).padStart(2, "0");
-            map[cf.fieldDefinitionId] = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            map[cf.fieldDefinitionId] =
+              `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
           } catch {
             map[cf.fieldDefinitionId] = String(cf.value ?? "");
           }
@@ -188,7 +201,6 @@ export function ContactDetailsDrawer({
 
       {/* Slide-over Layout Wrapper */}
       <div className="absolute inset-y-0 right-0 w-full md:w-[80vw] bg-bg-raised border-l border-border flex flex-col h-full overflow-hidden shadow-2xl animate-in slide-in-from-right duration-200">
-        
         {/* Sliding Panel Header */}
         <div className="h-14 border-b border-border px-6 bg-bg-subtle flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
@@ -197,32 +209,49 @@ export function ContactDetailsDrawer({
               {details.firstName} {details.lastName} Details Panel
             </span>
           </div>
-          <button type="button" onClick={onClose} className="text-text-secondary hover:text-text-primary focus:outline-none">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-text-secondary hover:text-text-primary focus:outline-none"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Dynamic Three Column Grid */}
         <div className="flex-1 grid grid-cols-1 md:grid-cols-4 min-h-0 divide-x divide-border">
-          
           {/* COLUMN 1: Profile & Custom Fields (1/4 width) */}
           <div className="p-5 overflow-y-auto space-y-5">
             <div className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider border-b border-border pb-1.5 flex items-center gap-1">
               <User className="h-3.5 w-3.5" /> Customer Identity
             </div>
-            
+
             <div className="space-y-3.5 text-xs">
               <div>
-                <span className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider block">Customer Name</span>
-                <span className="font-bold text-text-primary mt-0.5 block capitalize">{details.firstName} {details.lastName}</span>
+                <span className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider block">
+                  Customer Name
+                </span>
+                <span className="font-bold text-text-primary mt-0.5 block capitalize">
+                  {details.firstName} {details.lastName}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider block">Email Address</span>
-                <span className="font-medium text-text-secondary mt-0.5 block flex items-center gap-1.5"><Mail className="h-3.5 w-3.5 text-text-placeholder" /> {details.emails?.[0] || "--"}</span>
+                <span className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider block">
+                  Email Address
+                </span>
+                <span className="font-medium text-text-secondary mt-0.5 block flex items-center gap-1.5">
+                  <Mail className="h-3.5 w-3.5 text-text-placeholder" />{" "}
+                  {details.emails?.[0] || "--"}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider block">Primary Phone</span>
-                <span className="font-medium text-text-secondary mt-0.5 block flex items-center gap-1.5"><Phone className="h-3.5 w-3.5 text-text-placeholder" /> {details.phones?.[0] || "--"}</span>
+                <span className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider block">
+                  Primary Phone
+                </span>
+                <span className="font-medium text-text-secondary mt-0.5 block flex items-center gap-1.5">
+                  <Phone className="h-3.5 w-3.5 text-text-placeholder" />{" "}
+                  {details.phones?.[0] || "--"}
+                </span>
               </div>
             </div>
 
@@ -231,27 +260,37 @@ export function ContactDetailsDrawer({
             </div>
 
             {customFieldDefs.length === 0 ? (
-              <p className="text-[10px] text-text-placeholder italic">Configure field variables under custom fields tab.</p>
+              <p className="text-[10px] text-text-placeholder italic">
+                Configure field variables under custom fields tab.
+              </p>
             ) : (
               <div className="space-y-4 pt-1">
                 {customFieldDefs.map((def: any) => (
                   <div key={def.id} className="space-y-1.5">
-                    <label className="block text-[11px] font-bold text-text-primary uppercase tracking-wider">{def.name}</label>
+                    <label className="block text-[11px] font-bold text-text-primary uppercase tracking-wider">
+                      {def.name}
+                    </label>
                     {def.type === "DROPDOWN" ? (
                       <select
                         value={fieldValues[def.id] || ""}
-                        onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
+                        onChange={(e) =>
+                          setFieldValues({ ...fieldValues, [def.id]: e.target.value })
+                        }
                         className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] h-8 px-2 focus:outline-none"
                       >
                         <option value="">Select option...</option>
                         {def.options?.map((opt: string) => (
-                          <option key={opt} value={opt}>{opt}</option>
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
                         ))}
                       </select>
                     ) : def.type === "BOOLEAN" ? (
                       <select
                         value={fieldValues[def.id] || ""}
-                        onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
+                        onChange={(e) =>
+                          setFieldValues({ ...fieldValues, [def.id]: e.target.value })
+                        }
                         className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] h-8 px-2 focus:outline-none"
                       >
                         <option value="">Select option...</option>
@@ -260,10 +299,18 @@ export function ContactDetailsDrawer({
                       </select>
                     ) : (
                       <input
-                        type={def.type === "NUMBER" ? "number" : def.type === "DATE" ? "datetime-local" : "text"}
+                        type={
+                          def.type === "NUMBER"
+                            ? "number"
+                            : def.type === "DATE"
+                              ? "datetime-local"
+                              : "text"
+                        }
                         placeholder={`Enter custom ${def.name}...`}
                         value={fieldValues[def.id] || ""}
-                        onChange={(e) => setFieldValues({ ...fieldValues, [def.id]: e.target.value })}
+                        onChange={(e) =>
+                          setFieldValues({ ...fieldValues, [def.id]: e.target.value })
+                        }
                         className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] h-8 px-2.5 focus:outline-none"
                       />
                     )}
@@ -288,18 +335,27 @@ export function ContactDetailsDrawer({
             </div>
 
             {details.activities.length === 0 ? (
-              <div className="text-center p-12 text-text-placeholder">No timeline log triggers found.</div>
+              <div className="text-center p-12 text-text-placeholder">
+                No timeline log triggers found.
+              </div>
             ) : (
               <div className="space-y-4 pt-1">
                 {details.activities.map((a: any) => {
                   const isCall = a.type === "CALL_INBOUND" || a.type === "CALL_OUTBOUND";
-                  
+
                   return (
-                    <div key={a.id} className="bg-bg-raised border border-border rounded-[6px] p-4 space-y-3">
+                    <div
+                      key={a.id}
+                      className="bg-bg-raised border border-border rounded-[6px] p-4 space-y-3"
+                    >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-2.5">
                           <div className="h-7 w-7 rounded-full bg-bg-subtle border border-border flex items-center justify-center shrink-0 mt-0.5 text-text-secondary">
-                            {isCall ? <PhoneCall className="h-3.5 w-3.5" /> : <MessageSquare className="h-3.5 w-3.5" />}
+                            {isCall ? (
+                              <PhoneCall className="h-3.5 w-3.5" />
+                            ) : (
+                              <MessageSquare className="h-3.5 w-3.5" />
+                            )}
                           </div>
                           <div>
                             <h5 className="text-xs font-bold text-text-primary leading-snug">
@@ -317,13 +373,21 @@ export function ContactDetailsDrawer({
                         <div className="bg-bg-subtle border border-border rounded-[6px] p-3 space-y-3 mt-2 animate-in fade-in duration-200">
                           {a.commLog.recordingUrl && (
                             <div className="space-y-1.5">
-                              <span className="text-[9px] font-bold text-text-placeholder uppercase tracking-wider block">Call Recording logs URL</span>
-                              <audio src={a.commLog.recordingUrl} controls className="w-full h-8 select-none focus:outline-none" />
+                              <span className="text-[9px] font-bold text-text-placeholder uppercase tracking-wider block">
+                                Call Recording logs URL
+                              </span>
+                              <audio
+                                src={a.commLog.recordingUrl}
+                                controls
+                                className="w-full h-8 select-none focus:outline-none"
+                              />
                             </div>
                           )}
                           {a.commLog.transcript && (
                             <div className="space-y-1.5 border-t border-border pt-2">
-                              <span className="text-[9px] font-bold text-text-placeholder uppercase tracking-wider block">Verbal Call Transcript Extraction</span>
+                              <span className="text-[9px] font-bold text-text-placeholder uppercase tracking-wider block">
+                                Verbal Call Transcript Extraction
+                              </span>
                               <p className="text-[11px] text-text-secondary leading-relaxed italic bg-bg-raised p-2.5 border border-border rounded-[4px] font-medium">
                                 "{a.commLog.transcript}"
                               </p>
@@ -341,9 +405,11 @@ export function ContactDetailsDrawer({
           {/* COLUMN 4: Linked Objects & Action triggers (1/4 width) */}
           <div className="p-5 overflow-y-auto space-y-5 select-none">
             <div className="text-[10px] font-bold text-text-placeholder uppercase tracking-wider border-b border-border pb-1.5 flex items-center justify-between">
-              <span className="flex items-center gap-1"><Layers className="h-3.5 w-3.5" /> Opportunity objects</span>
+              <span className="flex items-center gap-1">
+                <Layers className="h-3.5 w-3.5" /> Opportunity objects
+              </span>
               {!isDealOpen && (
-                <button 
+                <button
                   onClick={() => setIsDealOpen(true)}
                   className="text-[10px] font-bold text-brand-600 hover:text-brand-600"
                 >
@@ -355,10 +421,14 @@ export function ContactDetailsDrawer({
             {/* Inline deal/pipeline creation form */}
             {isDealOpen && (
               <div className="space-y-3 bg-bg-subtle border border-border rounded-[6px] p-3 text-left animate-in slide-in-from-top-4 duration-150">
-                <h4 className="text-[10px] font-bold text-text-primary uppercase tracking-wider">Link to Pipeline</h4>
-                
+                <h4 className="text-[10px] font-bold text-text-primary uppercase tracking-wider">
+                  Link to Pipeline
+                </h4>
+
                 <div>
-                  <label className="block text-[9px] font-semibold text-text-secondary mb-1">Opportunity Title</label>
+                  <label className="block text-[9px] font-semibold text-text-secondary mb-1">
+                    Opportunity Title
+                  </label>
                   <input
                     type="text"
                     placeholder="e.g. Upgrade License..."
@@ -369,7 +439,9 @@ export function ContactDetailsDrawer({
                 </div>
 
                 <div>
-                  <label className="block text-[9px] font-semibold text-text-secondary mb-1">Estimated Value (Rs.)</label>
+                  <label className="block text-[9px] font-semibold text-text-secondary mb-1">
+                    Estimated Value (Rs.)
+                  </label>
                   <input
                     type="number"
                     placeholder="e.g. 50000"
@@ -380,7 +452,9 @@ export function ContactDetailsDrawer({
                 </div>
 
                 <div>
-                  <label className="block text-[9px] font-semibold text-text-secondary mb-1">Select Pipeline</label>
+                  <label className="block text-[9px] font-semibold text-text-secondary mb-1">
+                    Select Pipeline
+                  </label>
                   <select
                     value={dealPipelineId}
                     onChange={(e) => {
@@ -396,38 +470,52 @@ export function ContactDetailsDrawer({
                   >
                     <option value="">Choose pipeline...</option>
                     {pipelines.map((p: any) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
                     ))}
                   </select>
                 </div>
 
                 {dealPipelineId && (
                   <div>
-                    <label className="block text-[9px] font-semibold text-text-secondary mb-1">Pipeline Stage</label>
+                    <label className="block text-[9px] font-semibold text-text-secondary mb-1">
+                      Pipeline Stage
+                    </label>
                     <select
                       value={dealStage}
                       onChange={(e) => setDealStage(e.target.value)}
                       className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[4px] h-7 px-1.5 focus:outline-none"
                     >
                       <option value="">Select stage...</option>
-                      {pipelines.find((p: any) => p.id === dealPipelineId)?.stages?.map((s: string) => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
+                      {pipelines
+                        .find((p: any) => p.id === dealPipelineId)
+                        ?.stages?.map((s: string) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 )}
 
                 <div className="flex items-center justify-end gap-2 pt-1">
-                  <button 
+                  <button
                     type="button"
-                    onClick={() => setIsDealOpen(false)} 
+                    onClick={() => setIsDealOpen(false)}
                     className="text-[10px] font-bold text-text-secondary"
                   >
                     Cancel
                   </button>
                   <Button
                     variant="primary"
-                    disabled={createDealMutation.isPending || !dealTitle || !dealValue || !dealPipelineId || !dealStage}
+                    disabled={
+                      createDealMutation.isPending ||
+                      !dealTitle ||
+                      !dealValue ||
+                      !dealPipelineId ||
+                      !dealStage
+                    }
                     onClick={() => {
                       createDealMutation.mutate({
                         contactId,
@@ -451,10 +539,17 @@ export function ContactDetailsDrawer({
                 <p className="text-[10px] text-text-placeholder italic">No active opportunities.</p>
               ) : (
                 details.deals.map((d: any) => (
-                  <div key={d.id} className="bg-bg-raised border border-border rounded-[6px] p-2.5 flex items-center justify-between">
+                  <div
+                    key={d.id}
+                    className="bg-bg-raised border border-border rounded-[6px] p-2.5 flex items-center justify-between"
+                  >
                     <div>
-                      <h5 className="text-[11px] font-bold text-text-primary leading-tight">{d.title}</h5>
-                      <span className="text-[10px] text-brand-600 font-bold block mt-0.5">Rs. {d.value.toLocaleString("en-IN")}</span>
+                      <h5 className="text-[11px] font-bold text-text-primary leading-tight">
+                        {d.title}
+                      </h5>
+                      <span className="text-[10px] text-brand-600 font-bold block mt-0.5">
+                        Rs. {d.value.toLocaleString("en-IN")}
+                      </span>
                     </div>
                     <span className="inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold bg-brand-50 border border-brand-500/10 text-brand-600 uppercase tracking-wider">
                       {d.stage}
@@ -488,7 +583,12 @@ export function ContactDetailsDrawer({
                     className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary placeholder-text-placeholder rounded-[6px] p-2 focus:outline-none leading-relaxed"
                   />
                   <div className="flex items-center justify-end gap-2">
-                    <button onClick={() => setIsNoteOpen(false)} className="text-[10px] font-bold text-text-secondary">Cancel</button>
+                    <button
+                      onClick={() => setIsNoteOpen(false)}
+                      className="text-[10px] font-bold text-text-secondary"
+                    >
+                      Cancel
+                    </button>
                     <Button
                       variant="primary"
                       onClick={() => addNoteMutation.mutate(noteContent)}
@@ -525,7 +625,12 @@ export function ContactDetailsDrawer({
                     className="w-full bg-bg-raised border border-border focus:border-brand-500 text-xs text-text-primary rounded-[6px] h-8 px-2 focus:outline-none"
                   />
                   <div className="flex items-center justify-end gap-2">
-                    <button onClick={() => setIsBookingOpen(false)} className="text-[10px] font-bold text-text-secondary">Cancel</button>
+                    <button
+                      onClick={() => setIsBookingOpen(false)}
+                      className="text-[10px] font-bold text-text-secondary"
+                    >
+                      Cancel
+                    </button>
                     <Button
                       variant="primary"
                       onClick={() => {
@@ -534,7 +639,7 @@ export function ContactDetailsDrawer({
                         bookAppointmentMutation.mutate({
                           title: bookingTitle,
                           startTime: start.toISOString(),
-                          endTime: end.toISOString()
+                          endTime: end.toISOString(),
                         });
                       }}
                       disabled={bookAppointmentMutation.isPending}
@@ -547,9 +652,7 @@ export function ContactDetailsDrawer({
               )}
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
   );

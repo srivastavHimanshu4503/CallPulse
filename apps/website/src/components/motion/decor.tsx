@@ -31,7 +31,7 @@ export function Orb({
   tone = "violet",
   delay = 0,
   duration = 18,
-  opacity = 0.30,
+  opacity = 0.3,
 }: ShapeProps) {
   const p = PALETTES[tone];
   return (
@@ -180,7 +180,12 @@ export function Sparkle({
     <span
       aria-hidden
       className={`animate-twinkle pointer-events-none absolute ${className}`}
-      style={{ width: size, height: size, animationDelay: `${delay}s`, animationDuration: `${duration}s` }}
+      style={{
+        width: size,
+        height: size,
+        animationDelay: `${delay}s`,
+        animationDuration: `${duration}s`,
+      }}
     >
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none">
         <path

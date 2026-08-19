@@ -45,8 +45,7 @@ React app), `apps/api`, `apps/voice-server`, `apps/post-call-server`.
    ```ts
    import preset from "../../packages/config/tailwind.preset.js";
    export default {
-     content: ["./index.html", "./src/**/*.{ts,tsx}",
-               "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"],
+     content: ["./index.html", "./src/**/*.{ts,tsx}", "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"],
      presets: [preset],
    };
    ```
@@ -75,22 +74,23 @@ React app), `apps/api`, `apps/voice-server`, `apps/post-call-server`.
 Tokens come from `packages/config/tailwind.preset.js` — use the semantic
 classes, never raw hex.
 
-| Purpose | Class | Hex |
-|---|---|---|
-| Page background | `bg-bg-canvas` | #FFFFFF |
-| Subtle section bg | `bg-bg-subtle` | #FAFAFA |
-| Muted panel / chip | `bg-bg-muted` | #F5F5F7 |
-| Brand-tinted highlight | `bg-bg-highlight` | #EFF6FF |
-| Dark section (footer/CTA) | `bg-bg-inverse` | #0A0416 |
-| Headings & body | `text-fg-primary` | #0F172A |
-| Sub-copy | `text-fg-secondary` | #475569 |
-| Captions / hints | `text-fg-muted` | #94A3B8 |
-| Borders | `border-line-default` | #E5E7EB |
+| Purpose                         | Class                     | Hex     |
+| ------------------------------- | ------------------------- | ------- |
+| Page background                 | `bg-bg-canvas`            | #FFFFFF |
+| Subtle section bg               | `bg-bg-subtle`            | #FAFAFA |
+| Muted panel / chip              | `bg-bg-muted`             | #F5F5F7 |
+| Brand-tinted highlight          | `bg-bg-highlight`         | #EFF6FF |
+| Dark section (footer/CTA)       | `bg-bg-inverse`           | #0A0416 |
+| Headings & body                 | `text-fg-primary`         | #0F172A |
+| Sub-copy                        | `text-fg-secondary`       | #475569 |
+| Captions / hints                | `text-fg-muted`           | #94A3B8 |
+| Borders                         | `border-line-default`     | #E5E7EB |
 | **Brand blue (the ONE accent)** | `bg-brand` / `text-brand` | #2563EB |
-| Brand hover | `bg-brand-600` | #1D4ED8 |
-| Success ticks | `text-positive` | #16A34A |
+| Brand hover                     | `bg-brand-600`            | #1D4ED8 |
+| Success ticks                   | `text-positive`           | #16A34A |
 
 **Design taste rules (non-negotiable, matches the product):**
+
 - ONE blue accent + neutrals. No gradients-everywhere, no rainbow feature
   cards, no purple/teal "AI" clichés. White canvas, generous whitespace.
 - Small, quiet badges (`text-[11px]`, `bg-bg-highlight text-brand`).
@@ -100,7 +100,7 @@ classes, never raw hex.
   `border border-line-default`, `shadow-sm` max. No heavy drop shadows.
 - Type scale: hero `text-4xl sm:text-5xl font-extrabold tracking-tight`;
   section titles `text-2xl sm:text-3xl font-bold`; body `text-sm/text-base
-  text-fg-secondary leading-relaxed`.
+text-fg-secondary leading-relaxed`.
 
 **Logo — text only, NO image.** Replicate `apps/web/src/components/common/Logo.tsx`:
 `Desk` in `text-fg-primary` + `Buddy` in `text-blue-600`, `font-extrabold
@@ -111,6 +111,7 @@ tracking-tight`. Compact "DB" mark for small contexts.
 ## 4. Page structure — top to bottom
 
 ### 4.1 Nav (sticky, `bg-bg-canvas/80 backdrop-blur`, bottom border `line-subtle`)
+
 - Left: DeskBuddy wordmark (links to `/`)
 - Center links (anchor scroll): Features · How it works · Pricing · FAQ
 - Right: `Log in` (ghost link → https://app.deskbuddy.in/login) and
@@ -118,6 +119,7 @@ tracking-tight`. Compact "DB" mark for small contexts.
 - Mobile: hamburger → slide-down menu, same items.
 
 ### 4.2 Hero (`bg-bg-canvas`, centered, py-24)
+
 - Tiny badge: "Made for Indian businesses 🇮🇳" (flag emoji allowed here only)
 - H1: **"Every call answered. Every customer kept."**
 - Sub (max-w-xl): "DeskBuddy is an AI receptionist that picks up 24/7, speaks
@@ -130,11 +132,13 @@ tracking-tight`. Compact "DB" mark for small contexts.
   books 5 PM slot). Pure HTML/CSS — no screenshots, no stock images.
 
 ### 4.3 Social-proof strip (`bg-bg-subtle`, py-8)
+
 - One line of muted text: "Answering calls for salons, clinics, garages,
   real-estate and more across India" + 5–6 plain-text business-type chips.
   (No fake logos, no fake numbers.)
 
 ### 4.4 How it works (3 steps, numbered cards in a row)
+
 1. **Create your agent** — "Sign up, tell us your business name — DeskBuddy
    writes your agent's knowledge base automatically."
 2. **Test it in your browser** — "Talk to your agent before customers do.
@@ -143,18 +147,21 @@ tracking-tight`. Compact "DB" mark for small contexts.
    becomes an answered one."
 
 ### 4.5 Features grid (2×3 or 3×2 cards, `bg-bg-canvas`)
+
 Each card: lucide icon in a `bg-bg-highlight text-brand` square, title, 2-line
 description. Cards: AI voice calls (6 languages) · Auto knowledge base ·
 Bookings & calendar · Smart CRM · WhatsApp/SMS follow-ups · Call transfer to
 your phone. Icons: Phone, BookOpen, Calendar, Users, MessageCircle, PhoneForwarded.
 
 ### 4.6 Languages / voice section (`bg-bg-subtle`)
+
 - Title: "Speaks like your front desk, not a robot"
 - Chips for: Hindi · Hinglish · English · Marathi · Tamil · Telugu
 - One line about premium natural voices (ElevenLabs-powered — say "studio-quality
   voices", don't name vendors).
 
 ### 4.7 Pricing (`bg-bg-canvas`)
+
 Import real numbers from `@antigravity/types` (`PLAN_PRICE_INR`,
 `PLAN_CREDITS`, `PLAN_AGENT_LIMITS`, `CREDIT_COSTS`) — do NOT hardcode.
 Current values: FREE ₹0 (30 credits, 1 agent) · PRO ₹2,999/mo (500 credits,
@@ -164,16 +171,19 @@ PRO card gets `border-brand` + small "Most popular" badge. CTAs →
 https://app.deskbuddy.in/register.
 
 ### 4.8 FAQ (accordion, 6 items, `bg-bg-subtle`)
+
 Suggested Qs: Does it really speak Hindi? · What happens when it can't answer?
 (→ transfers to you / takes a message) · Do I need new hardware? (no — cloud
 number) · Can I hear my calls? (recordings + transcripts) · How fast is setup?
 (under 10 minutes) · Can I cancel anytime? (yes)
 
 ### 4.9 Final CTA banner (`bg-bg-inverse`, white text, py-20, centered)
+
 - H2: "Your next customer is calling. Answer every time."
 - `Get started free` button (brand blue on dark).
 
 ### 4.10 Footer (`bg-bg-inverse`, `text-fg-inverse`, muted secondary text)
+
 - Col 1: DB wordmark (white "Desk", blue "Buddy") + one-liner + "Made in India"
 - Col 2 Product: Features, Pricing, Log in, Get started
 - Col 3 Company: Contact (mailto), Privacy, Terms (stub pages OK)

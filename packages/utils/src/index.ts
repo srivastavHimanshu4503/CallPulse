@@ -5,16 +5,16 @@ export function formatTimeAgo(dateString: string): string {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffSec = Math.floor(diffMs / 1000);
-    
+
     if (diffSec < 10) return "Just now";
     if (diffSec < 60) return `${diffSec}s ago`;
-    
+
     const diffMin = Math.floor(diffSec / 60);
     if (diffMin < 60) return `${diffMin}m ago`;
-    
+
     const diffHrs = Math.floor(diffMin / 60);
     if (diffHrs < 24) return `${diffHrs}h ago`;
-    
+
     const diffDays = Math.floor(diffHrs / 24);
     return `${diffDays}d ago`;
   } catch {
@@ -45,11 +45,12 @@ export function generateBusinessSlug(businessName: string): string {
 export function getCleanErrorMessage(error: unknown): string {
   if (!error) return "An unexpected error occurred";
 
-  const msg = error instanceof Error 
-    ? error.message 
-    : typeof error === "string" 
-      ? error 
-      : (error as Record<string, any>)?.message || "";
+  const msg =
+    error instanceof Error
+      ? error.message
+      : typeof error === "string"
+        ? error
+        : (error as Record<string, any>)?.message || "";
 
   // Clean up database unique constraint violations
   if (msg.includes("Unique constraint failed") || msg.includes("P2002")) {
@@ -71,7 +72,11 @@ export function getCleanErrorMessage(error: unknown): string {
   }
 
   // If it's a Prisma error, don't expose stack details to the user
-  if (msg.includes("PrismaClient") || msg.includes("invocation in") || msg.includes("Prisma Client")) {
+  if (
+    msg.includes("PrismaClient") ||
+    msg.includes("invocation in") ||
+    msg.includes("Prisma Client")
+  ) {
     return "A database operation error occurred. Please contact our support team.";
   }
 
@@ -81,43 +86,44 @@ export function getCleanErrorMessage(error: unknown): string {
 // Helper to format activity summaries by replacing Unix timestamp values with formatted dates
 export function formatActivitySummary(summary: string): string {
   if (!summary) return "";
-  
-  return summary.replace(/"(\d{10})"/g, (match, p1) => {
-    const timestamp = parseInt(p1, 10);
-    if (timestamp > 1500000000 && timestamp < 2100000000) {
-      try {
-        const dateObj = new Date(timestamp * 1000);
-        return `"${dateObj.toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        })}"`;
-      } catch {
-        return match;
+
+  return summary
+    .replace(/"(\d{10})"/g, (match, p1) => {
+      const timestamp = parseInt(p1, 10);
+      if (timestamp > 1500000000 && timestamp < 2100000000) {
+        try {
+          const dateObj = new Date(timestamp * 1000);
+          return `"${dateObj.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}"`;
+        } catch {
+          return match;
+        }
       }
-    }
-    return match;
-  }).replace(/\b(\d{10})\b/g, (match) => {
-    const timestamp = parseInt(match, 10);
-    if (timestamp > 1500000000 && timestamp < 2100000000) {
-      try {
-        const dateObj = new Date(timestamp * 1000);
-        return dateObj.toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      } catch {
-        return match;
+      return match;
+    })
+    .replace(/\b(\d{10})\b/g, (match) => {
+      const timestamp = parseInt(match, 10);
+      if (timestamp > 1500000000 && timestamp < 2100000000) {
+        try {
+          const dateObj = new Date(timestamp * 1000);
+          return dateObj.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        } catch {
+          return match;
+        }
       }
-    }
-    return match;
-  });
+      return match;
+    });
 }
 
 export * from "./date.js";
-

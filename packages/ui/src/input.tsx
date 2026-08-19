@@ -17,16 +17,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             error
               ? "border-error focus-visible:ring-error"
               : "border-border-dark dark:border-border-light focus-visible:ring-primary text-text-dark dark:text-text-light",
-            className
+            className,
           )}
           {...props}
         />
-        {error && (
-          <p className="mt-1 text-xs text-error font-medium">{error}</p>
-        )}
+        {error && <p className="mt-1 text-xs text-error font-medium">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

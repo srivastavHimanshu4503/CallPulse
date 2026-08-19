@@ -51,7 +51,10 @@ const cardCls =
 
 export function Features() {
   return (
-    <section id="features" className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 py-12 sm:py-16">
+    <section
+      id="features"
+      className="relative overflow-hidden bg-bg-canvas px-4 sm:px-6 py-12 sm:py-16"
+    >
       <div
         aria-hidden
         className="absolute -top-32 -left-10 h-[300px] w-[300px] rounded-full opacity-20 blur-[100px]"

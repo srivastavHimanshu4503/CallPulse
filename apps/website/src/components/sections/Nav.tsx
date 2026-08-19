@@ -19,9 +19,7 @@ const LINKS = [
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [openMobileMenu, setOpenMobileMenu] = useState<"solutions" | "cities" | null>(
-    null,
-  );
+  const [openMobileMenu, setOpenMobileMenu] = useState<"solutions" | "cities" | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -122,9 +120,7 @@ export function Nav() {
               <MobileSection
                 label="Cities"
                 isOpen={openMobileMenu === "cities"}
-                onToggle={() =>
-                  setOpenMobileMenu(openMobileMenu === "cities" ? null : "cities")
-                }
+                onToggle={() => setOpenMobileMenu(openMobileMenu === "cities" ? null : "cities")}
                 items={CITIES.map((c) => ({
                   label: `AI receptionist in ${c.name}`,
                   href: `/city/${c.slug}`,
@@ -181,9 +177,7 @@ function NavDropdown({
       </button>
       {/* Panel is always mounted so its links are in the DOM for crawlers;
           CSS opacity/pointer-events control visibility. */}
-      <div
-        className="invisible opacity-0 group-hover:visible group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto absolute left-0 top-full mt-1 w-[280px] bg-bg-canvas border border-line-default rounded-[12px] shadow-[0_20px_50px_-16px_rgba(15,23,42,0.18)] p-2 transition-all duration-150"
-      >
+      <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto absolute left-0 top-full mt-1 w-[280px] bg-bg-canvas border border-line-default rounded-[12px] shadow-[0_20px_50px_-16px_rgba(15,23,42,0.18)] p-2 transition-all duration-150">
         <ul className="max-h-[380px] overflow-y-auto">
           {items.map((item) => (
             <li key={item.href}>

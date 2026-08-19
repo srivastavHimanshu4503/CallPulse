@@ -37,8 +37,11 @@ export function canSend(
   channel: "sms" | "whatsapp" | "email",
 ): { allowed: boolean; reason?: string } {
   if (consent.dnd) return { allowed: false, reason: "Contact is on DND registry" };
-  if (channel === "sms" && !consent.smsOptIn) return { allowed: false, reason: "SMS opt-out on file" };
-  if (channel === "whatsapp" && !consent.whatsappOptIn) return { allowed: false, reason: "WhatsApp opt-out on file" };
-  if (channel === "email" && !consent.emailOptIn) return { allowed: false, reason: "Email opt-out on file" };
+  if (channel === "sms" && !consent.smsOptIn)
+    return { allowed: false, reason: "SMS opt-out on file" };
+  if (channel === "whatsapp" && !consent.whatsappOptIn)
+    return { allowed: false, reason: "WhatsApp opt-out on file" };
+  if (channel === "email" && !consent.emailOptIn)
+    return { allowed: false, reason: "Email opt-out on file" };
   return { allowed: true };
 }

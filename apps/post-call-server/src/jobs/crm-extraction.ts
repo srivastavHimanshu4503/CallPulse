@@ -68,7 +68,7 @@ export const crmExtraction: JobHandler = {
         schemaName: "CrmExtraction",
         system: buildCrmExtractionSystemPrompt(
           customFieldDefs,
-          describeCallMoment(ctx.job.startedAt)
+          describeCallMoment(ctx.job.startedAt),
         ),
         user: buildTranscriptUserPrompt(ctx.job.transcript),
       });
@@ -86,9 +86,10 @@ export const crmExtraction: JobHandler = {
     const company = asNonEmptyString(extracted.company);
     const summary = asNonEmptyString(extracted.summary);
     const rawEmail = asNonEmptyString(extracted.email);
-    const email = rawEmail && z.string().email().safeParse(rawEmail).success
-      ? rawEmail.toLowerCase()
-      : undefined;
+    const email =
+      rawEmail && z.string().email().safeParse(rawEmail).success
+        ? rawEmail.toLowerCase()
+        : undefined;
 
     // 4. Update Contact — isolated so a DB error can't lose the extraction.
     // NOTE: Contact has firstName/lastName + emails[]/phones[] arrays. There
@@ -197,7 +198,7 @@ const upsertCustomFieldValue = async (
   tenantId: string,
   contactId: string,
   def: ExtractableFieldDef,
-  val: unknown
+  val: unknown,
 ): Promise<void> => {
   const data: Record<string, unknown> = {
     tenantId,

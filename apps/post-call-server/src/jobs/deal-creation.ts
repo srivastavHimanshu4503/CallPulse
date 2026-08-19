@@ -69,7 +69,7 @@ const writeDealEvent = async (
     commLogId: string;
     before?: unknown;
     after?: unknown;
-  }
+  },
 ): Promise<void> => {
   try {
     await tx.dealEvent.create({
@@ -131,7 +131,7 @@ export const dealCreation: JobHandler = {
       return await db.$transaction(
         async (tx) => run(tx as Db, ctx, intent),
         // The LLM decision happens inside the lock window; give it room.
-        { timeout: 60_000, maxWait: 10_000 }
+        { timeout: 60_000, maxWait: 10_000 },
       );
     } catch (err) {
       log.error("deal creation failed — continuing pipeline", {
@@ -146,7 +146,7 @@ export const dealCreation: JobHandler = {
 const run = async (
   tx: Db,
   ctx: PostCallContext,
-  intent: string
+  intent: string,
 ): Promise<Partial<PostCallContext>> => {
   // Serialize per contact: read → decide → write is atomic vs other calls
   // from the same number. Lock releases with the transaction.
@@ -220,7 +220,7 @@ const run = async (
       user: buildDealMatchUserPrompt(
         candidates,
         intent,
-        buildTranscriptUserPrompt(ctx.job.transcript)
+        buildTranscriptUserPrompt(ctx.job.transcript),
       ),
     });
 
@@ -421,12 +421,10 @@ const applyDealUpdate = async (
   ctx: PostCallContext,
   deal: OpenDealRow,
   newStageName: string | null,
-  patch: { value: number | null; summary: string | null; title: string | null }
+  patch: { value: number | null; summary: string | null; title: string | null },
 ): Promise<string> => {
   const stageCfg = newStageName
-    ? deal.pipeline?.stageConfigs.find(
-        (s) => s.name.toLowerCase() === newStageName.toLowerCase()
-      )
+    ? deal.pipeline?.stageConfigs.find((s) => s.name.toLowerCase() === newStageName.toLowerCase())
     : undefined;
   const stageChanged = !!stageCfg && stageCfg.name !== deal.stage;
 

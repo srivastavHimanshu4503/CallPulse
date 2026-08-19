@@ -34,11 +34,21 @@ export function ResetPassword(): React.JSX.Element {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(""); setFormSuccess("");
+    setFormError("");
+    setFormSuccess("");
     let valid = true;
-    if (!email) { setEmailError("Email is required"); valid = false; } else setEmailError("");
-    if (!otp || otp.length !== 6) { setOtpError("OTP code must be 6 digits"); valid = false; } else setOtpError("");
-    if (!newPassword || newPassword.length < 8) { setPasswordError("Password must be at least 8 characters"); valid = false; } else setPasswordError("");
+    if (!email) {
+      setEmailError("Email is required");
+      valid = false;
+    } else setEmailError("");
+    if (!otp || otp.length !== 6) {
+      setOtpError("OTP code must be 6 digits");
+      valid = false;
+    } else setOtpError("");
+    if (!newPassword || newPassword.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      valid = false;
+    } else setPasswordError("");
     if (!valid) return;
     setIsLoading(true);
     try {
@@ -47,7 +57,9 @@ export function ResetPassword(): React.JSX.Element {
       setTimeout(() => navigate("/login"), 2000);
     } catch (err: any) {
       setFormError(err.response?.data?.error || "Password reset failed. Please check OTP.");
-    } finally { setIsLoading(false); }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,7 +70,9 @@ export function ResetPassword(): React.JSX.Element {
             <span className="h-1 w-1 rounded-full bg-orange-600" />
             Reset password
           </span>
-          <h1 className="text-[28px] leading-tight font-bold tracking-tight text-text-primary">Set a new password</h1>
+          <h1 className="text-[28px] leading-tight font-bold tracking-tight text-text-primary">
+            Set a new password
+          </h1>
           <p className="text-[13.5px] text-text-secondary mt-2">
             Enter your email, recovery code, and a new secure password.
           </p>
@@ -68,7 +82,12 @@ export function ResetPassword(): React.JSX.Element {
           <div className="mb-5 rounded-[10px] bg-rose-50 border border-rose-200 p-3.5 text-[13px] text-rose-700 font-medium leading-normal flex items-start gap-2.5">
             <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 mt-0.5 shrink-0">
               <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
-              <path d="M12 8v5M12 16.5v.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <path
+                d="M12 8v5M12 16.5v.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
             </svg>
             <span>{formError}</span>
           </div>
@@ -77,7 +96,13 @@ export function ResetPassword(): React.JSX.Element {
         {formSuccess && (
           <div className="mb-5 rounded-[10px] bg-emerald-50 border border-emerald-200 p-3.5 text-[13px] text-emerald-700 font-medium leading-normal flex items-start gap-2.5">
             <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 mt-0.5 shrink-0">
-              <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M5 13l4 4L19 7"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
             <span>{formSuccess}</span>
           </div>
@@ -85,42 +110,77 @@ export function ResetPassword(): React.JSX.Element {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Registered email</label>
-            <Input type="email" placeholder="name@company.com" value={email}
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">
+              Registered email
+            </label>
+            <Input
+              type="email"
+              placeholder="name@company.com"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
-              error={emailError} disabled={isLoading} required
+              error={emailError}
+              disabled={isLoading}
+              required
               className={inputClass}
             />
           </div>
           <div>
-            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Verification code</label>
-            <Input type="text" placeholder="000000" maxLength={6} value={otp}
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">
+              Verification code
+            </label>
+            <Input
+              type="text"
+              placeholder="000000"
+              maxLength={6}
+              value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-              error={otpError} disabled={isLoading} required
+              error={otpError}
+              disabled={isLoading}
+              required
               className={otpClass}
             />
           </div>
           <div>
-            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">New password</label>
-            <Input type="password" placeholder="Enter a strong password" value={newPassword}
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">
+              New password
+            </label>
+            <Input
+              type="password"
+              placeholder="Enter a strong password"
+              value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              error={passwordError} disabled={isLoading} required
+              error={passwordError}
+              disabled={isLoading}
+              required
               className={inputClass}
             />
           </div>
-          <Button type="submit" variant="primary" className={`${goldButton} mt-2`} style={goldStyle} disabled={isLoading}>
+          <Button
+            type="submit"
+            variant="primary"
+            className={`${goldButton} mt-2`}
+            style={goldStyle}
+            disabled={isLoading}
+          >
             {isLoading ? (
               <span className="inline-flex items-center gap-2">
                 <span className="h-3.5 w-3.5 rounded-full border-2 border-[#0a0416]/30 border-t-[#0a0416] animate-spin" />
                 Saving…
               </span>
-            ) : ( <>Save password →</> )}
+            ) : (
+              <>Save password →</>
+            )}
           </Button>
         </form>
 
         <div className="mt-8 text-center text-[13.5px] text-text-secondary">
           Remember your password?{" "}
-          <Link to="/login" className="text-text-primary font-bold hover:text-orange-600 transition-colors">Back to sign in</Link>
+          <Link
+            to="/login"
+            className="text-text-primary font-bold hover:text-orange-600 transition-colors"
+          >
+            Back to sign in
+          </Link>
         </div>
       </div>
     </AuthLayout>

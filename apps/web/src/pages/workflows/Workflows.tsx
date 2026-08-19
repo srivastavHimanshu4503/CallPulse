@@ -24,11 +24,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { PageHeader, AppButton, Segmented } from "../../components/common/UI.tsx";
-import {
-  StatusPill,
-  SearchInput,
-  DataTable,
-} from "../../components/ui-ext/index.js";
+import { StatusPill, SearchInput, DataTable } from "../../components/ui-ext/index.js";
 import type { Column } from "../../components/ui-ext/index.js";
 import type { WorkflowDef, WorkflowFolder as WorkflowFolderT } from "./types.js";
 import { TEMPLATES, getBlockDef } from "./registry.js";
@@ -61,7 +57,13 @@ function WorkflowsInner(): React.JSX.Element {
 
   // Dialog state — only one open at a time.
   const [folderDialog, setFolderDialog] = React.useState<
-    | { kind: "form"; mode: FolderFormMode; targetId?: string; parentId: string | null; initialName?: string }
+    | {
+        kind: "form";
+        mode: FolderFormMode;
+        targetId?: string;
+        parentId: string | null;
+        initialName?: string;
+      }
     | { kind: "delete"; targetId: string }
     | { kind: "move-folder"; targetId: string }
     | null
@@ -377,7 +379,9 @@ function WorkflowsInner(): React.JSX.Element {
               <div className="text-[10.5px] text-fg-muted truncate mt-0.5 flex items-center gap-1 flex-wrap">
                 <span>{triggerDef?.label || w.trigger?.type || "Unknown trigger"}</span>
                 <span>·</span>
-                <span>{(w.steps || []).length} step{(w.steps || []).length === 1 ? "" : "s"}</span>
+                <span>
+                  {(w.steps || []).length} step{(w.steps || []).length === 1 ? "" : "s"}
+                </span>
                 {folder && selectedFolder === null && (
                   <>
                     <span>·</span>
@@ -615,7 +619,11 @@ function WorkflowsInner(): React.JSX.Element {
                   <SearchInput
                     value={search}
                     onChange={setSearch}
-                    placeholder={selectedFolder ? `Search inside ${currentFolderName}…` : "Search all workflows…"}
+                    placeholder={
+                      selectedFolder
+                        ? `Search inside ${currentFolderName}…`
+                        : "Search all workflows…"
+                    }
                     className="flex-1 max-w-sm"
                   />
                   <Segmented
@@ -653,7 +661,8 @@ function WorkflowsInner(): React.JSX.Element {
                               </div>
                               <div className="text-[10.5px] text-fg-muted mt-0.5">
                                 {sf.workflowCount} workflow{sf.workflowCount === 1 ? "" : "s"}
-                                {sf.childCount > 0 && ` · ${sf.childCount} sub-folder${sf.childCount === 1 ? "" : "s"}`}
+                                {sf.childCount > 0 &&
+                                  ` · ${sf.childCount} sub-folder${sf.childCount === 1 ? "" : "s"}`}
                               </div>
                             </div>
                             <ChevronRight className="h-3.5 w-3.5 text-fg-muted" />
@@ -724,10 +733,13 @@ function WorkflowsInner(): React.JSX.Element {
                               "Try clearing filters."
                             ) : selectedFolder ? (
                               <>
-                                Click <b className="text-fg-primary">+ New workflow</b> above — pick this folder in the dialog to add one here.
+                                Click <b className="text-fg-primary">+ New workflow</b> above — pick
+                                this folder in the dialog to add one here.
                               </>
                             ) : (
-                              <>Click <b className="text-fg-primary">+ New workflow</b> above.</>
+                              <>
+                                Click <b className="text-fg-primary">+ New workflow</b> above.
+                              </>
                             )}
                           </div>
                         </div>
@@ -915,7 +927,8 @@ function EmptyWorkflows({ onCreate }: { onCreate: () => void }): React.JSX.Eleme
                 1
               </span>
               <div>
-                <b className="text-fg-primary">Create folders</b> for anything — campaign, team, or vertical (e.g. “Real-estate follow-ups”). Nest as deep as you want.
+                <b className="text-fg-primary">Create folders</b> for anything — campaign, team, or
+                vertical (e.g. “Real-estate follow-ups”). Nest as deep as you want.
               </div>
             </li>
             <li className="flex items-start gap-2">
@@ -923,7 +936,8 @@ function EmptyWorkflows({ onCreate }: { onCreate: () => void }): React.JSX.Eleme
                 2
               </span>
               <div>
-                <b className="text-fg-primary">Assign on create</b> — the “New workflow” dialog lets you pick a folder right then.
+                <b className="text-fg-primary">Assign on create</b> — the “New workflow” dialog lets
+                you pick a folder right then.
               </div>
             </li>
             <li className="flex items-start gap-2">
@@ -931,7 +945,9 @@ function EmptyWorkflows({ onCreate }: { onCreate: () => void }): React.JSX.Eleme
                 3
               </span>
               <div>
-                <b className="text-fg-primary">Move anytime</b> — every workflow and folder has a <b className="text-fg-primary">⋯</b> menu with <b className="text-fg-primary">Move to…</b>.
+                <b className="text-fg-primary">Move anytime</b> — every workflow and folder has a{" "}
+                <b className="text-fg-primary">⋯</b> menu with{" "}
+                <b className="text-fg-primary">Move to…</b>.
               </div>
             </li>
           </ul>
@@ -972,7 +988,8 @@ function RowMenu({
   React.useEffect(() => {
     if (!open) return;
     const onClick = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node)) return;
+      if (btnRef.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node))
+        return;
       setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -1004,7 +1021,8 @@ function RowMenu({
       >
         <MoreHorizontal className="h-4 w-4" />
       </button>
-      {open && pos &&
+      {open &&
+        pos &&
         createPortal(
           <div
             ref={menuRef}

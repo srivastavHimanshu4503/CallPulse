@@ -25,14 +25,8 @@ export const IntentSchema = z.object({
   primary: z
     .enum(INTENT_VALUES)
     .describe("The single best-matching intent label for the caller's main goal"),
-  confidence: z
-    .number()
-    .min(0)
-    .max(1)
-    .describe("Confidence in the primary label, 0 to 1"),
-  reasoning: z
-    .string()
-    .describe("One sentence citing the transcript evidence for this label"),
+  confidence: z.number().min(0).max(1).describe("Confidence in the primary label, 0 to 1"),
+  reasoning: z.string().describe("One sentence citing the transcript evidence for this label"),
   dealAmountReasoning: z
     .string()
     .describe(
@@ -48,7 +42,8 @@ export const IntentSchema = z.object({
 
 export type IntentResult = z.infer<typeof IntentSchema>;
 
-export const buildIntentDetectionSystemPrompt = (): string => `You are a call-intent classifier for a business phone answering service. You will receive the transcript of a completed phone call between a CALLER (the customer) and an AGENT (our AI receptionist).
+export const buildIntentDetectionSystemPrompt =
+  (): string => `You are a call-intent classifier for a business phone answering service. You will receive the transcript of a completed phone call between a CALLER (the customer) and an AGENT (our AI receptionist).
 
 Classify the CALLER's primary goal into exactly one of these labels:
 

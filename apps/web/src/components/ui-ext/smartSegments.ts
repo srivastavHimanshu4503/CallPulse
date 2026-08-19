@@ -45,7 +45,7 @@ export function buildSmartSegments(): SmartSegment[] {
       tone: "positive",
       logical: FilterLogicalOperator.AND,
       conditions: [],
-      clientMatcher: (c) => (c._computedScore?.band === "hot"),
+      clientMatcher: (c) => c._computedScore?.band === "hot",
     },
     {
       id: "new-week",
@@ -62,7 +62,7 @@ export function buildSmartSegments(): SmartSegment[] {
       tone: "muted",
       logical: FilterLogicalOperator.AND,
       conditions: [],
-      clientMatcher: (c) => (c._computedScore?.band === "cold"),
+      clientMatcher: (c) => c._computedScore?.band === "cold",
     },
     {
       id: "positive",

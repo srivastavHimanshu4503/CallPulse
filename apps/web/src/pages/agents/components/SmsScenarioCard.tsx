@@ -80,7 +80,9 @@ export function SmsScenarioCard({
           </label>
           <span
             className={`text-[10px] font-medium tabular-nums ${
-              scenario.smsTemplate.length >= SMS_TEMPLATE_MAX ? "text-negative-500" : "text-text-placeholder"
+              scenario.smsTemplate.length >= SMS_TEMPLATE_MAX
+                ? "text-negative-500"
+                : "text-text-placeholder"
             }`}
           >
             {scenario.smsTemplate.length}/{SMS_TEMPLATE_MAX}
@@ -88,7 +90,9 @@ export function SmsScenarioCard({
         </div>
         <textarea
           value={scenario.smsTemplate}
-          onChange={(e) => handleUpdateField("smsTemplate", e.target.value.slice(0, SMS_TEMPLATE_MAX))}
+          onChange={(e) =>
+            handleUpdateField("smsTemplate", e.target.value.slice(0, SMS_TEMPLATE_MAX))
+          }
           disabled={disabled}
           required
           placeholder="Hi {name}, pricing details: check karein http://brochure.example.com/..."
@@ -96,7 +100,8 @@ export function SmsScenarioCard({
           className="w-full bg-bg-raised border border-border focus:border-brand-500 text-sm text-text-primary placeholder-text-placeholder rounded-[6px] p-3 focus:outline-none leading-relaxed resize-none"
         />
         <p className="text-[11px] text-text-placeholder mt-1">
-          Use <code className="bg-surface px-1 rounded text-[10px] font-mono">{"{name}"}</code> to insert the caller's name automatically.
+          Use <code className="bg-surface px-1 rounded text-[10px] font-mono">{"{name}"}</code> to
+          insert the caller's name automatically.
         </p>
       </div>
 
@@ -109,7 +114,9 @@ export function SmsScenarioCard({
           </label>
           <span
             className={`text-[10px] font-medium tabular-nums ${
-              scenario.agentReply.length >= AGENT_REPLY_MAX ? "text-negative-500" : "text-text-placeholder"
+              scenario.agentReply.length >= AGENT_REPLY_MAX
+                ? "text-negative-500"
+                : "text-text-placeholder"
             }`}
           >
             {scenario.agentReply.length}/{AGENT_REPLY_MAX}

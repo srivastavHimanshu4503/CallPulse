@@ -139,9 +139,7 @@ const renderIntakeRules = (agent: AgentPersonaConfig): string => {
   if (!agent.intake.enabled) {
     return "Do NOT ask for name or phone number unless the caller explicitly wants a callback.";
   }
-  const fields = agent.intake.fields.length > 0
-    ? agent.intake.fields.join(", ")
-    : "name, phone";
+  const fields = agent.intake.fields.length > 0 ? agent.intake.fields.join(", ") : "name, phone";
   return `Naturally collect these fields as the conversation progresses: ${fields}. Ask for ONE field at a time, never two details in the same sentence, never the same field twice.${
     agent.intake.prompt ? ` ${agent.intake.prompt}` : ""
   }`;
@@ -179,7 +177,7 @@ const renderCallerContext = (ctx: CallerContext | undefined): string => {
   if (ctx.name) lines.push(`- Caller's name: ${ctx.name}. Use it naturally, don't re-ask it.`);
   for (const d of ctx.openDeals) {
     lines.push(
-      `- Open deal: "${d.title}" (stage: ${d.stage}, approx ₹${d.value})${d.summary ? ` — ${d.summary}` : ""}`
+      `- Open deal: "${d.title}" (stage: ${d.stage}, approx ₹${d.value})${d.summary ? ` — ${d.summary}` : ""}`,
     );
   }
   if (ctx.lastCallSummary) {
@@ -206,7 +204,7 @@ Treat them as a known customer: if they refer to "my booking" / "wo wala order" 
 export const buildSystemPrompt = (
   agent: AgentPersonaConfig,
   voiceGender: VoiceGender = "unknown",
-  callerContext?: CallerContext
+  callerContext?: CallerContext,
 ): string => {
   const knowledge = renderKnowledge(agent);
   const businessDescription = agent.businessInfo?.trim() || agent.businessName;
@@ -279,12 +277,16 @@ On a real farewell, do BOTH in the same turn:
 - Max call length: ${agent.maxDurationMinutes} minutes. Wrap up naturally before then.
 
 ${agent.guidelines?.trim() ? `# OWNER'S GUIDELINES (how the business wants you to behave — follow them)\n${agent.guidelines.trim()}` : ""}
-${knowledge.hasContent ? "" : `
+${
+  knowledge.hasContent
+    ? ""
+    : `
 # EMPTY KNOWLEDGE BASE — OPEN CONVERSATION MODE
 The knowledge base for this business is EMPTY. Behave as follows:
 - You DO know: the business name (${agent.businessName}), your own role (${agent.role.toLowerCase()}), the caller may be an existing or new customer.
 - You do NOT know: hours, prices, services, addresses, availability, staff. Never say "our hours are…", never say "we open at…", never claim any timings or "market hours" or "business hours". If asked, say honestly you'll take a callback and connect them to the team.
 - For any specific business question, offer a callback (${p.callbackOffer}). Do NOT refuse or deflect with a scope line — the KB being empty is not a reason to refuse; it's a reason to take a message.
-- Chit-chat / warm banter / general courtesy: engage naturally like a real receptionist would. Only decline for TRULY unrelated things (weather, news, code, math homework, "read this URL") — never for questions about the business itself.`}
+- Chit-chat / warm banter / general courtesy: engage naturally like a real receptionist would. Only decline for TRULY unrelated things (weather, news, code, math homework, "read this URL") — never for questions about the business itself.`
+}
 `.trim();
 };

@@ -46,9 +46,9 @@ type Tab = "design" | "behavior" | "install";
 
 const POSITIONS: { label: string; value: Position }[] = [
   { label: "Bottom right", value: "bottom-right" },
-  { label: "Bottom left",  value: "bottom-left" },
-  { label: "Top right",    value: "top-right" },
-  { label: "Top left",     value: "top-left" },
+  { label: "Bottom left", value: "bottom-left" },
+  { label: "Top right", value: "top-right" },
+  { label: "Top left", value: "top-left" },
 ];
 const SHAPES: { label: string; value: Shape }[] = [
   { label: "Pill", value: "pill" },
@@ -58,22 +58,24 @@ const DEVICES: { label: string; value: Device }[] = [
   { label: "Desktop", value: "desktop" },
   { label: "Mobile", value: "mobile" },
 ];
-const TEMPLATES: { label: string; value: Template; icon: React.ComponentType<{ className?: string }> }[] = [
-  { label: "Salon",       value: "salon",      icon: Scissors },
-  { label: "Clinic",      value: "clinic",     icon: Sparkles },
+const TEMPLATES: {
+  label: string;
+  value: Template;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  { label: "Salon", value: "salon", icon: Scissors },
+  { label: "Clinic", value: "clinic", icon: Sparkles },
   { label: "Real estate", value: "realestate", icon: Home },
-  { label: "E-commerce",  value: "ecom",       icon: ShoppingCart },
+  { label: "E-commerce", value: "ecom", icon: ShoppingCart },
 ];
 
-
-
 const COLOR_SWATCHES = [
-  { name: "Blue",    value: "#2563EB" },
-  { name: "Violet",  value: "#7C3AED" },
+  { name: "Blue", value: "#2563EB" },
+  { name: "Violet", value: "#7C3AED" },
   { name: "Emerald", value: "#059669" },
-  { name: "Amber",   value: "#F59E0B" },
-  { name: "Rose",    value: "#E11D48" },
-  { name: "Slate",   value: "#0F172A" },
+  { name: "Amber", value: "#F59E0B" },
+  { name: "Rose", value: "#E11D48" },
+  { name: "Slate", value: "#0F172A" },
 ];
 
 const WIDGET_ID = "wgt_rj7hK92xLm";
@@ -88,7 +90,7 @@ function isLightColor(hex: string): boolean {
   const g = parseInt(h.substring(2, 4), 16);
   const b = parseInt(h.substring(4, 6), 16);
   // Perceived luminance
-  return (0.299 * r + 0.587 * g + 0.114 * b) > 186;
+  return 0.299 * r + 0.587 * g + 0.114 * b > 186;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -96,10 +98,10 @@ function isLightColor(hex: string): boolean {
 // ─────────────────────────────────────────────────────────────
 
 const TEMPLATE_META: Record<Template, { title: string; domain: string }> = {
-  salon:      { title: "Glow Studio",           domain: "glow-studio.in" },
-  clinic:     { title: "Wellness Care Clinic",  domain: "wellnesscare.co" },
-  realestate: { title: "Metro Homes Realty",    domain: "metrohomes.in" },
-  ecom:       { title: "Kumar Kirana",          domain: "kumarkirana.com" },
+  salon: { title: "Glow Studio", domain: "glow-studio.in" },
+  clinic: { title: "Wellness Care Clinic", domain: "wellnesscare.co" },
+  realestate: { title: "Metro Homes Realty", domain: "metrohomes.in" },
+  ecom: { title: "Kumar Kirana", domain: "kumarkirana.com" },
 };
 
 function SiteChrome({
@@ -147,7 +149,9 @@ function TemplateSalon(): React.JSX.Element {
       <div className="flex items-center justify-between mb-2">
         <div className="text-[11px] font-bold text-[#0F172A]">Glow Studio</div>
         <div className="flex gap-1.5 text-[8.5px] text-slate-500 font-medium">
-          <span>Services</span><span>Book</span><span>Contact</span>
+          <span>Services</span>
+          <span>Book</span>
+          <span>Contact</span>
         </div>
       </div>
       <div className="h-12 rounded-md bg-gradient-to-r from-pink-200 to-rose-300 flex items-center justify-center text-[10px] font-bold text-rose-900 mb-2">
@@ -172,17 +176,28 @@ function TemplateClinic(): React.JSX.Element {
       <div className="flex items-center justify-between mb-2">
         <div className="text-[11px] font-bold text-[#0F172A]">Wellness Care Clinic</div>
         <div className="flex gap-1.5 text-[8.5px] text-slate-500 font-medium">
-          <span>Doctors</span><span>Book</span><span>Insurance</span>
+          <span>Doctors</span>
+          <span>Book</span>
+          <span>Insurance</span>
         </div>
       </div>
       <div className="rounded-md bg-bg-raised border border-line-subtle p-2 mb-1.5">
-        <div className="text-[9.5px] font-bold text-emerald-700 mb-0.5">✓ Same-day appointments</div>
-        <div className="text-[8.5px] text-slate-600">General physician · Dermatology · Pediatrics</div>
+        <div className="text-[9.5px] font-bold text-emerald-700 mb-0.5">
+          ✓ Same-day appointments
+        </div>
+        <div className="text-[8.5px] text-slate-600">
+          General physician · Dermatology · Pediatrics
+        </div>
       </div>
       <div className="space-y-1.5">
         {["Dr. Kapoor — General Physician", "Dr. Mehta — Dermatologist"].map((d) => (
-          <div key={d} className="flex items-center gap-2 rounded-md bg-bg-raised border border-line-subtle p-1.5">
-            <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center text-[8.5px] font-bold text-emerald-700">DR</div>
+          <div
+            key={d}
+            className="flex items-center gap-2 rounded-md bg-bg-raised border border-line-subtle p-1.5"
+          >
+            <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center text-[8.5px] font-bold text-emerald-700">
+              DR
+            </div>
             <div className="flex-1">
               <div className="text-[9px] font-semibold text-slate-700">{d}</div>
               <div className="text-[8px] text-slate-500">Available today</div>
@@ -200,17 +215,24 @@ function TemplateRealEstate(): React.JSX.Element {
       <div className="flex items-center justify-between mb-2">
         <div className="text-[11px] font-bold text-[#0F172A]">Metro Homes Realty</div>
         <div className="flex gap-1.5 text-[8.5px] text-slate-500 font-medium">
-          <span>Listings</span><span>Rent</span><span>Sell</span>
+          <span>Listings</span>
+          <span>Rent</span>
+          <span>Sell</span>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-1.5">
         {[
           { name: "3 BHK · Andheri West", price: "₹1.2 Cr", label: "New" },
-          { name: "2 BHK · Powai",         price: "₹85 L",  label: "Hot" },
+          { name: "2 BHK · Powai", price: "₹85 L", label: "Hot" },
         ].map((h) => (
-          <div key={h.name} className="rounded-md bg-bg-raised border border-line-subtle overflow-hidden">
+          <div
+            key={h.name}
+            className="rounded-md bg-bg-raised border border-line-subtle overflow-hidden"
+          >
             <div className="h-14 bg-gradient-to-br from-blue-200 to-blue-400 relative">
-              <span className="absolute top-1 left-1 text-[8px] font-bold bg-white/90 text-blue-700 px-1 py-0.5 rounded">{h.label}</span>
+              <span className="absolute top-1 left-1 text-[8px] font-bold bg-white/90 text-blue-700 px-1 py-0.5 rounded">
+                {h.label}
+              </span>
             </div>
             <div className="p-1.5">
               <div className="text-[9px] font-semibold text-slate-700">{h.name}</div>
@@ -253,10 +275,10 @@ function TemplateEcom(): React.JSX.Element {
 }
 
 const TEMPLATE_BODY: Record<Template, React.FC> = {
-  salon:      TemplateSalon,
-  clinic:     TemplateClinic,
+  salon: TemplateSalon,
+  clinic: TemplateClinic,
   realestate: TemplateRealEstate,
-  ecom:       TemplateEcom,
+  ecom: TemplateEcom,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -264,10 +286,10 @@ const TEMPLATE_BODY: Record<Template, React.FC> = {
 // ─────────────────────────────────────────────────────────────
 
 const POSITION_STYLES: Record<Position, { bubble: string; panel: string }> = {
-  "bottom-right": { bubble: "bottom-3 right-3",  panel: "bottom-14 right-3" },
-  "bottom-left":  { bubble: "bottom-3 left-3",   panel: "bottom-14 left-3" },
-  "top-right":    { bubble: "top-3 right-3",     panel: "top-14 right-3" },
-  "top-left":     { bubble: "top-3 left-3",      panel: "top-14 left-3" },
+  "bottom-right": { bubble: "bottom-3 right-3", panel: "bottom-14 right-3" },
+  "bottom-left": { bubble: "bottom-3 left-3", panel: "bottom-14 left-3" },
+  "top-right": { bubble: "top-3 right-3", panel: "top-14 right-3" },
+  "top-left": { bubble: "top-3 left-3", panel: "top-14 left-3" },
 };
 
 function WidgetBubble({
@@ -333,7 +355,10 @@ function WidgetPanel({
           <X className="h-4 w-4" />
         </button>
         <div className="relative mt-2">
-          <div className="absolute inset-0 rounded-full animate-ping opacity-25" style={{ backgroundColor: color }} />
+          <div
+            className="absolute inset-0 rounded-full animate-ping opacity-25"
+            style={{ backgroundColor: color }}
+          />
           <div
             className="h-20 w-20 rounded-full flex items-center justify-center text-[28px] font-bold shadow-md relative z-10 text-white"
             style={{ backgroundColor: color, color: headerText }}
@@ -343,11 +368,15 @@ function WidgetPanel({
         </div>
         <div className="text-center mt-2">
           <div className="text-[16px] font-bold text-fg-primary">{agentName}</div>
-          <div className="text-[12px] text-fg-muted mt-1 animate-pulse font-medium">Speaking...</div>
+          <div className="text-[12px] text-fg-muted mt-1 animate-pulse font-medium">
+            Speaking...
+          </div>
         </div>
       </div>
       <div className="p-5 bg-bg-raised border-t border-line-subtle text-center pb-6">
-        <p className="text-[12px] text-slate-600 leading-relaxed italic mb-6 font-medium">"{welcome}"</p>
+        <p className="text-[12px] text-slate-600 leading-relaxed italic mb-6 font-medium">
+          "{welcome}"
+        </p>
         <div className="flex justify-center gap-6">
           <button
             type="button"
@@ -407,7 +436,10 @@ function ChoiceRow<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="grid gap-1 auto-cols-fr" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0,1fr))` }}>
+    <div
+      className="grid gap-1 auto-cols-fr"
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0,1fr))` }}
+    >
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -424,7 +456,11 @@ function ChoiceRow<T extends string>({
                     borderColor: "#1D4ED8",
                     boxShadow: "0 2px 4px rgba(37,99,235,0.35)",
                   }
-                : { backgroundColor: "rgb(var(--bg-raised))", color: "rgb(var(--fg-secondary))", borderColor: "rgb(var(--line-default))" }
+                : {
+                    backgroundColor: "rgb(var(--bg-raised))",
+                    color: "rgb(var(--fg-secondary))",
+                    borderColor: "rgb(var(--line-default))",
+                  }
             }
           >
             {o.label}
@@ -465,7 +501,7 @@ export function Widget(): React.JSX.Element {
     }
   }, [agents, agent]);
   const [welcome, setWelcome] = React.useState(
-    "Hi! I'm here to help you 24/7 — in your preferred language."
+    "Hi! I'm here to help you 24/7 — in your preferred language.",
   );
   const [businessHours, setBusinessHours] = React.useState(true);
   const [device, setDevice] = React.useState<Device>("desktop");
@@ -507,7 +543,10 @@ export function Widget(): React.JSX.Element {
             <span className="text-fg-muted">·</span>
             <span className="inline-flex items-center gap-1.5 font-semibold text-fg-secondary">
               <Code2 className="h-3.5 w-3.5" />
-              ID <span className="font-mono text-[10.5px] bg-bg-muted px-1.5 py-0.5 rounded ml-1">{WIDGET_ID}</span>
+              ID{" "}
+              <span className="font-mono text-[10.5px] bg-bg-muted px-1.5 py-0.5 rounded ml-1">
+                {WIDGET_ID}
+              </span>
             </span>
           </>
         }
@@ -555,11 +594,29 @@ export function Widget(): React.JSX.Element {
           {/* Tab bar */}
           <div
             className="flex items-center gap-1 rounded-lg p-1 mb-4 border"
-            style={{ backgroundColor: "rgb(var(--line-subtle))", borderColor: "rgb(var(--line-default))" }}
+            style={{
+              backgroundColor: "rgb(var(--line-subtle))",
+              borderColor: "rgb(var(--line-default))",
+            }}
           >
-            <TabBtn active={tab === "design"}   onClick={() => setTab("design")}   icon={Palette}  label="Design" />
-            <TabBtn active={tab === "behavior"} onClick={() => setTab("behavior")} icon={Bot}      label="Behavior" />
-            <TabBtn active={tab === "install"}  onClick={() => setTab("install")}  icon={Terminal} label="Install" />
+            <TabBtn
+              active={tab === "design"}
+              onClick={() => setTab("design")}
+              icon={Palette}
+              label="Design"
+            />
+            <TabBtn
+              active={tab === "behavior"}
+              onClick={() => setTab("behavior")}
+              icon={Bot}
+              label="Behavior"
+            />
+            <TabBtn
+              active={tab === "install"}
+              onClick={() => setTab("install")}
+              icon={Terminal}
+              label="Install"
+            />
           </div>
 
           <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar -mr-1 pr-1">
@@ -637,11 +694,24 @@ export function Widget(): React.JSX.Element {
                       className={`${inputClass} appearance-none pr-8 cursor-pointer`}
                     >
                       {agents.map((a: any) => (
-                        <option key={a.id} value={a.id}>{a.name}{a.role ? ` · ${a.role}` : ""}</option>
+                        <option key={a.id} value={a.id}>
+                          {a.name}
+                          {a.role ? ` · ${a.role}` : ""}
+                        </option>
                       ))}
                     </select>
-                    <svg viewBox="0 0 24 24" fill="none" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-fg-muted">
-                      <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-fg-muted"
+                    >
+                      <path
+                        d="M6 9l6 6 6-6"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </div>
                 </Field>
@@ -674,7 +744,9 @@ export function Widget(): React.JSX.Element {
                     One tag. Any website.
                   </div>
                   <p className="text-[10.5px] text-fg-secondary leading-snug">
-                    Paste this before <code className="font-mono bg-bg-raised px-1 rounded">&lt;/body&gt;</code> on your site. The widget shows up instantly.
+                    Paste this before{" "}
+                    <code className="font-mono bg-bg-raised px-1 rounded">&lt;/body&gt;</code> on
+                    your site. The widget shows up instantly.
                   </p>
                 </div>
 
@@ -688,15 +760,26 @@ export function Widget(): React.JSX.Element {
                       onClick={copy}
                       className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-600 hover:text-brand-700"
                     >
-                      {copied ? (<><Check className="h-3 w-3" /> Copied</>) : (<><Copy className="h-3 w-3" /> Copy</>)}
+                      {copied ? (
+                        <>
+                          <Check className="h-3 w-3" /> Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3 w-3" /> Copy
+                        </>
+                      )}
                     </button>
                   </div>
                   <pre className="text-[10px] leading-relaxed bg-[#0F172A] text-[#A7F3D0] rounded-md p-2.5 overflow-x-auto no-scrollbar font-mono">
-{embedJs}
+                    {embedJs}
                   </pre>
                 </div>
 
-                <a href="#" className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">
+                <a
+                  href="#"
+                  className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1"
+                >
                   Advanced installation guide <ArrowUpRight className="h-3 w-3" />
                 </a>
               </div>
@@ -708,8 +791,12 @@ export function Widget(): React.JSX.Element {
         <Card className="flex flex-col min-h-0">
           <div className="flex items-center justify-between mb-4 shrink-0 gap-3">
             <div>
-              <h3 className="text-[13px] font-semibold text-fg-primary tracking-tight">Live preview</h3>
-              <p className="text-[10.5px] text-fg-muted mt-0.5">Click the widget to open the chat.</p>
+              <h3 className="text-[13px] font-semibold text-fg-primary tracking-tight">
+                Live preview
+              </h3>
+              <p className="text-[10.5px] text-fg-muted mt-0.5">
+                Click the widget to open the chat.
+              </p>
             </div>
             <div className="w-[180px] shrink-0">
               <ChoiceRow options={DEVICES} value={device} onChange={setDevice} />
@@ -734,7 +821,11 @@ export function Widget(): React.JSX.Element {
                           borderColor: "#1D4ED8",
                           boxShadow: "0 2px 4px rgba(37,99,235,0.35)",
                         }
-                      : { backgroundColor: "rgb(var(--line-subtle))", color: "rgb(var(--fg-secondary))", borderColor: "rgb(var(--line-default))" }
+                      : {
+                          backgroundColor: "rgb(var(--line-subtle))",
+                          color: "rgb(var(--fg-secondary))",
+                          borderColor: "rgb(var(--line-default))",
+                        }
                   }
                 >
                   <t.icon className="h-3 w-3" />
@@ -745,9 +836,11 @@ export function Widget(): React.JSX.Element {
           </div>
 
           {/* Preview surface — tinted so any color, even white, still contrasts */}
-          <div className="flex-1 min-h-[500px] overflow-hidden rounded-xl p-3 flex items-center justify-center"
+          <div
+            className="flex-1 min-h-[500px] overflow-hidden rounded-xl p-3 flex items-center justify-center"
             style={{
-              background: "linear-gradient(135deg, rgb(var(--bg-highlight)) 0%, rgb(var(--bg-subtle)) 50%, rgb(var(--bg-highlight)) 100%)",
+              background:
+                "linear-gradient(135deg, rgb(var(--bg-highlight)) 0%, rgb(var(--bg-subtle)) 50%, rgb(var(--bg-highlight)) 100%)",
             }}
           >
             <div className="w-full h-full flex flex-col justify-center">
@@ -757,12 +850,21 @@ export function Widget(): React.JSX.Element {
                 {active && (
                   <div className="absolute inset-0 pointer-events-none">
                     {!panelOpen && (
-                      <div className={`absolute ${POSITION_STYLES[position].bubble} pointer-events-auto`}>
-                        <WidgetBubble color={color} shape={shape} label={label} onClick={() => setPanelOpen(true)} />
+                      <div
+                        className={`absolute ${POSITION_STYLES[position].bubble} pointer-events-auto`}
+                      >
+                        <WidgetBubble
+                          color={color}
+                          shape={shape}
+                          label={label}
+                          onClick={() => setPanelOpen(true)}
+                        />
                       </div>
                     )}
                     {panelOpen && (
-                      <div className={`absolute ${POSITION_STYLES[position].panel} pointer-events-auto`}>
+                      <div
+                        className={`absolute ${POSITION_STYLES[position].panel} pointer-events-auto`}
+                      >
                         <WidgetPanel
                           color={color}
                           welcome={welcome}
@@ -779,7 +881,11 @@ export function Widget(): React.JSX.Element {
 
           <div className="mt-2 flex items-center justify-between text-[10.5px] text-fg-muted shrink-0">
             <span className="inline-flex items-center gap-1.5">
-              {device === "desktop" ? <Monitor className="h-3 w-3" /> : <Smartphone className="h-3 w-3" />}
+              {device === "desktop" ? (
+                <Monitor className="h-3 w-3" />
+              ) : (
+                <Smartphone className="h-3 w-3" />
+              )}
               {device === "desktop" ? "1200 × 800" : "375 × 812"} · {templateMeta.title}
             </span>
             <span className="font-medium">

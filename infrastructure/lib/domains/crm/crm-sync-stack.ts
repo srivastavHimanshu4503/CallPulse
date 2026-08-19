@@ -25,16 +25,14 @@ export class CrmSyncStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:SendMessage"],
         resources: [props.typesenseSyncQueueArn],
-      })
+      }),
     );
 
     this.syncWorkerRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ["ssm:GetParameter"],
-        resources: [
-          `arn:aws:ssm:${this.region}:${this.account}:parameter/indiai/*`,
-        ],
-      })
+        resources: [`arn:aws:ssm:${this.region}:${this.account}:parameter/indiai/*`],
+      }),
     );
 
     new cdk.CfnOutput(this, "SyncWorkerRoleArnOutput", {

@@ -126,21 +126,28 @@ export class DashboardController {
         _sum: { value: true },
       });
 
-      sendSuccess(res, {
-        totalContacts,
-        totalContactsDelta: calcDelta(contactsCapturedThisWeek, contactsCapturedLastWeek),
-        callsHandledToday,
-        callsHandledTodayDelta: calcDelta(callsHandledToday, callsHandledYesterday),
-        whatsappThisWeek,
-        whatsappThisWeekDelta: calcDelta(whatsappThisWeek, whatsappLastWeek),
-        openDeals,
-        appointments: appointmentsThisWeek,
-        appointmentsDelta: calcDelta(appointmentsThisWeek, appointmentsLastWeek),
-        successRate,
-        avgCallDurationSec,
-        dealsPipelineValue,
-        dealsPipelineValueDelta: calcDelta(dealsValueThisWeekResult._sum.value || 0, dealsValueLastWeekResult._sum.value || 0),
-      }, 200);
+      sendSuccess(
+        res,
+        {
+          totalContacts,
+          totalContactsDelta: calcDelta(contactsCapturedThisWeek, contactsCapturedLastWeek),
+          callsHandledToday,
+          callsHandledTodayDelta: calcDelta(callsHandledToday, callsHandledYesterday),
+          whatsappThisWeek,
+          whatsappThisWeekDelta: calcDelta(whatsappThisWeek, whatsappLastWeek),
+          openDeals,
+          appointments: appointmentsThisWeek,
+          appointmentsDelta: calcDelta(appointmentsThisWeek, appointmentsLastWeek),
+          successRate,
+          avgCallDurationSec,
+          dealsPipelineValue,
+          dealsPipelineValueDelta: calcDelta(
+            dealsValueThisWeekResult._sum.value || 0,
+            dealsValueLastWeekResult._sum.value || 0,
+          ),
+        },
+        200,
+      );
     } catch (error: any) {
       sendError(res, error.message || "Failed to fetch dashboard metrics", 500);
     }
@@ -202,8 +209,8 @@ export class DashboardController {
         take: 8,
         include: {
           contact: { select: { firstName: true, lastName: true, phones: true } },
-          agent: { select: { name: true, language: true } }
-        }
+          agent: { select: { name: true, language: true } },
+        },
       });
 
       const formatted = calls.map((c: any) => {
@@ -216,7 +223,7 @@ export class DashboardController {
           outcome = "Follow-up";
           color = "bg-violet-500";
         } else {
-          outcome = "Completed"; 
+          outcome = "Completed";
           color = "bg-blue-500";
         }
 
@@ -230,7 +237,7 @@ export class DashboardController {
           outcome,
           time: c.occurredAt.toISOString(),
           sentiment: c.sentimentScore && c.sentimentScore >= 50 ? "positive" : "neutral",
-          color
+          color,
         };
       });
 
@@ -251,25 +258,27 @@ export class DashboardController {
       const agents = await db.aIAgent.findMany({
         where: { tenantId, isActive: true },
         include: {
-          _count: { select: { communicationLogs: { where: { type: "CALL" } } } }
-        }
+          _count: { select: { communicationLogs: { where: { type: "CALL" } } } },
+        },
       });
-      
-      const agentsWithDuration = await Promise.all(agents.map(async (a: any) => {
-        const sumResult = await db.communicationLog.aggregate({
-          where: { tenantId, agentId: a.id, type: "CALL" },
-          _sum: { duration: true }
-        });
-        return {
-          id: a.id,
-          name: a.name,
-          role: a.role || "Support",
-          calls: a._count.communicationLogs,
-          minutes: Math.round((sumResult._sum.duration || 0) / 60),
-          rating: 4.5 + Math.round(Math.random() * 5) / 10,
-          color: "bg-blue-600"
-        };
-      }));
+
+      const agentsWithDuration = await Promise.all(
+        agents.map(async (a: any) => {
+          const sumResult = await db.communicationLog.aggregate({
+            where: { tenantId, agentId: a.id, type: "CALL" },
+            _sum: { duration: true },
+          });
+          return {
+            id: a.id,
+            name: a.name,
+            role: a.role || "Support",
+            calls: a._count.communicationLogs,
+            minutes: Math.round((sumResult._sum.duration || 0) / 60),
+            rating: 4.5 + Math.round(Math.random() * 5) / 10,
+            color: "bg-blue-600",
+          };
+        }),
+      );
 
       agentsWithDuration.sort((a, b) => b.calls - a.calls);
       sendSuccess(res, agentsWithDuration.slice(0, 3), 200);
@@ -288,9 +297,9 @@ export class DashboardController {
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       const counts = [0, 0, 0, 0, 0, 0, 0];
-      
+
       for (let i = 0; i < 7; i++) {
         const dStart = new Date(today);
         dStart.setDate(today.getDate() - (6 - i));
@@ -298,7 +307,7 @@ export class DashboardController {
         dEnd.setDate(dStart.getDate() + 1);
 
         const count = await db.communicationLog.count({
-          where: { tenantId, type: "CALL", createdAt: { gte: dStart, lt: dEnd } }
+          where: { tenantId, type: "CALL", createdAt: { gte: dStart, lt: dEnd } },
         });
         counts[i] = count;
       }
@@ -325,19 +334,19 @@ export class DashboardController {
         include: {
           _count: {
             select: {
-              runs: { where: { createdAt: { gte: thisWeekStart } } }
-            }
-          }
+              runs: { where: { createdAt: { gte: thisWeekStart } } },
+            },
+          },
         },
         orderBy: { updatedAt: "desc" },
-        take: 3
+        take: 3,
       });
 
-      const formatted = workflows.map(w => ({
+      const formatted = workflows.map((w) => ({
         id: w.id,
         name: w.name,
         triggerType: w.triggerType,
-        runsThisWeek: w._count.runs
+        runsThisWeek: w._count.runs,
       }));
 
       sendSuccess(res, formatted, 200);
@@ -359,9 +368,11 @@ export class DashboardController {
         return;
       }
 
-      const period = (["today", "7d", "30d", "90d"].includes(String(req.query.period))
-        ? String(req.query.period)
-        : "7d") as Period;
+      const period = (
+        ["today", "7d", "30d", "90d"].includes(String(req.query.period))
+          ? String(req.query.period)
+          : "7d"
+      ) as Period;
       const agentId = String(req.query.agentId || "all");
       // The browser sends its own IANA timezone so days/hours group exactly
       // as the viewer experiences them (never UTC).
@@ -378,34 +389,38 @@ export class DashboardController {
 
       const funnel = await getFunnel(tenantId, range, kpis.calls, sentimentRes.engaged, kpis.leads);
 
-      sendSuccess(res, {
-        range: {
-          start: range.start.toISOString(),
-          end: range.end.toISOString(),
-          label: range.label,
+      sendSuccess(
+        res,
+        {
+          range: {
+            start: range.start.toISOString(),
+            end: range.end.toISOString(),
+            label: range.label,
+          },
+          stats: {
+            calls: kpis.calls,
+            callsDelta: calcDelta(kpis.calls, kpis.prevCalls),
+            whatsapp: kpis.whatsapp,
+            whatsappDelta: calcDelta(kpis.whatsapp, kpis.prevWhatsapp),
+            conv: kpis.conv,
+            convDelta: calcDelta(kpis.conv, kpis.prevConv),
+            duration: kpis.avgDuration
+              ? `${Math.floor(kpis.avgDuration / 60)}m ${Math.floor(kpis.avgDuration % 60)}s`
+              : "0s",
+            durationDelta: calcDelta(kpis.avgDuration, kpis.prevAvgDuration),
+            minutes: kpis.minutes,
+            rating: kpis.rating,
+            daily,
+            sentiment: sentimentRes.buckets,
+            funnel,
+            agentPerformance,
+          },
+          heatmap: heatmap.grid,
+          heatmapCounts: heatmap.counts,
+          heatmapHours: heatmap.hours,
         },
-        stats: {
-          calls: kpis.calls,
-          callsDelta: calcDelta(kpis.calls, kpis.prevCalls),
-          whatsapp: kpis.whatsapp,
-          whatsappDelta: calcDelta(kpis.whatsapp, kpis.prevWhatsapp),
-          conv: kpis.conv,
-          convDelta: calcDelta(kpis.conv, kpis.prevConv),
-          duration: kpis.avgDuration
-            ? `${Math.floor(kpis.avgDuration / 60)}m ${Math.floor(kpis.avgDuration % 60)}s`
-            : "0s",
-          durationDelta: calcDelta(kpis.avgDuration, kpis.prevAvgDuration),
-          minutes: kpis.minutes,
-          rating: kpis.rating,
-          daily,
-          sentiment: sentimentRes.buckets,
-          funnel,
-          agentPerformance,
-        },
-        heatmap: heatmap.grid,
-        heatmapCounts: heatmap.counts,
-        heatmapHours: heatmap.hours,
-      }, 200);
+        200,
+      );
     } catch (error: any) {
       sendError(res, error.message || "Failed to fetch analytics", 500);
     }

@@ -20,7 +20,8 @@ const getSip = (): SipClient => {
   if (!env.LIVEKIT_URL || !env.LIVEKIT_API_KEY || !env.LIVEKIT_API_SECRET) {
     throw new Error("LiveKit is not configured");
   }
-  if (!sip) sip = new SipClient(httpUrl(env.LIVEKIT_URL), env.LIVEKIT_API_KEY, env.LIVEKIT_API_SECRET);
+  if (!sip)
+    sip = new SipClient(httpUrl(env.LIVEKIT_URL), env.LIVEKIT_API_KEY, env.LIVEKIT_API_SECRET);
   return sip;
 };
 

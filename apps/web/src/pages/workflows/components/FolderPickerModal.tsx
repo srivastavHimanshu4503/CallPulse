@@ -113,7 +113,8 @@ export function FolderPickerModal({
 
           {flat.length === 0 ? (
             <div className="px-3 py-6 text-center text-[11.5px] text-fg-muted italic">
-              No other folders yet. Create one first with <b className="text-fg-primary">+ New folder</b>.
+              No other folders yet. Create one first with{" "}
+              <b className="text-fg-primary">+ New folder</b>.
             </div>
           ) : (
             flat.map(({ folder, depth }) => (
@@ -174,9 +175,7 @@ function FolderRow({
       onClick={onSelect}
       className={cn(
         "w-full flex items-center gap-2 py-1.5 rounded-md text-left transition-colors text-[12.5px]",
-        selected
-          ? "bg-blue-100 text-blue-800"
-          : "text-fg-primary hover:bg-slate-100",
+        selected ? "bg-blue-100 text-blue-800" : "text-fg-primary hover:bg-slate-100",
       )}
       style={{ paddingLeft: 8 + depth * 14, paddingRight: 8 }}
     >

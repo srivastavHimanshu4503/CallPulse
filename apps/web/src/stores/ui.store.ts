@@ -6,8 +6,7 @@ function applyTheme(theme: Theme): void {
   document.documentElement.classList.toggle("dark", theme === "dark");
 }
 
-const initialTheme: Theme =
-  localStorage.getItem("theme") === "dark" ? "dark" : "light";
+const initialTheme: Theme = localStorage.getItem("theme") === "dark" ? "dark" : "light";
 
 interface UIState {
   sidebarMinimized: boolean;

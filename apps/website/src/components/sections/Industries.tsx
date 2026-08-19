@@ -203,7 +203,10 @@ export function Industries() {
   };
 
   return (
-    <section id="industries" className="relative bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16 overflow-hidden">
+    <section
+      id="industries"
+      className="relative bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16 overflow-hidden"
+    >
       <div className="max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Industries"

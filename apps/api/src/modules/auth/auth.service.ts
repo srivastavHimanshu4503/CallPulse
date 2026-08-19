@@ -38,74 +38,76 @@ export class AuthService {
     const slug = generateBusinessSlug(businessName);
 
     // 4. Create Tenant, User, and default AI Agent inside a database transaction to ensure Atomicity
-    const result = await db.$transaction(async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
-      // Create Tenant with the free-plan welcome credits
-      const tenant = await tx.tenant.create({
-        data: {
-          name: businessName,
-          slug,
-          businessType,
-          websiteUrl: websiteUrl || null,
-          teamSize: teamSize || "SOLO",
-          onboardingStep: 1,
-          onboardingDone: false,
-          creditBalance: PLAN_CREDITS.FREE,
-        },
-      });
-      await tx.creditLedger.create({
-        data: {
-          tenantId: tenant.id,
-          delta: PLAN_CREDITS.FREE,
-          reason: "SIGNUP_GRANT",
-          note: "Welcome credits",
-        },
-      });
-
-      // Create User as OWNER
-      const user = await tx.user.create({
-        data: {
-          tenantId: tenant.id,
-          email,
-          passwordHash,
-          name,
-          role: "OWNER",
-        },
-      });
-
-      // Create primary PhoneNumber record for the Tenant
-      await tx.phoneNumber.create({
-        data: {
-          tenantId: tenant.id,
-          phoneNumber: phone,
-          label: "Primary Business Line",
-          // The owner's contact number — never assignable to an AI agent.
-          kind: "BUSINESS",
-        },
-      });
-
-      // Create a default AI Agent for the new Tenant
-      const aiAgent = await tx.aIAgent.create({
-        data: {
-          tenantId: tenant.id,
-          name: `${businessName} AI Assistant`,
-          modelName: "gemini-2.5-flash",
-        },
-      });
-
-      // Create a KnowledgeBase entry if websiteUrl is provided
-      if (websiteUrl) {
-        await tx.knowledgeBase.create({
+    const result = await db.$transaction(
+      async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
+        // Create Tenant with the free-plan welcome credits
+        const tenant = await tx.tenant.create({
           data: {
-            tenantId: tenant.id,
-            agentId: aiAgent.id,
-            name: `${businessName} Website Knowledge`,
-            content: `Scraping pending for: ${websiteUrl}`,
+            name: businessName,
+            slug,
+            businessType,
+            websiteUrl: websiteUrl || null,
+            teamSize: teamSize || "SOLO",
+            onboardingStep: 1,
+            onboardingDone: false,
+            creditBalance: PLAN_CREDITS.FREE,
           },
         });
-      }
+        await tx.creditLedger.create({
+          data: {
+            tenantId: tenant.id,
+            delta: PLAN_CREDITS.FREE,
+            reason: "SIGNUP_GRANT",
+            note: "Welcome credits",
+          },
+        });
 
-      return { tenant, user, aiAgent };
-    });
+        // Create User as OWNER
+        const user = await tx.user.create({
+          data: {
+            tenantId: tenant.id,
+            email,
+            passwordHash,
+            name,
+            role: "OWNER",
+          },
+        });
+
+        // Create primary PhoneNumber record for the Tenant
+        await tx.phoneNumber.create({
+          data: {
+            tenantId: tenant.id,
+            phoneNumber: phone,
+            label: "Primary Business Line",
+            // The owner's contact number — never assignable to an AI agent.
+            kind: "BUSINESS",
+          },
+        });
+
+        // Create a default AI Agent for the new Tenant
+        const aiAgent = await tx.aIAgent.create({
+          data: {
+            tenantId: tenant.id,
+            name: `${businessName} AI Assistant`,
+            modelName: "gemini-2.5-flash",
+          },
+        });
+
+        // Create a KnowledgeBase entry if websiteUrl is provided
+        if (websiteUrl) {
+          await tx.knowledgeBase.create({
+            data: {
+              tenantId: tenant.id,
+              agentId: aiAgent.id,
+              name: `${businessName} Website Knowledge`,
+              content: `Scraping pending for: ${websiteUrl}`,
+            },
+          });
+        }
+
+        return { tenant, user, aiAgent };
+      },
+    );
 
     // Starter knowledge base for the auto-created agent — fire-and-forget so
     // signup latency is unaffected.
@@ -117,7 +119,7 @@ export class AuthService {
       result.tenant.id,
       result.user.email,
       result.user.name,
-      result.user.role
+      result.user.role,
     );
 
     return {
@@ -170,13 +172,7 @@ export class AuthService {
     }
 
     // 3. Generate tokens
-    const tokens = generateTokens(
-      user.id,
-      user.tenantId,
-      user.email,
-      user.name,
-      user.role
-    );
+    const tokens = generateTokens(user.id, user.tenantId, user.email, user.name, user.role);
 
     return {
       user: {
@@ -223,13 +219,7 @@ export class AuthService {
       }
 
       // 3. Generate fresh token pair
-      return generateTokens(
-        user.id,
-        user.tenantId,
-        user.email,
-        user.name,
-        user.role
-      );
+      return generateTokens(user.id, user.tenantId, user.email, user.name, user.role);
     } catch (error) {
       throw new Error("Invalid or expired refresh token");
     }

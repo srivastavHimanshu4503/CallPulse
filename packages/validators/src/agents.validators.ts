@@ -21,7 +21,7 @@ export const createAgentSchema = z.object({
     ],
     {
       errorMap: () => ({ message: "Please select a valid language" }),
-    }
+    },
   ),
   greetingMessage: z.string().min(1, "Greeting message is required"),
   tone: z.enum(["Friendly", "Professional", "Casual"], {
@@ -38,7 +38,11 @@ export const createAgentSchema = z.object({
     .pipe(z.string().url("Please enter a valid website URL").nullable())
     .optional()
     .nullable(),
-  maxDuration: z.coerce.number().min(1, "Duration must be at least 1 minute").max(120, "Duration cannot exceed 120 minutes").default(10),
+  maxDuration: z.coerce
+    .number()
+    .min(1, "Duration must be at least 1 minute")
+    .max(120, "Duration cannot exceed 120 minutes")
+    .default(10),
   dndCompliance: z.boolean().default(true),
   recordingConsent: z.boolean().default(true),
   isActive: z.boolean().default(true).optional(),
@@ -87,7 +91,10 @@ export const createAgentSchema = z.object({
   callTransferMessage: z.string().optional().nullable(),
   callTransferFallbackNumber: z.string().optional().nullable(),
   callTransferTimeoutSec: z.coerce.number().int().min(10).max(60).optional().default(25),
-  callTransferNoAnswerAction: z.enum(["take_message", "offer_callback", "end_politely"]).optional().default("take_message"),
+  callTransferNoAnswerAction: z
+    .enum(["take_message", "offer_callback", "end_politely"])
+    .optional()
+    .default("take_message"),
   callTransferStyle: z.enum(["warm", "instant"]).optional().default("warm"),
   bookingEnabled: z.boolean().optional().default(false),
   bookingConfig: z

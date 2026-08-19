@@ -178,9 +178,7 @@ export function Languages() {
                           DeskBuddy · {active.name}
                         </p>
                       </div>
-                      <p className="text-[15px] font-semibold leading-relaxed">
-                        {active.greeting}
-                      </p>
+                      <p className="text-[15px] font-semibold leading-relaxed">{active.greeting}</p>
                     </div>
                     <p className="mt-2.5 text-[11.5px] text-fg-muted italic px-1">
                       {active.translit}

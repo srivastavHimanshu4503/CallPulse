@@ -52,12 +52,12 @@ The LiveKit agents SDK is designed for arbitrary WebRTC + SIP topologies with ro
 
 Averages across recent real SIP calls:
 
-| Metric | Value |
-|---|---|
-| `latency: TURN TOTAL` (server-measured) | ~1400-1600ms |
-| `eouMs` (STT finalization delay) | ~450-500ms |
-| `llmTtftMs` | ~800ms |
-| `ttsTtfbMs` | ~200-250ms |
+| Metric                                       | Value        |
+| -------------------------------------------- | ------------ |
+| `latency: TURN TOTAL` (server-measured)      | ~1400-1600ms |
+| `eouMs` (STT finalization delay)             | ~450-500ms   |
+| `llmTtftMs`                                  | ~800ms       |
+| `ttsTtfbMs`                                  | ~200-250ms   |
 | Caller-perceived latency (incl. carrier RTT) | ~1700-2200ms |
 
 For comparison, Ringg.ai claims < 400ms end-to-end. A human-feeling voice agent needs sub-800ms perceived.

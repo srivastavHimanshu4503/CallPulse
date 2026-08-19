@@ -37,7 +37,10 @@ interface RecordingPlayerProps {
  * the button keeps spinning until sound actually starts (not just until
  * the URL arrives). Waveform supports click + drag scrubbing.
  */
-export function RecordingPlayer({ logId, fallbackDuration }: RecordingPlayerProps): React.JSX.Element {
+export function RecordingPlayer({
+  logId,
+  fallbackDuration,
+}: RecordingPlayerProps): React.JSX.Element {
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const trackRef = React.useRef<HTMLDivElement | null>(null);
   const draggingRef = React.useRef(false);
@@ -128,10 +131,12 @@ export function RecordingPlayer({ logId, fallbackDuration }: RecordingPlayerProp
           }}
           onTimeUpdate={(e) => setCurrent(e.currentTarget.currentTime)}
           onLoadedMetadata={(e) => {
-            if (Number.isFinite(e.currentTarget.duration)) setMediaDuration(e.currentTarget.duration);
+            if (Number.isFinite(e.currentTarget.duration))
+              setMediaDuration(e.currentTarget.duration);
           }}
           onDurationChange={(e) => {
-            if (Number.isFinite(e.currentTarget.duration)) setMediaDuration(e.currentTarget.duration);
+            if (Number.isFinite(e.currentTarget.duration))
+              setMediaDuration(e.currentTarget.duration);
           }}
         />
       )}
@@ -211,36 +216,36 @@ export function RecordingPlayer({ logId, fallbackDuration }: RecordingPlayerProp
           <span className="text-fg-muted font-semibold"> / {fmt(duration)}</span>
         </span>
         <div className="shrink-0 flex items-center gap-0.5">
-            <button
-              type="button"
-              onClick={cycleSpeed}
-              disabled={!ready}
-              className={`h-5 min-w-[36px] px-1.5 rounded-full text-[10px] font-bold tabular-nums transition-colors disabled:opacity-40 ${
-                speedIdx > 0
-                  ? "bg-blue-50 text-blue-600 border border-blue-500/25"
-                  : "text-fg-secondary hover:text-blue-600 hover:bg-blue-50"
-              }`}
-              title="Playback speed"
-            >
-              {SPEEDS[speedIdx]}×
-            </button>
-            <a
-              href={url ?? undefined}
-              target="_blank"
-              rel="noreferrer"
-              aria-disabled={!ready}
-              onClick={(e) => {
-                if (!ready) e.preventDefault();
-              }}
-              className={`h-5 w-5 rounded-full flex items-center justify-center transition-colors ${
-                ready
-                  ? "text-fg-muted hover:text-blue-600 hover:bg-blue-50"
-                  : "text-fg-muted/40 cursor-default"
-              }`}
-              title="Download recording"
-            >
-              <Download className="h-3 w-3" />
-            </a>
+          <button
+            type="button"
+            onClick={cycleSpeed}
+            disabled={!ready}
+            className={`h-5 min-w-[36px] px-1.5 rounded-full text-[10px] font-bold tabular-nums transition-colors disabled:opacity-40 ${
+              speedIdx > 0
+                ? "bg-blue-50 text-blue-600 border border-blue-500/25"
+                : "text-fg-secondary hover:text-blue-600 hover:bg-blue-50"
+            }`}
+            title="Playback speed"
+          >
+            {SPEEDS[speedIdx]}×
+          </button>
+          <a
+            href={url ?? undefined}
+            target="_blank"
+            rel="noreferrer"
+            aria-disabled={!ready}
+            onClick={(e) => {
+              if (!ready) e.preventDefault();
+            }}
+            className={`h-5 w-5 rounded-full flex items-center justify-center transition-colors ${
+              ready
+                ? "text-fg-muted hover:text-blue-600 hover:bg-blue-50"
+                : "text-fg-muted/40 cursor-default"
+            }`}
+            title="Download recording"
+          >
+            <Download className="h-3 w-3" />
+          </a>
         </div>
       </div>
     </div>

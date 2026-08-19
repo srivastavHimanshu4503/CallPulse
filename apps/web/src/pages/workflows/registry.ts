@@ -277,7 +277,8 @@ function summarizeUpdate(c: Record<string, any>): string {
 function updatePreview(c: Record<string, any>): Array<any> {
   const rows: Array<any> = [];
   rows.push({ kind: "chip", label: "Operation", value: (c.operation || "").replace(/_/g, " ") });
-  if (c.operation === "add_tag" && c.tag) rows.push({ kind: "chip", label: "Tag", value: `#${c.tag}` });
+  if (c.operation === "add_tag" && c.tag)
+    rows.push({ kind: "chip", label: "Tag", value: `#${c.tag}` });
   if (c.operation === "create_deal") {
     if (c.dealTitle) rows.push({ kind: "chip", label: "Title", value: c.dealTitle });
     if (c.dealValue) rows.push({ kind: "chip", label: "Value", value: `₹${c.dealValue}` });
@@ -391,9 +392,7 @@ const LOGIC: BlockDef[] = [
 
 export const REGISTRY: BlockDef[] = [...TRIGGERS, ...ACTIONS, ...LOGIC];
 
-const BY_TYPE: Record<string, BlockDef> = Object.fromEntries(
-  REGISTRY.map((b) => [b.type, b]),
-);
+const BY_TYPE: Record<string, BlockDef> = Object.fromEntries(REGISTRY.map((b) => [b.type, b]));
 
 export function getBlockDef(type: string): BlockDef | undefined {
   return BY_TYPE[type];
@@ -614,7 +613,8 @@ export const TEMPLATES: WorkflowTemplate[] = [
           id: rid(),
           type: "SEND_SMS",
           config: {
-            message: "Hi {{contact.firstName}}, checking in — still interested? Reply YES to book a call.",
+            message:
+              "Hi {{contact.firstName}}, checking in — still interested? Reply YES to book a call.",
           },
         },
         { id: rid(), type: "WAIT", config: { amount: 2, unit: "days" } },
@@ -624,7 +624,11 @@ export const TEMPLATES: WorkflowTemplate[] = [
           config: { field: "contact.sentiment", operator: "gte", value: "0" },
           children: {
             then: [
-              { id: rid(), type: "MAKE_CALL", config: { goal: "Confirm interest and book a demo." } },
+              {
+                id: rid(),
+                type: "MAKE_CALL",
+                config: { goal: "Confirm interest and book a demo." },
+              },
             ],
             else: [
               { id: rid(), type: "UPDATE", config: { operation: "add_tag", tag: "unresponsive" } },

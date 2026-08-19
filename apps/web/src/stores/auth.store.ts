@@ -10,12 +10,16 @@ interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  
+
   login: (email: string, password: string, businessSlug?: string) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => void;
   refreshTokens: () => Promise<void>;
-  setAuth: (user: SerializedUser, tenant: SerializedTenant, tokens: { accessToken: string; refreshToken: string }) => void;
+  setAuth: (
+    user: SerializedUser,
+    tenant: SerializedTenant,
+    tokens: { accessToken: string; refreshToken: string },
+  ) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
 }
 
@@ -40,7 +44,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setAuth: (user, tenant, tokens) => {
     // Clear any existing query cache from previous users
     queryClient.clear();
-    
+
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("tenant", JSON.stringify(tenant));
     localStorage.setItem("accessToken", tokens.accessToken);
@@ -112,7 +116,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   refreshTokens: async () => {
     const { refreshToken } = get();
     if (!refreshToken) return;
-    
+
     try {
       const response = await api.post("/auth/refresh", { refreshToken });
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;

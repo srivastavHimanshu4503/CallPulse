@@ -161,7 +161,7 @@ export const withRetries = async <T>(
     baseDelayMs?: number;
     label?: string;
     onRetry?: (err: AppError, attempt: number) => void;
-  } = {}
+  } = {},
 ): Promise<T> => {
   const attempts = Math.max(1, options.attempts ?? 3);
   const baseDelayMs = options.baseDelayMs ?? 500;

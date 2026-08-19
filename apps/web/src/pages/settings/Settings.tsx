@@ -34,14 +34,14 @@ import { formatTimeAgo } from "@antigravity/utils";
 // ─────────────────────────────────────────────────────────────
 // Types & data
 // ─────────────────────────────────────────────────────────────
-type Section =
-  | "account"
-  | "organization"
-  | "team"
-  | "billing"
-  | "security";
+type Section = "account" | "organization" | "team" | "billing" | "security";
 
-const NAV: { key: Section; label: string; icon: React.ComponentType<{ className?: string }>; hint: string }[] = [
+const NAV: {
+  key: Section;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  hint: string;
+}[] = [
   { key: "account", label: "Account", icon: User, hint: "Your profile & preferences" },
   { key: "organization", label: "Organization", icon: Building2, hint: "Workspace details" },
   { key: "team", label: "Team", icon: UsersIcon, hint: "Invite & manage members" },
@@ -58,10 +58,38 @@ interface TeamMember {
   hex: string;
 }
 const TEAM_INIT: TeamMember[] = [
-  { id: "t1", name: "Yogendra Yadav", email: "yogendra@myaifrontdesk.com", role: "Owner", status: "Active", hex: "#2563EB" },
-  { id: "t2", name: "Priya Deshmukh", email: "priya@rajesh-distributors.in", role: "Admin", status: "Active", hex: "#8B5CF6" },
-  { id: "t3", name: "Kabir Sharma", email: "kabir@rajesh-distributors.in", role: "Manager", status: "Active", hex: "#10B981" },
-  { id: "t4", name: "Neha Iyer", email: "neha@rajesh-distributors.in", role: "Viewer", status: "Invited", hex: "#F97316" },
+  {
+    id: "t1",
+    name: "Yogendra Yadav",
+    email: "yogendra@myaifrontdesk.com",
+    role: "Owner",
+    status: "Active",
+    hex: "#2563EB",
+  },
+  {
+    id: "t2",
+    name: "Priya Deshmukh",
+    email: "priya@rajesh-distributors.in",
+    role: "Admin",
+    status: "Active",
+    hex: "#8B5CF6",
+  },
+  {
+    id: "t3",
+    name: "Kabir Sharma",
+    email: "kabir@rajesh-distributors.in",
+    role: "Manager",
+    status: "Active",
+    hex: "#10B981",
+  },
+  {
+    id: "t4",
+    name: "Neha Iyer",
+    email: "neha@rajesh-distributors.in",
+    role: "Viewer",
+    status: "Invited",
+    hex: "#F97316",
+  },
 ];
 const ROLE_STYLES: Record<TeamMember["role"], { bg: string; color: string }> = {
   Owner: { bg: "#EEF2FF", color: "#4F46E5" },
@@ -100,7 +128,11 @@ function AccountPanel(): React.JSX.Element {
             <div className="text-[15px] font-semibold text-fg-primary leading-tight">{name}</div>
             <div className="text-[11.5px] text-fg-secondary mt-0.5">{email}</div>
             <div className="mt-2 flex items-center gap-2">
-              <AppButton size="sm" variant="secondary" onClick={() => toast.info("Photo upload coming soon.")}>
+              <AppButton
+                size="sm"
+                variant="secondary"
+                onClick={() => toast.info("Photo upload coming soon.")}
+              >
                 Change photo
               </AppButton>
               <AppButton size="sm" variant="ghost" onClick={() => toast.info("Photo removed.")}>
@@ -112,13 +144,28 @@ function AccountPanel(): React.JSX.Element {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Field label="Full name">
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Email address">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Mobile number">
-            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} />
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Time zone">
             <select className={`${inputClass} cursor-pointer`}>
@@ -134,15 +181,24 @@ function AccountPanel(): React.JSX.Element {
       <Card>
         <SectionHead title="Preferences" />
         <div className="space-y-3">
-          <Toggle checked={true} onChange={() => { }}
+          <Toggle
+            checked={true}
+            onChange={() => {}}
             label="Play sound on new call"
-            hint="Short chime when a live call starts." />
-          <Toggle checked={false} onChange={() => { }}
+            hint="Short chime when a live call starts."
+          />
+          <Toggle
+            checked={false}
+            onChange={() => {}}
             label="Show Hindi transliteration in transcripts"
-            hint="Roman letters below Devanagari for quick scan." />
-          <Toggle checked={true} onChange={() => { }}
+            hint="Roman letters below Devanagari for quick scan."
+          />
+          <Toggle
+            checked={true}
+            onChange={() => {}}
             label="Weekly performance email"
-            hint="Monday morning digest with numbers that matter." />
+            hint="Monday morning digest with numbers that matter."
+          />
         </div>
       </Card>
     </div>
@@ -152,7 +208,9 @@ function AccountPanel(): React.JSX.Element {
 function OrganizationPanel(): React.JSX.Element {
   const tenant = useAuthStore((s) => s.tenant);
   const [orgName, setOrgName] = React.useState(tenant?.name || "Rajesh Distributors");
-  const [website, setWebsite] = React.useState((tenant as any)?.websiteUrl || "https://rajesh-distributors.in");
+  const [website, setWebsite] = React.useState(
+    (tenant as any)?.websiteUrl || "https://rajesh-distributors.in",
+  );
 
   return (
     <div className="space-y-3">
@@ -160,7 +218,12 @@ function OrganizationPanel(): React.JSX.Element {
         <SectionHead title="Workspace" hint="Public-facing info about your business." />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Field label="Business name">
-            <input type="text" value={orgName} onChange={(e) => setOrgName(e.target.value)} className={inputClass} />
+            <input
+              type="text"
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Industry">
             <select className={`${inputClass} cursor-pointer`}>
@@ -173,7 +236,12 @@ function OrganizationPanel(): React.JSX.Element {
             </select>
           </Field>
           <Field label="Website URL">
-            <input type="text" value={website} onChange={(e) => setWebsite(e.target.value)} className={inputClass} />
+            <input
+              type="text"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Team size">
             <select className={`${inputClass} cursor-pointer`}>
@@ -201,7 +269,10 @@ function OrganizationPanel(): React.JSX.Element {
       </Card>
 
       <Card>
-        <SectionHead title="Business hours" hint="Widget hides & calls forward outside these hours." />
+        <SectionHead
+          title="Business hours"
+          hint="Widget hides & calls forward outside these hours."
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Field label="Open at">
             <input type="time" defaultValue="09:00" className={inputClass} />
@@ -211,9 +282,12 @@ function OrganizationPanel(): React.JSX.Element {
           </Field>
         </div>
         <div className="mt-3">
-          <Toggle checked={true} onChange={() => { }}
+          <Toggle
+            checked={true}
+            onChange={() => {}}
             label="24 × 7 always available"
-            hint="AI answers every call, even outside business hours." />
+            hint="AI answers every call, even outside business hours."
+          />
         </div>
       </Card>
     </div>
@@ -298,7 +372,10 @@ function TeamPanel(): React.JSX.Element {
               {members.map((m) => {
                 const role = ROLE_STYLES[m.role];
                 return (
-                  <tr key={m.id} className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors">
+                  <tr
+                    key={m.id}
+                    className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors"
+                  >
                     <td className="px-2 py-2.5">
                       <div className="flex items-center gap-2.5">
                         <div
@@ -308,7 +385,9 @@ function TeamPanel(): React.JSX.Element {
                           {m.name.charAt(0)}
                         </div>
                         <div>
-                          <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">{m.name}</div>
+                          <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">
+                            {m.name}
+                          </div>
                           <div className="text-[10.5px] text-fg-muted">{m.email}</div>
                         </div>
                       </div>
@@ -357,7 +436,6 @@ function TeamPanel(): React.JSX.Element {
   );
 }
 
-
 function BillingPanel(): React.JSX.Element {
   const ent = useEntitlements();
   const { checkout, isPaying } = useRazorpayCheckout();
@@ -380,10 +458,10 @@ function BillingPanel(): React.JSX.Element {
   const pct = Math.max(0, Math.min(100, Math.round((ent.creditBalance / allotment) * 100)));
   const periodEnd = (ent as any).periodEnd
     ? new Date((ent as any).periodEnd).toLocaleDateString("en-IN", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    })
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
     : null;
 
   const reasonLabel: Record<string, string> = {
@@ -403,7 +481,9 @@ function BillingPanel(): React.JSX.Element {
             <div
               className={[
                 "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider mb-2",
-                isPro ? "bg-amber-50 text-amber-600 border border-amber-500/30" : "bg-bg-muted text-fg-secondary border border-line-default",
+                isPro
+                  ? "bg-amber-50 text-amber-600 border border-amber-500/30"
+                  : "bg-bg-muted text-fg-secondary border border-line-default",
               ].join(" ")}
             >
               {isPro ? <Crown className="h-3 w-3" /> : <Sparkles className="h-3 w-3" />}
@@ -435,9 +515,7 @@ function BillingPanel(): React.JSX.Element {
               <Zap className="h-3.5 w-3.5 text-amber-500" />
               Remaining credits:
             </span>
-            <span className="text-fg-primary tabular-nums text-[13px]">
-              {ent.creditBalance}
-            </span>
+            <span className="text-fg-primary tabular-nums text-[13px]">{ent.creditBalance}</span>
           </div>
           <div className="h-2 rounded-full overflow-hidden bg-line-subtle">
             <div
@@ -447,31 +525,47 @@ function BillingPanel(): React.JSX.Element {
           </div>
           <div className="mt-3 flex gap-3 text-[11px] text-fg-muted flex-wrap">
             <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
-              <span className="font-semibold text-fg-secondary">Voice call:</span> {CREDIT_COSTS.VOICE_PER_MINUTE} credits / min
+              <span className="font-semibold text-fg-secondary">Voice call:</span>{" "}
+              {CREDIT_COSTS.VOICE_PER_MINUTE} credits / min
             </div>
             <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
-              <span className="font-semibold text-fg-secondary">WhatsApp:</span> {CREDIT_COSTS.WHATSAPP} credits / msg
+              <span className="font-semibold text-fg-secondary">WhatsApp:</span>{" "}
+              {CREDIT_COSTS.WHATSAPP} credits / msg
             </div>
             <div className="bg-bg-subtle px-2 py-1 rounded border border-line-subtle">
-              <span className="font-semibold text-fg-secondary">SMS:</span> {CREDIT_COSTS.SMS} credits / msg
+              <span className="font-semibold text-fg-secondary">SMS:</span> {CREDIT_COSTS.SMS}{" "}
+              credits / msg
             </div>
           </div>
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-2">
           {!isPro ? (
-            <AppButton variant="primary" onClick={() => checkout({ product: "pro" }, `Pro — 30 days, ${PLAN_CREDITS.PRO} credits`)}>
+            <AppButton
+              variant="primary"
+              onClick={() =>
+                checkout({ product: "pro" }, `Pro — 30 days, ${PLAN_CREDITS.PRO} credits`)
+              }
+            >
               <span className="flex items-center gap-1.5">
                 <Crown className="h-3.5 w-3.5" />
                 {isPaying ? "Opening checkout…" : "Upgrade to Pro"}
               </span>
             </AppButton>
           ) : (
-            <AppButton variant="secondary" onClick={() => checkout({ product: "pro" }, `Pro — 30 more days, ${PLAN_CREDITS.PRO} credits`)}>
+            <AppButton
+              variant="secondary"
+              onClick={() =>
+                checkout({ product: "pro" }, `Pro — 30 more days, ${PLAN_CREDITS.PRO} credits`)
+              }
+            >
               Extend Pro by 30 days
             </AppButton>
           )}
-          <AppButton variant={isPro ? "primary" : "secondary"} onClick={() => setShowPacks((v) => !v)}>
+          <AppButton
+            variant={isPro ? "primary" : "secondary"}
+            onClick={() => setShowPacks((v) => !v)}
+          >
             <span className="flex items-center gap-1.5">
               <CreditCard className="h-3.5 w-3.5" />
               Top up credits
@@ -487,11 +581,17 @@ function BillingPanel(): React.JSX.Element {
                 key={pack.id}
                 type="button"
                 disabled={isPaying}
-                onClick={() => checkout({ product: "credits", packId: pack.id }, `${pack.credits} credits top-up`)}
+                onClick={() =>
+                  checkout(
+                    { product: "credits", packId: pack.id },
+                    `${pack.credits} credits top-up`,
+                  )
+                }
                 className="rounded-lg border border-line-default bg-bg-subtle hover:border-brand-500/50 hover:bg-brand-50/40 p-3 text-left transition-colors disabled:opacity-50"
               >
                 <div className="text-[16px] font-bold text-fg-primary tabular-nums">
-                  {pack.credits} <span className="text-[11px] font-semibold text-fg-muted">credits</span>
+                  {pack.credits}{" "}
+                  <span className="text-[11px] font-semibold text-fg-muted">credits</span>
                 </div>
                 <div className="text-[12px] font-semibold text-brand-600 mt-0.5">
                   ₹{pack.priceInr.toLocaleString("en-IN")}
@@ -519,12 +619,17 @@ function BillingPanel(): React.JSX.Element {
           <div>
             <SectionHead title="Credit history" hint="Every credit added or used, newest first." />
             {ledger.length === 0 ? (
-              <div className="py-6 text-center text-[11.5px] text-fg-muted">No credit activity yet.</div>
+              <div className="py-6 text-center text-[11.5px] text-fg-muted">
+                No credit activity yet.
+              </div>
             ) : (
               <div className="max-h-[300px] overflow-y-auto pr-1">
                 <ul className="divide-y divide-line-subtle -mx-1">
                   {ledger.map((row: any) => (
-                    <li key={row.id} className="px-1 py-2 flex items-center justify-between text-[12px]">
+                    <li
+                      key={row.id}
+                      className="px-1 py-2 flex items-center justify-between text-[12px]"
+                    >
                       <div>
                         <span className="font-semibold text-fg-primary">
                           {reasonLabel[row.reason] ?? row.reason}
@@ -562,10 +667,18 @@ function BillingPanel(): React.JSX.Element {
               <div className="max-h-[300px] overflow-y-auto pr-1">
                 <ul className="divide-y divide-line-subtle -mx-1">
                   {payments.map((p: any) => (
-                    <li key={p.id} className="px-1 py-2.5 flex items-center justify-between gap-3 text-[12px]">
+                    <li
+                      key={p.id}
+                      className="px-1 py-2.5 flex items-center justify-between gap-3 text-[12px]"
+                    >
                       <div className="min-w-0">
-                        <div className="font-semibold text-fg-primary">{p.description || p.product}</div>
-                        <div className="text-[10.5px] text-fg-muted font-mono truncate" title={p.paymentId}>
+                        <div className="font-semibold text-fg-primary">
+                          {p.description || p.product}
+                        </div>
+                        <div
+                          className="text-[10.5px] text-fg-muted font-mono truncate"
+                          title={p.paymentId}
+                        >
                           {p.paymentId}
                         </div>
                       </div>
@@ -574,7 +687,11 @@ function BillingPanel(): React.JSX.Element {
                           ₹{(p.amountPaise / 100).toLocaleString("en-IN")}
                         </div>
                         <div className="text-[10.5px] text-fg-muted">
-                          {new Date(p.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                          {new Date(p.createdAt).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
                         </div>
                       </div>
                     </li>
@@ -614,10 +731,16 @@ function SecurityPanel(): React.JSX.Element {
       </Card>
 
       <Card>
-        <SectionHead title="Two-factor authentication" hint="Require a code from your phone at login." />
-        <Toggle checked={false} onChange={(v) => toast.info(v ? "2FA setup coming soon." : "2FA disabled.")}
+        <SectionHead
+          title="Two-factor authentication"
+          hint="Require a code from your phone at login."
+        />
+        <Toggle
+          checked={false}
+          onChange={(v) => toast.info(v ? "2FA setup coming soon." : "2FA disabled.")}
           label="Enable 2FA (authenticator app)"
-          hint="Recommended for owners and admins." />
+          hint="Recommended for owners and admins."
+        />
       </Card>
 
       <Card>
@@ -626,7 +749,8 @@ function SecurityPanel(): React.JSX.Element {
           <div>
             <div className="text-[13px] font-semibold text-negative-500">Delete workspace</div>
             <div className="text-[11px] text-fg-secondary mt-0.5">
-              Permanently deletes all agents, calls, contacts, deals and templates. Cannot be undone.
+              Permanently deletes all agents, calls, contacts, deals and templates. Cannot be
+              undone.
             </div>
           </div>
           <button
@@ -663,11 +787,16 @@ export function Settings(): React.JSX.Element {
   const active = NAV.find((n) => n.key === section)!;
   const Content = React.useMemo(() => {
     switch (section) {
-      case "account": return <AccountPanel />;
-      case "organization": return <OrganizationPanel />;
-      case "team": return <TeamPanel />;
-      case "billing": return <BillingPanel />;
-      case "security": return <SecurityPanel />;
+      case "account":
+        return <AccountPanel />;
+      case "organization":
+        return <OrganizationPanel />;
+      case "team":
+        return <TeamPanel />;
+      case "billing":
+        return <BillingPanel />;
+      case "security":
+        return <SecurityPanel />;
     }
   }, [section]);
 
@@ -697,7 +826,11 @@ export function Settings(): React.JSX.Element {
                     className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all text-left"
                     style={
                       isActive
-                        ? { backgroundColor: "#2563EB", color: "#FFFFFF", boxShadow: "0 2px 4px rgba(37,99,235,0.35)" }
+                        ? {
+                            backgroundColor: "#2563EB",
+                            color: "#FFFFFF",
+                            boxShadow: "0 2px 4px rgba(37,99,235,0.35)",
+                          }
                         : { backgroundColor: "transparent", color: "rgb(var(--fg-primary))" }
                     }
                   >
@@ -706,7 +839,11 @@ export function Settings(): React.JSX.Element {
                       <div className="text-[12.5px] font-semibold leading-tight">{n.label}</div>
                       <div
                         className="text-[10px] truncate mt-0.5"
-                        style={isActive ? { color: "rgba(255,255,255,0.85)" } : { color: "rgb(var(--slate-500))" }}
+                        style={
+                          isActive
+                            ? { color: "rgba(255,255,255,0.85)" }
+                            : { color: "rgb(var(--slate-500))" }
+                        }
                       >
                         {n.hint}
                       </div>
@@ -721,7 +858,9 @@ export function Settings(): React.JSX.Element {
         {/* Right content */}
         <div className="min-h-0 overflow-y-auto no-scrollbar -mr-1 pr-1">
           <div className="mb-3">
-            <h2 className="text-[16px] font-semibold text-fg-primary tracking-tight">{active.label}</h2>
+            <h2 className="text-[16px] font-semibold text-fg-primary tracking-tight">
+              {active.label}
+            </h2>
             <p className="text-[11.5px] text-fg-muted mt-0.5">{active.hint}</p>
           </div>
           {Content}

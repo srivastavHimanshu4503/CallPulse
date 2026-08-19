@@ -54,8 +54,8 @@ export function DeleteWorkflowModal({
             <li className="flex items-start gap-2 px-3 py-2 text-[11.5px] text-fg-secondary">
               <History className="h-3.5 w-3.5 text-fg-muted mt-0.5 shrink-0" />
               <div className="leading-relaxed">
-                <b className="text-fg-primary">{runCount}</b> past run{runCount === 1 ? "" : "s"}
-                {" "}will also be removed. Call logs on individual contacts are unaffected.
+                <b className="text-fg-primary">{runCount}</b> past run{runCount === 1 ? "" : "s"}{" "}
+                will also be removed. Call logs on individual contacts are unaffected.
               </div>
             </li>
           )}

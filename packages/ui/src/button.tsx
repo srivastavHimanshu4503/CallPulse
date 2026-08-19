@@ -27,20 +27,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "bg-transparent hover:bg-surface-dark dark:hover:bg-surface-light text-text-dark dark:text-text-light":
               variant === "ghost",
             // Danger variant
-            "bg-error text-white hover:bg-opacity-90 active:scale-[0.98]":
-              variant === "danger",
+            "bg-error text-white hover:bg-opacity-90 active:scale-[0.98]": variant === "danger",
           },
           {
             "h-9 px-3 text-sm": size === "sm",
             "h-10 px-4 py-2 text-base": size === "md",
             "h-11 px-6 text-lg": size === "lg",
           },
-          className
+          className,
         )}
         {...props}
       />
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

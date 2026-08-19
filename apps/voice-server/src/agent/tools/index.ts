@@ -60,13 +60,15 @@ export const buildTools = (ctx: ToolContext) => {
       description:
         "Hang up the phone call — the ONLY way to actually end it. Invoke ONLY when the caller has clearly signaled they want to end the call (an unambiguous farewell like 'bye', 'goodbye', 'chalo bye', 'thanks bye', 'phir milte'). Speak your short goodbye in the SAME turn. NEVER invoke on bare 'ok'/'haan'/'hmm'/'theek hai'/'thank you'/'that's all'/'I have to go'/'I'll think about it'/silence — those are NOT farewells. If unsure, ask 'kya main call disconnect kar doon?' (or 'anything else I can help with?') and only invoke after they clearly agree.",
       parameters: z.object({
-        reason: z.string().describe(
-          "One short phrase quoting the caller's farewell, e.g. 'caller said bye', 'caller said thanks bye after quote confirmed'."
-        ),
+        reason: z
+          .string()
+          .describe(
+            "One short phrase quoting the caller's farewell, e.g. 'caller said bye', 'caller said thanks bye after quote confirmed'.",
+          ),
         userWantsToEnd: z
           .boolean()
           .describe(
-            "true ONLY if the caller explicitly said an unambiguous farewell in their own words ('bye', 'goodbye', 'okay bye', 'chalo bye', 'thanks bye', 'phir milte', 'alvida'), OR clearly agreed after YOU asked 'shall I end the call / kya main call disconnect kar doon'. NEVER guess true from bare 'ok', 'haan', 'hmm', 'theek hai', 'thank you' alone, 'that's all', 'I have to go', 'call me later', 'I'll think about it', silence, or your own judgment that the call feels done."
+            "true ONLY if the caller explicitly said an unambiguous farewell in their own words ('bye', 'goodbye', 'okay bye', 'chalo bye', 'thanks bye', 'phir milte', 'alvida'), OR clearly agreed after YOU asked 'shall I end the call / kya main call disconnect kar doon'. NEVER guess true from bare 'ok', 'haan', 'hmm', 'theek hai', 'thank you' alone, 'that's all', 'I have to go', 'call me later', 'I'll think about it', silence, or your own judgment that the call feels done.",
           ),
       }),
       // Confirmation gate mirrors transfer_call. Same failure mode: an
@@ -124,12 +126,12 @@ export const buildTools = (ctx: ToolContext) => {
         reason: z
           .string()
           .describe(
-            "One short phrase quoting what the caller asked for, e.g. 'caller asked to speak to the owner about a bulk order'."
+            "One short phrase quoting what the caller asked for, e.g. 'caller asked to speak to the owner about a bulk order'.",
           ),
         userConfirmed: z
           .boolean()
           .describe(
-            "true ONLY if the caller explicitly asked to speak to a human in their own words, OR clearly agreed after you asked them. Never guess true."
+            "true ONLY if the caller explicitly asked to speak to a human in their own words, OR clearly agreed after you asked them. Never guess true.",
           ),
       }),
       execute: async (args) => {

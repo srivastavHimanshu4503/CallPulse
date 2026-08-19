@@ -12,10 +12,13 @@ export const addDays = (d: Date, n: number): Date => {
   return next;
 };
 
-export const addMonths = (d: Date, n: number): Date => new Date(d.getFullYear(), d.getMonth() + n, 1);
+export const addMonths = (d: Date, n: number): Date =>
+  new Date(d.getFullYear(), d.getMonth() + n, 1);
 
 export const isSameDay = (a: Date, b: Date): boolean =>
-  a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
 
 export const dayKey = (d: Date): string => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 

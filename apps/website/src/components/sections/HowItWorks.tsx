@@ -98,7 +98,10 @@ const STEPS = [
 export function HowItWorks() {
   const reduce = useReducedMotion();
   return (
-    <section id="how-it-works" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16">
+    <section
+      id="how-it-works"
+      className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16"
+    >
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="How it works"

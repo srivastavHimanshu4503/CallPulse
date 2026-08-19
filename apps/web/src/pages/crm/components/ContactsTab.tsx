@@ -155,7 +155,9 @@ export function ContactsTab({
         const matches = conditions.map((cond) =>
           evaluateCondition(cond, resolveValue(c, cond.fieldId)),
         );
-        return logical === FilterLogicalOperator.OR ? matches.some(Boolean) : matches.every(Boolean);
+        return logical === FilterLogicalOperator.OR
+          ? matches.some(Boolean)
+          : matches.every(Boolean);
       });
     }
 
@@ -192,7 +194,16 @@ export function ContactsTab({
       });
     }
     return result;
-  }, [enrichedContacts, searchQuery, conditions, logical, quickBand, quickSource, sortField, sortDir]);
+  }, [
+    enrichedContacts,
+    searchQuery,
+    conditions,
+    logical,
+    quickBand,
+    quickSource,
+    sortField,
+    sortDir,
+  ]);
 
   // AI insight aggregates — real numbers surfaced from the data, and each
   // one doubles as a one-click filter.
@@ -247,9 +258,7 @@ export function ContactsTab({
             <div className="text-[12.5px] font-semibold text-fg-primary truncate capitalize leading-tight">
               {c.firstName} {c.lastName}
             </div>
-            <div className="text-[10.5px] text-fg-muted truncate">
-              {c.phones?.[0] || "—"}
-            </div>
+            <div className="text-[10.5px] text-fg-muted truncate">{c.phones?.[0] || "—"}</div>
           </div>
         </div>
       ),
@@ -277,7 +286,9 @@ export function ContactsTab({
             <StatusPill tone={BAND_TONE[band as keyof typeof BAND_TONE]} dot pulse={band === "hot"}>
               {BAND_LABEL[band as keyof typeof BAND_LABEL]}
             </StatusPill>
-            <span className="text-[11px] font-semibold text-fg-secondary tabular-nums">{score}</span>
+            <span className="text-[11px] font-semibold text-fg-secondary tabular-nums">
+              {score}
+            </span>
           </div>
         );
       },
@@ -307,7 +318,11 @@ export function ContactsTab({
       width: "120px",
       cell: (c) => (
         <span className="text-[11.5px] text-fg-secondary">
-          {c.lastCallAt ? formatTimeAgo(c.lastCallAt) : <span className="text-fg-muted">Never</span>}
+          {c.lastCallAt ? (
+            formatTimeAgo(c.lastCallAt)
+          ) : (
+            <span className="text-fg-muted">Never</span>
+          )}
         </span>
       ),
     },
@@ -333,14 +348,18 @@ export function ContactsTab({
       header: "Created at",
       sortValue: (r) => new Date(r.createdAt),
       width: "100px",
-      cell: (c) => <span className="text-[11.5px] text-fg-secondary">{formatTimeAgo(c.createdAt)}</span>,
+      cell: (c) => (
+        <span className="text-[11.5px] text-fg-secondary">{formatTimeAgo(c.createdAt)}</span>
+      ),
     },
     {
       id: "updatedAt",
       header: "Last updated",
       sortValue: (r) => new Date(r.updatedAt),
       width: "110px",
-      cell: (c) => <span className="text-[11.5px] text-fg-secondary">{formatTimeAgo(c.updatedAt)}</span>,
+      cell: (c) => (
+        <span className="text-[11.5px] text-fg-secondary">{formatTimeAgo(c.updatedAt)}</span>
+      ),
     },
   ];
 
@@ -352,7 +371,8 @@ export function ContactsTab({
       cell: (c) => {
         const val = c.customFields?.find((v: any) => v.fieldDefinitionId === cf.id);
         if (!val) return <span className="text-fg-muted">—</span>;
-        if (cf.type === "BOOLEAN") return <span className="text-[11.5px]">{val.booleanValue ? "Yes" : "No"}</span>;
+        if (cf.type === "BOOLEAN")
+          return <span className="text-[11.5px]">{val.booleanValue ? "Yes" : "No"}</span>;
         if (cf.type === "DATE" && val.dateValue) {
           const t = typeof val.dateValue === "number" ? val.dateValue : Number(val.dateValue);
           const d = new Date(t < 10000000000 ? t * 1000 : t);
@@ -381,11 +401,15 @@ export function ContactsTab({
                 ? `Your AI captured ${aiInsights.aiCaptured} contact${aiInsights.aiCaptured === 1 ? "" : "s"} from calls`
                 : "Your AI keeps this CRM updated from every call"}
               {aiInsights.hot > 0 && (
-                <span className="text-negative-500"> · {aiInsights.hot} hot lead{aiInsights.hot === 1 ? "" : "s"} need attention</span>
+                <span className="text-negative-500">
+                  {" "}
+                  · {aiInsights.hot} hot lead{aiInsights.hot === 1 ? "" : "s"} need attention
+                </span>
               )}
             </div>
             <div className="text-[10.5px] text-fg-muted leading-tight mt-0.5">
-              Names, budgets, dates and deals are extracted automatically — click a stat to focus on it.
+              Names, budgets, dates and deals are extracted automatically — click a stat to focus on
+              it.
             </div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -442,7 +466,9 @@ export function ContactsTab({
                 setSortDir("asc");
               }}
               className={`h-9 border text-[12px] font-semibold rounded-md px-2 focus:outline-none focus:border-brand-500 cursor-pointer max-w-[180px] truncate ${
-                sortFieldId ? "border-brand-500 bg-brand-50 text-brand-700" : "border-line-default bg-bg-raised text-fg-secondary"
+                sortFieldId
+                  ? "border-brand-500 bg-brand-50 text-brand-700"
+                  : "border-line-default bg-bg-raised text-fg-secondary"
               }`}
               title="Order contacts by a custom field"
             >
@@ -570,7 +596,9 @@ export function ContactsTab({
           emptyState={
             <EmptyState
               icon={Users}
-              title={searchQuery || conditions.length > 0 ? "No matching contacts" : "No contacts yet"}
+              title={
+                searchQuery || conditions.length > 0 ? "No matching contacts" : "No contacts yet"
+              }
               description={
                 searchQuery || conditions.length > 0
                   ? "Try clearing filters, or add a contact manually."
@@ -615,7 +643,11 @@ export function ContactsTab({
       />
 
       {isAddOpen && (
-        <AddContactModal customFields={customFields} onClose={() => setIsAddOpen(false)} onCreated={refetch} />
+        <AddContactModal
+          customFields={customFields}
+          onClose={() => setIsAddOpen(false)}
+          onCreated={refetch}
+        />
       )}
       {isImportOpen && (
         <ImportContactsModal onClose={() => setIsImportOpen(false)} onImported={refetch} />

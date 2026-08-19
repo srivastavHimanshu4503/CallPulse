@@ -29,7 +29,7 @@ export const getSession = (callSid: string): CallSession | undefined => {
 export const createSession = (
   callSid: string,
   callerNumber: string,
-  language: VoiceKey = "hinglish"
+  language: VoiceKey = "hinglish",
 ): CallSession => {
   const session: CallSession = {
     callSid,

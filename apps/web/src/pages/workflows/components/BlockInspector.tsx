@@ -8,10 +8,7 @@ import { FilterLogicalOperator, FilterOperator } from "@antigravity/types";
 import type { FilterCondition } from "@antigravity/types";
 
 interface BlockInspectorProps {
-  target:
-    | { kind: "trigger"; trigger: Trigger }
-    | { kind: "step"; step: BlockNode }
-    | null;
+  target: { kind: "trigger"; trigger: Trigger } | { kind: "step"; step: BlockNode } | null;
   onChangeTrigger?: (next: Trigger) => void;
   onChangeStep?: (patch: Partial<BlockNode>) => void;
   onClose: () => void;
@@ -75,8 +72,7 @@ export function BlockInspector({
 
   const kindLabel =
     target.kind === "trigger" ? "Trigger" : def.category === "logic" ? "Logic" : "Action";
-  const headerTone =
-    target.kind === "trigger" ? "positive" : (def.tone as any);
+  const headerTone = target.kind === "trigger" ? "positive" : (def.tone as any);
 
   return (
     <aside className="hidden lg:flex flex-col w-[360px] shrink-0 border-l border-line-default bg-bg-raised overflow-hidden">
@@ -321,9 +317,10 @@ function FieldRow({
 
       {field.kind === "conditions" && (
         <ConditionsEditor
-          value={value && typeof value === "object" && Array.isArray(value.conditions)
-            ? value
-            : { logical: FilterLogicalOperator.AND, conditions: [] }
+          value={
+            value && typeof value === "object" && Array.isArray(value.conditions)
+              ? value
+              : { logical: FilterLogicalOperator.AND, conditions: [] }
           }
           onChange={onChange}
         />
@@ -341,7 +338,11 @@ function FieldRow({
 
 /* ─────────────────────── Filter section ─────────────────────── */
 
-const FILTER_FIELDS: Array<{ id: string; label: string; kind: "text" | "number" | "date" | "select" | "boolean" }> = [
+const FILTER_FIELDS: Array<{
+  id: string;
+  label: string;
+  kind: "text" | "number" | "date" | "select" | "boolean";
+}> = [
   { id: "name", label: "Contact name", kind: "text" },
   { id: "email", label: "Email", kind: "text" },
   { id: "phone", label: "Phone", kind: "text" },
@@ -413,7 +414,10 @@ function FilterSection({
       operator: operatorsFor(first.id)[0]!.value,
       value: "",
     };
-    const next: BlockFilter = effectiveFilter || { logical: FilterLogicalOperator.AND, conditions: [] };
+    const next: BlockFilter = effectiveFilter || {
+      logical: FilterLogicalOperator.AND,
+      conditions: [],
+    };
     onChange({ ...next, conditions: [...next.conditions, cond] });
   };
 
@@ -437,7 +441,13 @@ function FilterSection({
     <div className="border-t border-line-default bg-slate-50/60">
       <div className="p-4 pb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className={cn("h-7 w-7 rounded-md flex items-center justify-center ring-1", t.tile, t.ring)}>
+          <span
+            className={cn(
+              "h-7 w-7 rounded-md flex items-center justify-center ring-1",
+              t.tile,
+              t.ring,
+            )}
+          >
             <FilterIcon className="h-3.5 w-3.5" />
           </span>
           <div>
@@ -446,18 +456,15 @@ function FilterSection({
               {required && <span className="text-rose-500 ml-0.5">*</span>}
             </div>
             <div className="text-[10.5px] text-fg-muted leading-tight">
-              {required ? "Contacts matching these conditions trigger the flow" : "CRM conditions must match"}
+              {required
+                ? "Contacts matching these conditions trigger the flow"
+                : "CRM conditions must match"}
             </div>
           </div>
         </div>
         {!required && (
           <label className="relative inline-flex items-center cursor-pointer select-none">
-            <input
-              type="checkbox"
-              className="sr-only peer"
-              checked={!!filter}
-              onChange={toggle}
-            />
+            <input type="checkbox" className="sr-only peer" checked={!!filter} onChange={toggle} />
             <span className="w-9 h-5 bg-line-strong rounded-full peer-checked:bg-blue-500 transition-colors" />
             <span
               className={cn(
@@ -510,12 +517,21 @@ function FilterSection({
               {effectiveFilter.conditions.map((c, idx) => {
                 const ops = operatorsFor(c.fieldId);
                 const field = FILTER_FIELDS.find((f) => f.id === c.fieldId);
-                const noValue = c.operator === FilterOperator.IS_EMPTY || c.operator === FilterOperator.IS_NOT_EMPTY;
+                const noValue =
+                  c.operator === FilterOperator.IS_EMPTY ||
+                  c.operator === FilterOperator.IS_NOT_EMPTY;
                 return (
-                  <div key={c.id} className="bg-bg-raised border border-line-default rounded-md p-2 space-y-1.5">
+                  <div
+                    key={c.id}
+                    className="bg-bg-raised border border-line-default rounded-md p-2 space-y-1.5"
+                  >
                     <div className="flex items-center justify-between">
                       <span className="text-[9.5px] font-bold uppercase tracking-wider text-fg-muted">
-                        {idx === 0 ? "Where" : effectiveFilter.logical === FilterLogicalOperator.AND ? "and" : "or"}
+                        {idx === 0
+                          ? "Where"
+                          : effectiveFilter.logical === FilterLogicalOperator.AND
+                            ? "and"
+                            : "or"}
                       </span>
                       <button
                         type="button"
@@ -530,7 +546,11 @@ function FilterSection({
                         value={c.fieldId}
                         onChange={(e) => {
                           const nf = e.target.value;
-                          patch(c.id, { fieldId: nf, operator: operatorsFor(nf)[0]!.value, value: "" });
+                          patch(c.id, {
+                            fieldId: nf,
+                            operator: operatorsFor(nf)[0]!.value,
+                            value: "",
+                          });
                         }}
                         className="h-7 bg-bg-raised border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-blue-500"
                       >
@@ -542,7 +562,9 @@ function FilterSection({
                       </select>
                       <select
                         value={c.operator}
-                        onChange={(e) => patch(c.id, { operator: e.target.value as FilterOperator })}
+                        onChange={(e) =>
+                          patch(c.id, { operator: e.target.value as FilterOperator })
+                        }
                         className="h-7 bg-bg-raised border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-blue-500"
                       >
                         {ops.map((o) => (
@@ -571,9 +593,13 @@ function FilterSection({
                             className="w-full h-7 bg-bg-raised border border-line-default text-[11px] text-fg-primary rounded px-1.5 focus:outline-none focus:border-blue-500"
                           >
                             <option value="">Select…</option>
-                            {["English", "Hindi", "Hinglish", "Marathi", "Tamil", "Telugu"].map((l) => (
-                              <option key={l} value={l}>{l}</option>
-                            ))}
+                            {["English", "Hindi", "Hinglish", "Marathi", "Tamil", "Telugu"].map(
+                              (l) => (
+                                <option key={l} value={l}>
+                                  {l}
+                                </option>
+                              ),
+                            )}
                           </select>
                         ) : field?.kind === "date" ? (
                           <input
@@ -683,12 +709,20 @@ function ConditionsEditor({
           {value.conditions.map((c, idx) => {
             const ops = operatorsFor(c.fieldId);
             const field = FILTER_FIELDS.find((f) => f.id === c.fieldId);
-            const noValue = c.operator === FilterOperator.IS_EMPTY || c.operator === FilterOperator.IS_NOT_EMPTY;
+            const noValue =
+              c.operator === FilterOperator.IS_EMPTY || c.operator === FilterOperator.IS_NOT_EMPTY;
             return (
-              <div key={c.id} className="bg-bg-raised border border-line-default rounded-md p-2 space-y-1.5">
+              <div
+                key={c.id}
+                className="bg-bg-raised border border-line-default rounded-md p-2 space-y-1.5"
+              >
                 <div className="flex items-center justify-between">
                   <span className="text-[9.5px] font-bold uppercase tracking-wider text-fg-muted">
-                    {idx === 0 ? "Where" : value.logical === FilterLogicalOperator.AND ? "and" : "or"}
+                    {idx === 0
+                      ? "Where"
+                      : value.logical === FilterLogicalOperator.AND
+                        ? "and"
+                        : "or"}
                   </span>
                   <button
                     type="button"
@@ -745,7 +779,9 @@ function ConditionsEditor({
                       >
                         <option value="">Select…</option>
                         {["English", "Hindi", "Hinglish", "Marathi", "Tamil", "Telugu"].map((l) => (
-                          <option key={l} value={l}>{l}</option>
+                          <option key={l} value={l}>
+                            {l}
+                          </option>
                         ))}
                       </select>
                     ) : field?.kind === "date" ? (

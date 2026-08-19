@@ -4,12 +4,12 @@ import { logger } from "../utils/logger.js";
 import { sendError } from "../utils/response.js";
 
 // Express error handlers must have 4 parameters to be recognized as error middleware
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export function errorMiddleware(
   err: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void {
   logger.error({
     msg: "Unhandled Exception occurred in request",

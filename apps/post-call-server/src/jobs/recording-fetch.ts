@@ -216,7 +216,12 @@ const fetchPlivoRecording = async (job: PostCallJob): Promise<void> => {
   const bareCaller = callerNumber?.replace(/^\+/, "");
   const candidates = calls
     .filter((c) => !bareDialed || c.to_number?.replace(/^\+/, "").includes(bareDialed))
-    .filter((c) => !bareCaller || !callerNumber.startsWith("+") || c.from_number?.replace(/^\+/, "") === bareCaller)
+    .filter(
+      (c) =>
+        !bareCaller ||
+        !callerNumber.startsWith("+") ||
+        c.from_number?.replace(/^\+/, "") === bareCaller,
+    )
     .sort((a, b) => {
       const ai = a.initiation_time ? new Date(a.initiation_time).getTime() : 0;
       const bi = b.initiation_time ? new Date(b.initiation_time).getTime() : 0;

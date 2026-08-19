@@ -25,8 +25,13 @@ import { useAuthStore } from "../../stores/auth.store.js";
 // Local primitives
 // ─────────────────────────────────────────────────────────────
 
-const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
-  <div className={`rounded-xl border border-line-default bg-bg-raised shadow-card p-4 ${className}`}>
+const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = "",
+}) => (
+  <div
+    className={`rounded-xl border border-line-default bg-bg-raised shadow-card p-4 ${className}`}
+  >
     {children}
   </div>
 );
@@ -41,13 +46,27 @@ interface KpiProps {
   onClick?: () => void;
 }
 const KPI_TONES: Record<KpiProps["tone"], { icon: string; deltaUp: string }> = {
-  brand:     { icon: "bg-brand-50 text-brand-600 ring-brand-500/15",         deltaUp: "text-brand-600" },
-  positive:  { icon: "bg-positive-50 text-positive-500 ring-positive-500/15", deltaUp: "text-positive-500" },
-  attention: { icon: "bg-attention-50 text-attention-500 ring-attention-500/15", deltaUp: "text-attention-500" },
-  accent:    { icon: "bg-accent-100 text-accent-700 ring-accent-500/20",      deltaUp: "text-accent-700" },
+  brand: { icon: "bg-brand-50 text-brand-600 ring-brand-500/15", deltaUp: "text-brand-600" },
+  positive: {
+    icon: "bg-positive-50 text-positive-500 ring-positive-500/15",
+    deltaUp: "text-positive-500",
+  },
+  attention: {
+    icon: "bg-attention-50 text-attention-500 ring-attention-500/15",
+    deltaUp: "text-attention-500",
+  },
+  accent: { icon: "bg-accent-100 text-accent-700 ring-accent-500/20", deltaUp: "text-accent-700" },
 };
 
-const Kpi: React.FC<KpiProps> = ({ label, value, delta, hint, icon: Icon, tone = "brand", onClick }) => {
+const Kpi: React.FC<KpiProps> = ({
+  label,
+  value,
+  delta,
+  hint,
+  icon: Icon,
+  tone = "brand",
+  onClick,
+}) => {
   const t = KPI_TONES[tone];
   return (
     <button
@@ -56,17 +75,27 @@ const Kpi: React.FC<KpiProps> = ({ label, value, delta, hint, icon: Icon, tone =
       className="text-left w-full rounded-xl border border-line-default bg-bg-raised p-4 shadow-card hover:shadow-raised hover:border-line-strong transition-all"
     >
       <div className="flex items-start justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">{label}</span>
-        {Icon && <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1 ${t.icon}`}>
-          <Icon className="h-3.5 w-3.5" />
-        </span>}
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+          {label}
+        </span>
+        {Icon && (
+          <span
+            className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1 ${t.icon}`}
+          >
+            <Icon className="h-3.5 w-3.5" />
+          </span>
+        )}
       </div>
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-[22px] font-semibold text-fg-primary tracking-tight leading-none">{value}</span>
+        <span className="text-[22px] font-semibold text-fg-primary tracking-tight leading-none">
+          {value}
+        </span>
         {delta && (
-          <span className={`inline-flex items-center gap-0.5 text-[10.5px] font-semibold ${
-            delta.direction === "up" ? "text-positive-500" : "text-negative-500"
-          }`}>
+          <span
+            className={`inline-flex items-center gap-0.5 text-[10.5px] font-semibold ${
+              delta.direction === "up" ? "text-positive-500" : "text-negative-500"
+            }`}
+          >
             <ArrowUpRight className={`h-3 w-3 ${delta.direction === "down" ? "rotate-90" : ""}`} />
             {delta.pct}%
           </span>
@@ -77,7 +106,11 @@ const Kpi: React.FC<KpiProps> = ({ label, value, delta, hint, icon: Icon, tone =
   );
 };
 
-const SectionHead: React.FC<{ title: string; hint?: string; action?: React.ReactNode }> = ({ title, hint, action }) => (
+const SectionHead: React.FC<{ title: string; hint?: string; action?: React.ReactNode }> = ({
+  title,
+  hint,
+  action,
+}) => (
   <div className="flex items-center justify-between mb-3 shrink-0">
     <div className="min-w-0">
       <h3 className="text-[13px] font-semibold text-fg-primary tracking-tight">{title}</h3>
@@ -88,21 +121,25 @@ const SectionHead: React.FC<{ title: string; hint?: string; action?: React.React
 );
 
 const OUTCOME_STYLES: Record<string, string> = {
-  Booked:      "bg-positive-50 text-positive-500 ring-positive-500/20",
-  "Hot lead":  "bg-accent-100 text-accent-700 ring-accent-500/25",
+  Booked: "bg-positive-50 text-positive-500 ring-positive-500/20",
+  "Hot lead": "bg-accent-100 text-accent-700 ring-accent-500/25",
   "Follow-up": "bg-attention-50 text-attention-600 ring-attention-500/20",
 };
 
 const LANG_STYLES: Record<string, string> = {
-  Hindi:    "bg-orange-100 text-orange-700",
-  Tamil:    "bg-emerald-100 text-emerald-700",
+  Hindi: "bg-orange-100 text-orange-700",
+  Tamil: "bg-emerald-100 text-emerald-700",
   Gujarati: "bg-rose-100 text-rose-700",
-  Marathi:  "bg-indigo-100 text-indigo-700",
-  English:  "bg-brand-50 text-brand-600",
-  Bengali:  "bg-rose-100 text-rose-700",
+  Marathi: "bg-indigo-100 text-indigo-700",
+  English: "bg-brand-50 text-brand-600",
+  Bengali: "bg-rose-100 text-rose-700",
 };
 
-const Avatar: React.FC<{ name: string; colorClass?: string; size?: number }> = ({ name, colorClass, size = 28 }) => {
+const Avatar: React.FC<{ name: string; colorClass?: string; size?: number }> = ({
+  name,
+  colorClass,
+  size = 28,
+}) => {
   const initial = name.trim().charAt(0).toUpperCase();
   const style: React.CSSProperties = { width: size, height: size, fontSize: size * 0.42 };
   return (
@@ -135,8 +172,13 @@ function WeekBars({ data }: { data: number[] }): React.JSX.Element {
         else if (v > 60) barColor = "bg-blue-500";
         else if (v > 30) barColor = "bg-blue-400";
         return (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1.5 group h-full justify-end">
-            <span className={`text-[10px] font-bold ${isPeak ? "text-brand-600" : "text-slate-500"}`}>
+          <div
+            key={i}
+            className="flex-1 flex flex-col items-center gap-1.5 group h-full justify-end"
+          >
+            <span
+              className={`text-[10px] font-bold ${isPeak ? "text-brand-600" : "text-slate-500"}`}
+            >
               {v}
             </span>
             <div className="w-full flex-1 flex items-end">
@@ -146,7 +188,9 @@ function WeekBars({ data }: { data: number[] }): React.JSX.Element {
                 title={`${labels[i]}: ${v} calls`}
               />
             </div>
-            <span className={`text-[9.5px] font-semibold tracking-wider ${isPeak ? "text-brand-600" : "text-fg-muted"}`}>
+            <span
+              className={`text-[9.5px] font-semibold tracking-wider ${isPeak ? "text-brand-600" : "text-fg-muted"}`}
+            >
               {labels[i]}
             </span>
           </div>
@@ -166,29 +210,29 @@ export function Dashboard(): React.JSX.Element {
   const tenant = useAuthStore((s) => s.tenant);
 
   // Restore API Queries
-  const { data: statsData } = useQuery({ 
-    queryKey: ["dashboard", "stats"], 
-    queryFn: () => api.get("/dashboard/stats").then(r => r.data.data) 
+  const { data: statsData } = useQuery({
+    queryKey: ["dashboard", "stats"],
+    queryFn: () => api.get("/dashboard/stats").then((r) => r.data.data),
   });
-  const { data: recentCallsData } = useQuery({ 
-    queryKey: ["dashboard", "recent-calls"], 
-    queryFn: () => api.get("/dashboard/recent-calls").then(r => r.data.data) 
+  const { data: recentCallsData } = useQuery({
+    queryKey: ["dashboard", "recent-calls"],
+    queryFn: () => api.get("/dashboard/recent-calls").then((r) => r.data.data),
   });
-  const { data: topAgentsData } = useQuery({ 
-    queryKey: ["dashboard", "top-agents"], 
-    queryFn: () => api.get("/dashboard/top-agents").then(r => r.data.data) 
+  const { data: topAgentsData } = useQuery({
+    queryKey: ["dashboard", "top-agents"],
+    queryFn: () => api.get("/dashboard/top-agents").then((r) => r.data.data),
   });
-  const { data: weekCallsData } = useQuery({ 
-    queryKey: ["dashboard", "week-calls"], 
-    queryFn: () => api.get("/dashboard/week-calls").then(r => r.data.data) 
+  const { data: weekCallsData } = useQuery({
+    queryKey: ["dashboard", "week-calls"],
+    queryFn: () => api.get("/dashboard/week-calls").then((r) => r.data.data),
   });
-  const { data: activeWorkflowsData } = useQuery({ 
-    queryKey: ["dashboard", "active-workflows"], 
-    queryFn: () => api.get("/dashboard/active-workflows").then(r => r.data.data) 
+  const { data: activeWorkflowsData } = useQuery({
+    queryKey: ["dashboard", "active-workflows"],
+    queryFn: () => api.get("/dashboard/active-workflows").then((r) => r.data.data),
   });
-  const { data: agentsData } = useQuery({ 
-    queryKey: ["agents"], 
-    queryFn: () => api.get("/agents").then(r => r.data.data) 
+  const { data: agentsData } = useQuery({
+    queryKey: ["agents"],
+    queryFn: () => api.get("/agents").then((r) => r.data.data),
   });
 
   const stats = statsData || {
@@ -215,7 +259,8 @@ export function Dashboard(): React.JSX.Element {
       ? `${peakDate.toLocaleDateString("en-US", { weekday: "short" })} · ${Math.max(...weekCalls)}`
       : "—";
   const avgSec = stats?.avgCallDurationSec || 0;
-  const avgCall = avgSec > 0 ? `${Math.floor(avgSec / 60)}:${String(avgSec % 60).padStart(2, "0")}` : "—";
+  const avgCall =
+    avgSec > 0 ? `${Math.floor(avgSec / 60)}:${String(avgSec % 60).padStart(2, "0")}` : "—";
 
   const kpis = [
     {
@@ -295,7 +340,9 @@ export function Dashboard(): React.JSX.Element {
 
       {/* ============ KPI ROW ============ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 shrink-0 mb-4">
-        {kpis.map((k) => <Kpi key={k.label} {...k} />)}
+        {kpis.map((k) => (
+          <Kpi key={k.label} {...k} />
+        ))}
       </div>
 
       {/* ============ MAIN GRID ============ */}
@@ -321,17 +368,23 @@ export function Dashboard(): React.JSX.Element {
               <WeekBars data={weekCalls} />
               <div className="grid grid-cols-3 gap-4 lg:min-w-[260px]">
                 <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Total</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+                    Total
+                  </div>
                   <div className="text-[18px] font-semibold text-fg-primary mt-0.5">
                     {weekCalls.reduce((a: number, b: number) => a + b, 0)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Peak day</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+                    Peak day
+                  </div>
                   <div className="text-[18px] font-semibold text-brand-600 mt-0.5">{peakDay}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Avg call</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+                    Avg call
+                  </div>
                   <div className="text-[18px] font-semibold text-fg-primary mt-0.5">{avgCall}</div>
                 </div>
               </div>
@@ -373,51 +426,61 @@ export function Dashboard(): React.JSX.Element {
                     </tr>
                   ) : (
                     recentCalls.slice(0, 5).map((c: any) => (
-                    <tr key={c.id} className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors">
-                      <td className="px-2 py-2.5">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <Avatar name={c.name} colorClass={c.color} size={26} />
-                          <div className="min-w-0">
-                            <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">
-                              {c.name}
-                            </div>
-                            <div className="text-[10.5px] text-fg-muted truncate">
-                              {c.phone} · {new Intl.DateTimeFormat('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                hour: 'numeric',
-                                minute: '2-digit',
-                                hour12: true
-                              }).format(new Date(c.time))}
+                      <tr
+                        key={c.id}
+                        className="border-b border-line-subtle hover:bg-bg-muted/60 transition-colors"
+                      >
+                        <td className="px-2 py-2.5">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <Avatar name={c.name} colorClass={c.color} size={26} />
+                            <div className="min-w-0">
+                              <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">
+                                {c.name}
+                              </div>
+                              <div className="text-[10.5px] text-fg-muted truncate">
+                                {c.phone} ·{" "}
+                                {new Intl.DateTimeFormat("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                }).format(new Date(c.time))}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-2 py-2.5">
-                        <div className="inline-flex items-center gap-1.5">
-                          <span className="h-5 w-5 rounded-full bg-blue-500 text-white text-[10px] font-semibold inline-flex items-center justify-center">
-                            {c.agent.charAt(0)}
+                        </td>
+                        <td className="px-2 py-2.5">
+                          <div className="inline-flex items-center gap-1.5">
+                            <span className="h-5 w-5 rounded-full bg-blue-500 text-white text-[10px] font-semibold inline-flex items-center justify-center">
+                              {c.agent.charAt(0)}
+                            </span>
+                            <span className="text-[12px] text-fg-secondary font-medium">
+                              {c.agent}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-2 py-2.5">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold ${LANG_STYLES[c.lang] || "bg-slate-100 text-slate-700"}`}
+                          >
+                            {c.lang}
                           </span>
-                          <span className="text-[12px] text-fg-secondary font-medium">{c.agent}</span>
-                        </div>
-                      </td>
-                      <td className="px-2 py-2.5">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold ${LANG_STYLES[c.lang] || "bg-slate-100 text-slate-700"}`}>
-                          {c.lang}
-                        </span>
-                      </td>
-                      <td className="px-2 py-2.5">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold ring-1 ${OUTCOME_STYLES[c.outcome] || "bg-slate-100 text-slate-700 ring-slate-200"}`}>
-                          {c.outcome}
-                        </span>
-                      </td>
-                      <td className="px-2 py-2.5 text-right">
-                        <span className="inline-flex items-center gap-1 text-[11.5px] text-fg-secondary font-medium">
-                          <Clock className="h-3 w-3 text-fg-muted" />
-                          {c.duration}
-                        </span>
-                      </td>
-                    </tr>
+                        </td>
+                        <td className="px-2 py-2.5">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold ring-1 ${OUTCOME_STYLES[c.outcome] || "bg-slate-100 text-slate-700 ring-slate-200"}`}
+                          >
+                            {c.outcome}
+                          </span>
+                        </td>
+                        <td className="px-2 py-2.5 text-right">
+                          <span className="inline-flex items-center gap-1 text-[11.5px] text-fg-secondary font-medium">
+                            <Clock className="h-3 w-3 text-fg-muted" />
+                            {c.duration}
+                          </span>
+                        </td>
+                      </tr>
                     ))
                   )}
                 </tbody>
@@ -435,7 +498,9 @@ export function Dashboard(): React.JSX.Element {
               action={
                 <button
                   type="button"
-                  onClick={() => navigate(agents.length > 0 ? `/agents/${agents[0].id}/logs` : "/crm")}
+                  onClick={() =>
+                    navigate(agents.length > 0 ? `/agents/${agents[0].id}/logs` : "/crm")
+                  }
                   className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1"
                 >
                   Manage <ArrowRight className="h-3 w-3" />
@@ -447,37 +512,41 @@ export function Dashboard(): React.JSX.Element {
                 <div className="text-[11px] text-fg-muted py-2">No agent data yet.</div>
               ) : (
                 topAgents.slice(0, 2).map((a: any, i: number) => (
-                <li key={a.name} className="flex items-center gap-3">
-                  <div className="relative">
-                    <Avatar name={a.name} colorClass={a.color} size={34} />
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-bg-raised border border-line-default text-[9px] font-bold text-fg-secondary flex items-center justify-center">
-                      {i + 1}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[12.5px] font-semibold text-fg-primary truncate">{a.name}</span>
-                      <span className="inline-flex items-center gap-0.5 text-[10.5px] font-semibold text-attention-500">
-                        <Star className="h-3 w-3 fill-attention-500 stroke-attention-500" />
-                        {a.rating}
+                  <li key={a.name} className="flex items-center gap-3">
+                    <div className="relative">
+                      <Avatar name={a.name} colorClass={a.color} size={34} />
+                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-bg-raised border border-line-default text-[9px] font-bold text-fg-secondary flex items-center justify-center">
+                        {i + 1}
                       </span>
                     </div>
-                    <div className="mt-1 flex items-center gap-2">
-                      <div className="flex-1 h-1.5 bg-bg-muted rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${a.color}`}
-                          style={{ width: `${(a.calls / Math.max(1, topAgents[0]?.calls || 1)) * 100}%` }}
-                        />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[12.5px] font-semibold text-fg-primary truncate">
+                          {a.name}
+                        </span>
+                        <span className="inline-flex items-center gap-0.5 text-[10.5px] font-semibold text-attention-500">
+                          <Star className="h-3 w-3 fill-attention-500 stroke-attention-500" />
+                          {a.rating}
+                        </span>
                       </div>
-                      <span className="text-[10px] font-semibold text-fg-secondary tabular-nums shrink-0">
-                        {a.calls}
-                      </span>
+                      <div className="mt-1 flex items-center gap-2">
+                        <div className="flex-1 h-1.5 bg-bg-muted rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${a.color}`}
+                            style={{
+                              width: `${(a.calls / Math.max(1, topAgents[0]?.calls || 1)) * 100}%`,
+                            }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-semibold text-fg-secondary tabular-nums shrink-0">
+                          {a.calls}
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-fg-muted mt-0.5">
+                        {a.role} · {a.minutes} min
+                      </div>
                     </div>
-                    <div className="text-[10px] text-fg-muted mt-0.5">
-                      {a.role} · {a.minutes} min
-                    </div>
-                  </div>
-                </li>
+                  </li>
                 ))
               )}
             </ul>
@@ -510,7 +579,9 @@ export function Dashboard(): React.JSX.Element {
                       </span>
                       <div>
                         <div className="text-[12.5px] font-semibold text-fg-primary">{w.name}</div>
-                        <div className="text-[10.5px] text-fg-muted mt-0.5">{w.runsThisWeek} triggered this week</div>
+                        <div className="text-[10.5px] text-fg-muted mt-0.5">
+                          {w.runsThisWeek} triggered this week
+                        </div>
                       </div>
                     </div>
                     <span className="inline-flex h-2 w-2 rounded-full bg-positive-500"></span>
@@ -527,8 +598,12 @@ export function Dashboard(): React.JSX.Element {
                 <MessageSquare className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">Chat Widget</div>
-                <div className="text-[10.5px] text-fg-muted leading-tight">Your AI, on your website</div>
+                <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">
+                  Chat Widget
+                </div>
+                <div className="text-[10.5px] text-fg-muted leading-tight">
+                  Your AI, on your website
+                </div>
               </div>
               <button
                 type="button"
@@ -557,8 +632,12 @@ export function Dashboard(): React.JSX.Element {
                 <MessageSquare className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">WhatsApp Agent</div>
-                <div className="text-[10.5px] text-fg-muted leading-tight">Same AI brain, on WhatsApp</div>
+                <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">
+                  WhatsApp Agent
+                </div>
+                <div className="text-[10.5px] text-fg-muted leading-tight">
+                  Same AI brain, on WhatsApp
+                </div>
               </div>
               <span className="rounded-full bg-emerald-100 border border-emerald-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-700 shrink-0">
                 Coming soon
