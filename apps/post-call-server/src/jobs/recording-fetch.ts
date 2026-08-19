@@ -70,7 +70,7 @@ export const recordingFetch: JobHandler = {
  * row is the single source of truth for "who is billing this number".
  * Falls back to TWILIO when we can't attribute — matches historical rows.
  */
-const resolveProvider = async (
+export const resolveProvider = async (
   tenantId: string,
   dialed: string | undefined,
 ): Promise<"TWILIO" | "PLIVO"> => {
