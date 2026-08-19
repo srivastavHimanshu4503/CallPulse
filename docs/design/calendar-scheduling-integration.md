@@ -79,14 +79,14 @@ New table for the OAuth connection (tenant-scoped, not user-scoped — booking i
 
 ```prisma
 model CalendarConnection {
-  id            String   @id @default(uuid())
-  tenantId      String   @unique
-  provider      String   // "GOOGLE"
-  accessToken   String   // consider field-level encryption — flag for review, see §5
-  refreshToken  String
-  expiresAt     DateTime
-  connectedById String   // User who authorized it
-  connectedAt   DateTime @default(now())
+  id                  String   @id @default(uuid())
+  tenantId            String   @unique
+  provider            String   // "GOOGLE"
+  accessTokenEncrypted  String // encrypted at rest — see below
+  refreshTokenEncrypted String // encrypted at rest — see below
+  expiresAt           DateTime
+  connectedById       String   // User who authorized it
+  connectedAt         DateTime @default(now())
 
   tenant      Tenant @relation(fields: [tenantId], references: [id])
   connectedBy User   @relation(fields: [connectedById], references: [id])
@@ -94,6 +94,8 @@ model CalendarConnection {
   @@map("calendar_connections")
 }
 ```
+
+**Credential storage — resolved (raised in review by Arjun):** these tokens grant direct access to a customer's personal/business calendar, which is a materially more sensitive credential class than the platform-level provider keys already in this codebase (Twilio/Plivo/Razorpay — all single, ops-controlled secrets, not per-tenant, per-customer-data-access tokens). No plaintext option — commit to field-level encryption at rest regardless of whether a specific compliance mandate exists yet, since it's low-cost to do from day one and expensive to retrofit later. Concretely: encrypt `accessToken`/`refreshToken` with a server-held symmetric key (e.g. AES-256-GCM) before writing, decrypt only in-process when a request needs to call Google's API, following the same `optional()` env-var pattern as every other secret in `apps/api/src/config/env.ts` for where the encryption key itself lives (e.g. `CALENDAR_TOKEN_ENCRYPTION_KEY`). This is an engineering default, not a compliance determination — still flagging to whoever owns security/compliance sign-off in case there's a specific requirement (KMS-backed envelope encryption, key rotation policy, etc.) that should shape the implementation further; the encryption itself is not optional either way.
 
 `User` gains `googleId String? @unique` for Flow A.
 
@@ -109,7 +111,7 @@ Two tools, registered together when booking is enabled and connected:
 if (ctx.booking) {
   tools.check_calendar_availability = llm.tool({
     description:
-      "Check real calendar availability for a date the caller mentioned. Use this BEFORE offering or confirming any appointment time.",
+      "Check real calendar availability for a date the caller mentioned. Use this BEFORE offering or confirming any appointment time. If this returns an error/unavailable result, tell the caller availability can't be confirmed right now and offer to have someone follow up — never guess or invent a time.",
     parameters: z.object({
       date: z.string().describe("Date the caller wants, as YYYY-MM-DD"),
       preferredTime: z.string().optional().describe("Caller's preferred time of day, if mentioned"),
@@ -118,6 +120,19 @@ if (ctx.booking) {
       // Query Google Calendar freebusy for the connected calendar on `args.date`,
       // intersected with AIAgent.bookingConfig.workingHoursNote and meetingDurationMin.
       // Returns a short list of open slots as a string for the LLM to read aloud.
+      //
+      // Failure handling (raised in review by Arjun): one retry with a short
+      // timeout (a few seconds — the caller is on hold, this can't retry
+      // indefinitely). If the FreeBusy call still fails or Google Calendar is
+      // unavailable, return a distinct "couldn't check availability right now"
+      // result — never a list of slots and never silence. The tool's
+      // description instructs the agent to tell the caller availability
+      // can't be confirmed live and offer a manual follow-up (the same
+      // "someone will reach out" fallback used when a call fails to connect
+      // to a real callback elsewhere in this codebase), not to guess or
+      // invent a time. book_appointment must never be invoked off the back
+      // of a failed availability check — there is no assumed-available
+      // fallback, since that risks double-booking the connected calendar.
     },
   });
 
@@ -166,7 +181,6 @@ Implementation tickets for each of these three will be created **after this doc 
 
 ## 5. Open questions for review
 
-- [ ] `CalendarConnection.accessToken`/`refreshToken` — store as plaintext columns (consistent with how other provider credentials are handled in this codebase today) or add field-level encryption? Flagging since this is a new, more sensitive credential class (direct access to a customer's personal/business calendar).
 - [ ] Google-only signup (Flow A, new user) — is a `User` row without a `passwordHash` acceptable, or should we require setting a password on first Google signup? Affects whether `passwordHash` becomes nullable.
 - [ ] Calendar sync (§3.2) — live-fetch on page load vs. a local mirror table with a poll/webhook sync job. Live-fetch is simpler for v1; mirror is more resilient/faster but is more infrastructure.
 - [ ] `book_appointment`'s email step — confirmed OK to ship ahead of email infra (log-only), and backfill real sending once DES-44/DES-12 lands?
