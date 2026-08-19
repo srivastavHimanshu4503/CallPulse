@@ -81,7 +81,9 @@ export function ImportContactsModal({
       return res.data.data;
     },
     onSuccess: (data: any) => {
-      toast.success(`Imported ${data.imported} new, merged ${data.merged}, skipped ${data.skipped}`);
+      toast.success(
+        `Imported ${data.imported} new, merged ${data.merged}, skipped ${data.skipped}`,
+      );
       onImported();
       onClose();
     },
@@ -233,7 +235,8 @@ export function ImportContactsModal({
                 <FileText className="h-3.5 w-3.5" /> Download template
               </button>
               <div className="text-[11px] text-fg-muted">
-                Required columns: <b className="text-fg-primary">firstName</b>, <b className="text-fg-primary">lastName</b>. Optional: email, phone.
+                Required columns: <b className="text-fg-primary">firstName</b>,{" "}
+                <b className="text-fg-primary">lastName</b>. Optional: email, phone.
               </div>
             </div>
           </div>
@@ -260,7 +263,10 @@ export function ImportContactsModal({
                 <div className="grid grid-cols-2 gap-2">
                   {headers.map((h) => (
                     <div key={h} className="flex items-center gap-2">
-                      <span className="text-[12px] text-fg-secondary min-w-[100px] truncate" title={h}>
+                      <span
+                        className="text-[12px] text-fg-secondary min-w-[100px] truncate"
+                        title={h}
+                      >
                         {h}
                       </span>
                       <span className="text-fg-muted">→</span>
@@ -293,7 +299,9 @@ export function ImportContactsModal({
                       <th className="px-3 py-2 text-left text-fg-muted font-semibold">Name</th>
                       <th className="px-3 py-2 text-left text-fg-muted font-semibold">Email</th>
                       <th className="px-3 py-2 text-left text-fg-muted font-semibold">Phone</th>
-                      <th className="px-3 py-2 text-left text-fg-muted font-semibold w-24">Status</th>
+                      <th className="px-3 py-2 text-left text-fg-muted font-semibold w-24">
+                        Status
+                      </th>
                     </tr>
                   </thead>
                   <tbody>

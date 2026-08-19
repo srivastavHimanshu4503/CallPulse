@@ -52,16 +52,16 @@ export const PageHeader: React.FC<{
 }> = ({ title, subtitle, actions }) => (
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 shrink-0 mb-4">
     <div className="min-w-0">
-      <h1 className="text-[20px] sm:text-[22px] font-semibold tracking-tight text-fg-primary">{title}</h1>
+      <h1 className="text-[20px] sm:text-[22px] font-semibold tracking-tight text-fg-primary">
+        {title}
+      </h1>
       {subtitle && (
-        <div className="text-[12px] text-fg-secondary mt-0.5 flex flex-wrap items-center gap-2">{subtitle}</div>
+        <div className="text-[12px] text-fg-secondary mt-0.5 flex flex-wrap items-center gap-2">
+          {subtitle}
+        </div>
       )}
     </div>
-    {actions && (
-      <div className="flex flex-wrap items-center gap-2 shrink-0">
-        {actions}
-      </div>
-    )}
+    {actions && <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>}
   </div>
 );
 
@@ -88,8 +88,7 @@ const BTN_VARIANTS: Record<BtnVariant, string> = {
 const BTN_INLINE: Record<BtnVariant, React.CSSProperties> = {
   primary: {
     background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
-    boxShadow:
-      "0 1px 2px rgba(15,23,42,0.10), 0 4px 12px -4px rgba(37,99,235,0.45)",
+    boxShadow: "0 1px 2px rgba(15,23,42,0.10), 0 4px 12px -4px rgba(37,99,235,0.45)",
   },
   secondary: {
     backgroundColor: "rgb(var(--slate-50))",
@@ -139,7 +138,10 @@ export function Segmented<T extends string>({
   return (
     <div
       className="inline-flex items-center gap-1 rounded-lg p-1 border"
-      style={{ backgroundColor: "rgb(var(--line-subtle))", borderColor: "rgb(var(--line-default))" }}
+      style={{
+        backgroundColor: "rgb(var(--line-subtle))",
+        borderColor: "rgb(var(--line-default))",
+      }}
     >
       {options.map((o) => {
         const active = o.value === value;
@@ -179,7 +181,9 @@ export const Toggle: React.FC<{
   <label className="flex items-start justify-between gap-3 cursor-pointer">
     {(label || hint) && (
       <div className="min-w-0">
-        {label && <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">{label}</div>}
+        {label && (
+          <div className="text-[12.5px] font-semibold text-fg-primary leading-tight">{label}</div>
+        )}
         {hint && <div className="text-[10.5px] text-fg-muted mt-0.5 leading-tight">{hint}</div>}
       </div>
     )}

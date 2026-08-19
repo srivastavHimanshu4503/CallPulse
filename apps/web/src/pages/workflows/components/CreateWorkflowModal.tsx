@@ -180,7 +180,9 @@ function ChoiceCard({
   tone?: "brand";
   toneClasses?: { tile: string; ring: string };
 }): React.JSX.Element {
-  const tile = toneClasses?.tile || (tone === "brand" ? "bg-blue-50 text-blue-600" : "bg-slate-100 text-fg-secondary");
+  const tile =
+    toneClasses?.tile ||
+    (tone === "brand" ? "bg-blue-50 text-blue-600" : "bg-slate-100 text-fg-secondary");
   const ring = toneClasses?.ring || (tone === "brand" ? "ring-blue-500/20" : "ring-slate-200");
   return (
     <button
@@ -193,7 +195,13 @@ function ChoiceCard({
           : "border-line-default bg-bg-raised hover:border-line-strong hover:shadow-card",
       )}
     >
-      <span className={cn("h-8 w-8 rounded-lg ring-1 flex items-center justify-center shrink-0", tile, ring)}>
+      <span
+        className={cn(
+          "h-8 w-8 rounded-lg ring-1 flex items-center justify-center shrink-0",
+          tile,
+          ring,
+        )}
+      >
         <Icon className="h-4 w-4" />
       </span>
       <div className="min-w-0 flex-1">
@@ -223,9 +231,7 @@ function FolderDropdown({
 
   const flat = React.useMemo(() => {
     const out: { folder: WorkflowFolder; depth: number }[] = [];
-    const roots = folders
-      .filter((f) => !f.parentId)
-      .sort((a, b) => a.name.localeCompare(b.name));
+    const roots = folders.filter((f) => !f.parentId).sort((a, b) => a.name.localeCompare(b.name));
     const walk = (list: WorkflowFolder[], depth: number) => {
       for (const f of list) {
         out.push({ folder: f, depth });

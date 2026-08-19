@@ -52,7 +52,8 @@ export function Pagination({
       </div>
 
       <div className="font-semibold text-fg-primary">
-        {start.toLocaleString("en-IN")}–{end.toLocaleString("en-IN")} of {totalItems.toLocaleString("en-IN")}
+        {start.toLocaleString("en-IN")}–{end.toLocaleString("en-IN")} of{" "}
+        {totalItems.toLocaleString("en-IN")}
       </div>
 
       <div className="flex items-center gap-1">

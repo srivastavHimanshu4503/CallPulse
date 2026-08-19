@@ -7,7 +7,26 @@ import { PageWrapper } from "../../components/layout/PageWrapper.js";
 import { ConfirmModal } from "../../components/common/ConfirmModal.js";
 import { formatDateTime, formatTime } from "@antigravity/utils";
 import { api } from "../../lib/axios.js";
-import { ArrowLeft, Search, Filter, Phone, PhoneCall, PhoneForwarded, MessageSquare, MessageCircle, Trash2, ShieldCheck, Sparkles, User, FileText, PhoneIncoming, PhoneOutgoing, Activity, X, ChevronLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  Search,
+  Filter,
+  Phone,
+  PhoneCall,
+  PhoneForwarded,
+  MessageSquare,
+  MessageCircle,
+  Trash2,
+  ShieldCheck,
+  Sparkles,
+  User,
+  FileText,
+  PhoneIncoming,
+  PhoneOutgoing,
+  Activity,
+  X,
+  ChevronLeft,
+} from "lucide-react";
 import type { SerializedAgent } from "@antigravity/types";
 import { toast } from "sonner";
 import { computeLeadScore } from "../../components/ui-ext/index.js";
@@ -21,7 +40,9 @@ export function AgentLogs(): React.JSX.Element {
   const [type, setType] = React.useState("ALL");
   const [extractionStatus, setExtractionStatus] = React.useState("ALL");
   const [selectedLog, setSelectedLog] = React.useState<any>(null);
-  const [activeTab, setActiveTab] = React.useState<"transcript" | "summary" | "extractions">("transcript");
+  const [activeTab, setActiveTab] = React.useState<"transcript" | "summary" | "extractions">(
+    "transcript",
+  );
   const [logToDelete, setLogToDelete] = React.useState<string | null>(null);
   const [viewMode, setViewMode] = React.useState<"logs" | "chats">("logs");
   const [composeOpen, setComposeOpen] = React.useState(false);
@@ -41,7 +62,8 @@ export function AgentLogs(): React.JSX.Element {
     queryFn: async () => {
       const params: any = {};
       if (type && type !== "ALL") params.type = type;
-      if (extractionStatus && extractionStatus !== "ALL") params.extractionStatus = extractionStatus;
+      if (extractionStatus && extractionStatus !== "ALL")
+        params.extractionStatus = extractionStatus;
       const res = await api.get(`/agents/${id}/logs`, { params });
       return res.data.data as any[];
     },
@@ -110,7 +132,9 @@ export function AgentLogs(): React.JSX.Element {
 
   const replyMutation = useMutation({
     mutationFn: async () => {
-      await api.post(`/whatsapp/sessions/${waSession!.sessionId}/reply`, { message: replyText.trim() });
+      await api.post(`/whatsapp/sessions/${waSession!.sessionId}/reply`, {
+        message: replyText.trim(),
+      });
     },
     onSuccess: () => {
       setReplyText("");
@@ -142,7 +166,9 @@ export function AgentLogs(): React.JSX.Element {
   });
 
   const chatBottomRef = React.useRef<HTMLDivElement | null>(null);
-  const turnCount = Array.isArray(selectedLog?.transcriptJson) ? selectedLog.transcriptJson.length : 0;
+  const turnCount = Array.isArray(selectedLog?.transcriptJson)
+    ? selectedLog.transcriptJson.length
+    : 0;
   React.useEffect(() => {
     if (viewMode === "chats") chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [viewMode, turnCount, selectedLog?.id]);
@@ -241,14 +267,14 @@ export function AgentLogs(): React.JSX.Element {
     onError: () => {
       toast.error("Failed to delete log");
       setLogToDelete(null);
-    }
+    },
   });
 
   const [selectedLogIds, setSelectedLogIds] = React.useState<Set<string>>(new Set());
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async (logIds: string[]) => {
-      await Promise.all(logIds.map(logId => api.delete(`/agents/${id}/logs/${logId}`)));
+      await Promise.all(logIds.map((logId) => api.delete(`/agents/${id}/logs/${logId}`)));
     },
     onSuccess: () => {
       toast.success("Logs deleted successfully");
@@ -266,7 +292,7 @@ export function AgentLogs(): React.JSX.Element {
 
   const filteredLogs = React.useMemo(() => {
     if (!logs) return [];
-    return logs.filter(log => {
+    return logs.filter((log) => {
       // WhatsApp conversations live in the Chats view, not the call-log list.
       if (log.type === "WHATSAPP") return false;
       if (!searchTerm) return true;
@@ -316,14 +342,20 @@ export function AgentLogs(): React.JSX.Element {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "COMPLETED": case "DELIVERED": case "SENT": return "bg-success/10 text-success border-success/20";
-      case "FAILED": return "bg-error/10 text-error border-error/20";
-      default: return "bg-primary/10 text-primary border-primary/20";
+      case "COMPLETED":
+      case "DELIVERED":
+      case "SENT":
+        return "bg-success/10 text-success border-success/20";
+      case "FAILED":
+        return "bg-error/10 text-error border-error/20";
+      default:
+        return "bg-primary/10 text-primary border-primary/20";
     }
   };
 
   const renderChatBubbles = (transcriptJson: any) => {
-    if (!transcriptJson || !Array.isArray(transcriptJson) || transcriptJson.length === 0) return null;
+    if (!transcriptJson || !Array.isArray(transcriptJson) || transcriptJson.length === 0)
+      return null;
     // Render strictly in message-time order, whatever order they were stored in.
     const ordered = [...transcriptJson].sort((a: any, b: any) =>
       String(a?.at ?? "").localeCompare(String(b?.at ?? "")),
@@ -341,17 +373,22 @@ export function AgentLogs(): React.JSX.Element {
           const time = msg.at ? formatTime(msg.at) : "";
 
           return (
-            <div key={idx} className={`flex w-full mb-6 ${isAgent ? "justify-start" : "justify-end"}`}>
+            <div
+              key={idx}
+              className={`flex w-full mb-6 ${isAgent ? "justify-start" : "justify-end"}`}
+            >
               <div className={`flex flex-col w-[50%] ${isAgent ? "items-start" : "items-end"}`}>
                 <div className="flex items-center gap-2 mb-1 px-1">
                   <span className="text-[11px] font-bold text-text-secondary">{name}</span>
                   {time && <span className="text-[10px] font-medium text-text-muted">{time}</span>}
                 </div>
-                <div className={`px-4 py-3 text-[14px] leading-relaxed shadow-sm ${
-                  isAgent
-                    ? "bg-bg-raised border border-border text-text-primary rounded-2xl rounded-tl-sm"
-                    : "bg-primary text-white rounded-2xl rounded-tr-sm"
-                }`}>
+                <div
+                  className={`px-4 py-3 text-[14px] leading-relaxed shadow-sm ${
+                    isAgent
+                      ? "bg-bg-raised border border-border text-text-primary rounded-2xl rounded-tl-sm"
+                      : "bg-primary text-white rounded-2xl rounded-tr-sm"
+                  }`}
+                >
                   {text}
                 </div>
                 {msg.failed && (
@@ -368,13 +405,13 @@ export function AgentLogs(): React.JSX.Element {
             </div>
           );
         })}
-        
+
         {selectedLog?.metadata?.transfer?.initiated && (
           <div className="flex w-full mb-6 justify-center">
             <div className="bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full border border-slate-200 shadow-sm flex items-center gap-1.5">
               <PhoneForwarded className="h-3 w-3" />
-              {selectedLog.metadata.transfer.status === "failed" 
-                ? `Call transfer to ${selectedLog.metadata.transfer.to} failed or was unanswered.` 
+              {selectedLog.metadata.transfer.status === "failed"
+                ? `Call transfer to ${selectedLog.metadata.transfer.to} failed or was unanswered.`
                 : `Call transferred to ${selectedLog.metadata.transfer.to}`}
             </div>
           </div>
@@ -386,7 +423,6 @@ export function AgentLogs(): React.JSX.Element {
   return (
     <PageWrapper noScroll>
       <div className="flex-1 flex flex-col min-h-0 bg-bg-raised border border-border rounded-2xl overflow-hidden shadow-sm font-sans text-text-primary">
-        
         {/* Top Header — flex-wrap so it stacks on narrow viewports */}
         <div className="flex-none border-b border-border flex flex-wrap items-center justify-between gap-2 px-3 sm:px-5 py-2 lg:py-0 lg:h-14 bg-surface/50 shrink-0 z-10">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -406,7 +442,9 @@ export function AgentLogs(): React.JSX.Element {
                 type="button"
                 onClick={() => setViewMode("logs")}
                 className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-7 rounded-md text-[11.5px] font-bold transition-colors ${
-                  viewMode === "logs" ? "bg-primary text-white shadow-sm" : "text-text-secondary hover:text-text-primary"
+                  viewMode === "logs"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-text-secondary hover:text-text-primary"
                 }`}
               >
                 <FileText className="h-3 w-3" />
@@ -416,7 +454,9 @@ export function AgentLogs(): React.JSX.Element {
                 type="button"
                 onClick={() => setViewMode("chats")}
                 className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-7 rounded-md text-[11.5px] font-bold transition-colors ${
-                  viewMode === "chats" ? "bg-emerald-600 text-white shadow-sm" : "text-text-secondary hover:text-text-primary"
+                  viewMode === "chats"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-text-secondary hover:text-text-primary"
                 }`}
               >
                 <MessageCircle className="h-3 w-3" />
@@ -432,7 +472,9 @@ export function AgentLogs(): React.JSX.Element {
                 return;
               }
               if (!agent?.whatsappEnabled) {
-                toast.error("Turn on the WhatsApp Bot for this agent first (Agents page → WhatsApp Bot toggle).");
+                toast.error(
+                  "Turn on the WhatsApp Bot for this agent first (Agents page → WhatsApp Bot toggle).",
+                );
                 return;
               }
               setComposeOpen(true);
@@ -458,400 +500,483 @@ export function AgentLogs(): React.JSX.Element {
 
         {/* Split Pane Content */}
         {viewMode === "logs" && (
-        <div className="flex-1 flex min-h-0 bg-bg-raised">
-          
-          {/* LEFT PANE - INBOX STYLE */}
-          <div className={`${selectedLog ? "hidden lg:flex" : "flex"} w-full lg:w-[340px] bg-bg-canvas lg:border-r border-border flex-col h-full shrink-0`}>
-            {/* Search and Filters Header */}
-            <div className="p-3 border-b border-border bg-bg-raised flex flex-col gap-2 shrink-0 z-10">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted" />
-                <input
-                  type="text"
-                  placeholder="Search interactions..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 bg-surface border border-border rounded-md text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-text-muted"
-                />
-              </div>
-              <div className="flex gap-2">
-                <select
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  className="flex-1 bg-bg-raised border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
-                >
-                  <option value="ALL">All Channels</option>
-                  <option value="CALL">Calls (in & out)</option>
-                  <option value="SMS">SMS</option>
-                </select>
-                <select
-                  value={extractionStatus}
-                  onChange={(e) => setExtractionStatus(e.target.value)}
-                  className="flex-1 bg-bg-raised border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
-                >
-                  <option value="ALL">All Status</option>
-                  <option value="PENDING">Pending</option>
-                  <option value="COMPLETED">Completed</option>
-                  <option value="FAILED">Failed</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Bulk Actions */}
-            {selectedLogIds.size > 0 && (
-              <div className="px-3 py-2 bg-primary/5 border-b border-border flex items-center justify-between shrink-0">
-                <span className="text-xs font-semibold text-primary">{selectedLogIds.size} selected</span>
-                <button
-                  onClick={() => bulkDeleteMutation.mutate(Array.from(selectedLogIds))}
-                  disabled={bulkDeleteMutation.isPending}
-                  className="flex items-center gap-1.5 px-2 py-1 bg-error text-white text-[10px] font-bold rounded shadow-sm hover:bg-error/90 transition-colors disabled:opacity-50"
-                >
-                  <Trash2 className="h-3 w-3" />
-                  {bulkDeleteMutation.isPending ? "Deleting..." : "Delete Selected"}
-                </button>
-              </div>
-            )}
-
-            {/* Logs List */}
-            <div className="flex-1 overflow-y-auto">
-              {isLoading ? (
-                <div className="p-3 space-y-2">
-                  {[1, 2, 3, 4].map(i => <div key={i} className="h-16 bg-bg-raised shadow-sm animate-pulse rounded-lg border border-border" />)}
+          <div className="flex-1 flex min-h-0 bg-bg-raised">
+            {/* LEFT PANE - INBOX STYLE */}
+            <div
+              className={`${selectedLog ? "hidden lg:flex" : "flex"} w-full lg:w-[340px] bg-bg-canvas lg:border-r border-border flex-col h-full shrink-0`}
+            >
+              {/* Search and Filters Header */}
+              <div className="p-3 border-b border-border bg-bg-raised flex flex-col gap-2 shrink-0 z-10">
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted" />
+                  <input
+                    type="text"
+                    placeholder="Search interactions..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-8 pr-3 py-1.5 bg-surface border border-border rounded-md text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-text-muted"
+                  />
                 </div>
-              ) : filteredLogs.length === 0 ? (
-                <div className="p-8 flex flex-col items-center justify-center text-center h-full">
-                  <div className="h-10 w-10 bg-bg-raised rounded-full flex items-center justify-center mb-3 shadow-sm border border-border">
-                    <Filter className="h-4 w-4 text-text-muted" />
-                  </div>
-                  <p className="text-xs font-semibold text-text-primary mb-1">No logs found</p>
+                <div className="flex gap-2">
+                  <select
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className="flex-1 bg-bg-raised border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
+                  >
+                    <option value="ALL">All Channels</option>
+                    <option value="CALL">Calls (in & out)</option>
+                    <option value="SMS">SMS</option>
+                  </select>
+                  <select
+                    value={extractionStatus}
+                    onChange={(e) => setExtractionStatus(e.target.value)}
+                    className="flex-1 bg-bg-raised border border-border hover:border-primary/50 rounded-md text-xs px-2 py-1.5 outline-none font-medium text-text-primary transition-colors cursor-pointer"
+                  >
+                    <option value="ALL">All Status</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="FAILED">Failed</option>
+                  </select>
                 </div>
-              ) : (
-                <div className="divide-y divide-border/50">
-                  {filteredLogs.map(log => {
-                    const name = log.contact?.name || log.contact?.firstName || log.contact?.phones?.[0] || "Unknown";
-                    const initial = name.charAt(0).toUpperCase();
-                    const intent = log.extractedFields?.intent?.primary || log.extractedFields?.intent;
-                    const isSelected = selectedLog?.id === log.id;
-                    const direction = log.direction || "INBOUND";
-                    const isCall = log.type === "CALL";
+              </div>
 
-                    return (
+              {/* Bulk Actions */}
+              {selectedLogIds.size > 0 && (
+                <div className="px-3 py-2 bg-primary/5 border-b border-border flex items-center justify-between shrink-0">
+                  <span className="text-xs font-semibold text-primary">
+                    {selectedLogIds.size} selected
+                  </span>
+                  <button
+                    onClick={() => bulkDeleteMutation.mutate(Array.from(selectedLogIds))}
+                    disabled={bulkDeleteMutation.isPending}
+                    className="flex items-center gap-1.5 px-2 py-1 bg-error text-white text-[10px] font-bold rounded shadow-sm hover:bg-error/90 transition-colors disabled:opacity-50"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    {bulkDeleteMutation.isPending ? "Deleting..." : "Delete Selected"}
+                  </button>
+                </div>
+              )}
+
+              {/* Logs List */}
+              <div className="flex-1 overflow-y-auto">
+                {isLoading ? (
+                  <div className="p-3 space-y-2">
+                    {[1, 2, 3, 4].map((i) => (
                       <div
-                        key={log.id}
-                        onClick={() => setSelectedLog(log)}
-                        className={`group cursor-pointer p-3 transition-all relative ${
-                          isSelected ? "bg-active-nav-bg border-l-2 border-l-primary" : "hover:bg-bg-raised bg-transparent border-l-2 border-l-transparent"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            {/* Checkbox */}
-                            <div className="shrink-0 flex items-center h-8" onClick={(e) => e.stopPropagation()}>
-                              <input 
-                                type="checkbox"
-                                checked={selectedLogIds.has(log.id)}
-                                onChange={(e) => {
-                                  const newSet = new Set(selectedLogIds);
-                                  if (e.target.checked) newSet.add(log.id);
-                                  else newSet.delete(log.id);
-                                  setSelectedLogIds(newSet);
-                                }}
-                                className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary cursor-pointer"
-                              />
-                            </div>
-                            {/* Profile Avatar */}
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 shadow-sm ${
-                              isSelected ? "bg-primary text-white" : "bg-bg-raised border border-border text-primary"
-                            }`}>
-                              {initial}
-                            </div>
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-1.5 mb-1">
-                                <p className={`text-sm font-bold truncate leading-none ${
-                                  isSelected ? "text-primary" : "text-text-primary"
-                                }`}>
-                                  {name}
-                                </p>
-                                {/* Direction Badge */}
-                                <span className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                                  direction === "INBOUND" ? "bg-blue-100 text-blue-700" : "bg-emerald-100 text-emerald-700"
-                                }`}>
-                                  {direction === "INBOUND" ? <PhoneIncoming className="h-2 w-2" /> : <PhoneOutgoing className="h-2 w-2" />}
-                                  {direction}
-                                </span>
+                        key={i}
+                        className="h-16 bg-bg-raised shadow-sm animate-pulse rounded-lg border border-border"
+                      />
+                    ))}
+                  </div>
+                ) : filteredLogs.length === 0 ? (
+                  <div className="p-8 flex flex-col items-center justify-center text-center h-full">
+                    <div className="h-10 w-10 bg-bg-raised rounded-full flex items-center justify-center mb-3 shadow-sm border border-border">
+                      <Filter className="h-4 w-4 text-text-muted" />
+                    </div>
+                    <p className="text-xs font-semibold text-text-primary mb-1">No logs found</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border/50">
+                    {filteredLogs.map((log) => {
+                      const name =
+                        log.contact?.name ||
+                        log.contact?.firstName ||
+                        log.contact?.phones?.[0] ||
+                        "Unknown";
+                      const initial = name.charAt(0).toUpperCase();
+                      const intent =
+                        log.extractedFields?.intent?.primary || log.extractedFields?.intent;
+                      const isSelected = selectedLog?.id === log.id;
+                      const direction = log.direction || "INBOUND";
+                      const isCall = log.type === "CALL";
+
+                      return (
+                        <div
+                          key={log.id}
+                          onClick={() => setSelectedLog(log)}
+                          className={`group cursor-pointer p-3 transition-all relative ${
+                            isSelected
+                              ? "bg-active-nav-bg border-l-2 border-l-primary"
+                              : "hover:bg-bg-raised bg-transparent border-l-2 border-l-transparent"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              {/* Checkbox */}
+                              <div
+                                className="shrink-0 flex items-center h-8"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selectedLogIds.has(log.id)}
+                                  onChange={(e) => {
+                                    const newSet = new Set(selectedLogIds);
+                                    if (e.target.checked) newSet.add(log.id);
+                                    else newSet.delete(log.id);
+                                    setSelectedLogIds(newSet);
+                                  }}
+                                  className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                                />
                               </div>
-                              <div className="flex items-center gap-1.5 text-[10px] font-medium text-text-muted">
-                                {isCall ? <PhoneCall className="h-3 w-3 text-text-secondary" /> : <MessageSquare className="h-3 w-3 text-text-secondary" />}
-                                <span>{formatTime(log.occurredAt)}</span>
-                                <span>•</span>
-                                <span>{new Date(log.occurredAt).toLocaleDateString()}</span>
+                              {/* Profile Avatar */}
+                              <div
+                                className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 shadow-sm ${
+                                  isSelected
+                                    ? "bg-primary text-white"
+                                    : "bg-bg-raised border border-border text-primary"
+                                }`}
+                              >
+                                {initial}
                               </div>
-                              {log.contact?.phones?.[0] && (
-                                <div className="flex items-center gap-1 mt-0.5 text-[10px] text-text-muted">
-                                  <Phone className="h-2.5 w-2.5" />
-                                  <span>{log.contact.phones[0]}</span>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5 mb-1">
+                                  <p
+                                    className={`text-sm font-bold truncate leading-none ${
+                                      isSelected ? "text-primary" : "text-text-primary"
+                                    }`}
+                                  >
+                                    {name}
+                                  </p>
+                                  {/* Direction Badge */}
+                                  <span
+                                    className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
+                                      direction === "INBOUND"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-emerald-100 text-emerald-700"
+                                    }`}
+                                  >
+                                    {direction === "INBOUND" ? (
+                                      <PhoneIncoming className="h-2 w-2" />
+                                    ) : (
+                                      <PhoneOutgoing className="h-2 w-2" />
+                                    )}
+                                    {direction}
+                                  </span>
                                 </div>
-                              )}
+                                <div className="flex items-center gap-1.5 text-[10px] font-medium text-text-muted">
+                                  {isCall ? (
+                                    <PhoneCall className="h-3 w-3 text-text-secondary" />
+                                  ) : (
+                                    <MessageSquare className="h-3 w-3 text-text-secondary" />
+                                  )}
+                                  <span>{formatTime(log.occurredAt)}</span>
+                                  <span>•</span>
+                                  <span>{new Date(log.occurredAt).toLocaleDateString()}</span>
+                                </div>
+                                {log.contact?.phones?.[0] && (
+                                  <div className="flex items-center gap-1 mt-0.5 text-[10px] text-text-muted">
+                                    <Phone className="h-2.5 w-2.5" />
+                                    <span>{log.contact.phones[0]}</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          
-                          {/* Actions / Intent */}
-                          <div className="flex flex-col items-end justify-between h-full shrink-0">
-                            <button
-                              onClick={(e) => handleDelete(e, log.id)}
-                              className="opacity-0 group-hover:opacity-100 p-1 text-text-muted hover:text-error hover:bg-error/10 rounded transition-all absolute top-2 right-2"
-                              title="Delete Log"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                            <div className="mt-5">
-                              {intent && typeof intent === "string" && (
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                                  {intent}
-                                </span>
-                              )}
+
+                            {/* Actions / Intent */}
+                            <div className="flex flex-col items-end justify-between h-full shrink-0">
+                              <button
+                                onClick={(e) => handleDelete(e, log.id)}
+                                className="opacity-0 group-hover:opacity-100 p-1 text-text-muted hover:text-error hover:bg-error/10 rounded transition-all absolute top-2 right-2"
+                                title="Delete Log"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                              <div className="mt-5">
+                                {intent && typeof intent === "string" && (
+                                  <span className="text-[9px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                                    {intent}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* RIGHT PANE - DETAILS */}
+            <div
+              className={`${selectedLog ? "flex" : "hidden lg:flex"} flex-1 flex-col min-w-0 bg-bg-raised lg:border-l border-border`}
+            >
+              {!selectedLog ? (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface/30">
+                  <div className="h-12 w-12 bg-bg-raised rounded-full flex items-center justify-center mb-4 shadow-sm border border-border">
+                    <Activity className="h-5 w-5 text-primary/50" />
+                  </div>
+                  <h3 className="text-base font-bold text-text-primary mb-1">
+                    No Interaction Selected
+                  </h3>
+                  <p className="text-xs font-medium text-text-secondary">
+                    Select an interaction from the inbox to view details.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col min-h-0 relative">
+                  {/* Ultra Thin Detail Header — wraps on narrow viewports */}
+                  <div className="px-3 sm:px-5 py-2 border-b border-border bg-surface/30 shrink-0 flex flex-wrap items-start sm:items-center justify-between z-10 relative gap-2">
+                    <div className="flex items-start sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedLog(null)}
+                        className="lg:hidden h-8 w-8 rounded-md flex items-center justify-center text-text-secondary hover:bg-bg-muted shrink-0"
+                        aria-label="Back to inbox"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <div className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs border border-primary/20 shrink-0">
+                        {(
+                          selectedLog.contact?.name ||
+                          selectedLog.contact?.firstName ||
+                          selectedLog.contact?.phones?.[0] ||
+                          "U"
+                        )
+                          .charAt(0)
+                          .toUpperCase()}
                       </div>
-                    );
-                  })}
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <h2 className="text-sm font-bold text-text-primary">
+                          {selectedLog.contact?.name ||
+                            selectedLog.contact?.firstName ||
+                            selectedLog.contact?.phones?.[0] ||
+                            "Unknown Call"}
+                        </h2>
+                        {selectedLog.contact?.phones?.[0] && (
+                          <>
+                            <span className="hidden sm:inline text-border text-xs">|</span>
+                            <span className="text-xs font-medium text-text-secondary flex items-center gap-1">
+                              <Phone className="h-3 w-3" />
+                              {selectedLog.contact.phones[0]}
+                            </span>
+                          </>
+                        )}
+                        <span
+                          className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${getStatusColor(selectedLog.extractionStatus)}`}
+                        >
+                          {selectedLog.extractionStatus}
+                        </span>
+                        <span className="hidden sm:inline text-border text-xs">|</span>
+                        <span className="text-xs font-medium text-text-secondary">
+                          {formatDateTime(selectedLog.occurredAt)}
+                        </span>
+                        {selectedLog.duration && (
+                          <>
+                            <span className="hidden sm:inline text-border text-xs">|</span>
+                            <span className="text-xs font-medium text-text-secondary">
+                              {selectedLog.metadata?.transfer?.initiated
+                                ? `AI ${selectedLog.duration}s`
+                                : `${selectedLog.duration}s`}
+                            </span>
+                          </>
+                        )}
+                        {selectedLog.metadata?.transfer?.initiated && (
+                          <>
+                            <span className="hidden sm:inline text-border text-xs">|</span>
+                            <span className="text-xs font-medium text-text-secondary flex items-center gap-1">
+                              <PhoneForwarded className="h-3 w-3" />
+                              {selectedLog.metadata.transfer.status === "failed"
+                                ? `Transfer to ${selectedLog.metadata.transfer.to} not answered`
+                                : `Transferred → ${selectedLog.metadata.transfer.to}`}
+                              {Number(selectedLog.metadata.transfer.durationSeconds) > 0 &&
+                                ` · ${selectedLog.metadata.transfer.durationSeconds}s`}
+                              {selectedLog.metadata.transfer.simulated && " (test)"}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {selectedLog.contactId && (
+                        <button
+                          onClick={() => navigate(`/crm/contacts/${selectedLog.contactId}`)}
+                          className="px-2.5 py-1 bg-bg-raised border border-border hover:border-primary/50 hover:text-primary text-[10px] font-bold text-text-primary rounded transition-all flex items-center gap-1.5 shadow-sm"
+                          title="View contact in CRM"
+                        >
+                          <User className="h-3 w-3" />
+                          <span className="hidden md:inline">View contact in CRM</span>
+                          <span className="md:hidden">CRM</span>
+                        </button>
+                      )}
+                      {selectedLog.activities?.some((a: any) => a.type === "DEAL_CREATED") && (
+                        <button className="px-2.5 py-1 bg-success text-white hover:bg-success/90 text-[10px] font-bold rounded transition-all flex items-center gap-1.5 shadow-sm">
+                          <FileText className="h-3 w-3" /> Deal
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Tabs Navigation — horizontal scroll on narrow viewports */}
+                  <div className="flex items-center px-3 sm:px-5 bg-bg-raised border-b border-border shrink-0 overflow-x-auto no-scrollbar">
+                    <button
+                      onClick={() => setActiveTab("transcript")}
+                      className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === "transcript" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
+                    >
+                      Transcript
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("summary")}
+                      className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === "summary" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
+                    >
+                      <span className="hidden sm:inline">AI </span>Summary
+                      <span className="hidden sm:inline"> &amp; Score</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("extractions")}
+                      className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap ${activeTab === "extractions" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
+                    >
+                      <span className="hidden sm:inline">Extracted Data</span>
+                      <span className="sm:hidden">Extracted</span>
+                      <Sparkles className="h-3 w-3" />
+                    </button>
+                  </div>
+
+                  {/* Call recording — streams via a short-lived signed URL */}
+                  {selectedLog.recordingUrl && (
+                    <div className="px-5 py-2.5 border-b border-border bg-surface/40 shrink-0 flex items-center gap-3">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary shrink-0">
+                        Recording
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <RecordingPlayer
+                          logId={selectedLog.id}
+                          fallbackDuration={selectedLog.duration}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tab Content Area */}
+                  <div className="flex-1 overflow-y-auto w-full bg-bg-raised">
+                    <div className="w-full h-full p-6">
+                      <div className="w-full">
+                        {/* TRANSCRIPT TAB */}
+                        {activeTab === "transcript" && (
+                          <div className="w-full h-full">
+                            {renderChatBubbles(selectedLog.transcriptJson) ? (
+                              renderChatBubbles(selectedLog.transcriptJson)
+                            ) : selectedLog.transcript ? (
+                              <p className="text-[14px] text-text-primary whitespace-pre-wrap leading-relaxed">
+                                {selectedLog.transcript}
+                              </p>
+                            ) : (
+                              <div className="flex flex-col items-center justify-center text-center py-20 bg-surface/30 border border-border rounded-xl shadow-sm">
+                                <MessageSquare className="h-8 w-8 text-border mb-3" />
+                                <p className="text-sm font-semibold text-text-secondary">
+                                  No transcript recorded
+                                </p>
+                              </div>
+                            )}
+
+                            {waSessionControls}
+                          </div>
+                        )}
+
+                        {/* SUMMARY & SCORE TAB */}
+                        {activeTab === "summary" && (
+                          <div className="space-y-4">
+                            <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
+                              <h3 className="text-xs font-bold text-text-primary mb-3 flex items-center gap-1.5">
+                                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                                Conversation Summary
+                              </h3>
+                              {selectedLog.extractedFields?.summary ? (
+                                <p className="text-sm text-text-secondary leading-relaxed">
+                                  {selectedLog.extractedFields.summary}
+                                </p>
+                              ) : (
+                                <p className="text-xs text-text-muted italic text-center py-4">
+                                  No summary generated yet. The AI is still processing this call.
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
+                              <h3 className="text-xs font-bold text-text-primary mb-3 flex items-center gap-1.5">
+                                <Activity className="h-3.5 w-3.5 text-success" />
+                                Lead Score
+                              </h3>
+                              {contactScore !== null && contactScore !== undefined ? (
+                                <div className="flex items-center gap-4">
+                                  <div className="h-16 w-16 rounded-full bg-success/10 border-4 border-success flex items-center justify-center shrink-0 shadow-inner">
+                                    <span className="text-xl font-black text-success">
+                                      {contactScore}
+                                    </span>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-bold text-text-primary mb-0.5">
+                                      Qualifying Score
+                                    </p>
+                                    <p className="text-xs text-text-secondary">
+                                      Based on caller intent, duration, and AI analysis.
+                                    </p>
+                                  </div>
+                                </div>
+                              ) : (
+                                <p className="text-xs text-text-muted italic text-center py-4">
+                                  Score not available yet.
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* EXTRACTIONS TAB */}
+                        {activeTab === "extractions" && (
+                          <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
+                            <h3 className="text-xs font-bold text-text-primary mb-4 flex items-center gap-1.5">
+                              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                              Extracted CRM Fields
+                            </h3>
+                            {selectedLog.extractedFields &&
+                            Object.keys(selectedLog.extractedFields).filter((k) => k !== "summary")
+                              .length > 0 ? (
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                {Object.entries(selectedLog.extractedFields)
+                                  .filter(([k]) => k !== "summary")
+                                  .map(([k, v]) => (
+                                    <div
+                                      key={k}
+                                      className="p-3 bg-surface/50 border border-border/50 rounded-lg hover:border-primary/30 transition-colors"
+                                    >
+                                      <p className="text-[10px] text-text-secondary uppercase tracking-wider font-bold mb-1">
+                                        {k.replace(/_/g, " ")}
+                                      </p>
+                                      <p className="text-sm font-semibold text-text-primary break-words">
+                                        {typeof v === "object" ? JSON.stringify(v) : String(v)}
+                                      </p>
+                                    </div>
+                                  ))}
+                              </div>
+                            ) : (
+                              <div className="text-center py-10">
+                                <ShieldCheck className="h-6 w-6 text-border mx-auto mb-2" />
+                                <p className="text-xs font-semibold text-text-secondary">
+                                  No data extracted
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
           </div>
-
-          {/* RIGHT PANE - DETAILS */}
-          <div className={`${selectedLog ? "flex" : "hidden lg:flex"} flex-1 flex-col min-w-0 bg-bg-raised lg:border-l border-border`}>
-            {!selectedLog ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface/30">
-                <div className="h-12 w-12 bg-bg-raised rounded-full flex items-center justify-center mb-4 shadow-sm border border-border">
-                  <Activity className="h-5 w-5 text-primary/50" />
-                </div>
-                <h3 className="text-base font-bold text-text-primary mb-1">No Interaction Selected</h3>
-                <p className="text-xs font-medium text-text-secondary">Select an interaction from the inbox to view details.</p>
-              </div>
-            ) : (
-              <div className="flex-1 flex flex-col min-h-0 relative">
-                
-                {/* Ultra Thin Detail Header — wraps on narrow viewports */}
-                <div className="px-3 sm:px-5 py-2 border-b border-border bg-surface/30 shrink-0 flex flex-wrap items-start sm:items-center justify-between z-10 relative gap-2">
-                  <div className="flex items-start sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedLog(null)}
-                      className="lg:hidden h-8 w-8 rounded-md flex items-center justify-center text-text-secondary hover:bg-bg-muted shrink-0"
-                      aria-label="Back to inbox"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    <div className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs border border-primary/20 shrink-0">
-                      {(selectedLog.contact?.name || selectedLog.contact?.firstName || selectedLog.contact?.phones?.[0] || "U").charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <h2 className="text-sm font-bold text-text-primary">
-                        {selectedLog.contact?.name || selectedLog.contact?.firstName || selectedLog.contact?.phones?.[0] || "Unknown Call"}
-                      </h2>
-                      {selectedLog.contact?.phones?.[0] && (
-                        <>
-                          <span className="hidden sm:inline text-border text-xs">|</span>
-                          <span className="text-xs font-medium text-text-secondary flex items-center gap-1">
-                            <Phone className="h-3 w-3" />
-                            {selectedLog.contact.phones[0]}
-                          </span>
-                        </>
-                      )}
-                      <span className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${getStatusColor(selectedLog.extractionStatus)}`}>
-                        {selectedLog.extractionStatus}
-                      </span>
-                      <span className="hidden sm:inline text-border text-xs">|</span>
-                      <span className="text-xs font-medium text-text-secondary">{formatDateTime(selectedLog.occurredAt)}</span>
-                      {selectedLog.duration && (
-                        <>
-                          <span className="hidden sm:inline text-border text-xs">|</span>
-                          <span className="text-xs font-medium text-text-secondary">
-                            {selectedLog.metadata?.transfer?.initiated ? `AI ${selectedLog.duration}s` : `${selectedLog.duration}s`}
-                          </span>
-                        </>
-                      )}
-                      {selectedLog.metadata?.transfer?.initiated && (
-                        <>
-                          <span className="hidden sm:inline text-border text-xs">|</span>
-                          <span className="text-xs font-medium text-text-secondary flex items-center gap-1">
-                            <PhoneForwarded className="h-3 w-3" />
-                            {selectedLog.metadata.transfer.status === "failed"
-                              ? `Transfer to ${selectedLog.metadata.transfer.to} not answered`
-                              : `Transferred → ${selectedLog.metadata.transfer.to}`}
-                            {Number(selectedLog.metadata.transfer.durationSeconds) > 0 &&
-                              ` · ${selectedLog.metadata.transfer.durationSeconds}s`}
-                            {selectedLog.metadata.transfer.simulated && " (test)"}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    {selectedLog.contactId && (
-                      <button
-                        onClick={() => navigate(`/crm/contacts/${selectedLog.contactId}`)}
-                        className="px-2.5 py-1 bg-bg-raised border border-border hover:border-primary/50 hover:text-primary text-[10px] font-bold text-text-primary rounded transition-all flex items-center gap-1.5 shadow-sm"
-                        title="View contact in CRM"
-                      >
-                        <User className="h-3 w-3" />
-                        <span className="hidden md:inline">View contact in CRM</span>
-                        <span className="md:hidden">CRM</span>
-                      </button>
-                    )}
-                    {selectedLog.activities?.some((a: any) => a.type === "DEAL_CREATED") && (
-                      <button className="px-2.5 py-1 bg-success text-white hover:bg-success/90 text-[10px] font-bold rounded transition-all flex items-center gap-1.5 shadow-sm">
-                        <FileText className="h-3 w-3" /> Deal
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Tabs Navigation — horizontal scroll on narrow viewports */}
-                <div className="flex items-center px-3 sm:px-5 bg-bg-raised border-b border-border shrink-0 overflow-x-auto no-scrollbar">
-                  <button
-                    onClick={() => setActiveTab("transcript")}
-                    className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === "transcript" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
-                  >
-                    Transcript
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("summary")}
-                    className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === "summary" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
-                  >
-                    <span className="hidden sm:inline">AI </span>Summary<span className="hidden sm:inline"> &amp; Score</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("extractions")}
-                    className={`px-3 sm:px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap ${activeTab === "extractions" ? "border-primary text-primary" : "border-transparent text-text-secondary hover:text-text-primary"}`}
-                  >
-                    <span className="hidden sm:inline">Extracted Data</span>
-                    <span className="sm:hidden">Extracted</span>
-                    <Sparkles className="h-3 w-3" />
-                  </button>
-                </div>
-
-                {/* Call recording — streams via a short-lived signed URL */}
-                {selectedLog.recordingUrl && (
-                  <div className="px-5 py-2.5 border-b border-border bg-surface/40 shrink-0 flex items-center gap-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary shrink-0">
-                      Recording
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <RecordingPlayer logId={selectedLog.id} fallbackDuration={selectedLog.duration} />
-                    </div>
-                  </div>
-                )}
-
-                {/* Tab Content Area */}
-                <div className="flex-1 overflow-y-auto w-full bg-bg-raised">
-                  <div className="w-full h-full p-6">
-                    <div className="w-full">
-                      {/* TRANSCRIPT TAB */}
-                      {activeTab === "transcript" && (
-                        <div className="w-full h-full">
-                          {renderChatBubbles(selectedLog.transcriptJson) ? (
-                            renderChatBubbles(selectedLog.transcriptJson)
-                          ) : selectedLog.transcript ? (
-                            <p className="text-[14px] text-text-primary whitespace-pre-wrap leading-relaxed">{selectedLog.transcript}</p>
-                          ) : (
-                            <div className="flex flex-col items-center justify-center text-center py-20 bg-surface/30 border border-border rounded-xl shadow-sm">
-                              <MessageSquare className="h-8 w-8 text-border mb-3" />
-                              <p className="text-sm font-semibold text-text-secondary">No transcript recorded</p>
-                            </div>
-                          )}
-
-                          {waSessionControls}
-                        </div>
-                      )}
-
-                      {/* SUMMARY & SCORE TAB */}
-                      {activeTab === "summary" && (
-                        <div className="space-y-4">
-                          <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
-                            <h3 className="text-xs font-bold text-text-primary mb-3 flex items-center gap-1.5">
-                              <Sparkles className="h-3.5 w-3.5 text-primary" />
-                              Conversation Summary
-                            </h3>
-                            {selectedLog.extractedFields?.summary ? (
-                              <p className="text-sm text-text-secondary leading-relaxed">
-                                {selectedLog.extractedFields.summary}
-                              </p>
-                            ) : (
-                              <p className="text-xs text-text-muted italic text-center py-4">
-                                No summary generated yet. The AI is still processing this call.
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
-                            <h3 className="text-xs font-bold text-text-primary mb-3 flex items-center gap-1.5">
-                              <Activity className="h-3.5 w-3.5 text-success" /> 
-                              Lead Score
-                            </h3>
-                            {contactScore !== null && contactScore !== undefined ? (
-                              <div className="flex items-center gap-4">
-                                <div className="h-16 w-16 rounded-full bg-success/10 border-4 border-success flex items-center justify-center shrink-0 shadow-inner">
-                                  <span className="text-xl font-black text-success">{contactScore}</span>
-                                </div>
-                                <div>
-                                  <p className="text-sm font-bold text-text-primary mb-0.5">Qualifying Score</p>
-                                  <p className="text-xs text-text-secondary">
-                                    Based on caller intent, duration, and AI analysis.
-                                  </p>
-                                </div>
-                              </div>
-                            ) : (
-                              <p className="text-xs text-text-muted italic text-center py-4">Score not available yet.</p>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* EXTRACTIONS TAB */}
-                      {activeTab === "extractions" && (
-                        <div className="bg-bg-raised border border-border rounded-xl p-5 shadow-sm">
-                          <h3 className="text-xs font-bold text-text-primary mb-4 flex items-center gap-1.5">
-                            <ShieldCheck className="h-3.5 w-3.5 text-primary" /> 
-                            Extracted CRM Fields
-                          </h3>
-                          {selectedLog.extractedFields && Object.keys(selectedLog.extractedFields).filter(k => k !== 'summary').length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {Object.entries(selectedLog.extractedFields).filter(([k]) => k !== 'summary').map(([k, v]) => (
-                                <div key={k} className="p-3 bg-surface/50 border border-border/50 rounded-lg hover:border-primary/30 transition-colors">
-                                  <p className="text-[10px] text-text-secondary uppercase tracking-wider font-bold mb-1">{k.replace(/_/g, ' ')}</p>
-                                  <p className="text-sm font-semibold text-text-primary break-words">
-                                    {typeof v === 'object' ? JSON.stringify(v) : String(v)}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <div className="text-center py-10">
-                              <ShieldCheck className="h-6 w-6 text-border mx-auto mb-2" />
-                              <p className="text-xs font-semibold text-text-secondary">No data extracted</p>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
         )}
 
         {/* CHATS VIEW — WhatsApp inbox for this agent */}
         {viewMode === "chats" && (
           <div className="flex-1 flex min-h-0 bg-bg-raised">
             {/* Conversation list */}
-            <div className={`${selectedLog?.type === "WHATSAPP" ? "hidden lg:flex" : "flex"} w-full lg:w-[300px] bg-bg-canvas lg:border-r border-border flex-col h-full shrink-0`}>
+            <div
+              className={`${selectedLog?.type === "WHATSAPP" ? "hidden lg:flex" : "flex"} w-full lg:w-[300px] bg-bg-canvas lg:border-r border-border flex-col h-full shrink-0`}
+            >
               <div className="px-3 py-2.5 border-b border-border bg-bg-raised flex items-center justify-between shrink-0">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
                   Customers ({chatsByContact.length})
@@ -862,7 +987,9 @@ export function AgentLogs(): React.JSX.Element {
                 {chatsByContact.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full px-6 text-center">
                     <MessageCircle className="h-8 w-8 text-border mb-2" />
-                    <div className="text-[12.5px] font-semibold text-text-primary">No chats yet</div>
+                    <div className="text-[12.5px] font-semibold text-text-primary">
+                      No chats yet
+                    </div>
                     <div className="text-[11px] text-text-muted mt-1">
                       Start one with "New WhatsApp chat" or wait for a customer message.
                     </div>
@@ -870,7 +997,10 @@ export function AgentLogs(): React.JSX.Element {
                 ) : (
                   chatsByContact.map((group) => {
                     const name =
-                      group.contact?.name || group.contact?.firstName || group.contact?.phones?.[0] || "Unknown";
+                      group.contact?.name ||
+                      group.contact?.firstName ||
+                      group.contact?.phones?.[0] ||
+                      "Unknown";
                     const expanded = expandedContactId === group.contactId;
                     return (
                       <div key={group.contactId} className="border-b border-border/60">
@@ -891,19 +1021,26 @@ export function AgentLogs(): React.JSX.Element {
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-baseline justify-between gap-2">
-                                <span className="text-[12.5px] font-semibold text-text-primary truncate">{name}</span>
-                                <span className="text-[10px] text-text-muted shrink-0">{formatTime(group.lastAt)}</span>
+                                <span className="text-[12.5px] font-semibold text-text-primary truncate">
+                                  {name}
+                                </span>
+                                <span className="text-[10px] text-text-muted shrink-0">
+                                  {formatTime(group.lastAt)}
+                                </span>
                               </div>
                               <div className="flex items-center gap-1.5 mt-0.5">
                                 <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded px-1.5 py-px">
-                                  {group.logs.length} conversation{group.logs.length === 1 ? "" : "s"}
+                                  {group.logs.length} conversation
+                                  {group.logs.length === 1 ? "" : "s"}
                                 </span>
                                 <span className="text-[10.5px] text-text-muted truncate">
                                   {group.contact?.phones?.[0] || ""}
                                 </span>
                               </div>
                             </div>
-                            <span className={`text-text-muted text-[10px] transition-transform ${expanded ? "rotate-90" : ""}`}>
+                            <span
+                              className={`text-text-muted text-[10px] transition-transform ${expanded ? "rotate-90" : ""}`}
+                            >
                               ▶
                             </span>
                           </div>
@@ -919,7 +1056,9 @@ export function AgentLogs(): React.JSX.Element {
                                 type="button"
                                 onClick={() => setSelectedLog(log)}
                                 className={`w-full text-left pl-[52px] pr-3 py-2 border-t border-border/40 transition-colors ${
-                                  selectedLog?.id === log.id ? "bg-emerald-50/80" : "bg-bg-raised hover:bg-surface"
+                                  selectedLog?.id === log.id
+                                    ? "bg-emerald-50/80"
+                                    : "bg-bg-raised hover:bg-surface"
                                 }`}
                               >
                                 <div className="flex items-baseline justify-between gap-2">
@@ -930,7 +1069,9 @@ export function AgentLogs(): React.JSX.Element {
                                       }`}
                                     />
                                     <span className="text-[11px] font-semibold text-text-primary truncate">
-                                      {live ? "Live conversation" : `Conversation ${group.logs.length - i}`}
+                                      {live
+                                        ? "Live conversation"
+                                        : `Conversation ${group.logs.length - i}`}
                                     </span>
                                   </span>
                                   <span className="text-[9.5px] text-text-muted shrink-0">
@@ -951,7 +1092,9 @@ export function AgentLogs(): React.JSX.Element {
             </div>
 
             {/* Thread */}
-            <div className={`${selectedLog?.type === "WHATSAPP" ? "flex" : "hidden lg:flex"} flex-1 flex-col min-h-0 bg-[#F7F5F1]`}>
+            <div
+              className={`${selectedLog?.type === "WHATSAPP" ? "flex" : "hidden lg:flex"} flex-1 flex-col min-h-0 bg-[#F7F5F1]`}
+            >
               {selectedLog?.type === "WHATSAPP" ? (
                 <>
                   <div className="h-12 shrink-0 bg-bg-raised border-b border-border flex items-center px-4 gap-3">
@@ -962,7 +1105,9 @@ export function AgentLogs(): React.JSX.Element {
                       <div className="text-[12.5px] font-semibold text-text-primary truncate">
                         {selectedLog.contact?.name || selectedLog.contact?.firstName || "Unknown"}
                       </div>
-                      <div className="text-[10px] text-text-muted">{selectedLog.contact?.phones?.[0] || ""}</div>
+                      <div className="text-[10px] text-text-muted">
+                        {selectedLog.contact?.phones?.[0] || ""}
+                      </div>
                     </div>
                     <span
                       className={`ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wide ${
@@ -984,7 +1129,9 @@ export function AgentLogs(): React.JSX.Element {
                   </div>
                   <div className="flex-1 overflow-y-auto px-6 py-4">
                     {renderChatBubbles(selectedLog.transcriptJson) ?? (
-                      <div className="text-center text-[12px] text-text-muted py-16">No messages yet</div>
+                      <div className="text-center text-[12px] text-text-muted py-16">
+                        No messages yet
+                      </div>
                     )}
                     <div ref={chatBottomRef} />
                   </div>
@@ -994,7 +1141,9 @@ export function AgentLogs(): React.JSX.Element {
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
                   <MessageCircle className="h-10 w-10 text-border mb-3" />
-                  <div className="text-[13px] font-semibold text-text-primary">Select a conversation</div>
+                  <div className="text-[13px] font-semibold text-text-primary">
+                    Select a conversation
+                  </div>
                   <div className="text-[11.5px] text-text-muted mt-1">
                     Read the chat, take over from the AI, or reply yourself.
                   </div>
@@ -1088,7 +1237,12 @@ function ComposeWhatsAppModal({
       const res =
         mode === "freeform"
           ? await api.post("/whatsapp/send", { agentId, to, message })
-          : await api.post("/whatsapp/send-template", { agentId, to, contentSid: templateSid, variables });
+          : await api.post("/whatsapp/send-template", {
+              agentId,
+              to,
+              contentSid: templateSid,
+              variables,
+            });
       return res.data.data as { logId: string };
     },
     onSuccess: (data) => {
@@ -1100,7 +1254,11 @@ function ComposeWhatsAppModal({
 
   const createTemplateMutation = useMutation({
     mutationFn: async () => {
-      const res = await api.post("/whatsapp/templates", { name: newName, body: newBody, category: newCategory });
+      const res = await api.post("/whatsapp/templates", {
+        name: newName,
+        body: newBody,
+        category: newCategory,
+      });
       return res.data.data as WaTemplate;
     },
     onSuccess: () => {
@@ -1128,7 +1286,8 @@ function ComposeWhatsAppModal({
     !sendMutation.isPending &&
     (mode === "freeform"
       ? message.trim().length > 0
-      : !!selectedTemplate && selectedTemplate.variables.every((v) => (variables[v] ?? "").trim().length > 0));
+      : !!selectedTemplate &&
+        selectedTemplate.variables.every((v) => (variables[v] ?? "").trim().length > 0));
 
   const preview = selectedTemplate
     ? selectedTemplate.body.replace(/\{\{(\d+)\}\}/g, (_, n: string) => variables[n] || `{{${n}}}`)
@@ -1172,7 +1331,9 @@ function ComposeWhatsAppModal({
                   type="button"
                   onClick={() => setMode(m)}
                   className={`px-3 h-7 rounded-md text-[11.5px] font-bold capitalize transition-colors ${
-                    mode === m ? "bg-bg-raised text-text-primary shadow-sm" : "text-text-secondary hover:text-text-primary"
+                    mode === m
+                      ? "bg-bg-raised text-text-primary shadow-sm"
+                      : "text-text-secondary hover:text-text-primary"
                   }`}
                 >
                   {m === "freeform" ? "Freeform" : "Template (cold outreach)"}
@@ -1195,17 +1356,27 @@ function ComposeWhatsAppModal({
               {templatesLoading ? (
                 <div className="text-[11.5px] text-text-muted">Loading…</div>
               ) : templates.length === 0 ? (
-                <div className="text-[11.5px] text-text-muted">No templates yet — create your first below.</div>
+                <div className="text-[11.5px] text-text-muted">
+                  No templates yet — create your first below.
+                </div>
               ) : (
                 <div className="space-y-2">
                   {templates.map((t) => {
-                    const st = TEMPLATE_STATUS_UI[t.approvalStatus] ?? TEMPLATE_STATUS_UI.unsubmitted!;
+                    const st =
+                      TEMPLATE_STATUS_UI[t.approvalStatus] ?? TEMPLATE_STATUS_UI.unsubmitted!;
                     return (
-                      <div key={t.sid} className="rounded-lg border border-border bg-bg-raised p-2.5">
+                      <div
+                        key={t.sid}
+                        className="rounded-lg border border-border bg-bg-raised p-2.5"
+                      >
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-[12px] font-bold text-text-primary truncate">{t.name}</span>
+                          <span className="text-[12px] font-bold text-text-primary truncate">
+                            {t.name}
+                          </span>
                           <div className="flex items-center gap-2 shrink-0">
-                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase border ${st.cls}`}>
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase border ${st.cls}`}
+                            >
                               {st.label}
                             </span>
                             <button
@@ -1218,9 +1389,13 @@ function ComposeWhatsAppModal({
                             </button>
                           </div>
                         </div>
-                        <p className="text-[11px] text-text-secondary mt-1 leading-snug">{t.body}</p>
+                        <p className="text-[11px] text-text-secondary mt-1 leading-snug">
+                          {t.body}
+                        </p>
                         {t.rejectionReason && (
-                          <p className="text-[10.5px] text-red-600 mt-1">Rejected: {t.rejectionReason}</p>
+                          <p className="text-[10.5px] text-red-600 mt-1">
+                            Rejected: {t.rejectionReason}
+                          </p>
                         )}
                       </div>
                     );
@@ -1239,7 +1414,9 @@ function ComposeWhatsAppModal({
                 <textarea
                   value={newBody}
                   onChange={(e) => setNewBody(e.target.value)}
-                  placeholder={"Namaste {{1}}! Aapne humein call kiya tha {{2}} ke liye. Hum aapko details bhejna chahte hain — reply karein to continue."}
+                  placeholder={
+                    "Namaste {{1}}! Aapne humein call kiya tha {{2}} ke liye. Hum aapko details bhejna chahte hain — reply karein to continue."
+                  }
                   className="w-full text-[12px] bg-bg-raised border border-border rounded-lg px-2.5 py-2 focus:outline-none focus:border-emerald-500 min-h-[70px]"
                 />
                 <div className="flex items-center gap-2">
@@ -1254,15 +1431,17 @@ function ComposeWhatsAppModal({
                   <button
                     type="button"
                     onClick={() => createTemplateMutation.mutate()}
-                    disabled={!newName.trim() || !newBody.trim() || createTemplateMutation.isPending}
+                    disabled={
+                      !newName.trim() || !newBody.trim() || createTemplateMutation.isPending
+                    }
                     className="ml-auto h-8 px-3 rounded-lg text-[11.5px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
                   >
                     {createTemplateMutation.isPending ? "Submitting…" : "Submit for approval"}
                   </button>
                 </div>
                 <p className="text-[10px] text-text-muted leading-snug">
-                  Use {"{{1}}"}, {"{{2}}"} for variables (name, date…). Meta reviews every template — Utility
-                  templates usually approve within minutes, Marketing can take longer.
+                  Use {"{{1}}"}, {"{{2}}"} for variables (name, date…). Meta reviews every template
+                  — Utility templates usually approve within minutes, Marketing can take longer.
                 </p>
               </div>
             </div>
@@ -1270,7 +1449,9 @@ function ComposeWhatsAppModal({
 
           {/* Recipient */}
           <div>
-            <label className="block text-[12px] font-semibold text-text-primary mb-1">Customer WhatsApp number</label>
+            <label className="block text-[12px] font-semibold text-text-primary mb-1">
+              Customer WhatsApp number
+            </label>
             <input
               value={to}
               onChange={(e) => setTo(e.target.value)}
@@ -1281,7 +1462,9 @@ function ComposeWhatsAppModal({
 
           {mode === "freeform" ? (
             <div>
-              <label className="block text-[12px] font-semibold text-text-primary mb-1">Message</label>
+              <label className="block text-[12px] font-semibold text-text-primary mb-1">
+                Message
+              </label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -1289,18 +1472,20 @@ function ComposeWhatsAppModal({
                 className="w-full text-[13px] bg-bg-raised border border-border rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[90px]"
               />
               <p className="text-[10.5px] text-text-muted mt-1 leading-snug">
-                Only delivers if this customer messaged you in the last 24 hours. For cold outreach, switch to
-                Template.
+                Only delivers if this customer messaged you in the last 24 hours. For cold outreach,
+                switch to Template.
               </p>
             </div>
           ) : (
             <div className="space-y-3">
               <div>
-                <label className="block text-[12px] font-semibold text-text-primary mb-1">Approved template</label>
+                <label className="block text-[12px] font-semibold text-text-primary mb-1">
+                  Approved template
+                </label>
                 {approved.length === 0 ? (
                   <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-[11.5px] text-amber-800">
-                    No approved templates yet. Click "Manage templates" above to create one — Meta approval usually
-                    takes minutes for Utility templates.
+                    No approved templates yet. Click "Manage templates" above to create one — Meta
+                    approval usually takes minutes for Utility templates.
                   </div>
                 ) : (
                   <select
@@ -1326,7 +1511,9 @@ function ComposeWhatsAppModal({
                   {selectedTemplate.variables.map((v) => (
                     <div key={v}>
                       <label className="block text-[11.5px] font-semibold text-text-primary mb-1">
-                        Variable {"{{"}{v}{"}}"}
+                        Variable {"{{"}
+                        {v}
+                        {"}}"}
                       </label>
                       <input
                         value={variables[v] ?? ""}
@@ -1337,8 +1524,12 @@ function ComposeWhatsAppModal({
                     </div>
                   ))}
                   <div className="rounded-lg bg-positive-50 border border-emerald-200 px-3 py-2.5">
-                    <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-700 mb-1">Preview</div>
-                    <p className="text-[12px] text-emerald-900 leading-snug whitespace-pre-wrap">{preview}</p>
+                    <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-700 mb-1">
+                      Preview
+                    </div>
+                    <p className="text-[12px] text-emerald-900 leading-snug whitespace-pre-wrap">
+                      {preview}
+                    </p>
                   </div>
                 </>
               )}

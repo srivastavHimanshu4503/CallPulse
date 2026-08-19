@@ -32,7 +32,7 @@ export const initSentry = (opts: { service: string; environment?: string }): boo
  */
 export const captureError = (
   err: unknown,
-  context?: Record<string, string | number | boolean | null | undefined>
+  context?: Record<string, string | number | boolean | null | undefined>,
 ): void => {
   if (!enabled) return;
   try {

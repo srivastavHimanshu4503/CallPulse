@@ -50,19 +50,28 @@ interface EventDef {
 // ─────────────────────────────────────────────────────────────
 
 const EVENTS: EventDef[] = [
-  { key: "call_ended", title: "Call ended", hint: "Summary after every AI call", icon: PhoneCall, tone: "brand" },
+  {
+    key: "call_ended",
+    title: "Call ended",
+    hint: "Summary after every AI call",
+    icon: PhoneCall,
+    tone: "brand",
+  },
 ];
 
-const CHANNEL_META: Record<ChannelKey, {
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-  hint: string;
-  tint: string;      // full-color chip background
-  tintText: string;
-  soft: string;      // soft tinted background
-  softText: string;
-  softRing: string;
-}> = {
+const CHANNEL_META: Record<
+  ChannelKey,
+  {
+    name: string;
+    icon: React.ComponentType<{ className?: string }>;
+    hint: string;
+    tint: string; // full-color chip background
+    tintText: string;
+    soft: string; // soft tinted background
+    softText: string;
+    softRing: string;
+  }
+> = {
   email: {
     name: "Email",
     icon: Mail,
@@ -96,26 +105,28 @@ const CHANNEL_META: Record<ChannelKey, {
 };
 
 const TONE_STYLES: Record<EventDef["tone"], string> = {
-  brand:     "bg-brand-50 text-brand-600 ring-brand-500/20",
-  positive:  "bg-positive-50 text-positive-500 ring-positive-500/20",
+  brand: "bg-brand-50 text-brand-600 ring-brand-500/20",
+  positive: "bg-positive-50 text-positive-500 ring-positive-500/20",
   attention: "bg-attention-50 text-attention-600 ring-attention-500/20",
-  negative:  "bg-negative-50 text-negative-500 ring-negative-500/20",
-  accent:    "bg-accent-100 text-accent-700 ring-accent-500/25",
+  negative: "bg-negative-50 text-negative-500 ring-negative-500/20",
+  accent: "bg-accent-100 text-accent-700 ring-accent-500/25",
 };
 
 // Default templates per event × channel
-const DEFAULT_TEMPLATES: Record<EventKey, {
-  emailSubject: string;
-  email: string;
-  sms: string;
-  slack: string;
-}> = {
+const DEFAULT_TEMPLATES: Record<
+  EventKey,
+  {
+    emailSubject: string;
+    email: string;
+    sms: string;
+    slack: string;
+  }
+> = {
   call_ended: {
     emailSubject: "[DeskBuddy] Call ended — {{contact_name}}",
     email:
       "Hi {{owner_name}},\n\n{{contact_name}} just spoke with {{agent_name}} for {{duration}}.\n\nSummary: {{summary}}\n\nOutcome: {{outcome}}\nView the full transcript: {{transcript_url}}",
-    sms:
-      "DeskBuddy: {{contact_name}} · {{duration}} · {{outcome}}. Details: {{short_url}}",
+    sms: "DeskBuddy: {{contact_name}} · {{duration}} · {{outcome}}. Details: {{short_url}}",
     slack:
       ":telephone_receiver: *Call ended* — {{contact_name}} spoke with {{agent_name}} for {{duration}}.\n> {{summary}}\n<{{transcript_url}}|View transcript>",
   },
@@ -155,9 +166,17 @@ function render(template: string): string {
 }
 
 const VARIABLES = [
-  "contact_name", "contact_phone", "agent_name", "duration",
-  "outcome", "summary", "transcript_url", "owner_name",
-  "booking_date", "booking_time", "callback_url",
+  "contact_name",
+  "contact_phone",
+  "agent_name",
+  "duration",
+  "outcome",
+  "summary",
+  "transcript_url",
+  "owner_name",
+  "booking_date",
+  "booking_time",
+  "callback_url",
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -187,11 +206,10 @@ function EmailPreview({ subject, body }: { subject: string; body: string }): Rea
           </div>
           <div className="min-w-0">
             <div className="text-[11px] font-semibold text-fg-primary truncate">
-              DeskBuddy <span className="text-fg-muted font-normal">&lt;notify@deskbuddy.in&gt;</span>
+              DeskBuddy{" "}
+              <span className="text-fg-muted font-normal">&lt;notify@deskbuddy.in&gt;</span>
             </div>
-            <div className="text-[10px] text-fg-muted truncate">
-              to yogendra@myaifrontdesk.com
-            </div>
+            <div className="text-[10px] text-fg-muted truncate">to yogendra@myaifrontdesk.com</div>
           </div>
         </div>
         <div className="text-[13px] font-semibold text-fg-primary leading-snug">
@@ -238,7 +256,9 @@ function SmsPreview({ body }: { body: string }): React.JSX.Element {
           </div>
           {/* Bubbles */}
           <div className="p-3 space-y-2 bg-slate-50 min-h-[260px]">
-            <div className="text-center text-[9px] text-fg-muted font-medium mb-1">Today · 9:41 AM</div>
+            <div className="text-center text-[9px] text-fg-muted font-medium mb-1">
+              Today · 9:41 AM
+            </div>
             <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-emerald-500 text-white px-3 py-2 shadow-sm">
               <p className="text-[11px] leading-relaxed whitespace-pre-wrap">{rendered}</p>
             </div>
@@ -275,33 +295,47 @@ function SlackPreview({ body }: { body: string }): React.JSX.Element {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-1">
               <span className="text-[11.5px] font-bold text-fg-primary">DeskBuddy</span>
-              <span className="text-[9px] font-semibold px-1 py-0.5 rounded bg-slate-100 text-slate-600 uppercase tracking-wider">APP</span>
+              <span className="text-[9px] font-semibold px-1 py-0.5 rounded bg-slate-100 text-slate-600 uppercase tracking-wider">
+                APP
+              </span>
               <span className="text-[9.5px] text-fg-muted">9:41 AM</span>
             </div>
             <div className="text-[12px] text-fg-primary leading-relaxed whitespace-pre-wrap">
-              {render(body).split("\n").map((line, i) => {
-                // Naive Slack markdown: *bold*, > blockquote, <url|text>
-                let node: React.ReactNode = line;
-                node = String(node).replace(/<([^|]+)\|([^>]+)>/g, (_m, _url, text) => `[${text}]`);
-                if (line.startsWith("> ")) {
+              {render(body)
+                .split("\n")
+                .map((line, i) => {
+                  // Naive Slack markdown: *bold*, > blockquote, <url|text>
+                  let node: React.ReactNode = line;
+                  node = String(node).replace(
+                    /<([^|]+)\|([^>]+)>/g,
+                    (_m, _url, text) => `[${text}]`,
+                  );
+                  if (line.startsWith("> ")) {
+                    return (
+                      <div
+                        key={i}
+                        className="border-l-4 border-slate-300 pl-2 my-1 text-fg-secondary italic"
+                      >
+                        {String(node).slice(2)}
+                      </div>
+                    );
+                  }
                   return (
-                    <div key={i} className="border-l-4 border-slate-300 pl-2 my-1 text-fg-secondary italic">
-                      {String(node).slice(2)}
+                    <div key={i}>
+                      {String(node)
+                        .split(/(\*[^*]+\*)/g)
+                        .map((chunk, j) =>
+                          chunk.startsWith("*") && chunk.endsWith("*") ? (
+                            <strong key={j} className="font-bold">
+                              {chunk.slice(1, -1)}
+                            </strong>
+                          ) : (
+                            <React.Fragment key={j}>{chunk}</React.Fragment>
+                          ),
+                        )}
                     </div>
                   );
-                }
-                return (
-                  <div key={i}>
-                    {String(node).split(/(\*[^*]+\*)/g).map((chunk, j) =>
-                      chunk.startsWith("*") && chunk.endsWith("*") ? (
-                        <strong key={j} className="font-bold">{chunk.slice(1, -1)}</strong>
-                      ) : (
-                        <React.Fragment key={j}>{chunk}</React.Fragment>
-                      )
-                    )}
-                  </div>
-                );
-              })}
+                })}
             </div>
           </div>
         </div>
@@ -320,7 +354,7 @@ function SlackPreview({ body }: { body: string }): React.JSX.Element {
 
 const CHANNEL_HEX: Record<ChannelKey, { active: string; hover: string; shadow: string }> = {
   email: { active: "#2563EB", hover: "#1D4ED8", shadow: "rgba(37,99,235,0.35)" },
-  sms:   { active: "#059669", hover: "#047857", shadow: "rgba(5,150,105,0.35)" },
+  sms: { active: "#059669", hover: "#047857", shadow: "rgba(5,150,105,0.35)" },
   slack: { active: "#7C3AED", hover: "#6D28D9", shadow: "rgba(124,58,237,0.35)" },
 };
 
@@ -347,7 +381,11 @@ const ChannelTab: React.FC<{
               borderColor: hex.active,
               boxShadow: `0 2px 6px ${hex.shadow}, 0 1px 2px rgba(0,0,0,0.08)`,
             }
-          : { backgroundColor: "rgb(var(--bg-subtle))", color: "rgb(var(--fg-secondary))", borderColor: "rgb(var(--line-default))" }
+          : {
+              backgroundColor: "rgb(var(--bg-subtle))",
+              color: "rgb(var(--fg-secondary))",
+              borderColor: "rgb(var(--line-default))",
+            }
       }
     >
       <span
@@ -400,8 +438,8 @@ export function Notifications(): React.JSX.Element {
   const [recipients, setRecipients] = React.useState<Recipient[]>([
     { id: "r1", type: "email", value: "yogendra@myaifrontdesk.com", label: "Owner" },
     { id: "r2", type: "email", value: "priya@rajesh-distributors.in", label: "Manager" },
-    { id: "r3", type: "sms",   value: "+91 98765 43210", label: "Owner mobile" },
-    { id: "r4", type: "slack", value: "#calls-team",     label: "Team channel" },
+    { id: "r3", type: "sms", value: "+91 98765 43210", label: "Owner mobile" },
+    { id: "r4", type: "slack", value: "#calls-team", label: "Team channel" },
   ]);
 
   // Templates
@@ -426,13 +464,12 @@ export function Notifications(): React.JSX.Element {
   const addRecipient = () => {
     const v = newRecipient.trim();
     if (!v) {
-      toast.error(`Enter an ${selectedChannel === "sms" ? "phone number" : selectedChannel === "email" ? "email" : "channel"} first.`);
+      toast.error(
+        `Enter an ${selectedChannel === "sms" ? "phone number" : selectedChannel === "email" ? "email" : "channel"} first.`,
+      );
       return;
     }
-    setRecipients((prev) => [
-      ...prev,
-      { id: `r${Date.now()}`, type: selectedChannel, value: v },
-    ]);
+    setRecipients((prev) => [...prev, { id: `r${Date.now()}`, type: selectedChannel, value: v }]);
     setNewRecipient("");
     toast.success("Recipient added.");
   };
@@ -454,21 +491,30 @@ export function Notifications(): React.JSX.Element {
     selectedChannel === "sms"
       ? "+91 98765 43210"
       : selectedChannel === "email"
-      ? "name@company.com"
-      : "#channel-name";
-  const currentInputLabel = selectedChannel === "sms" ? "Phone number" : selectedChannel === "email" ? "Email address" : "Slack channel";
+        ? "name@company.com"
+        : "#channel-name";
+  const currentInputLabel =
+    selectedChannel === "sms"
+      ? "Phone number"
+      : selectedChannel === "email"
+        ? "Email address"
+        : "Slack channel";
 
   return (
     <PageWrapper noScroll={true}>
       <PageHeader
         title="Notifications"
-        subtitle={<span>Pick an event on the left. Set who gets notified and how — right there.</span>}
+        subtitle={
+          <span>Pick an event on the left. Set who gets notified and how — right there.</span>
+        }
         actions={
           <>
             <AppButton
               variant="secondary"
               icon={<Send className="h-3.5 w-3.5" />}
-              onClick={() => toast.success(`Test ${channelMeta.name} sent for “${eventDef.title}”.`)}
+              onClick={() =>
+                toast.success(`Test ${channelMeta.name} sent for “${eventDef.title}”.`)
+              }
             >
               Send test
             </AppButton>
@@ -498,7 +544,9 @@ export function Notifications(): React.JSX.Element {
           <ul className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-0.5">
             {EVENTS.map((e) => {
               const isActive = selectedEvent === e.key;
-              const channelCount = (Object.values(rules[e.key]) as boolean[]).filter(Boolean).length;
+              const channelCount = (Object.values(rules[e.key]) as boolean[]).filter(
+                Boolean,
+              ).length;
               return (
                 <li key={e.key}>
                   <button
@@ -517,12 +565,18 @@ export function Notifications(): React.JSX.Element {
                   >
                     <span
                       className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0"
-                      style={isActive ? { backgroundColor: "rgba(255,255,255,0.2)", color: "#FFFFFF" } : {}}
+                      style={
+                        isActive
+                          ? { backgroundColor: "rgba(255,255,255,0.2)", color: "#FFFFFF" }
+                          : {}
+                      }
                     >
                       {isActive ? (
                         <e.icon className="h-3.5 w-3.5" />
                       ) : (
-                        <span className={`${TONE_STYLES[e.tone]} ring-1 rounded-lg h-7 w-7 -m-0 flex items-center justify-center`}>
+                        <span
+                          className={`${TONE_STYLES[e.tone]} ring-1 rounded-lg h-7 w-7 -m-0 flex items-center justify-center`}
+                        >
                           <e.icon className="h-3.5 w-3.5" />
                         </span>
                       )}
@@ -533,7 +587,11 @@ export function Notifications(): React.JSX.Element {
                       </div>
                       <div
                         className="text-[10px] truncate"
-                        style={isActive ? { color: "rgba(255,255,255,0.85)" } : { color: "rgb(var(--slate-500))" }}
+                        style={
+                          isActive
+                            ? { color: "rgba(255,255,255,0.85)" }
+                            : { color: "rgb(var(--slate-500))" }
+                        }
                       >
                         {e.hint}
                       </div>
@@ -544,8 +602,15 @@ export function Notifications(): React.JSX.Element {
                         isActive
                           ? { backgroundColor: "rgba(255,255,255,0.22)", color: "#FFFFFF" }
                           : channelCount > 0
-                          ? { backgroundColor: "#F0FDF4", color: "#16A34A", boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.25)" }
-                          : { backgroundColor: "rgb(var(--line-subtle))", color: "rgb(var(--fg-muted))" }
+                            ? {
+                                backgroundColor: "#F0FDF4",
+                                color: "#16A34A",
+                                boxShadow: "inset 0 0 0 1px rgba(22,163,74,0.25)",
+                              }
+                            : {
+                                backgroundColor: "rgb(var(--line-subtle))",
+                                color: "rgb(var(--fg-muted))",
+                              }
                       }
                     >
                       {channelCount}
@@ -561,7 +626,9 @@ export function Notifications(): React.JSX.Element {
         <Card className="flex flex-col min-h-0">
           {/* Event header */}
           <div className="flex items-start gap-3 pb-3 border-b border-line-subtle shrink-0">
-            <span className={`h-10 w-10 rounded-lg flex items-center justify-center ring-1 ${TONE_STYLES[eventDef.tone]}`}>
+            <span
+              className={`h-10 w-10 rounded-lg flex items-center justify-center ring-1 ${TONE_STYLES[eventDef.tone]}`}
+            >
               <eventDef.icon className="h-5 w-5" />
             </span>
             <div className="flex-1 min-w-0">
@@ -594,7 +661,9 @@ export function Notifications(): React.JSX.Element {
           {/* Channel body — scrolls internally, no visible bar */}
           <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pt-4 pr-1 -mr-1 space-y-4">
             {/* Enable toggle for this channel × event */}
-            <div className={`rounded-lg border ${currentEnabled ? "border-line-default bg-bg-raised" : "border-dashed border-line-strong bg-bg-subtle"} px-3 py-2.5 flex items-center justify-between gap-3`}>
+            <div
+              className={`rounded-lg border ${currentEnabled ? "border-line-default bg-bg-raised" : "border-dashed border-line-strong bg-bg-subtle"} px-3 py-2.5 flex items-center justify-between gap-3`}
+            >
               <div className="min-w-0">
                 <div className="text-[12px] font-semibold text-fg-primary leading-tight">
                   Send {channelMeta.name} when {eventDef.title.toLowerCase()}
@@ -610,7 +679,9 @@ export function Notifications(): React.JSX.Element {
                 <div className="text-[10.5px] font-bold uppercase tracking-wider text-fg-muted">
                   2. Who receives it
                 </div>
-                <span className={`inline-flex items-center gap-1 text-[10.5px] font-semibold ${channelMeta.softText}`}>
+                <span
+                  className={`inline-flex items-center gap-1 text-[10.5px] font-semibold ${channelMeta.softText}`}
+                >
                   <channelMeta.icon className="h-3 w-3" />
                   {channelMeta.name}
                 </span>
@@ -725,7 +796,10 @@ export function Notifications(): React.JSX.Element {
             {/* Variables — visually separated panel */}
             <div
               className="mt-4 rounded-lg border p-3"
-              style={{ backgroundColor: "rgb(var(--bg-subtle))", borderColor: "rgb(var(--line-default))" }}
+              style={{
+                backgroundColor: "rgb(var(--bg-subtle))",
+                borderColor: "rgb(var(--line-default))",
+              }}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="text-[10.5px] font-bold uppercase tracking-wider text-fg-muted">
@@ -741,7 +815,7 @@ export function Notifications(): React.JSX.Element {
                     onClick={() => {
                       navigator.clipboard?.writeText(`{{${v}}}`).then(
                         () => toast.success(`{{${v}}} copied`),
-                        () => {}
+                        () => {},
                       );
                     }}
                     className="inline-flex items-center gap-1 rounded-md text-[10.5px] font-mono font-semibold px-2 py-1 transition-all border"
@@ -766,7 +840,9 @@ export function Notifications(): React.JSX.Element {
             <div className="text-[10.5px] font-bold uppercase tracking-wider text-fg-muted">
               Live preview
             </div>
-            <span className={`inline-flex items-center gap-1 text-[10.5px] font-semibold px-2 py-0.5 rounded-full ${channelMeta.soft} ${channelMeta.softText}`}>
+            <span
+              className={`inline-flex items-center gap-1 text-[10.5px] font-semibold px-2 py-0.5 rounded-full ${channelMeta.soft} ${channelMeta.softText}`}
+            >
               <channelMeta.icon className="h-3 w-3" />
               {channelMeta.name}
             </span>

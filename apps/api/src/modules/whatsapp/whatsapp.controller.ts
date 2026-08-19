@@ -57,7 +57,11 @@ export class WhatsAppController {
         return;
       }
       if (!agent.phoneNumberId) {
-        res.json({ success: true, data: { status: "NO_NUMBER", webhookConfigured: false }, error: null });
+        res.json({
+          success: true,
+          data: { status: "NO_NUMBER", webhookConfigured: false },
+          error: null,
+        });
         return;
       }
       const phone = await db.phoneNumber.findUnique({
@@ -67,7 +71,11 @@ export class WhatsAppController {
       const status = await getWhatsAppSenderStatus(phone!.phoneNumber);
       res.json({
         success: true,
-        data: { number: phone!.phoneNumber, status: status.status, webhookConfigured: status.webhookConfigured },
+        data: {
+          number: phone!.phoneNumber,
+          status: status.status,
+          webhookConfigured: status.webhookConfigured,
+        },
         error: null,
       });
     } catch (err: any) {
@@ -104,8 +112,15 @@ export class WhatsAppController {
     try {
       const tenantId = (req as any).tenantId;
       const { agentId, to, message } = req.body ?? {};
-      if (typeof agentId !== "string" || typeof to !== "string" || typeof message !== "string" || !message.trim()) {
-        res.status(400).json({ success: false, data: null, error: "agentId, to, and message are required" });
+      if (
+        typeof agentId !== "string" ||
+        typeof to !== "string" ||
+        typeof message !== "string" ||
+        !message.trim()
+      ) {
+        res
+          .status(400)
+          .json({ success: false, data: null, error: "agentId, to, and message are required" });
         return;
       }
       const data = await this.service.sendOutboundMessage(tenantId, agentId, to, message.trim());
@@ -152,7 +167,9 @@ export class WhatsAppController {
       const tenantId = (req as any).tenantId;
       const { agentId, to, contentSid, variables } = req.body ?? {};
       if (typeof agentId !== "string" || typeof to !== "string" || typeof contentSid !== "string") {
-        res.status(400).json({ success: false, data: null, error: "agentId, to, and contentSid are required" });
+        res
+          .status(400)
+          .json({ success: false, data: null, error: "agentId, to, and contentSid are required" });
         return;
       }
       const data = await this.service.sendTemplateMessage(

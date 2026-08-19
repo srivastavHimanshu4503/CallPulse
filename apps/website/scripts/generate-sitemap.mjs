@@ -54,9 +54,7 @@ async function main() {
 
   const entries = [];
 
-  entries.push(
-    urlEntry(`${HOST}/`, { priority: "1.0", changefreq: "weekly", lastmod }),
-  );
+  entries.push(urlEntry(`${HOST}/`, { priority: "1.0", changefreq: "weekly", lastmod }));
 
   for (const slug of VERTICAL_SLUGS) {
     entries.push(
@@ -105,9 +103,7 @@ ${entries.join("\n")}
 
   const outPath = path.join(distDir, "sitemap.xml");
   await fs.writeFile(outPath, xml, "utf8");
-  console.log(
-    `sitemap → dist/sitemap.xml (${entries.length} URLs, lastmod=${lastmod})`,
-  );
+  console.log(`sitemap → dist/sitemap.xml (${entries.length} URLs, lastmod=${lastmod})`);
 }
 
 main().catch((err) => {

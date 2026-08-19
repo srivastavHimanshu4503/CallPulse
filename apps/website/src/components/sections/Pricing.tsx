@@ -138,7 +138,10 @@ const CREDIT_ROWS = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16">
+    <section
+      id="pricing"
+      className="relative overflow-hidden bg-bg-subtle px-4 sm:px-6 py-12 sm:py-16"
+    >
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Pricing"
@@ -179,8 +182,8 @@ export function Pricing() {
                 </h3>
               </div>
               <p className="text-[13px] text-fg-muted max-w-sm">
-                Credits are shared across voice, WhatsApp and SMS. Buy more only if
-                you run out during the month.
+                Credits are shared across voice, WhatsApp and SMS. Buy more only if you run out
+                during the month.
               </p>
             </div>
             <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
@@ -204,8 +207,8 @@ export function Pricing() {
             <p className="mt-5 pt-5 border-t border-line-subtle text-[12.5px] text-fg-muted text-center">
               Need more? Top-up packs start at{" "}
               <b className="text-fg-primary">{inr(CREDIT_PACKS[0].priceInr)}</b> for{" "}
-              <b className="text-fg-primary">{CREDIT_PACKS[0].credits} credits</b>. Cancel
-              anytime, no lock-in.
+              <b className="text-fg-primary">{CREDIT_PACKS[0].credits} credits</b>. Cancel anytime,
+              no lock-in.
             </p>
           </div>
         </Reveal>

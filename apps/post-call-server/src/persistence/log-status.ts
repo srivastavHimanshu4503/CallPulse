@@ -41,7 +41,7 @@ export const finalizeExtraction = async (
     extractedFields?: Record<string, unknown>;
     leadScore?: number;
     errors?: string[];
-  }
+  },
 ): Promise<void> => {
   try {
     // Merge — never replace — the metadata JSON: it already carries keys

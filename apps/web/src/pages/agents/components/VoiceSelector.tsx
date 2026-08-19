@@ -26,23 +26,142 @@ export const AGENT_LANGUAGES = [
 // for languages it genuinely sounds native in. (Provider is deliberately
 // NOT shown in the UI — these are presented as our own voices.)
 const VOICE_LIBRARY = [
-  { id: "sarvam:priya", name: "Priya", gender: "Female", accent: "Hindi · North Indian", description: "Warm, polite receptionist tone. Perfect for inbound business calls.", languages: ["Hindi", "Hinglish", "Telugu", "Marathi", "Gujarati"] },
-  { id: "sarvam:shubh", name: "Shubh", gender: "Male", accent: "Hindi · North Indian", description: "Clear, friendly voice. Great all-rounder for Hindi callers.", languages: ["Hindi", "Hinglish", "Telugu", "Kannada", "Odia", "Malayalam"] },
-  { id: "sarvam:ratan", name: "Ratan", gender: "Male", accent: "Indian English", description: "Polished, confident voice. Our top male pick for English.", languages: ["English", "Telugu", "Kannada", "Tamil", "Marathi", "Gujarati"] },
-  { id: "sarvam:ishita", name: "Ishita", gender: "Female", accent: "Indian English", description: "Bright, professional voice. Our top female pick for English and Tamil.", languages: ["English", "Kannada", "Tamil"] },
-  { id: "sarvam:suhani", name: "Suhani", gender: "Female", accent: "Hindi · Bengali", description: "Soft, friendly voice for Hindi, Bengali, and Punjabi callers.", languages: ["Hindi", "Hinglish", "Bengali", "Punjabi"] },
-  { id: "sarvam:ashutosh", name: "Ashutosh", gender: "Male", accent: "Hindi", description: "Steady, trustworthy voice. Great for confirmations and updates.", languages: ["Hindi", "Hinglish"] },
-  { id: "sarvam:neha", name: "Neha", gender: "Female", accent: "Telugu · Kannada", description: "Clear, welcoming voice for Telugu and Kannada callers.", languages: ["Telugu", "Kannada"] },
-  { id: "sarvam:pooja", name: "Pooja", gender: "Female", accent: "Malayalam · Odia", description: "Warm, patient voice for Malayalam and Odia callers.", languages: ["Malayalam", "Odia"] },
-  { id: "sarvam:roopa", name: "Roopa", gender: "Female", accent: "Bengali · Punjabi", description: "Gentle, expressive voice for Bengali and Punjabi callers.", languages: ["Bengali", "Punjabi"] },
-  { id: "sarvam:mani", name: "Mani", gender: "Male", accent: "Punjabi", description: "Energetic, hearty voice. Our top pick for Punjabi.", languages: ["Punjabi"] },
-  { id: "sarvam:rohan", name: "Rohan", gender: "Male", accent: "Tamil", description: "Crisp, conversational voice for Tamil callers.", languages: ["Tamil"] },
-  { id: "sarvam:rehan", name: "Rehan", gender: "Male", accent: "Bengali", description: "Smooth, calm voice for Bengali callers.", languages: ["Bengali"] },
-  { id: "sarvam:ritu", name: "Aditi", gender: "Female", accent: "Hindi · North Indian", description: "Soft, formal voice. Best for service bookings.", languages: ["Hindi", "Hinglish", "Tamil", "Marathi", "Gujarati", "Odia"] },
-  { id: "sarvam:kabir", name: "Kabir", gender: "Male", accent: "Hinglish", description: "Energetic, conversational tone. Ideal for sales conversations.", languages: ["Hindi", "Hinglish"] },
-  { id: "sarvam:kavitha", name: "Deepika", gender: "Female", accent: "English · Tamil", description: "Helpful, clear voice. Perfect for customer support.", languages: ["English", "Tamil"] },
-  { id: "sarvam:soham", name: "Aravind", gender: "Male", accent: "Indian English", description: "Professional, authoritative tone. Best for B2B follow-ups.", languages: ["English"] },
-  { id: "sarvam:anand", name: "Anand", gender: "Male", accent: "Indian English", description: "Calm, clear corporate voice for business inquiries.", languages: ["English"] },
+  {
+    id: "sarvam:priya",
+    name: "Priya",
+    gender: "Female",
+    accent: "Hindi · North Indian",
+    description: "Warm, polite receptionist tone. Perfect for inbound business calls.",
+    languages: ["Hindi", "Hinglish", "Telugu", "Marathi", "Gujarati"],
+  },
+  {
+    id: "sarvam:shubh",
+    name: "Shubh",
+    gender: "Male",
+    accent: "Hindi · North Indian",
+    description: "Clear, friendly voice. Great all-rounder for Hindi callers.",
+    languages: ["Hindi", "Hinglish", "Telugu", "Kannada", "Odia", "Malayalam"],
+  },
+  {
+    id: "sarvam:ratan",
+    name: "Ratan",
+    gender: "Male",
+    accent: "Indian English",
+    description: "Polished, confident voice. Our top male pick for English.",
+    languages: ["English", "Telugu", "Kannada", "Tamil", "Marathi", "Gujarati"],
+  },
+  {
+    id: "sarvam:ishita",
+    name: "Ishita",
+    gender: "Female",
+    accent: "Indian English",
+    description: "Bright, professional voice. Our top female pick for English and Tamil.",
+    languages: ["English", "Kannada", "Tamil"],
+  },
+  {
+    id: "sarvam:suhani",
+    name: "Suhani",
+    gender: "Female",
+    accent: "Hindi · Bengali",
+    description: "Soft, friendly voice for Hindi, Bengali, and Punjabi callers.",
+    languages: ["Hindi", "Hinglish", "Bengali", "Punjabi"],
+  },
+  {
+    id: "sarvam:ashutosh",
+    name: "Ashutosh",
+    gender: "Male",
+    accent: "Hindi",
+    description: "Steady, trustworthy voice. Great for confirmations and updates.",
+    languages: ["Hindi", "Hinglish"],
+  },
+  {
+    id: "sarvam:neha",
+    name: "Neha",
+    gender: "Female",
+    accent: "Telugu · Kannada",
+    description: "Clear, welcoming voice for Telugu and Kannada callers.",
+    languages: ["Telugu", "Kannada"],
+  },
+  {
+    id: "sarvam:pooja",
+    name: "Pooja",
+    gender: "Female",
+    accent: "Malayalam · Odia",
+    description: "Warm, patient voice for Malayalam and Odia callers.",
+    languages: ["Malayalam", "Odia"],
+  },
+  {
+    id: "sarvam:roopa",
+    name: "Roopa",
+    gender: "Female",
+    accent: "Bengali · Punjabi",
+    description: "Gentle, expressive voice for Bengali and Punjabi callers.",
+    languages: ["Bengali", "Punjabi"],
+  },
+  {
+    id: "sarvam:mani",
+    name: "Mani",
+    gender: "Male",
+    accent: "Punjabi",
+    description: "Energetic, hearty voice. Our top pick for Punjabi.",
+    languages: ["Punjabi"],
+  },
+  {
+    id: "sarvam:rohan",
+    name: "Rohan",
+    gender: "Male",
+    accent: "Tamil",
+    description: "Crisp, conversational voice for Tamil callers.",
+    languages: ["Tamil"],
+  },
+  {
+    id: "sarvam:rehan",
+    name: "Rehan",
+    gender: "Male",
+    accent: "Bengali",
+    description: "Smooth, calm voice for Bengali callers.",
+    languages: ["Bengali"],
+  },
+  {
+    id: "sarvam:ritu",
+    name: "Aditi",
+    gender: "Female",
+    accent: "Hindi · North Indian",
+    description: "Soft, formal voice. Best for service bookings.",
+    languages: ["Hindi", "Hinglish", "Tamil", "Marathi", "Gujarati", "Odia"],
+  },
+  {
+    id: "sarvam:kabir",
+    name: "Kabir",
+    gender: "Male",
+    accent: "Hinglish",
+    description: "Energetic, conversational tone. Ideal for sales conversations.",
+    languages: ["Hindi", "Hinglish"],
+  },
+  {
+    id: "sarvam:kavitha",
+    name: "Deepika",
+    gender: "Female",
+    accent: "English · Tamil",
+    description: "Helpful, clear voice. Perfect for customer support.",
+    languages: ["English", "Tamil"],
+  },
+  {
+    id: "sarvam:soham",
+    name: "Aravind",
+    gender: "Male",
+    accent: "Indian English",
+    description: "Professional, authoritative tone. Best for B2B follow-ups.",
+    languages: ["English"],
+  },
+  {
+    id: "sarvam:anand",
+    name: "Anand",
+    gender: "Male",
+    accent: "Indian English",
+    description: "Calm, clear corporate voice for business inquiries.",
+    languages: ["English"],
+  },
 
   // ─── ElevenLabs voices — temporarily disabled. We currently offer only
   // our native Indian voices; re-enable this block (and the ElevenLabs
@@ -97,7 +216,21 @@ const normalizeVoiceId = (id: string): string => {
 
   // Legacy OpenAI voice ids — OpenAI TTS was removed; the backend maps these
   // to the default voice, and the auto-pick effect below migrates the agent.
-  const openaiVoices = ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "ash", "ballad", "coral", "sage", "verse", "marin", "cedar"];
+  const openaiVoices = [
+    "alloy",
+    "echo",
+    "fable",
+    "onyx",
+    "nova",
+    "shimmer",
+    "ash",
+    "ballad",
+    "coral",
+    "sage",
+    "verse",
+    "marin",
+    "cedar",
+  ];
   if (openaiVoices.includes(lower) || lower.startsWith("openai:")) return DEFAULT_VOICE;
 
   if (lower.startsWith("elevenlabs:")) return id;
@@ -123,7 +256,14 @@ interface VoiceSelectorProps {
   disabled?: boolean;
 }
 
-export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSettings, disabled }: VoiceSelectorProps): React.JSX.Element {
+export function VoiceSelector({
+  voice,
+  setVoice,
+  language,
+  setLanguage,
+  voiceSettings,
+  disabled,
+}: VoiceSelectorProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedGender, setSelectedGender] = React.useState<GenderFilter>("All");
 
@@ -136,7 +276,7 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
 
   const languageVoices = React.useMemo(
     () => VOICE_LIBRARY.filter((v) => v.languages.includes(language)),
-    [language]
+    [language],
   );
   const recommended = recommendedFor(language);
 
@@ -172,10 +312,12 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
       const res = await api.post(
         "/agents/test-voice",
         { provider, voice: voiceId, language, voiceSettings: voiceSettings ?? undefined },
-        { responseType: "blob" }
+        { responseType: "blob" },
       );
 
-      const blob = new Blob([res.data], { type: provider === "sarvam" ? "audio/wav" : "audio/mpeg" });
+      const blob = new Blob([res.data], {
+        type: provider === "sarvam" ? "audio/wav" : "audio/mpeg",
+      });
       const url = URL.createObjectURL(blob);
 
       if (audioRef.current) audioRef.current.pause();
@@ -221,7 +363,8 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
         <div>
           <h3 className="text-sm font-semibold text-text-primary">Language & voice</h3>
           <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
-            Pick the language your agent speaks with callers — we'll show only the voices that sound natural in it.
+            Pick the language your agent speaks with callers — we'll show only the voices that sound
+            natural in it.
           </p>
         </div>
         {activeVoice && (
@@ -301,7 +444,8 @@ export function VoiceSelector({ voice, setVoice, language, setLanguage, voiceSet
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[11px] font-semibold text-text-placeholder uppercase tracking-wider">
-            {filteredVoices.length} {filteredVoices.length === 1 ? "voice" : "voices"} for {language}
+            {filteredVoices.length} {filteredVoices.length === 1 ? "voice" : "voices"} for{" "}
+            {language}
           </span>
         </div>
         {filteredVoices.length === 0 ? (
@@ -385,7 +529,11 @@ interface VoiceSpeedControlProps {
   disabled?: boolean;
 }
 
-export function VoiceSpeedControl({ value, onChange, disabled }: VoiceSpeedControlProps): React.JSX.Element {
+export function VoiceSpeedControl({
+  value,
+  onChange,
+  disabled,
+}: VoiceSpeedControlProps): React.JSX.Element {
   const effective = value ?? 1.0;
   return (
     <section className="bg-bg-raised border border-border rounded-[8px] p-5 sm:p-6 font-sans">
@@ -393,7 +541,8 @@ export function VoiceSpeedControl({ value, onChange, disabled }: VoiceSpeedContr
         <div>
           <h3 className="text-sm font-semibold text-text-primary">Speaking speed</h3>
           <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
-            How fast the agent talks on calls. 1× is natural — most businesses keep it between 0.9× and 1.1×.
+            How fast the agent talks on calls. 1× is natural — most businesses keep it between 0.9×
+            and 1.1×.
           </p>
         </div>
         <span className="text-[11px] font-semibold text-brand-600 bg-brand-50 border border-brand-500/15 rounded-full px-2.5 py-1 shrink-0">
@@ -439,12 +588,32 @@ const TUNING_FIELDS: Record<
   { key: keyof AgentVoiceSettings; label: string; help: string; defaultValue: number }[]
 > = {
   sarvam: [
-    { key: "temperature", label: "Expressiveness", help: "Higher is more varied and animated, lower is calmer and more consistent.", defaultValue: 0.6 },
+    {
+      key: "temperature",
+      label: "Expressiveness",
+      help: "Higher is more varied and animated, lower is calmer and more consistent.",
+      defaultValue: 0.6,
+    },
   ],
   elevenlabs: [
-    { key: "stability", label: "Stability", help: "Lower is more expressive and lively, higher is steadier and flatter.", defaultValue: 0.5 },
-    { key: "similarityBoost", label: "Similarity", help: "How closely the output sticks to the original voice character.", defaultValue: 0.75 },
-    { key: "style", label: "Style", help: "Delivery drama. Keep low for a natural receptionist tone.", defaultValue: 0 },
+    {
+      key: "stability",
+      label: "Stability",
+      help: "Lower is more expressive and lively, higher is steadier and flatter.",
+      defaultValue: 0.5,
+    },
+    {
+      key: "similarityBoost",
+      label: "Similarity",
+      help: "How closely the output sticks to the original voice character.",
+      defaultValue: 0.75,
+    },
+    {
+      key: "style",
+      label: "Style",
+      help: "Delivery drama. Keep low for a natural receptionist tone.",
+      defaultValue: 0,
+    },
   ],
 };
 
@@ -456,7 +625,12 @@ interface VoiceTuningControlProps {
   disabled?: boolean;
 }
 
-export function VoiceTuningControl({ voice, value, onChange, disabled }: VoiceTuningControlProps): React.JSX.Element {
+export function VoiceTuningControl({
+  voice,
+  value,
+  onChange,
+  disabled,
+}: VoiceTuningControlProps): React.JSX.Element {
   const provider = getVoiceProvider(voice);
   const fields = TUNING_FIELDS[provider];
   const hasCustom = fields.some((f) => value?.[f.key] !== undefined);
@@ -471,7 +645,8 @@ export function VoiceTuningControl({ voice, value, onChange, disabled }: VoiceTu
         <div>
           <h3 className="text-sm font-semibold text-text-primary">Voice tuning</h3>
           <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
-            Fine-tune how the selected voice sounds on calls. Use the preview button above to hear changes.
+            Fine-tune how the selected voice sounds on calls. Use the preview button above to hear
+            changes.
           </p>
         </div>
         <span className="text-[11px] font-semibold text-brand-600 bg-brand-50 border border-brand-500/15 rounded-full px-2.5 py-1 shrink-0">
@@ -543,9 +718,13 @@ const MAX_PRONUNCIATIONS = 100;
  * the user can edit the word itself; only complete rows are propagated up
  * (and later synced to the speech engine's pronunciation dictionary).
  */
-export function PronunciationControl({ value, onChange, disabled }: PronunciationControlProps): React.JSX.Element {
+export function PronunciationControl({
+  value,
+  onChange,
+  disabled,
+}: PronunciationControlProps): React.JSX.Element {
   const [rows, setRows] = React.useState<{ word: string; sayAs: string }[]>(() =>
-    Object.entries(value ?? {}).map(([word, sayAs]) => ({ word, sayAs }))
+    Object.entries(value ?? {}).map(([word, sayAs]) => ({ word, sayAs })),
   );
 
   const propagate = (next: { word: string; sayAs: string }[]) => {
@@ -554,7 +733,7 @@ export function PronunciationControl({ value, onChange, disabled }: Pronunciatio
     onChange(
       complete.length === 0
         ? null
-        : Object.fromEntries(complete.map((r) => [r.word.trim(), r.sayAs.trim()]))
+        : Object.fromEntries(complete.map((r) => [r.word.trim(), r.sayAs.trim()])),
     );
   };
 
@@ -568,7 +747,8 @@ export function PronunciationControl({ value, onChange, disabled }: Pronunciatio
         <div>
           <h3 className="text-sm font-semibold text-text-primary">Pronunciation</h3>
           <p className="text-[12px] text-text-secondary mt-1 leading-relaxed">
-            If the agent says a word wrong — your brand name, an acronym — tell it exactly how to say it.
+            If the agent says a word wrong — your brand name, an acronym — tell it exactly how to
+            say it.
           </p>
         </div>
         <span className="text-[11px] font-semibold text-text-secondary bg-surface border border-border rounded-full px-2.5 py-1 shrink-0 tabular-nums">
@@ -579,7 +759,11 @@ export function PronunciationControl({ value, onChange, disabled }: Pronunciatio
       <div className="mt-4 space-y-2">
         {rows.length === 0 && (
           <p className="text-[12px] text-text-placeholder bg-bg-subtle border border-dashed border-border rounded-[8px] px-3 py-3">
-            No overrides yet. Example: <span className="font-semibold text-text-secondary">NAIC</span> → <span className="font-semibold text-text-secondary">N A I C</span>, or <span className="font-semibold text-text-secondary">PhonePe</span> → <span className="font-semibold text-text-secondary">फ़ोन पे</span>.
+            No overrides yet. Example:{" "}
+            <span className="font-semibold text-text-secondary">NAIC</span> →{" "}
+            <span className="font-semibold text-text-secondary">N A I C</span>, or{" "}
+            <span className="font-semibold text-text-secondary">PhonePe</span> →{" "}
+            <span className="font-semibold text-text-secondary">फ़ोन पे</span>.
           </p>
         )}
         {rows.map((r, i) => (
@@ -636,7 +820,12 @@ interface PlayButtonProps {
   disabled?: boolean;
 }
 
-function PlayButton({ onClick, isPlaying, isLoading, disabled }: PlayButtonProps): React.JSX.Element {
+function PlayButton({
+  onClick,
+  isPlaying,
+  isLoading,
+  disabled,
+}: PlayButtonProps): React.JSX.Element {
   return (
     <span
       onClick={onClick as any}

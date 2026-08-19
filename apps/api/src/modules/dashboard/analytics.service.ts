@@ -143,9 +143,7 @@ export const resolveDateRange = (period: Period, tz: string): DateRange => {
 
   const year = Number(endKey.slice(0, 4));
   const label =
-    days === 1
-      ? `Today, ${fmtKey(endKey)}`
-      : `${fmtKey(startKey)} – ${fmtKey(endKey)}, ${year}`;
+    days === 1 ? `Today, ${fmtKey(endKey)}` : `${fmtKey(startKey)} – ${fmtKey(endKey)}, ${year}`;
 
   return { start, end: now, prevStart, days, tz, startKey, endKey, label };
 };
@@ -320,8 +318,18 @@ export interface HeatmapResult {
 }
 
 export const HEATMAP_HOURS = [
-  "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM",
-  "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM",
+  "9 AM",
+  "10 AM",
+  "11 AM",
+  "12 PM",
+  "1 PM",
+  "2 PM",
+  "3 PM",
+  "4 PM",
+  "5 PM",
+  "6 PM",
+  "7 PM",
+  "8 PM",
 ];
 
 export async function getHeatmap(

@@ -68,7 +68,10 @@ async function findSender(phoneNumber: string): Promise<RawSender | null> {
   for (let page = 0; page < 5 && url; page++) {
     const res = await fetch(url, { headers: { Authorization: authHeader() } });
     if (!res.ok) throw new Error(`Twilio senders list failed: ${res.status} ${await res.text()}`);
-    const data = (await res.json()) as { senders: RawSender[]; meta: { next_page_url: string | null } };
+    const data = (await res.json()) as {
+      senders: RawSender[];
+      meta: { next_page_url: string | null };
+    };
     const match = data.senders.find((s) => s.sender_id === `whatsapp:${phoneNumber}`);
     if (match) return match;
     url = data.meta.next_page_url ?? "";
@@ -160,7 +163,9 @@ export async function ensureWhatsAppSender(
 }
 
 /** Live sender status for the UI. */
-export async function getWhatsAppSenderStatus(phoneNumber: string): Promise<SenderInfo | { sid: null; status: SenderStatus; webhookConfigured: false }> {
+export async function getWhatsAppSenderStatus(
+  phoneNumber: string,
+): Promise<SenderInfo | { sid: null; status: SenderStatus; webhookConfigured: false }> {
   if (!senderConfigured()) return { sid: null, status: "NOT_REGISTERED", webhookConfigured: false };
   try {
     const existing = await findSender(phoneNumber);

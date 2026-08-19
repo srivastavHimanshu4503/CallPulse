@@ -21,8 +21,7 @@ import { env } from "../../config/env.js";
  *    PLIVO_COMPLIANCE_APPLICATION_ID and pass it on every buy.
  */
 
-export const isPlivoConfigured = (): boolean =>
-  Boolean(env.PLIVO_AUTH_ID && env.PLIVO_AUTH_TOKEN);
+export const isPlivoConfigured = (): boolean => Boolean(env.PLIVO_AUTH_ID && env.PLIVO_AUTH_TOKEN);
 
 let client: Client | null = null;
 const getClient = (): Client => {
@@ -45,9 +44,7 @@ export interface AvailableIndianNumber {
  * a city STD code (`22`, `80`, `11`, etc.) to get numbers from that city.
  * Plivo returns E.164 format directly.
  */
-export const listAvailableNumbers = async (
-  pattern?: string,
-): Promise<AvailableIndianNumber[]> => {
+export const listAvailableNumbers = async (pattern?: string): Promise<AvailableIndianNumber[]> => {
   const params: Record<string, unknown> = {
     type: "local",
     services: "voice",
@@ -107,11 +104,7 @@ export const purchaseNumber = async (phoneNumber: string): Promise<string> => {
     // sometimes attaches details on `.body` or `.response`.
     const anyErr = err as any;
     const detail =
-      anyErr?.response?.data ||
-      anyErr?.body ||
-      anyErr?.data ||
-      anyErr?.message ||
-      String(err);
+      anyErr?.response?.data || anyErr?.body || anyErr?.data || anyErr?.message || String(err);
     console.error("[plivo] purchaseNumber failed", {
       number: bare,
       complianceApplicationId,

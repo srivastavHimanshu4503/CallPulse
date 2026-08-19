@@ -58,8 +58,8 @@ export function Sidebar(): React.JSX.Element {
 
   // Track viewport ≥lg (1024px) so the "minimized" style only applies on desktop.
   // Mobile drawer is always the expanded 220px layout regardless of user's desktop preference.
-  const [isDesktop, setIsDesktop] = React.useState<boolean>(() =>
-    typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches
+  const [isDesktop, setIsDesktop] = React.useState<boolean>(
+    () => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches,
   );
   React.useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -116,9 +116,7 @@ export function Sidebar(): React.JSX.Element {
         to={item.href}
         className={[
           "group relative flex items-center rounded-lg transition-all",
-          sidebarMinimized
-            ? "h-10 w-10 mx-auto justify-center"
-            : "gap-3 px-3 h-9",
+          sidebarMinimized ? "h-10 w-10 mx-auto justify-center" : "gap-3 px-3 h-9",
           isActive
             ? "bg-active-nav text-active-navText shadow-sm font-semibold"
             : "text-fg-secondary hover:bg-bg-muted hover:text-fg-primary",
@@ -160,269 +158,300 @@ export function Sidebar(): React.JSX.Element {
           "lg:translate-x-0 lg:transition-all",
         ].join(" ")}
       >
-      {/* Brand */}
-      <div
-        className={[
-          "flex h-14 items-center border-b border-line-subtle px-3 shrink-0 justify-between",
-          sidebarMinimized ? "lg:justify-center" : "lg:justify-between",
-        ].join(" ")}
-      >
-        {sidebarMinimized ? <Logo variant="mark" height={30} /> : <Logo height={38} />}
-        {/* Mobile close (X) — visible <lg only */}
-        <button
-          type="button"
-          onClick={() => setMobileSidebarOpen(false)}
-          className="lg:hidden text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
-          title="Close menu"
-          aria-label="Close menu"
+        {/* Brand */}
+        <div
+          className={[
+            "flex h-14 items-center border-b border-line-subtle px-3 shrink-0 justify-between",
+            sidebarMinimized ? "lg:justify-center" : "lg:justify-between",
+          ].join(" ")}
         >
-          <X className="h-4 w-4" />
-        </button>
-        {/* Desktop minimize toggle — visible ≥lg only, only when expanded */}
-        {!sidebarMinimized && (
+          {sidebarMinimized ? <Logo variant="mark" height={30} /> : <Logo height={38} />}
+          {/* Mobile close (X) — visible <lg only */}
+          <button
+            type="button"
+            onClick={() => setMobileSidebarOpen(false)}
+            className="lg:hidden text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+            title="Close menu"
+            aria-label="Close menu"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          {/* Desktop minimize toggle — visible ≥lg only, only when expanded */}
+          {!sidebarMinimized && (
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="hidden lg:inline-flex text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+              title="Minimize sidebar"
+            >
+              <PanelLeftClose className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {sidebarMinimized && (
           <button
             type="button"
             onClick={toggleSidebar}
-            className="hidden lg:inline-flex text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
-            title="Minimize sidebar"
+            className="hidden lg:flex mx-auto mt-1 text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
+            title="Expand sidebar"
           >
-            <PanelLeftClose className="h-4 w-4" />
+            <PanelLeftOpen className="h-4 w-4" />
           </button>
         )}
-      </div>
 
-      {sidebarMinimized && (
-        <button
-          type="button"
-          onClick={toggleSidebar}
-          className="hidden lg:flex mx-auto mt-1 text-fg-muted hover:text-fg-primary p-1.5 rounded-md hover:bg-bg-muted transition-colors"
-          title="Expand sidebar"
-        >
-          <PanelLeftOpen className="h-4 w-4" />
-        </button>
-      )}
+        {/* Navigation */}
+        <nav className="flex-1 px-2.5 py-3 overflow-y-auto">
+          <div className="space-y-0.5">{NAV.map(renderNavItem)}</div>
+        </nav>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-2.5 py-3 overflow-y-auto">
-        <div className="space-y-0.5">{NAV.map(renderNavItem)}</div>
-      </nav>
-
-      {/* Theme toggle — menu-style row above the credits card */}
-      <div className="px-2.5 pb-2 shrink-0">
-        {sidebarMinimized ? (
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="h-10 w-10 mx-auto flex items-center justify-center rounded-lg text-fg-muted hover:text-fg-primary hover:bg-bg-muted transition-colors"
-            title={theme === "dark" ? "Light mode" : "Dark mode"}
-          >
-            {theme === "dark" ? <Sun className="h-[17px] w-[17px]" /> : <Moon className="h-[17px] w-[17px]" />}
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-3 h-9 rounded-lg text-fg-secondary hover:bg-bg-muted hover:text-fg-primary transition-all"
-          >
-            {theme === "dark" ? (
-              <Sun className="h-[17px] w-[17px] shrink-0 text-fg-muted" />
-            ) : (
-              <Moon className="h-[17px] w-[17px] shrink-0 text-fg-muted" />
-            )}
-            <span className="text-[13px] font-medium tracking-tight flex-1 text-left">Dark mode</span>
-            <span
-              className={[
-                "relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors",
-                theme === "dark" ? "bg-brand-500" : "bg-line-strong",
-              ].join(" ")}
+        {/* Theme toggle — menu-style row above the credits card */}
+        <div className="px-2.5 pb-2 shrink-0">
+          {sidebarMinimized ? (
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="h-10 w-10 mx-auto flex items-center justify-center rounded-lg text-fg-muted hover:text-fg-primary hover:bg-bg-muted transition-colors"
+              title={theme === "dark" ? "Light mode" : "Dark mode"}
             >
+              {theme === "dark" ? (
+                <Sun className="h-[17px] w-[17px]" />
+              ) : (
+                <Moon className="h-[17px] w-[17px]" />
+              )}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="w-full flex items-center gap-3 px-3 h-9 rounded-lg text-fg-secondary hover:bg-bg-muted hover:text-fg-primary transition-all"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-[17px] w-[17px] shrink-0 text-fg-muted" />
+              ) : (
+                <Moon className="h-[17px] w-[17px] shrink-0 text-fg-muted" />
+              )}
+              <span className="text-[13px] font-medium tracking-tight flex-1 text-left">
+                Dark mode
+              </span>
               <span
                 className={[
-                  "inline-block h-3 w-3 rounded-full bg-white shadow transition-transform",
-                  theme === "dark" ? "translate-x-[14px]" : "translate-x-0.5",
+                  "relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors",
+                  theme === "dark" ? "bg-brand-500" : "bg-line-strong",
                 ].join(" ")}
-              />
-            </span>
-          </button>
-        )}
-      </div>
-
-      {/* Billing / Usage — live plan + credits */}
-      <div className="border-t border-line-subtle p-3 shrink-0">
-        {(() => {
-          const isPro = entitlements.plan !== "FREE";
-          const allotment = PLAN_CREDITS[entitlements.plan] ?? PLAN_CREDITS.FREE;
-          const pct = Math.max(0, Math.min(100, Math.round((entitlements.creditBalance / allotment) * 100)));
-          const goBilling = () => navigate("/settings?tab=billing");
-
-          if (sidebarMinimized) {
-            return (
-              <button
-                type="button"
-                onClick={goBilling}
-                className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all border border-line-default bg-bg-raised text-fg-primary hover:bg-bg-muted"
-                title={`${isPro ? "Pro" : "Free plan"} · ${entitlements.creditBalance} credits`}
               >
-                <Zap className="h-[17px] w-[17px]" />
-              </button>
-            );
-          }
-
-          return (
-            <div className={["relative rounded-xl p-3 border", isPro ? "border-emerald-200 bg-emerald-50/50" : "border-line-default bg-bg-raised"].join(" ")}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-fg-primary">
-                  {isPro ? "Pro" : "Free plan"}
-                </span>
                 <span
                   className={[
-                    "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border",
-                    isPro
-                      ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                      : "bg-bg-muted text-fg-secondary border-line-default",
+                    "inline-block h-3 w-3 rounded-full bg-white shadow transition-transform",
+                    theme === "dark" ? "translate-x-[14px]" : "translate-x-0.5",
                   ].join(" ")}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${isPro ? "bg-emerald-500 animate-pulse" : "bg-fg-muted"}`} />
-                  {isPro ? "Active" : "Limited"}
-                </span>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-[11px] font-medium items-center">
-                  <span className="text-fg-secondary flex items-center gap-1.5">
-                    <Zap className="h-3 w-3 text-amber-500" />
-                    Remaining credits
-                  </span>
-                  <span className="text-fg-primary tabular-nums">
-                    {entitlements.creditBalance}
-                  </span>
-                </div>
-                <div className="h-2 w-full rounded-full overflow-hidden bg-line-subtle">
-                  <div
-                    className={`h-full rounded-full ${pct <= 15 ? "bg-negative-500" : "bg-primary"}`}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-                {entitlements.creditBalance <= 0 ? (
-                  <div className="text-[9.5px] font-bold text-negative-500 uppercase tracking-wide">
-                    Calls paused — top up now
-                  </div>
-                ) : pct <= 15 ? (
-                  <div className="text-[9.5px] font-bold text-amber-600 uppercase tracking-wide">
-                    Running low on credits
-                  </div>
-                ) : null}
-              </div>
-
-              <button
-                type="button"
-                onClick={goBilling}
-                className={[
-                  "w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5",
-                  isPro
-                    ? "bg-bg-raised border border-line-default text-fg-primary hover:bg-bg-muted"
-                    : "bg-primary text-white hover:opacity-90 shadow-sm",
-                ].join(" ")}
-              >
-                <CreditCard className="h-3.5 w-3.5" />
-                {isPro ? "Manage billing" : "Upgrade to Pro"}
-              </button>
-            </div>
-          );
-        })()}
-      </div>
-
-      {/* Profile + Logout — bottom popover */}
-      <div className="relative border-t border-line-subtle px-2 py-3 mb-2 shrink-0" ref={profileRef}>
-        <button
-          type="button"
-          onClick={() => setProfileOpen((v) => !v)}
-          className={[
-            "w-full flex items-center rounded-lg hover:bg-bg-muted transition-all py-1.5",
-            sidebarMinimized ? "justify-center" : "justify-between gap-2 px-2",
-          ].join(" ")}
-          title={sidebarMinimized ? userName : undefined}
-        >
-          <div className={sidebarMinimized ? "" : "flex items-center gap-2.5 min-w-0"}>
-            {(user as any)?.avatarUrl ? (
-              <img src={(user as any).avatarUrl} alt={userName} className="h-8 w-8 rounded-full object-cover shrink-0" />
-            ) : (
-              <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center text-[11.5px] font-semibold shrink-0">
-                {initial}
-              </div>
-            )}
-            {!sidebarMinimized && (
-              <div className="min-w-0 text-left">
-                <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">
-                  {userName}
-                </div>
-                <div className="text-[10.5px] text-fg-muted truncate">{userEmail}</div>
-              </div>
-            )}
-          </div>
-          {!sidebarMinimized && (
-            <ChevronUp
-              className={[
-                "h-4 w-4 text-fg-muted shrink-0 transition-transform",
-                profileOpen ? "" : "rotate-180",
-              ].join(" ")}
-            />
+                />
+              </span>
+            </button>
           )}
-        </button>
+        </div>
 
-        {profileOpen && (
-          <div
-            className={[
-              "absolute bottom-[calc(100%-6px)] mb-2 z-30",
-              sidebarMinimized ? "left-[68px]" : "left-2 right-2",
-            ].join(" ")}
-          >
-            <div
-              className="rounded-lg border border-line-default bg-bg-raised shadow-pop overflow-hidden"
-              style={{ minWidth: sidebarMinimized ? "240px" : undefined }}
-            >
-              <div className="px-3.5 py-3 border-b border-line-subtle flex items-center gap-3">
-                {(user as any)?.avatarUrl ? (
-                  <img src={(user as any).avatarUrl} alt={userName} className="h-10 w-10 rounded-full object-cover shrink-0" />
-                ) : (
-                  <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-[12.5px] font-semibold shrink-0">
-                    {initial}
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <div className="text-[13px] font-semibold text-fg-primary truncate">{userName}</div>
-                  <div className="text-[11px] text-fg-muted truncate">{userEmail}</div>
-                  <div className="mt-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-brand-50 border border-brand-500/20 text-brand-600 uppercase tracking-wide">
-                    {userRole.toLowerCase()}
-                  </div>
-                </div>
-              </div>
-              <div className="p-1.5">
-                <Link
-                  to="/settings"
-                  onClick={() => setProfileOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[12.5px] font-medium text-fg-secondary hover:bg-bg-muted hover:text-fg-primary transition-all"
-                >
-                  <Settings className="h-4 w-4 text-fg-muted" />
-                  Account settings
-                </Link>
+        {/* Billing / Usage — live plan + credits */}
+        <div className="border-t border-line-subtle p-3 shrink-0">
+          {(() => {
+            const isPro = entitlements.plan !== "FREE";
+            const allotment = PLAN_CREDITS[entitlements.plan] ?? PLAN_CREDITS.FREE;
+            const pct = Math.max(
+              0,
+              Math.min(100, Math.round((entitlements.creditBalance / allotment) * 100)),
+            );
+            const goBilling = () => navigate("/settings?tab=billing");
+
+            if (sidebarMinimized) {
+              return (
                 <button
                   type="button"
-                  onClick={() => {
-                    setProfileOpen(false);
-                    logout();
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-[12.5px] font-medium text-negative-500 hover:bg-negative-50 transition-all"
+                  onClick={goBilling}
+                  className="mx-auto flex h-10 w-10 items-center justify-center rounded-md transition-all border border-line-default bg-bg-raised text-fg-primary hover:bg-bg-muted"
+                  title={`${isPro ? "Pro" : "Free plan"} · ${entitlements.creditBalance} credits`}
                 >
-                  <LogOut className="h-4 w-4" />
-                  Sign out
+                  <Zap className="h-[17px] w-[17px]" />
+                </button>
+              );
+            }
+
+            return (
+              <div
+                className={[
+                  "relative rounded-xl p-3 border",
+                  isPro
+                    ? "border-emerald-200 bg-emerald-50/50"
+                    : "border-line-default bg-bg-raised",
+                ].join(" ")}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-fg-primary">
+                    {isPro ? "Pro" : "Free plan"}
+                  </span>
+                  <span
+                    className={[
+                      "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border",
+                      isPro
+                        ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                        : "bg-bg-muted text-fg-secondary border-line-default",
+                    ].join(" ")}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${isPro ? "bg-emerald-500 animate-pulse" : "bg-fg-muted"}`}
+                    />
+                    {isPro ? "Active" : "Limited"}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[11px] font-medium items-center">
+                    <span className="text-fg-secondary flex items-center gap-1.5">
+                      <Zap className="h-3 w-3 text-amber-500" />
+                      Remaining credits
+                    </span>
+                    <span className="text-fg-primary tabular-nums">
+                      {entitlements.creditBalance}
+                    </span>
+                  </div>
+                  <div className="h-2 w-full rounded-full overflow-hidden bg-line-subtle">
+                    <div
+                      className={`h-full rounded-full ${pct <= 15 ? "bg-negative-500" : "bg-primary"}`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  {entitlements.creditBalance <= 0 ? (
+                    <div className="text-[9.5px] font-bold text-negative-500 uppercase tracking-wide">
+                      Calls paused — top up now
+                    </div>
+                  ) : pct <= 15 ? (
+                    <div className="text-[9.5px] font-bold text-amber-600 uppercase tracking-wide">
+                      Running low on credits
+                    </div>
+                  ) : null}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={goBilling}
+                  className={[
+                    "w-full h-8 mt-2.5 rounded-md text-[11px] font-bold transition-all flex items-center justify-center gap-1.5",
+                    isPro
+                      ? "bg-bg-raised border border-line-default text-fg-primary hover:bg-bg-muted"
+                      : "bg-primary text-white hover:opacity-90 shadow-sm",
+                  ].join(" ")}
+                >
+                  <CreditCard className="h-3.5 w-3.5" />
+                  {isPro ? "Manage billing" : "Upgrade to Pro"}
                 </button>
               </div>
+            );
+          })()}
+        </div>
+
+        {/* Profile + Logout — bottom popover */}
+        <div
+          className="relative border-t border-line-subtle px-2 py-3 mb-2 shrink-0"
+          ref={profileRef}
+        >
+          <button
+            type="button"
+            onClick={() => setProfileOpen((v) => !v)}
+            className={[
+              "w-full flex items-center rounded-lg hover:bg-bg-muted transition-all py-1.5",
+              sidebarMinimized ? "justify-center" : "justify-between gap-2 px-2",
+            ].join(" ")}
+            title={sidebarMinimized ? userName : undefined}
+          >
+            <div className={sidebarMinimized ? "" : "flex items-center gap-2.5 min-w-0"}>
+              {(user as any)?.avatarUrl ? (
+                <img
+                  src={(user as any).avatarUrl}
+                  alt={userName}
+                  className="h-8 w-8 rounded-full object-cover shrink-0"
+                />
+              ) : (
+                <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center text-[11.5px] font-semibold shrink-0">
+                  {initial}
+                </div>
+              )}
+              {!sidebarMinimized && (
+                <div className="min-w-0 text-left">
+                  <div className="text-[12.5px] font-semibold text-fg-primary truncate leading-tight">
+                    {userName}
+                  </div>
+                  <div className="text-[10.5px] text-fg-muted truncate">{userEmail}</div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
-      </div>
-    </aside>
+            {!sidebarMinimized && (
+              <ChevronUp
+                className={[
+                  "h-4 w-4 text-fg-muted shrink-0 transition-transform",
+                  profileOpen ? "" : "rotate-180",
+                ].join(" ")}
+              />
+            )}
+          </button>
+
+          {profileOpen && (
+            <div
+              className={[
+                "absolute bottom-[calc(100%-6px)] mb-2 z-30",
+                sidebarMinimized ? "left-[68px]" : "left-2 right-2",
+              ].join(" ")}
+            >
+              <div
+                className="rounded-lg border border-line-default bg-bg-raised shadow-pop overflow-hidden"
+                style={{ minWidth: sidebarMinimized ? "240px" : undefined }}
+              >
+                <div className="px-3.5 py-3 border-b border-line-subtle flex items-center gap-3">
+                  {(user as any)?.avatarUrl ? (
+                    <img
+                      src={(user as any).avatarUrl}
+                      alt={userName}
+                      className="h-10 w-10 rounded-full object-cover shrink-0"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-[12.5px] font-semibold shrink-0">
+                      {initial}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="text-[13px] font-semibold text-fg-primary truncate">
+                      {userName}
+                    </div>
+                    <div className="text-[11px] text-fg-muted truncate">{userEmail}</div>
+                    <div className="mt-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-brand-50 border border-brand-500/20 text-brand-600 uppercase tracking-wide">
+                      {userRole.toLowerCase()}
+                    </div>
+                  </div>
+                </div>
+                <div className="p-1.5">
+                  <Link
+                    to="/settings"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[12.5px] font-medium text-fg-secondary hover:bg-bg-muted hover:text-fg-primary transition-all"
+                  >
+                    <Settings className="h-4 w-4 text-fg-muted" />
+                    Account settings
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      logout();
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-[12.5px] font-medium text-negative-500 hover:bg-negative-50 transition-all"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </aside>
     </>
   );
 }

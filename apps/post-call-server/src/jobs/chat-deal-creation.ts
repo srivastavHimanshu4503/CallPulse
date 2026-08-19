@@ -173,9 +173,7 @@ export const chatDealCreation: JobHandler = {
           leadSource: "AI WhatsApp",
           lastActivityAt: new Date(),
           aiSummary:
-            typeof ctx.extractedFields?.summary === "string"
-              ? ctx.extractedFields.summary
-              : null,
+            typeof ctx.extractedFields?.summary === "string" ? ctx.extractedFields.summary : null,
         },
       });
 

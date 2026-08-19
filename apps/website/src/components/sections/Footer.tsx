@@ -10,8 +10,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Logo height={24} className="text-white" />
             <p className="mt-3 text-[13px] text-white/50 leading-relaxed max-w-xs">
-              The AI receptionist for Indian businesses. Every call answered,
-              every customer kept.
+              The AI receptionist for Indian businesses. Every call answered, every customer kept.
             </p>
           </div>
 
@@ -20,11 +19,37 @@ export function Footer() {
               Product
             </h4>
             <ul className="space-y-2 text-[13.5px]">
-              <li><a href="/#features" className="text-white/70 hover:text-white transition-colors">Features</a></li>
-              <li><a href="/#pricing" className="text-white/70 hover:text-white transition-colors">Pricing</a></li>
-              <li><a href="/#faq" className="text-white/70 hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="https://app.deskbuddy.in/login" className="text-white/70 hover:text-white transition-colors">Log in</a></li>
-              <li><a href="https://app.deskbuddy.in/register" className="text-white/70 hover:text-white transition-colors">Get started</a></li>
+              <li>
+                <a href="/#features" className="text-white/70 hover:text-white transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="/#pricing" className="text-white/70 hover:text-white transition-colors">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <a href="/#faq" className="text-white/70 hover:text-white transition-colors">
+                  FAQ
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://app.deskbuddy.in/login"
+                  className="text-white/70 hover:text-white transition-colors"
+                >
+                  Log in
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://app.deskbuddy.in/register"
+                  className="text-white/70 hover:text-white transition-colors"
+                >
+                  Get started
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -70,9 +95,24 @@ export function Footer() {
             © {new Date().getFullYear()} DeskBuddy · Made in India
           </p>
           <ul className="flex items-center gap-5 text-[12.5px]">
-            <li><a href="mailto:hello@deskbuddy.in" className="text-white/50 hover:text-white transition-colors">Contact</a></li>
-            <li><a href="/privacy" className="text-white/50 hover:text-white transition-colors">Privacy</a></li>
-            <li><a href="/terms" className="text-white/50 hover:text-white transition-colors">Terms</a></li>
+            <li>
+              <a
+                href="mailto:hello@deskbuddy.in"
+                className="text-white/50 hover:text-white transition-colors"
+              >
+                Contact
+              </a>
+            </li>
+            <li>
+              <a href="/privacy" className="text-white/50 hover:text-white transition-colors">
+                Privacy
+              </a>
+            </li>
+            <li>
+              <a href="/terms" className="text-white/50 hover:text-white transition-colors">
+                Terms
+              </a>
+            </li>
           </ul>
         </div>
       </div>

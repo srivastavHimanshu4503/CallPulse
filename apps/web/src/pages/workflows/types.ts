@@ -10,9 +10,7 @@ import type { FilterCondition, FilterLogicalOperator } from "@antigravity/types"
 // ─────────────────────────── Trigger ───────────────────────────
 // Kept small on purpose: 3 real-world starting points cover 90% of flows.
 
-export type TriggerType =
-  | "CALL_ENDED"
-  | "CONTACT_MATCHES";
+export type TriggerType = "CALL_ENDED" | "CONTACT_MATCHES";
 
 export interface Trigger {
   type: TriggerType;
@@ -29,7 +27,7 @@ export type BlockType =
   | "SEND_SMS"
   | "MAKE_CALL"
   | "SLACK_NOTIFY"
-  | "UPDATE"       // unified CRM update — create deal, move stage, tag, note, etc.
+  | "UPDATE" // unified CRM update — create deal, move stage, tag, note, etc.
   // Logic
   | "IF"
   | "WAIT";
@@ -125,7 +123,9 @@ export interface BlockDef {
   /** Compact summary line rendered on the canvas card. */
   summary: (config: Record<string, any>) => string;
   /** Optional richer preview blocks (message body, tag chips, etc.). */
-  preview?: (config: Record<string, any>) => Array<
+  preview?: (
+    config: Record<string, any>,
+  ) => Array<
     | { kind: "text"; label?: string; value: string }
     | { kind: "chip"; label: string; value: string }
     | { kind: "quote"; value: string }
@@ -139,15 +139,15 @@ export interface BlockDef {
 }
 
 export type BlockTone =
-  | "brand"        // blue — main brand
-  | "positive"     // green — triggers (per user request)
-  | "attention"    // amber — logic
-  | "accent"       // indigo/gold — update
-  | "negative"     // rose — dangerous
+  | "brand" // blue — main brand
+  | "positive" // green — triggers (per user request)
+  | "attention" // amber — logic
+  | "accent" // indigo/gold — update
+  | "negative" // rose — dangerous
   | "muted"
-  | "violet"       // NEW — for Update block
-  | "cyan"         // NEW — for call actions
-  | "pink";        // NEW — for Slack
+  | "violet" // NEW — for Update block
+  | "cyan" // NEW — for call actions
+  | "pink"; // NEW — for Slack
 
 // ─────────────────────────── Templates ───────────────────────────
 

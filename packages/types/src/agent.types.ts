@@ -87,4 +87,3 @@ export interface SerializedAgent {
   createdAt: string;
   updatedAt: string;
 }
-

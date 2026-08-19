@@ -108,7 +108,9 @@ export function FolderTree({
   return (
     <aside className="hidden md:flex flex-col w-[250px] shrink-0 border-r border-line-default bg-slate-50 overflow-hidden">
       <div className="px-3 py-2.5 border-b border-line-subtle shrink-0 flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-fg-muted">Folders</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-fg-muted">
+          Folders
+        </span>
         <button
           type="button"
           onClick={() => onCreate(null)}
@@ -154,7 +156,8 @@ export function FolderTree({
             <div className="flex items-start gap-2">
               <Info className="h-3.5 w-3.5 text-blue-600 shrink-0 mt-0.5" />
               <div className="text-[10.5px] text-blue-800 leading-relaxed">
-                <b>No folders yet.</b> Click <b>+ New</b> above to create one — then group workflows by campaign, team, or vertical.
+                <b>No folders yet.</b> Click <b>+ New</b> above to create one — then group workflows
+                by campaign, team, or vertical.
               </div>
             </div>
           </div>
@@ -164,7 +167,8 @@ export function FolderTree({
       {/* Footer hint — always shown, quick reminder of how moves work */}
       <div className="border-t border-line-subtle px-3 py-2 shrink-0 bg-bg-raised">
         <p className="text-[10px] text-fg-muted leading-relaxed">
-          Use the <b className="text-fg-primary">⋯</b> on any workflow or folder to <b className="text-fg-primary">move</b> it into another folder.
+          Use the <b className="text-fg-primary">⋯</b> on any workflow or folder to{" "}
+          <b className="text-fg-primary">move</b> it into another folder.
         </p>
       </div>
     </aside>
@@ -243,7 +247,9 @@ function FolderRow({
       <div
         className={cn(
           "group flex items-center gap-1 h-8 transition-colors",
-          isSelected ? "bg-blue-100 text-blue-800 border-l-2 border-blue-500" : "hover:bg-slate-100",
+          isSelected
+            ? "bg-blue-100 text-blue-800 border-l-2 border-blue-500"
+            : "hover:bg-slate-100",
         )}
         style={{ paddingLeft: 4 + node.depth * 14 + (isSelected ? 0 : 2) }}
       >
@@ -254,7 +260,11 @@ function FolderRow({
           aria-label={isExpanded ? "Collapse" : "Expand"}
         >
           {hasChildren ? (
-            isExpanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />
+            isExpanded ? (
+              <ChevronDown className="h-3 w-3" />
+            ) : (
+              <ChevronRight className="h-3 w-3" />
+            )
           ) : (
             <span className="h-3 w-3 inline-block" />
           )}
@@ -265,9 +275,19 @@ function FolderRow({
           className="flex-1 flex items-center gap-1.5 pr-1 h-full text-left min-w-0"
         >
           {isExpanded ? (
-            <FolderOpen className={cn("h-3.5 w-3.5 shrink-0", isSelected ? "text-blue-600" : "text-amber-500")} />
+            <FolderOpen
+              className={cn(
+                "h-3.5 w-3.5 shrink-0",
+                isSelected ? "text-blue-600" : "text-amber-500",
+              )}
+            />
           ) : (
-            <Folder className={cn("h-3.5 w-3.5 shrink-0", isSelected ? "text-blue-600" : "text-amber-500")} />
+            <Folder
+              className={cn(
+                "h-3.5 w-3.5 shrink-0",
+                isSelected ? "text-blue-600" : "text-amber-500",
+              )}
+            />
           )}
           <span className="flex-1 text-[12.5px] font-medium truncate">{node.name}</span>
           {node.workflowCount > 0 && (
@@ -341,7 +361,8 @@ function FolderKebab({
   React.useEffect(() => {
     if (!open) return;
     const onDoc = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node)) return;
+      if (btnRef.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node))
+        return;
       setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -374,18 +395,48 @@ function FolderKebab({
       >
         <MoreHorizontal className="h-3.5 w-3.5" />
       </button>
-      {open && pos &&
+      {open &&
+        pos &&
         createPortal(
           <div
             ref={menuRef}
             style={{ position: "fixed", top: pos.top, left: pos.left, width: 200, zIndex: 1000 }}
             className="rounded-lg border border-line-default bg-bg-raised shadow-pop py-1"
           >
-            <MenuItem icon={Plus} label="New sub-folder" onClick={() => { setOpen(false); onCreateChild(); }} />
-            <MenuItem icon={Pencil} label="Rename" onClick={() => { setOpen(false); onRename(); }} />
-            <MenuItem icon={FolderInput} label="Move to…" onClick={() => { setOpen(false); onMove(); }} />
+            <MenuItem
+              icon={Plus}
+              label="New sub-folder"
+              onClick={() => {
+                setOpen(false);
+                onCreateChild();
+              }}
+            />
+            <MenuItem
+              icon={Pencil}
+              label="Rename"
+              onClick={() => {
+                setOpen(false);
+                onRename();
+              }}
+            />
+            <MenuItem
+              icon={FolderInput}
+              label="Move to…"
+              onClick={() => {
+                setOpen(false);
+                onMove();
+              }}
+            />
             <div className="h-px bg-line-subtle my-1" />
-            <MenuItem icon={Trash2} label="Delete folder" destructive onClick={() => { setOpen(false); onDelete(); }} />
+            <MenuItem
+              icon={Trash2}
+              label="Delete folder"
+              destructive
+              onClick={() => {
+                setOpen(false);
+                onDelete();
+              }}
+            />
           </div>,
           document.body,
         )}
@@ -410,9 +461,7 @@ function MenuItem({
       onClick={onClick}
       className={cn(
         "w-full flex items-center gap-2 px-3 py-1.5 text-[12px] font-medium transition-colors",
-        destructive
-          ? "text-rose-500 hover:bg-rose-50"
-          : "text-fg-primary hover:bg-slate-50",
+        destructive ? "text-rose-500 hover:bg-rose-50" : "text-fg-primary hover:bg-slate-50",
       )}
     >
       <Icon className={cn("h-3.5 w-3.5", destructive ? "text-rose-500" : "text-fg-muted")} />

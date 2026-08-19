@@ -1,9 +1,7 @@
 {
   "trunk": {
     "name": "Twilio Inbound Trunk",
-    "numbers": [
-      "+17432227947"
-    ],
+    "numbers": ["+17432227947"],
     "termination": {
       "uri": "indiai-voice.pstn.twilio.com",
       "username": "twilio-sip",

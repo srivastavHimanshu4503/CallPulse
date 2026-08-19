@@ -4,7 +4,12 @@ import { api } from "../../../lib/axios.js";
 import { toast } from "sonner";
 import { Button } from "@antigravity/ui";
 import { PersonaSetup } from "./PersonaSetup.js";
-import { VoiceSelector, VoiceSpeedControl, VoiceTuningControl, PronunciationControl } from "./VoiceSelector.js";
+import {
+  VoiceSelector,
+  VoiceSpeedControl,
+  VoiceTuningControl,
+  PronunciationControl,
+} from "./VoiceSelector.js";
 import { TelephonySetup } from "./TelephonySetup.js";
 import { WorkflowSetup } from "./WorkflowSetup.js";
 import { KnowledgeBaseSetup } from "./KnowledgeBaseSetup.js";
@@ -57,7 +62,7 @@ const TABS = [
   },
 ] as const;
 
-type TabId = typeof TABS[number]["id"];
+type TabId = (typeof TABS)[number]["id"];
 
 export function AgentWizard({
   editingAgent,
@@ -78,18 +83,16 @@ export function AgentWizard({
   // ("kar sakta hoon", not "kar sakti hoon") — a female greeting on a male
   // voice is the most-noticed "sounds broken" bug on Indian calls.
   const [greetingMessage, setGreetingMessage] = React.useState(
-    editingAgent?.greetingMessage || "Namaste! Main aapki kaise help kar sakta hoon?"
+    editingAgent?.greetingMessage || "Namaste! Main aapki kaise help kar sakta hoon?",
   );
   const [tone, setTone] = React.useState<"Friendly" | "Professional" | "Casual">(
-    (editingAgent?.tone as any) || "Friendly"
+    (editingAgent?.tone as any) || "Friendly",
   );
   const [fallbackMessage, setFallbackMessage] = React.useState(
-    editingAgent?.fallbackMessage || "I'll connect you with our team for this. One moment please."
+    editingAgent?.fallbackMessage || "I'll connect you with our team for this. One moment please.",
   );
-  const [modelName, setModelName] = React.useState(
-    (editingAgent as any)?.modelName || "gpt-4o"
-  );
-  
+  const [modelName, setModelName] = React.useState((editingAgent as any)?.modelName || "gpt-4o");
+
   // STEP 1.5: Knowledge Base States
   const [businessInfo, setBusinessInfo] = React.useState(editingAgent?.businessInfo || "");
   const [websiteUrl, setWebsiteUrl] = React.useState(editingAgent?.websiteUrl || "");
@@ -99,73 +102,94 @@ export function AgentWizard({
   const [voice, setVoice] = React.useState(editingAgent?.voice || "sarvam:shubh");
   // null = provider default speed
   const [voiceSpeed, setVoiceSpeed] = React.useState<number | null>(
-    editingAgent?.voiceSpeed ?? null
+    editingAgent?.voiceSpeed ?? null,
   );
   // null = provider defaults for every tunable
   const [voiceSettings, setVoiceSettings] = React.useState<AgentVoiceSettings | null>(
-    editingAgent?.voiceSettings ?? null
+    editingAgent?.voiceSettings ?? null,
   );
   // Word → spoken-form overrides (synced to a Sarvam pronunciation dictionary)
   const [pronunciations, setPronunciations] = React.useState<Record<string, string> | null>(
-    editingAgent?.pronunciations ?? null
+    editingAgent?.pronunciations ?? null,
   );
   const [phoneNumberId, setPhoneNumberId] = React.useState<string | null>(
-    editingAgent?.phoneNumberId || null
+    editingAgent?.phoneNumberId || null,
   );
   const [maxDuration, setMaxDuration] = React.useState(editingAgent?.maxDuration || 10);
   const [dndCompliance, setDndCompliance] = React.useState(editingAgent?.dndCompliance ?? true);
   const [recordingConsent, setRecordingConsent] = React.useState(
-    editingAgent?.recordingConsent ?? true
+    editingAgent?.recordingConsent ?? true,
   );
   const [isActive, setIsActive] = React.useState(editingAgent?.isActive ?? true);
-  
+
   // Availability states
   const [timeZone, setTimeZone] = React.useState(editingAgent?.timeZone || "Asia/Kolkata");
   const [is24x7, setIs24x7] = React.useState(
-    editingAgent?.businessHours ? editingAgent.businessHours.is24x7 ?? true : true
+    editingAgent?.businessHours ? (editingAgent.businessHours.is24x7 ?? true) : true,
   );
   const [startTime, setStartTime] = React.useState(
-    editingAgent?.businessHours?.startTime || "09:00"
+    editingAgent?.businessHours?.startTime || "09:00",
   );
-  const [endTime, setEndTime] = React.useState(
-    editingAgent?.businessHours?.endTime || "18:00"
-  );
-
+  const [endTime, setEndTime] = React.useState(editingAgent?.businessHours?.endTime || "18:00");
 
   // STEP 3: Workflow Configuration States
   const [intakeEnabled, setIntakeEnabled] = React.useState(editingAgent?.intakeEnabled ?? false);
   const [intakeWorkflowId, setIntakeWorkflowId] = React.useState<string | null>(
-    editingAgent?.intakeWorkflowId || null
+    editingAgent?.intakeWorkflowId || null,
   );
-  const [intakeFields, setIntakeFields] = React.useState<string[]>(editingAgent?.intakeFields || []);
+  const [intakeFields, setIntakeFields] = React.useState<string[]>(
+    editingAgent?.intakeFields || [],
+  );
   const [intakePrompt, setIntakePrompt] = React.useState(editingAgent?.intakePrompt || "");
 
   const [smsEnabled, setSmsEnabled] = React.useState(editingAgent?.smsEnabled ?? false);
   const [smsWorkflowId, setSmsWorkflowId] = React.useState<string | null>(
-    editingAgent?.smsWorkflowId || null
+    editingAgent?.smsWorkflowId || null,
   );
   const [smsTriggerCondition, setSmsTriggerCondition] = React.useState(
-    editingAgent?.smsTriggerCondition || ""
+    editingAgent?.smsTriggerCondition || "",
   );
   const [smsTemplate, setSmsTemplate] = React.useState(editingAgent?.smsTemplate || "");
   const [smsAgentReply, setSmsAgentReply] = React.useState(editingAgent?.smsAgentReply || "");
 
   const [apiEnabled, setApiEnabled] = React.useState(editingAgent?.apiEnabled ?? false);
-  const [apiWorkflowId, setApiWorkflowId] = React.useState<string | null>(editingAgent?.apiWorkflowId || null);
+  const [apiWorkflowId, setApiWorkflowId] = React.useState<string | null>(
+    editingAgent?.apiWorkflowId || null,
+  );
   const [apiPrompt, setApiPrompt] = React.useState(editingAgent?.apiPrompt || "");
 
-  const [callTransferEnabled, setCallTransferEnabled] = React.useState(editingAgent?.callTransferEnabled ?? false);
-  const [callTransferWorkflowId, setCallTransferWorkflowId] = React.useState<string | null>(editingAgent?.callTransferWorkflowId || null);
-  const [callTransferNumber, setCallTransferNumber] = React.useState(editingAgent?.callTransferNumber || "");
-  const [callTransferCondition, setCallTransferCondition] = React.useState(editingAgent?.callTransferCondition || "");
-  const [callTransferMessage, setCallTransferMessage] = React.useState(editingAgent?.callTransferMessage || "");
-  const [callTransferFallbackNumber, setCallTransferFallbackNumber] = React.useState(editingAgent?.callTransferFallbackNumber || "");
-  const [callTransferTimeoutSec, setCallTransferTimeoutSec] = React.useState(editingAgent?.callTransferTimeoutSec ?? 25);
-  const [callTransferNoAnswerAction, setCallTransferNoAnswerAction] = React.useState<"take_message" | "offer_callback" | "end_politely">(editingAgent?.callTransferNoAnswerAction ?? "take_message");
-  const [callTransferStyle, setCallTransferStyle] = React.useState<"warm" | "instant">(editingAgent?.callTransferStyle ?? "warm");
+  const [callTransferEnabled, setCallTransferEnabled] = React.useState(
+    editingAgent?.callTransferEnabled ?? false,
+  );
+  const [callTransferWorkflowId, setCallTransferWorkflowId] = React.useState<string | null>(
+    editingAgent?.callTransferWorkflowId || null,
+  );
+  const [callTransferNumber, setCallTransferNumber] = React.useState(
+    editingAgent?.callTransferNumber || "",
+  );
+  const [callTransferCondition, setCallTransferCondition] = React.useState(
+    editingAgent?.callTransferCondition || "",
+  );
+  const [callTransferMessage, setCallTransferMessage] = React.useState(
+    editingAgent?.callTransferMessage || "",
+  );
+  const [callTransferFallbackNumber, setCallTransferFallbackNumber] = React.useState(
+    editingAgent?.callTransferFallbackNumber || "",
+  );
+  const [callTransferTimeoutSec, setCallTransferTimeoutSec] = React.useState(
+    editingAgent?.callTransferTimeoutSec ?? 25,
+  );
+  const [callTransferNoAnswerAction, setCallTransferNoAnswerAction] = React.useState<
+    "take_message" | "offer_callback" | "end_politely"
+  >(editingAgent?.callTransferNoAnswerAction ?? "take_message");
+  const [callTransferStyle, setCallTransferStyle] = React.useState<"warm" | "instant">(
+    editingAgent?.callTransferStyle ?? "warm",
+  );
 
   const [bookingEnabled, setBookingEnabled] = React.useState(editingAgent?.bookingEnabled ?? false);
-  const [bookingConfig, setBookingConfig] = React.useState<AgentBookingConfig | null>(editingAgent?.bookingConfig ?? null);
+  const [bookingConfig, setBookingConfig] = React.useState<AgentBookingConfig | null>(
+    editingAgent?.bookingConfig ?? null,
+  );
 
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
@@ -256,7 +280,8 @@ export function AgentWizard({
       const list = parseList(intakePrompt);
       if (list.length === 0) return "Lead intake: add at least one scenario";
       for (let i = 0; i < list.length; i++) {
-        if (!list[i]?.triggerName?.trim()) return `Intake scenario ${i + 1}: scenario name is required`;
+        if (!list[i]?.triggerName?.trim())
+          return `Intake scenario ${i + 1}: scenario name is required`;
         if (!(list[i]?.questions || []).some((q: string) => q?.trim()))
           return `Intake scenario ${i + 1}: add at least one question`;
       }
@@ -266,9 +291,11 @@ export function AgentWizard({
       const list = parseList(smsTemplate);
       if (list.length === 0) return "SMS: add at least one scenario";
       for (let i = 0; i < list.length; i++) {
-        if (!list[i]?.triggerCondition?.trim()) return `SMS scenario ${i + 1}: trigger condition is required`;
+        if (!list[i]?.triggerCondition?.trim())
+          return `SMS scenario ${i + 1}: trigger condition is required`;
         if (!list[i]?.smsTemplate?.trim()) return `SMS scenario ${i + 1}: SMS message is required`;
-        if (!list[i]?.agentReply?.trim()) return `SMS scenario ${i + 1}: agent's verbal confirmation is required`;
+        if (!list[i]?.agentReply?.trim())
+          return `SMS scenario ${i + 1}: agent's verbal confirmation is required`;
       }
     }
 
@@ -276,7 +303,8 @@ export function AgentWizard({
       const list = parseList(apiPrompt);
       if (list.length === 0) return "API & webhooks: add at least one scenario";
       for (let i = 0; i < list.length; i++) {
-        if (!list[i]?.triggerCondition?.trim()) return `API scenario ${i + 1}: trigger condition is required`;
+        if (!list[i]?.triggerCondition?.trim())
+          return `API scenario ${i + 1}: trigger condition is required`;
         if (!/^https?:\/\/\S+$/.test((list[i]?.url || "").trim()))
           return `API scenario ${i + 1}: enter a valid webhook URL starting with https://`;
         if (!list[i]?.agentReply?.trim()) return `API scenario ${i + 1}: agent reply is required`;
@@ -296,66 +324,70 @@ export function AgentWizard({
     }
 
     if (bookingEnabled) {
-      if (!bookingConfig?.triggerCondition?.trim()) return "Calendar booking: trigger condition is required";
+      if (!bookingConfig?.triggerCondition?.trim())
+        return "Calendar booking: trigger condition is required";
       const link = (bookingConfig?.calendarLink || "").trim();
       if (!link) return "Calendar booking: calendar link / ID is required";
       if (bookingConfig?.provider !== "google" && !/^https?:\/\/\S+$/.test(link))
         return "Calendar booking: booking link must start with https://";
-      if (bookingConfig?.provider === "google" && !/^https?:\/\/\S+$/.test(link) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(link))
+      if (
+        bookingConfig?.provider === "google" &&
+        !/^https?:\/\/\S+$/.test(link) &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(link)
+      )
         return "Calendar booking: enter a calendar email ID or a booking-page link";
     }
 
     return null;
   };
 
-
   const buildPayload = () => ({
-      name,
-      role,
-      language,
-      greetingMessage,
-      tone,
-      fallbackMessage,
-      businessInfo: businessInfo.trim() || null,
-      websiteUrl: websiteUrl.trim() || null,
-      agentGuidelines: agentGuidelines.trim() || null,
-      maxDuration: Number(maxDuration),
-      dndCompliance,
-      recordingConsent,
-      isActive,
-      voice,
-      voiceSpeed,
-      // {} (not null) so "Reset to defaults" actually clears the stored value
-      voiceSettings: voiceSettings ?? {},
-      // {} clears the remote Sarvam dictionary when the user removes all words
-      pronunciations: pronunciations ?? {},
-      intakeWorkflowId: intakeEnabled ? intakeWorkflowId : null,
-      smsWorkflowId: smsEnabled ? smsWorkflowId : null,
-      phoneNumberId,
-      intakeEnabled,
-      intakeFields,
-      intakePrompt: intakeEnabled ? intakePrompt : null,
-      smsEnabled,
-      smsTriggerCondition: smsEnabled ? smsTriggerCondition : null,
-      smsTemplate: smsEnabled ? smsTemplate : null,
-      smsAgentReply: smsEnabled ? smsAgentReply : null,
-      apiEnabled,
-      apiWorkflowId: apiEnabled ? apiWorkflowId : null,
-      apiPrompt: apiEnabled ? apiPrompt : null,
-      callTransferEnabled,
-      callTransferWorkflowId: callTransferEnabled ? callTransferWorkflowId : null,
-      callTransferNumber: callTransferEnabled ? callTransferNumber : null,
-      callTransferCondition: callTransferEnabled ? callTransferCondition : null,
-      callTransferMessage: callTransferEnabled ? callTransferMessage : null,
-      callTransferFallbackNumber: callTransferEnabled ? (callTransferFallbackNumber || null) : null,
-      callTransferTimeoutSec,
-      callTransferNoAnswerAction,
-      callTransferStyle,
-      bookingEnabled,
-      bookingConfig: bookingEnabled ? bookingConfig : null,
-      timeZone,
-      businessHours: { is24x7, startTime, endTime },
-      modelName,
+    name,
+    role,
+    language,
+    greetingMessage,
+    tone,
+    fallbackMessage,
+    businessInfo: businessInfo.trim() || null,
+    websiteUrl: websiteUrl.trim() || null,
+    agentGuidelines: agentGuidelines.trim() || null,
+    maxDuration: Number(maxDuration),
+    dndCompliance,
+    recordingConsent,
+    isActive,
+    voice,
+    voiceSpeed,
+    // {} (not null) so "Reset to defaults" actually clears the stored value
+    voiceSettings: voiceSettings ?? {},
+    // {} clears the remote Sarvam dictionary when the user removes all words
+    pronunciations: pronunciations ?? {},
+    intakeWorkflowId: intakeEnabled ? intakeWorkflowId : null,
+    smsWorkflowId: smsEnabled ? smsWorkflowId : null,
+    phoneNumberId,
+    intakeEnabled,
+    intakeFields,
+    intakePrompt: intakeEnabled ? intakePrompt : null,
+    smsEnabled,
+    smsTriggerCondition: smsEnabled ? smsTriggerCondition : null,
+    smsTemplate: smsEnabled ? smsTemplate : null,
+    smsAgentReply: smsEnabled ? smsAgentReply : null,
+    apiEnabled,
+    apiWorkflowId: apiEnabled ? apiWorkflowId : null,
+    apiPrompt: apiEnabled ? apiPrompt : null,
+    callTransferEnabled,
+    callTransferWorkflowId: callTransferEnabled ? callTransferWorkflowId : null,
+    callTransferNumber: callTransferEnabled ? callTransferNumber : null,
+    callTransferCondition: callTransferEnabled ? callTransferCondition : null,
+    callTransferMessage: callTransferEnabled ? callTransferMessage : null,
+    callTransferFallbackNumber: callTransferEnabled ? callTransferFallbackNumber || null : null,
+    callTransferTimeoutSec,
+    callTransferNoAnswerAction,
+    callTransferStyle,
+    bookingEnabled,
+    bookingConfig: bookingEnabled ? bookingConfig : null,
+    timeZone,
+    businessHours: { is24x7, startTime, endTime },
+    modelName,
   });
 
   const handleFinish = () => {
@@ -416,7 +448,7 @@ export function AgentWizard({
             </h2>
           </div>
         </div>
-        
+
         {/* TAB NAVIGATION — horizontal scroll on narrow viewports */}
         <div className="flex items-center gap-4 sm:gap-6 mt-1 overflow-x-auto no-scrollbar -mx-4 sm:-mx-5 px-4 sm:px-5">
           {TABS.map((tab) => {
@@ -645,8 +677,6 @@ export function AgentWizard({
   );
 }
 
-
-
 interface CompliancePanelProps {
   maxDuration: number;
   setMaxDuration: (val: number) => void;
@@ -770,7 +800,9 @@ function CompliancePanel({
           {!is24x7 && (
             <div className="flex items-center gap-3 bg-bg-subtle p-3 rounded-[8px] border border-border animate-in fade-in zoom-in-95 duration-200">
               <div className="flex-1">
-                <label className="block text-[11px] font-semibold text-text-primary mb-1">Start Time</label>
+                <label className="block text-[11px] font-semibold text-text-primary mb-1">
+                  Start Time
+                </label>
                 <input
                   type="time"
                   value={startTime}
@@ -780,7 +812,9 @@ function CompliancePanel({
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-[11px] font-semibold text-text-primary mb-1">End Time</label>
+                <label className="block text-[11px] font-semibold text-text-primary mb-1">
+                  End Time
+                </label>
                 <input
                   type="time"
                   value={endTime}
@@ -831,7 +865,13 @@ interface SwitchRowProps {
   disabled?: boolean;
 }
 
-function SwitchRow({ title, description, checked, onChange, disabled }: SwitchRowProps): React.JSX.Element {
+function SwitchRow({
+  title,
+  description,
+  checked,
+  onChange,
+  disabled,
+}: SwitchRowProps): React.JSX.Element {
   return (
     <label className="flex items-start justify-between gap-4 rounded-[8px] border border-border p-3.5 hover:border-brand-500/30 transition-colors cursor-pointer bg-bg-raised">
       <div className="min-w-0">

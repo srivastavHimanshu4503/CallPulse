@@ -1,9 +1,4 @@
-import {
-  EgressClient,
-  EncodedFileOutput,
-  EncodedFileType,
-  S3Upload,
-} from "livekit-server-sdk";
+import { EgressClient, EncodedFileOutput, EncodedFileType, S3Upload } from "livekit-server-sdk";
 import { config } from "../config.js";
 import { createLogger } from "../logger.js";
 
@@ -48,8 +43,8 @@ export const startCallEgress = async (
   const mediaUrl = `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
 
   // LiveKit Cloud egress is over HTTPS, not the ws:// signalling URL.
-  const httpUrl = config.livekit.url!
-    .replace(/^ws:\/\//, "http://")
+  const httpUrl = config.livekit
+    .url!.replace(/^ws:\/\//, "http://")
     .replace(/^wss:\/\//, "https://");
   const client = new EgressClient(httpUrl, config.livekit.apiKey!, config.livekit.apiSecret!);
 
@@ -89,8 +84,8 @@ export const startCallEgress = async (
 export const stopCallEgress = async (egressId: string): Promise<void> => {
   if (!config.livekit.isConfigured) return;
 
-  const httpUrl = config.livekit.url!
-    .replace(/^ws:\/\//, "http://")
+  const httpUrl = config.livekit
+    .url!.replace(/^ws:\/\//, "http://")
     .replace(/^wss:\/\//, "https://");
   const client = new EgressClient(httpUrl, config.livekit.apiKey!, config.livekit.apiSecret!);
   try {

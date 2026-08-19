@@ -56,8 +56,7 @@ const CHAT_HANDLERS: JobHandler[] = [
   integrations,
 ];
 
-export const runPostCallPipeline = (job: PostCallJob): Promise<void> =>
-  runPipeline(job, HANDLERS);
+export const runPostCallPipeline = (job: PostCallJob): Promise<void> => runPipeline(job, HANDLERS);
 
 export const runChatSessionPipeline = (job: PostCallJob): Promise<void> =>
   runPipeline(job, CHAT_HANDLERS);
@@ -79,8 +78,7 @@ const claimJob = async (logId: string): Promise<boolean> => {
     const existing = await db.postCallJobClaim.findUnique({ where: { logId } });
     if (!existing || existing.status === "DONE") return false;
     const stale =
-      existing.status === "FAILED" ||
-      Date.now() - existing.claimedAt.getTime() > RECLAIM_AFTER_MS;
+      existing.status === "FAILED" || Date.now() - existing.claimedAt.getTime() > RECLAIM_AFTER_MS;
     if (!stale) return false;
     await db.postCallJobClaim.update({
       where: { logId },
@@ -181,8 +179,8 @@ const runPipeline = async (job: PostCallJob, handlers: JobHandler[]): Promise<vo
       new Error(
         `pipeline produced no data; retryable failures: ${failures
           .map((f) => f.handler)
-          .join(", ")}`
-      )
+          .join(", ")}`,
+      ),
     );
   }
   await settleClaim(job.logId, "DONE");

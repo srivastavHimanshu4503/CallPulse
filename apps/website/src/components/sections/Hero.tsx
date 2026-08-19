@@ -1,8 +1,4 @@
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-} from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -90,8 +86,7 @@ function useCallLoop() {
     }
     let cancelled = false;
     const timers: ReturnType<typeof setTimeout>[] = [];
-    const wait = (ms: number) =>
-      new Promise<void>((res) => timers.push(setTimeout(res, ms)));
+    const wait = (ms: number) => new Promise<void>((res) => timers.push(setTimeout(res, ms)));
 
     (async () => {
       setStepIndex(-1);
@@ -189,7 +184,9 @@ function LiveCallScene() {
                 <CalendarCheck className="h-4 w-4" />
               </span>
               <div>
-                <p className="text-[12px] font-bold text-fg-primary leading-tight">Appointment booked</p>
+                <p className="text-[12px] font-bold text-fg-primary leading-tight">
+                  Appointment booked
+                </p>
                 <p className="text-[11px] text-fg-muted">Kal · 5:00 PM</p>
               </div>
             </div>
@@ -251,14 +248,10 @@ function LiveCallScene() {
               <p className="text-[17px] font-extrabold text-fg-primary tracking-tight">
                 Sharma Salon
               </p>
-              <p className="text-[12.5px] text-fg-muted mt-1">
-                Incoming call · +91 98XXX XXX21
-              </p>
+              <p className="text-[12.5px] text-fg-muted mt-1">Incoming call · +91 98XXX XXX21</p>
               <motion.div
                 animate={
-                  phase === "answering"
-                    ? { scale: [1, 0.82, 1.08, 1] }
-                    : { scale: [1, 1.08, 1] }
+                  phase === "answering" ? { scale: [1, 0.82, 1.08, 1] } : { scale: [1, 1.08, 1] }
                 }
                 transition={
                   phase === "answering"
@@ -287,8 +280,9 @@ function LiveCallScene() {
                 SS
               </span>
               <span
-                className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-bg-raised ${ringing ? "bg-attention" : "bg-positive"
-                  }`}
+                className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-bg-raised ${
+                  ringing ? "bg-attention" : "bg-positive"
+                }`}
               />
             </div>
             <div className="min-w-0">
@@ -301,8 +295,9 @@ function LiveCallScene() {
             </div>
           </div>
           <span
-            className={`inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-2.5 py-1 ${ringing ? "text-attention bg-attention-50" : "text-positive bg-positive-50"
-              }`}
+            className={`inline-flex items-center gap-1.5 text-[11.5px] font-semibold rounded-full px-2.5 py-1 ${
+              ringing ? "text-attention bg-attention-50" : "text-positive bg-positive-50"
+            }`}
           >
             <Phone className="h-3 w-3" />
             {ringing ? "Ringing" : <CallTimer running={!ringing} />}
@@ -323,20 +318,23 @@ function LiveCallScene() {
                 className={m.kind === "caller" ? "flex justify-start" : "flex justify-end"}
               >
                 <div
-                  className={`max-w-[85%] px-4 py-2.5 rounded-[14px] ${m.kind === "caller"
-                    ? "bg-bg-muted rounded-bl-[4px]"
-                    : "bg-brand text-white rounded-br-[4px] shadow-[0_6px_16px_-6px_rgba(37,99,235,0.45)]"
-                    }`}
+                  className={`max-w-[85%] px-4 py-2.5 rounded-[14px] ${
+                    m.kind === "caller"
+                      ? "bg-bg-muted rounded-bl-[4px]"
+                      : "bg-brand text-white rounded-br-[4px] shadow-[0_6px_16px_-6px_rgba(37,99,235,0.45)]"
+                  }`}
                 >
                   <p
-                    className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${m.kind === "caller" ? "text-fg-muted" : "text-white/70"
-                      }`}
+                    className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
+                      m.kind === "caller" ? "text-fg-muted" : "text-white/70"
+                    }`}
                   >
                     {m.kind === "caller" ? "Caller" : "DeskBuddy"}
                   </p>
                   <p
-                    className={`text-[13.5px] leading-relaxed ${m.kind === "caller" ? "text-fg-primary" : "text-white"
-                      }`}
+                    className={`text-[13.5px] leading-relaxed ${
+                      m.kind === "caller" ? "text-fg-primary" : "text-white"
+                    }`}
                   >
                     {"text" in m ? m.text : null}
                   </p>
@@ -406,9 +404,7 @@ function LiveCallScene() {
 
         {/* bottom bar */}
         <div className="hidden md:flex items-center justify-between px-5 py-3 border-t border-line-subtle bg-bg-subtle/60">
-          <span className="text-[11px] font-medium text-fg-muted">
-            Live transcript · Hinglish
-          </span>
+          <span className="text-[11px] font-medium text-fg-muted">Live transcript · Hinglish</span>
           <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand">
             <Waveform bars={4} /> Natural voice
           </span>
@@ -475,12 +471,11 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.5, ease: EASE }}
             className="mt-6 max-w-xl mx-auto lg:mx-0 text-[15.5px] sm:text-[17px] text-fg-secondary leading-relaxed"
           >
-            DeskBuddy is your AI phone receptionist. Every incoming call turns
-            into a{" "}
+            DeskBuddy is your AI phone receptionist. Every incoming call turns into a{" "}
             <b className="text-fg-primary">booked appointment</b>, a{" "}
             <b className="text-fg-primary">qualified lead</b> and a{" "}
-            <b className="text-fg-primary">happy customer</b>. 24/7, in Hindi,
-            English and 4 more Indian languages.
+            <b className="text-fg-primary">happy customer</b>. 24/7, in Hindi, English and 4 more
+            Indian languages.
           </motion.p>
 
           <motion.div

@@ -4,7 +4,7 @@ import type { ApiResponse } from "@antigravity/types";
 export function sendSuccess<T = null>(
   res: Response,
   data: T | null = null,
-  statusCode = 200
+  statusCode = 200,
 ): Response {
   const response: ApiResponse<T> = {
     success: true,
@@ -14,11 +14,7 @@ export function sendSuccess<T = null>(
   return res.status(statusCode).json(response);
 }
 
-export function sendError(
-  res: Response,
-  errorMessage: string,
-  statusCode = 500
-): Response {
+export function sendError(res: Response, errorMessage: string, statusCode = 500): Response {
   const response: ApiResponse<null> = {
     success: false,
     data: null,

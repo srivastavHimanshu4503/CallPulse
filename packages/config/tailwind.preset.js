@@ -23,19 +23,19 @@ export default {
       colors: {
         // ───────── Semantic surfaces ─────────
         bg: {
-          canvas: v("bg-canvas"),       // main page background
-          subtle: v("bg-subtle"),       // sidebar, subtle sections
-          muted: v("bg-muted"),         // muted panels, chip fills
-          raised: v("bg-raised"),       // cards
-          inverse: v("bg-inverse"),     // dark auth panel (dark in both themes)
+          canvas: v("bg-canvas"), // main page background
+          subtle: v("bg-subtle"), // sidebar, subtle sections
+          muted: v("bg-muted"), // muted panels, chip fills
+          raised: v("bg-raised"), // cards
+          inverse: v("bg-inverse"), // dark auth panel (dark in both themes)
           highlight: v("bg-highlight"), // brand-tinted highlight
         },
 
         // ───────── Foregrounds ─────────
         fg: {
-          primary: v("fg-primary"),     // headings & body
+          primary: v("fg-primary"), // headings & body
           secondary: v("fg-secondary"), // sub-copy
-          muted: v("fg-muted"),         // captions, hints
+          muted: v("fg-muted"), // captions, hints
           inverse: v("fg-inverse"),
           onBrand: v("fg-on-brand"),
           onAccent: v("fg-on-accent"),
@@ -132,7 +132,7 @@ export default {
         goldGlow: "0 8px 24px -8px rgba(245,184,73,0.55)",
       },
       spacing: {
-        "13": "3.25rem",
+        13: "3.25rem",
       },
     },
   },

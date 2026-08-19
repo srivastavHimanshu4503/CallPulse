@@ -8,7 +8,12 @@ interface CardProps {
   as?: keyof React.JSX.IntrinsicElements;
 }
 
-export function Card({ children, className, padded = true, as: Tag = "div" }: CardProps): React.JSX.Element {
+export function Card({
+  children,
+  className,
+  padded = true,
+  as: Tag = "div",
+}: CardProps): React.JSX.Element {
   return React.createElement(
     Tag,
     {

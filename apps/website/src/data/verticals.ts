@@ -22,11 +22,19 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Salon owners using DeskBuddy report 32% more bookings within the first month — mostly from calls that used to ring out.",
     exampleCall: [
-      { caller: "Kal shaam haircut ke liye slot milega?", agent: "Ji bilkul! Kal shaam 5 baje free hai. Kis naam se book karoon?" },
-      { caller: "Priya. Keratin ka charge kya hai?", agent: "Keratin ₹2,499 se start hota hai, Priya ji. Kal 5 baje aapka slot pakka — details WhatsApp par bhej rahi hoon." },
+      {
+        caller: "Kal shaam haircut ke liye slot milega?",
+        agent: "Ji bilkul! Kal shaam 5 baje free hai. Kis naam se book karoon?",
+      },
+      {
+        caller: "Priya. Keratin ka charge kya hai?",
+        agent:
+          "Keratin ₹2,499 se start hota hai, Priya ji. Kal 5 baje aapka slot pakka — details WhatsApp par bhej rahi hoon.",
+      },
     ],
     metaTitle: "AI Receptionist for Salons in India — Book Appointments 24/7 | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian salons & spas. Answers 24/7 in Hindi + English, books appointments, quotes services, confirms on WhatsApp. Never miss a booking.",
+    metaDescription:
+      "AI phone receptionist for Indian salons & spas. Answers 24/7 in Hindi + English, books appointments, quotes services, confirms on WhatsApp. Never miss a booking.",
   },
   {
     slug: "clinic",
@@ -39,11 +47,19 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Dental clinics using DeskBuddy cut no-shows by 40% with automated WhatsApp reminders after every booking.",
     exampleCall: [
-      { caller: "Kal appointment mil sakti hai dentist ke saath?", agent: "Kal 11 baje Dr. Sharma ke saath free slot hai. Aapka naam?" },
-      { caller: "Ravi. Root canal ka approximate cost?", agent: "Ravi ji, root canal ₹4,500 se ₹8,000 tak, doctor ke examination ke baad final price. Kal 11 baje slot confirm — WhatsApp par details bhej rahi hoon." },
+      {
+        caller: "Kal appointment mil sakti hai dentist ke saath?",
+        agent: "Kal 11 baje Dr. Sharma ke saath free slot hai. Aapka naam?",
+      },
+      {
+        caller: "Ravi. Root canal ka approximate cost?",
+        agent:
+          "Ravi ji, root canal ₹4,500 se ₹8,000 tak, doctor ke examination ke baad final price. Kal 11 baje slot confirm — WhatsApp par details bhej rahi hoon.",
+      },
     ],
     metaTitle: "AI Receptionist for Clinics & Dentists in India | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian clinics, dentists & doctors. Books consults, sends WhatsApp reminders, handles insurance queries — 24/7 in Hindi & English.",
+    metaDescription:
+      "AI phone receptionist for Indian clinics, dentists & doctors. Books consults, sends WhatsApp reminders, handles insurance queries — 24/7 in Hindi & English.",
   },
   {
     slug: "restaurant",
@@ -56,11 +72,18 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Restaurants using DeskBuddy convert 3× more enquiry calls into bookings — because they answer every one.",
     exampleCall: [
-      { caller: "Weekend ke liye 15 log ki booking ho sakti hai?", agent: "Weekend 8 baje table for 15 available hai. Aapka naam aur contact?" },
-      { caller: "Amit, 9876543210. Menu bhej sakte ho?", agent: "Bilkul Amit ji, menu aur booking confirmation abhi WhatsApp par bhej rahi hoon." },
+      {
+        caller: "Weekend ke liye 15 log ki booking ho sakti hai?",
+        agent: "Weekend 8 baje table for 15 available hai. Aapka naam aur contact?",
+      },
+      {
+        caller: "Amit, 9876543210. Menu bhej sakte ho?",
+        agent: "Bilkul Amit ji, menu aur booking confirmation abhi WhatsApp par bhej rahi hoon.",
+      },
     ],
     metaTitle: "AI Receptionist for Restaurants & Catering in India | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian restaurants, tent houses & catering. Takes reservations 24/7, quotes menus, sends bookings on WhatsApp — in Hindi & English.",
+    metaDescription:
+      "AI phone receptionist for Indian restaurants, tent houses & catering. Takes reservations 24/7, quotes menus, sends bookings on WhatsApp — in Hindi & English.",
   },
   {
     slug: "real-estate",
@@ -73,11 +96,19 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Property brokers using DeskBuddy see 5× more qualified enquiries reach their team — every after-hours call gets answered.",
     exampleCall: [
-      { caller: "Andheri West mein 2BHK available hai?", agent: "Ji Andheri West mein 3 options hai ₹95L-1.4Cr range mein. Aapka budget kya hai?" },
-      { caller: "1.2 Cr tak. Ready-to-move chahiye.", agent: "Perfect — 2 ready-to-move properties match hoti hai. Details aur photos WhatsApp par bhej rahi hoon, agent kal 11 baje aapko call karega." },
+      {
+        caller: "Andheri West mein 2BHK available hai?",
+        agent: "Ji Andheri West mein 3 options hai ₹95L-1.4Cr range mein. Aapka budget kya hai?",
+      },
+      {
+        caller: "1.2 Cr tak. Ready-to-move chahiye.",
+        agent:
+          "Perfect — 2 ready-to-move properties match hoti hai. Details aur photos WhatsApp par bhej rahi hoon, agent kal 11 baje aapko call karega.",
+      },
     ],
     metaTitle: "AI Receptionist for Real Estate in India — Qualify Leads 24/7 | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian real estate agents. Qualifies property enquiries 24/7 in Hindi & English, captures budget, syncs leads to CRM.",
+    metaDescription:
+      "AI phone receptionist for Indian real estate agents. Qualifies property enquiries 24/7 in Hindi & English, captures budget, syncs leads to CRM.",
   },
   {
     slug: "coaching",
@@ -90,11 +121,19 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Coaching centres using DeskBuddy see 2× more demo class enrolments — because every parent gets an immediate response.",
     exampleCall: [
-      { caller: "JEE coaching ke liye batch details chahiye class 11 ke liye.", agent: "Ji Class 11 JEE batch Monday shaam 4 baje start hoti hai. Aapke bachche ka naam?" },
-      { caller: "Aarav. Fees kitni hai?", agent: "Aarav ji ke liye — ₹85,000 per year, EMI option available. Demo class free hai iss Saturday 3 baje — WhatsApp par slot confirm bhej rahi hoon." },
+      {
+        caller: "JEE coaching ke liye batch details chahiye class 11 ke liye.",
+        agent: "Ji Class 11 JEE batch Monday shaam 4 baje start hoti hai. Aapke bachche ka naam?",
+      },
+      {
+        caller: "Aarav. Fees kitni hai?",
+        agent:
+          "Aarav ji ke liye — ₹85,000 per year, EMI option available. Demo class free hai iss Saturday 3 baje — WhatsApp par slot confirm bhej rahi hoon.",
+      },
     ],
     metaTitle: "AI Receptionist for Coaching Centres in India | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian coaching & tuition centres. Answers parent enquiries 24/7, books demo classes, shares fees — in Hindi & English.",
+    metaDescription:
+      "AI phone receptionist for Indian coaching & tuition centres. Answers parent enquiries 24/7, books demo classes, shares fees — in Hindi & English.",
   },
   {
     slug: "gym",
@@ -107,11 +146,19 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Fitness studios using DeskBuddy convert 45% more trial bookings — every enquiry gets an instant response.",
     exampleCall: [
-      { caller: "Monthly membership kitne ki hai gym ki?", agent: "Ji monthly ₹1,899, quarterly ₹4,999, aur annual ₹14,999. Free trial available hai — kya main slot book kar doon?" },
-      { caller: "Haan, kal subah 7 baje.", agent: "Kal subah 7 baje trial confirm. Aapka naam? Details WhatsApp par bhej rahi hoon." },
+      {
+        caller: "Monthly membership kitne ki hai gym ki?",
+        agent:
+          "Ji monthly ₹1,899, quarterly ₹4,999, aur annual ₹14,999. Free trial available hai — kya main slot book kar doon?",
+      },
+      {
+        caller: "Haan, kal subah 7 baje.",
+        agent: "Kal subah 7 baje trial confirm. Aapka naam? Details WhatsApp par bhej rahi hoon.",
+      },
     ],
     metaTitle: "AI Receptionist for Gyms & Fitness Studios in India | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian gyms & fitness studios. Answers membership calls 24/7, books trials, quotes plans — in Hindi & English.",
+    metaDescription:
+      "AI phone receptionist for Indian gyms & fitness studios. Answers membership calls 24/7, books trials, quotes plans — in Hindi & English.",
   },
   {
     slug: "automobile",
@@ -124,11 +171,20 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Auto service centres using DeskBuddy fill 30% more service slots weekly — even the after-hours calls now convert.",
     exampleCall: [
-      { caller: "Swift ki general service karani hai, kab slot milega?", agent: "Ji Swift ki general service ₹3,500 mein — kal ya parso subah 10 baje slot available hai. Aapka contact aur car number?" },
-      { caller: "9876543210, MH01AB1234.", agent: "Perfect — kal 10 baje slot confirm. Pickup arrange chahiye? WhatsApp par details bhej rahi hoon." },
+      {
+        caller: "Swift ki general service karani hai, kab slot milega?",
+        agent:
+          "Ji Swift ki general service ₹3,500 mein — kal ya parso subah 10 baje slot available hai. Aapka contact aur car number?",
+      },
+      {
+        caller: "9876543210, MH01AB1234.",
+        agent:
+          "Perfect — kal 10 baje slot confirm. Pickup arrange chahiye? WhatsApp par details bhej rahi hoon.",
+      },
     ],
     metaTitle: "AI Receptionist for Auto Service Centres in India | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian auto service centres. Books service slots 24/7, quotes packages, arranges pickup — in Hindi & English.",
+    metaDescription:
+      "AI phone receptionist for Indian auto service centres. Books service slots 24/7, quotes packages, arranges pickup — in Hindi & English.",
   },
   {
     slug: "laundry",
@@ -141,11 +197,20 @@ export const VERTICALS: Vertical[] = [
     proofPoint:
       "Laundry services using DeskBuddy see 60% more pickup bookings — because they can now answer every enquiry instantly.",
     exampleCall: [
-      { caller: "Suit dry clean kitne ka hai aur kab pickup ho sakti hai?", agent: "Ji suit dry clean ₹250. Kal subah 10-12 ke beech pickup available. Aapka address aur number?" },
-      { caller: "9876543210, Sector 22, Gurgaon.", agent: "Confirm — kal 10 baje pickup, delivery 48 ghante mein. Payment options aur receipt WhatsApp par bhej rahi hoon." },
+      {
+        caller: "Suit dry clean kitne ka hai aur kab pickup ho sakti hai?",
+        agent:
+          "Ji suit dry clean ₹250. Kal subah 10-12 ke beech pickup available. Aapka address aur number?",
+      },
+      {
+        caller: "9876543210, Sector 22, Gurgaon.",
+        agent:
+          "Confirm — kal 10 baje pickup, delivery 48 ghante mein. Payment options aur receipt WhatsApp par bhej rahi hoon.",
+      },
     ],
     metaTitle: "AI Receptionist for Laundry & Dry Cleaning in India | DeskBuddy",
-    metaDescription: "AI phone receptionist for Indian laundries & dry cleaners. Books pickups 24/7, quotes prices, confirms on WhatsApp — in Hindi & English.",
+    metaDescription:
+      "AI phone receptionist for Indian laundries & dry cleaners. Books pickups 24/7, quotes prices, confirms on WhatsApp — in Hindi & English.",
   },
 ];
 

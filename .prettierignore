@@ -1,0 +1,10 @@
+dist
+build
+.turbo
+node_modules
+cdk.out
+pnpm-lock.yaml
+coverage
+*.min.*
+scratch
+packages/db/generated

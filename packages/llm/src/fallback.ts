@@ -89,9 +89,7 @@ export class FallbackLLM extends agentsLLM.LLM {
   }
 
   async aclose(): Promise<void> {
-    await Promise.allSettled(
-      [this.primary, ...this.fallbacks].map((p) => p.aclose())
-    );
+    await Promise.allSettled([this.primary, ...this.fallbacks].map((p) => p.aclose()));
   }
 }
 
@@ -135,9 +133,10 @@ class FallbackLLMStream extends agentsLLM.LLMStream {
       let capturedError: Error | undefined;
       const errListener = (evt: any) => {
         if (!capturedError) {
-          capturedError = evt?.error instanceof Error
-            ? evt.error
-            : new Error(evt?.error?.message ?? evt?.message ?? JSON.stringify(evt));
+          capturedError =
+            evt?.error instanceof Error
+              ? evt.error
+              : new Error(evt?.error?.message ?? evt?.message ?? JSON.stringify(evt));
         }
       };
       provider.on("error", errListener);
@@ -188,7 +187,11 @@ class FallbackLLMStream extends agentsLLM.LLMStream {
         if (i > 0) log.info("fallback provider succeeded", { provider: tag, attempt: i + 1 });
         return;
       } catch (err) {
-        try { stream.close(); } catch { /* ignore */ }
+        try {
+          stream.close();
+        } catch {
+          /* ignore */
+        }
         lastError = capturedError ?? err;
         const msg = lastError instanceof Error ? lastError.message : String(lastError);
 

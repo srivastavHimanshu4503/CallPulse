@@ -10,7 +10,6 @@ const inputClass =
 const primaryButton =
   "w-full h-11 text-white font-bold text-[14px] rounded-[6px] flex items-center justify-center transition-colors bg-brand-500 hover:bg-brand-600 shadow-sm disabled:opacity-70";
 
-
 export function Login(): React.JSX.Element {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
@@ -32,16 +31,28 @@ export function Login(): React.JSX.Element {
   }, [isAuthenticated, navigate]);
 
   const validateEmail = (val: string) => {
-    if (!val) { setEmailError("Email address is required"); return false; }
+    if (!val) {
+      setEmailError("Email address is required");
+      return false;
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(val)) { setEmailError("Please enter a valid email address"); return false; }
+    if (!emailRegex.test(val)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
     setEmailError("");
     return true;
   };
 
   const validatePassword = (val: string) => {
-    if (!val) { setPasswordError("Password is required"); return false; }
-    if (val.length < 8) { setPasswordError("Password must be at least 8 characters"); return false; }
+    if (!val) {
+      setPasswordError("Password is required");
+      return false;
+    }
+    if (val.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      return false;
+    }
     setPasswordError("");
     return true;
   };
@@ -80,7 +91,12 @@ export function Login(): React.JSX.Element {
           <div className="mb-5 rounded-[10px] bg-rose-50 border border-rose-200 p-3.5 text-[13px] text-rose-700 font-medium leading-normal flex items-start gap-2.5">
             <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 mt-0.5 shrink-0">
               <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
-              <path d="M12 8v5M12 16.5v.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <path
+                d="M12 8v5M12 16.5v.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
             </svg>
             <span className="flex-1">{formError}</span>
           </div>
@@ -88,12 +104,21 @@ export function Login(): React.JSX.Element {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">Email address</label>
+            <label className="block text-[13px] font-semibold text-text-primary mb-1.5">
+              Email address
+            </label>
             <Input
-              type="email" placeholder="name@company.com" value={email}
-              onChange={(e) => { setEmail(e.target.value); if (emailError) validateEmail(e.target.value); }}
+              type="email"
+              placeholder="name@company.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (emailError) validateEmail(e.target.value);
+              }}
               onBlur={() => validateEmail(email)}
-              error={emailError} disabled={isLoading} required
+              error={emailError}
+              disabled={isLoading}
+              required
               className={inputClass}
             />
           </div>
@@ -101,16 +126,26 @@ export function Login(): React.JSX.Element {
           <div>
             <div className="flex justify-between items-center mb-1.5">
               <label className="block text-[13px] font-semibold text-text-primary">Password</label>
-              <Link to="/forgot-password" className="text-[12.5px] text-brand-600 hover:text-brand-700 font-semibold">
+              <Link
+                to="/forgot-password"
+                className="text-[12.5px] text-brand-600 hover:text-brand-700 font-semibold"
+              >
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
               <Input
-                type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password}
-                onChange={(e) => { setPassword(e.target.value); if (passwordError) validatePassword(e.target.value); }}
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (passwordError) validatePassword(e.target.value);
+                }}
                 onBlur={() => validatePassword(password)}
-                error={passwordError} disabled={isLoading} required
+                error={passwordError}
+                disabled={isLoading}
+                required
                 className={`${inputClass} pr-14`}
               />
               <button
@@ -124,7 +159,12 @@ export function Login(): React.JSX.Element {
             </div>
           </div>
 
-          <Button type="submit" variant="primary" className={`${primaryButton} mt-2`} disabled={isLoading}>
+          <Button
+            type="submit"
+            variant="primary"
+            className={`${primaryButton} mt-2`}
+            disabled={isLoading}
+          >
             {isLoading ? (
               <span className="inline-flex items-center gap-2">
                 <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
@@ -138,7 +178,10 @@ export function Login(): React.JSX.Element {
 
         <div className="mt-8 text-center text-[13.5px] text-text-secondary">
           New to DeskBuddy?{" "}
-          <Link to="/register" className="text-text-primary font-bold hover:text-brand-600 transition-colors">
+          <Link
+            to="/register"
+            className="text-text-primary font-bold hover:text-brand-600 transition-colors"
+          >
             Create a business account
           </Link>
         </div>

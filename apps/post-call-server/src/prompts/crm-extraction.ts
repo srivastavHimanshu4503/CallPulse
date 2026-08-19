@@ -68,7 +68,7 @@ export const buildCrmExtractionSchema = (defs: ExtractableFieldDef[]) => {
     shape[key] = field.describe(
       def.type === "DROPDOWN" && def.options.length > 0
         ? `"${def.name}" — must be one of: ${def.options.join(", ")}; null if not discussed`
-        : `"${def.name}" — null if not discussed on the call`
+        : `"${def.name}" — null if not discussed on the call`,
     );
   }
 
@@ -77,7 +77,7 @@ export const buildCrmExtractionSchema = (defs: ExtractableFieldDef[]) => {
 
 export const buildCrmExtractionSystemPrompt = (
   defs: ExtractableFieldDef[],
-  callMoment: string
+  callMoment: string,
 ): string => {
   const customFieldLines =
     defs.length > 0

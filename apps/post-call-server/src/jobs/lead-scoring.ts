@@ -36,7 +36,7 @@ export const leadScoring: JobHandler = {
             intentConfidence: ctx.intent?.confidence,
             durationSeconds: ctx.job.durationSeconds,
             extractedFields: ctx.extractedFields,
-          })
+          }),
         ),
       });
 
@@ -61,11 +61,15 @@ const heuristicScore = (ctx: PostCallContext): number => {
   const turnBonus = Math.min(50, ctx.job.transcript.length * 5);
   const durationBonus = Math.min(30, Math.floor(ctx.job.durationSeconds / 10));
   const intent = ctx.intent?.primary;
-  if (intent === "SPAM" || intent === "WRONG_NUMBER" || intent === "TEST_CALL" || intent === "NO_CONTENT") {
+  if (
+    intent === "SPAM" ||
+    intent === "WRONG_NUMBER" ||
+    intent === "TEST_CALL" ||
+    intent === "NO_CONTENT"
+  ) {
     return Math.min(5, turnBonus + durationBonus);
   }
   return clamp(turnBonus + durationBonus, 0, 100);
 };
 
-const clamp = (n: number, min: number, max: number): number =>
-  Math.max(min, Math.min(max, n));
+const clamp = (n: number, min: number, max: number): number => Math.max(min, Math.min(max, n));

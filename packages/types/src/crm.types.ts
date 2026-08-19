@@ -99,4 +99,3 @@ export interface FilterCondition {
   operator: FilterOperator;
   value: string;
 }
-

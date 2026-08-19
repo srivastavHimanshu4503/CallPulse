@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import {
-  PhoneMissed,
-  UserX,
-  Clock,
-  IndianRupee,
-  TrendingDown,
-  ArrowRight,
-} from "lucide-react";
+import { PhoneMissed, UserX, Clock, IndianRupee, TrendingDown, ArrowRight } from "lucide-react";
 import { SectionHeading } from "../common/SectionHeading";
 import { EASE, Reveal, Stagger, StaggerItem } from "../motion/primitives";
 
@@ -57,7 +50,10 @@ function LostRevenueTicker() {
           Missed while you read this page
         </p>
         <div className="flex items-baseline gap-1">
-          <IndianRupee className="h-8 w-8 sm:h-10 sm:w-10 text-white self-center" strokeWidth={2.5} />
+          <IndianRupee
+            className="h-8 w-8 sm:h-10 sm:w-10 text-white self-center"
+            strokeWidth={2.5}
+          />
           <motion.span
             key={count}
             initial={{ opacity: 0, y: 10 }}
@@ -69,8 +65,8 @@ function LostRevenueTicker() {
           </motion.span>
         </div>
         <p className="mt-3 text-[13.5px] text-white/70 leading-relaxed max-w-sm">
-          At about ₹1,000 per missed lead. That's revenue walking away every four
-          seconds while a phone rings out somewhere in India.
+          At about ₹1,000 per missed lead. That's revenue walking away every four seconds while a
+          phone rings out somewhere in India.
         </p>
 
         <div className="mt-auto pt-6 flex flex-wrap items-center gap-3">

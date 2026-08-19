@@ -124,12 +124,12 @@ export const startTransferReconciliation = (): NodeJS.Timeout => {
   });
   setTimeout(() => {
     sweepPendingTransfers().catch((err) =>
-      log.error("sweep failed", { error: getErrorMessage(err) })
+      log.error("sweep failed", { error: getErrorMessage(err) }),
     );
   }, 10_000).unref();
   return setInterval(() => {
     sweepPendingTransfers().catch((err) =>
-      log.error("sweep failed", { error: getErrorMessage(err) })
+      log.error("sweep failed", { error: getErrorMessage(err) }),
     );
   }, SWEEP_INTERVAL_MS);
 };

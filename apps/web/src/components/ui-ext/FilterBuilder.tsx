@@ -40,8 +40,14 @@ function operatorsFor(field: FilterFieldDef): { value: FilterOperator; label: st
     case "number":
       return [
         { value: FilterOperator.EQUALS, label: OP_LABEL[FilterOperator.EQUALS] },
-        { value: FilterOperator.GREATER_THAN_OR_EQUAL, label: OP_LABEL[FilterOperator.GREATER_THAN_OR_EQUAL] },
-        { value: FilterOperator.LESS_THAN_OR_EQUAL, label: OP_LABEL[FilterOperator.LESS_THAN_OR_EQUAL] },
+        {
+          value: FilterOperator.GREATER_THAN_OR_EQUAL,
+          label: OP_LABEL[FilterOperator.GREATER_THAN_OR_EQUAL],
+        },
+        {
+          value: FilterOperator.LESS_THAN_OR_EQUAL,
+          label: OP_LABEL[FilterOperator.LESS_THAN_OR_EQUAL],
+        },
         { value: FilterOperator.IS_EMPTY, label: OP_LABEL[FilterOperator.IS_EMPTY] },
         { value: FilterOperator.IS_NOT_EMPTY, label: OP_LABEL[FilterOperator.IS_NOT_EMPTY] },
       ];
@@ -241,7 +247,8 @@ export function FilterBuilder({
                   if (!field) return null;
                   const ops = operatorsFor(field);
                   const valueHidden =
-                    cond.operator === FilterOperator.IS_EMPTY || cond.operator === FilterOperator.IS_NOT_EMPTY;
+                    cond.operator === FilterOperator.IS_EMPTY ||
+                    cond.operator === FilterOperator.IS_NOT_EMPTY;
                   return (
                     <div
                       key={cond.id}
@@ -249,7 +256,11 @@ export function FilterBuilder({
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
-                          {idx === 0 ? "Where" : logical === FilterLogicalOperator.AND ? "and" : "or"}
+                          {idx === 0
+                            ? "Where"
+                            : logical === FilterLogicalOperator.AND
+                              ? "and"
+                              : "or"}
                         </span>
                         <button
                           type="button"
@@ -274,7 +285,9 @@ export function FilterBuilder({
                         </select>
                         <select
                           value={cond.operator}
-                          onChange={(e) => patch(cond.id, { operator: e.target.value as FilterOperator })}
+                          onChange={(e) =>
+                            patch(cond.id, { operator: e.target.value as FilterOperator })
+                          }
                           className="w-full h-8 bg-bg-raised border border-line-default text-[12px] text-fg-primary rounded-md px-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20"
                         >
                           {ops.map((o) => (
@@ -353,14 +366,25 @@ function ValueInput({
   }
   if (field.type === "boolean") {
     return (
-      <select value={value || "true"} onChange={(e) => onChange(e.target.value)} className={baseCls}>
+      <select
+        value={value || "true"}
+        onChange={(e) => onChange(e.target.value)}
+        className={baseCls}
+      >
         <option value="true">Yes</option>
         <option value="false">No</option>
       </select>
     );
   }
   if (field.type === "date") {
-    return <input type="date" value={value} onChange={(e) => onChange(e.target.value)} className={baseCls} />;
+    return (
+      <input
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={baseCls}
+      />
+    );
   }
   if (field.type === "number") {
     return (
@@ -388,7 +412,9 @@ export function evaluateCondition(cond: FilterCondition, actualVal: any): boolea
   const v = cond.value;
   switch (cond.operator) {
     case FilterOperator.CONTAINS:
-      return String(actualVal || "").toLowerCase().includes(String(v).toLowerCase());
+      return String(actualVal || "")
+        .toLowerCase()
+        .includes(String(v).toLowerCase());
     case FilterOperator.EQUALS:
       return String(actualVal ?? "").toLowerCase() === String(v).toLowerCase();
     case FilterOperator.GREATER_THAN_OR_EQUAL:

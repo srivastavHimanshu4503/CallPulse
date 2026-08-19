@@ -42,9 +42,7 @@ export function ConfirmModal({
       }
     >
       <div className="p-5 space-y-3 font-sans">
-        <div className="text-[13px] text-fg-primary leading-relaxed">
-          {message}
-        </div>
+        <div className="text-[13px] text-fg-primary leading-relaxed">{message}</div>
       </div>
       <div className="border-t border-line-default px-5 py-3 bg-slate-50 flex items-center justify-end gap-2">
         <button

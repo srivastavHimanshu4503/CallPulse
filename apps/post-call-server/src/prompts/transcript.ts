@@ -6,9 +6,7 @@ import type { TranscriptTurn } from "../jobs/types.js";
  * AGENT is our AI receptionist.
  */
 export const formatTranscript = (turns: TranscriptTurn[]): string =>
-  turns
-    .map((t) => `${t.role === "assistant" ? "AGENT" : "CALLER"}: ${t.text.trim()}`)
-    .join("\n");
+  turns.map((t) => `${t.role === "assistant" ? "AGENT" : "CALLER"}: ${t.text.trim()}`).join("\n");
 
 const WEEKDAYS = [
   "Sunday",
@@ -37,13 +35,9 @@ export const describeCallMoment = (startedAtIso: string): string => {
 /** Wraps the transcript in delimiters so instructions and data never blur. */
 export const buildTranscriptUserPrompt = (
   turns: TranscriptTurn[],
-  extraContext?: string
+  extraContext?: string,
 ): string => {
-  const sections = [
-    "<transcript>",
-    formatTranscript(turns),
-    "</transcript>",
-  ];
+  const sections = ["<transcript>", formatTranscript(turns), "</transcript>"];
   if (extraContext) sections.push("", "<context>", extraContext, "</context>");
   return sections.join("\n");
 };

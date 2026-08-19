@@ -60,8 +60,16 @@ const DEFAULT_STAGES: StageRow[] = [
 ];
 
 const STAGE_COLORS = [
-  "#64748b", "#0ea5e9", "#6366f1", "#8b5cf6", "#f59e0b",
-  "#f97316", "#10b981", "#14b8a6", "#ef4444", "#ec4899",
+  "#64748b",
+  "#0ea5e9",
+  "#6366f1",
+  "#8b5cf6",
+  "#f59e0b",
+  "#f97316",
+  "#10b981",
+  "#14b8a6",
+  "#ef4444",
+  "#ec4899",
 ];
 
 const clampPct = (n: number): number => Math.max(0, Math.min(100, Math.round(n) || 0));
@@ -80,7 +88,10 @@ const toStageRows = (pipeline?: Pipeline | null): StageRow[] => {
     return pipeline.stages.map((name, i) => ({
       name,
       color: STAGE_COLORS[i % STAGE_COLORS.length]!,
-      probability: Math.min(95, Math.round((i / Math.max(1, pipeline.stages.length - 1)) * 90) + 10),
+      probability: Math.min(
+        95,
+        Math.round((i / Math.max(1, pipeline.stages.length - 1)) * 90) + 10,
+      ),
       isWon: name.toLowerCase().includes("won"),
       isLost: name.toLowerCase().includes("lost"),
     }));
@@ -287,22 +298,31 @@ export function PipelineSettingsModal({
                   />
 
                   {/* Per-stage default probability */}
-                  <div className="flex items-center gap-0.5 shrink-0 w-[76px] justify-center" title="Default win probability for deals entering this stage">
+                  <div
+                    className="flex items-center gap-0.5 shrink-0 w-[76px] justify-center"
+                    title="Default win probability for deals entering this stage"
+                  >
                     <input
                       type="number"
                       min={0}
                       max={100}
                       value={s.probability}
-                      onChange={(e) => patchStage(i, { probability: clampPct(Number(e.target.value)) })}
+                      onChange={(e) =>
+                        patchStage(i, { probability: clampPct(Number(e.target.value)) })
+                      }
                       className="w-12 h-7 bg-bg-raised border border-line-default focus:border-brand-500 text-[11.5px] font-semibold text-fg-primary text-center rounded focus:outline-none"
                     />
                     <span className="text-[10px] font-bold text-fg-muted">%</span>
                   </div>
 
                   {/* Outcome: Open / Won / Lost */}
-                  <div className="flex items-center rounded-md border border-line-default bg-bg-raised p-0.5 shrink-0" title="Deals in a Won/Lost stage count as closed">
+                  <div
+                    className="flex items-center rounded-md border border-line-default bg-bg-raised p-0.5 shrink-0"
+                    title="Deals in a Won/Lost stage count as closed"
+                  >
                     {(["open", "won", "lost"] as const).map((o) => {
-                      const active = o === "won" ? s.isWon : o === "lost" ? s.isLost : !s.isWon && !s.isLost;
+                      const active =
+                        o === "won" ? s.isWon : o === "lost" ? s.isLost : !s.isWon && !s.isLost;
                       return (
                         <button
                           key={o}
@@ -379,8 +399,8 @@ export function PipelineSettingsModal({
               </span>
             </label>
             <p className="text-[10.5px] text-fg-muted mt-1.5 leading-relaxed pl-6">
-              Contacts whose custom field matches your rule flow into this pipeline
-              automatically — even after a call. Great for "MBA course = Yes" style routing.
+              Contacts whose custom field matches your rule flow into this pipeline automatically —
+              even after a call. Great for "MBA course = Yes" style routing.
             </p>
 
             {useFilter && (
@@ -444,8 +464,7 @@ export function PipelineSettingsModal({
                     Delete “{pipeline?.name}”?
                   </div>
                   <div className="text-[10.5px] text-fg-secondary leading-relaxed">
-                    Deals stay — they get detached from this pipeline. You can reassign
-                    them later.
+                    Deals stay — they get detached from this pipeline. You can reassign them later.
                   </div>
                   <div className="flex items-center gap-2">
                     <button

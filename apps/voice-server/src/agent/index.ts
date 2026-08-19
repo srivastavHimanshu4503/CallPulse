@@ -1,4 +1,10 @@
-import { defineAgent, llm as agentsLLM, voice, type JobContext, type JobProcess } from "@livekit/agents";
+import {
+  defineAgent,
+  llm as agentsLLM,
+  voice,
+  type JobContext,
+  type JobProcess,
+} from "@livekit/agents";
 import { initSentry, captureError, flushSentry } from "@antigravity/observability";
 import * as silero from "@livekit/agents-plugin-silero";
 import { RoomEvent } from "@livekit/rtc-node";
@@ -87,7 +93,7 @@ export default defineAgent({
     try {
       await db.$connect();
       // Instantiating the provider primes its module graph + Prisma client.
-      agentConfigProvider;
+      void agentConfigProvider;
       // Explicit Silero VAD: the plugin default of 550ms min-silence is the
       // single biggest fixed cost in perceived response latency. 200ms sits
       // inside natural intra-sentence pauses — deliberate tradeoff for the
@@ -122,14 +128,13 @@ export default defineAgent({
     const callSid = extractCallSidFromRoom(roomName, ctx.job.id);
     const dialedNumber = getDialedNumber();
     const roomHint = parseRoomMetadata(
-      ctx.job.metadata || ctx.job.room?.metadata || ctx.room.metadata
+      ctx.job.metadata || ctx.job.room?.metadata || ctx.room.metadata,
     );
     const callSource = roomHint.callSource ?? "sip";
     // Browser test calls have no SIP number in the room name — fall back to
     // the stable caller identity minted by the api server so every test call
     // from the same dashboard user maps to the same contact.
-    let callerNumber =
-      extractCallerNumberFromRoom(roomName) ?? roomHint.callerId ?? "unknown";
+    let callerNumber = extractCallerNumberFromRoom(roomName) ?? roomHint.callerId ?? "unknown";
     const callerName = roomHint.callerName;
     const callLog = log.child(callSid);
 
@@ -159,7 +164,7 @@ export default defineAgent({
     // an unanswered call — a missed pickup is the worst failure this
     // product can have.
     const lookupWithRetry = async (
-      fn: () => Promise<Awaited<ReturnType<typeof agentConfigProvider.getById>>>
+      fn: () => Promise<Awaited<ReturnType<typeof agentConfigProvider.getById>>>,
     ) => {
       try {
         return await fn();
@@ -194,11 +199,12 @@ export default defineAgent({
         return;
       }
 
-      persona = await lookupWithRetry(async () =>
-        (await agentConfigProvider.getByPhoneNumber(dialed)) ??
-        (!dialed.startsWith("+")
-          ? await agentConfigProvider.getByPhoneNumber(`+${dialed}`)
-          : null)
+      persona = await lookupWithRetry(
+        async () =>
+          (await agentConfigProvider.getByPhoneNumber(dialed)) ??
+          (!dialed.startsWith("+")
+            ? await agentConfigProvider.getByPhoneNumber(`+${dialed}`)
+            : null),
       );
       if (!persona) {
         callLog.error("no agent registered in DB for dialed number — aborting call", {
@@ -274,7 +280,10 @@ export default defineAgent({
     });
 
     await connectPromise;
-    callLog.info("participant connected", { agent: persona.agentName, tenant: persona.businessName });
+    callLog.info("participant connected", {
+      agent: persona.agentName,
+      tenant: persona.businessName,
+    });
 
     // Kick off S3 recording via LiveKit egress. SIP-only: browser test calls
     // don't need recordings (per product decision, and the room name doesn't
@@ -382,7 +391,7 @@ export default defineAgent({
             const rs = new RoomServiceClient(
               config.livekit.url.replace(/^ws:\/\//, "http://").replace(/^wss:\/\//, "https://"),
               config.livekit.apiKey,
-              config.livekit.apiSecret
+              config.livekit.apiSecret,
             );
             const deleteStart = Date.now();
             await rs.deleteRoom(roomName);
@@ -395,12 +404,12 @@ export default defineAgent({
           } catch (err) {
             callLog.warn(
               "deleteRoom failed — falling back to agent-side ctx.room.disconnect (SIP/browser leg may linger)",
-              { message: (err as Error).message, room: roomName }
+              { message: (err as Error).message, room: roomName },
             );
           }
         } else {
           callLog.warn(
-            "deleteRoom skipped — missing LiveKit server creds. Only the agent will disconnect; the caller's leg may hang."
+            "deleteRoom skipped — missing LiveKit server creds. Only the agent will disconnect; the caller's leg may hang.",
           );
         }
         // Fallback: at least drop the agent side.
@@ -511,7 +520,7 @@ export default defineAgent({
       const sipClient = new SipClient(
         config.livekit.url!.replace(/^ws:\/\//, "http://").replace(/^wss:\/\//, "https://"),
         config.livekit.apiKey!,
-        config.livekit.apiSecret!
+        config.livekit.apiSecret!,
       );
       const attemptTransfer = (to: string) =>
         sipClient.transferSipParticipant(roomName, sipParticipantIdentity!, `tel:${to}`, {
@@ -519,9 +528,7 @@ export default defineAgent({
           ringingTimeout: transfer.timeoutSec,
         });
 
-      const targets = [transfer.number, transfer.fallbackNumber].filter(
-        (n): n is string => !!n
-      );
+      const targets = [transfer.number, transfer.fallbackNumber].filter((n): n is string => !!n);
       const transferComplete = (target: string): string => {
         session.status = "transferred";
         tagTransfer(target, "answered", { answeredAt: new Date().toISOString() });
@@ -616,7 +623,12 @@ export default defineAgent({
         configuredVoice: persona.voice,
         message: (err as Error).message,
       });
-      captureError(err, { where: "createTTS", callSid, voice: persona.voice, tenantId: persona.ids.tenantId });
+      captureError(err, {
+        where: "createTTS",
+        callSid,
+        voice: persona.voice,
+        tenantId: persona.ids.tenantId,
+      });
       ttsInstance = createTTS({ voice: "sarvam:priya", language: langCodes.tts });
     }
 
@@ -635,7 +647,9 @@ export default defineAgent({
     let vad = ctx.proc.userData.vad as voice.AgentSessionOptions["vad"] | undefined;
     if (!vad) {
       callLog.warn("prewarmed VAD missing — loading in-call");
-      vad = (await silero.VAD.load({ minSilenceDuration: 200 })) as voice.AgentSessionOptions["vad"];
+      vad = (await silero.VAD.load({
+        minSilenceDuration: 200,
+      })) as voice.AgentSessionOptions["vad"];
     }
 
     const agentSession = new voice.AgentSession({
@@ -723,7 +737,7 @@ export default defineAgent({
       if (msg.role === "assistant" && !hangupRequested && ASSISTANT_FAREWELL_RE.test(text)) {
         callLog.warn(
           "assistant spoke farewell without invoking end_call — forcing hangup via heuristic",
-          { text }
+          { text },
         );
         void endCall("assistant farewell heuristic fallback");
       }
@@ -769,7 +783,7 @@ export default defineAgent({
         !hangupRequested
       ) {
         callLog.warn(
-          "agent returned to listening after user farewell — forcing hangup via state transition"
+          "agent returned to listening after user farewell — forcing hangup via state transition",
         );
         void endCall("user farewell + agent reply complete");
       }
@@ -947,7 +961,7 @@ export default defineAgent({
             const rs = new RoomServiceClient(
               config.livekit.url.replace(/^ws:\/\//, "http://").replace(/^wss:\/\//, "https://"),
               config.livekit.apiKey,
-              config.livekit.apiSecret
+              config.livekit.apiSecret,
             );
             await rs.deleteRoom(roomName);
             callLog.info("room deleted after participant disconnect", { room: roomName });

@@ -6,9 +6,7 @@
       }
     },
     "name": "Test rule",
-    "trunk_ids": [
-      "ST_JDqFzDudNfKg"
-    ],
+    "trunk_ids": ["ST_JDqFzDudNfKg"],
     "roomConfig": {
       "agents": [
         {

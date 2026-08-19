@@ -47,7 +47,10 @@ const registerWhatsAppSenderInBackground = (agent: AIAgent, tenantId: string): v
  * A blank starter KB with the placeholder prompt is safer than a hallucinated
  * one, and prompts the owner to fill it in.
  */
-export const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantId: string): void => {
+export const generateDefaultKnowledgeBaseInBackground = (
+  agent: AIAgent,
+  tenantId: string,
+): void => {
   const log = logger.child({ module: "agents-default-kb" });
   void (async () => {
     const tenant = await db.tenant.findUnique({
@@ -58,9 +61,9 @@ export const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantI
 
     const hasRealInfo = Boolean(
       tenant.businessType?.trim() ||
-        tenant.websiteUrl?.trim() ||
-        agent.websiteUrl?.trim() ||
-        agent.businessInfo?.trim()
+      tenant.websiteUrl?.trim() ||
+      agent.websiteUrl?.trim() ||
+      agent.businessInfo?.trim(),
     );
 
     // Always create a KB row so the dashboard shows one and the owner has a
@@ -75,7 +78,9 @@ export const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantI
           content: "",
         },
       });
-      log.info("starter knowledge base row created (blank — no business info yet)", { agentId: agent.id });
+      log.info("starter knowledge base row created (blank — no business info yet)", {
+        agentId: agent.id,
+      });
       return;
     }
 
@@ -83,7 +88,9 @@ export const generateDefaultKnowledgeBaseInBackground = (agent: AIAgent, tenantI
       `Business name: ${tenant.name}`,
       tenant.businessType ? `Business type: ${tenant.businessType}` : null,
       tenant.teamSize ? `Team size: ${tenant.teamSize}` : null,
-      tenant.websiteUrl || agent.websiteUrl ? `Website: ${agent.websiteUrl || tenant.websiteUrl}` : null,
+      tenant.websiteUrl || agent.websiteUrl
+        ? `Website: ${agent.websiteUrl || tenant.websiteUrl}`
+        : null,
       agent.businessInfo ? `Owner-provided business info: ${agent.businessInfo}` : null,
       `AI receptionist name: ${agent.name}, role: ${agent.role}, language: ${agent.language}`,
     ]
@@ -171,7 +178,9 @@ export class AgentsService {
     }
 
     const phoneNumber = phoneNumberRecord?.phoneNumber || "Unassigned Dedicated Line";
-    const avgDuration = avgDurationResult._avg.duration ? Math.round(avgDurationResult._avg.duration * 10) / 10 : 0;
+    const avgDuration = avgDurationResult._avg.duration
+      ? Math.round(avgDurationResult._avg.duration * 10) / 10
+      : 0;
 
     return {
       id: agent.id,
@@ -215,7 +224,8 @@ export class AgentsService {
       callTransferMessage: agent.callTransferMessage,
       callTransferFallbackNumber: agent.callTransferFallbackNumber,
       callTransferTimeoutSec: agent.callTransferTimeoutSec,
-      callTransferNoAnswerAction: agent.callTransferNoAnswerAction as SerializedAgent["callTransferNoAnswerAction"],
+      callTransferNoAnswerAction:
+        agent.callTransferNoAnswerAction as SerializedAgent["callTransferNoAnswerAction"],
       callTransferStyle: agent.callTransferStyle as SerializedAgent["callTransferStyle"],
       bookingEnabled: agent.bookingEnabled,
       bookingConfig: (agent.bookingConfig as SerializedAgent["bookingConfig"]) ?? null,
@@ -250,7 +260,8 @@ export class AgentsService {
       db.tenant.findFirst({ where: { id: tenantId }, select: { plan: true } }),
       db.aIAgent.count({ where: { tenantId, deletedAt: null } }),
     ]);
-    const limit = PLAN_AGENT_LIMITS[(tenant?.plan as keyof typeof PLAN_AGENT_LIMITS) ?? "FREE"] ?? 1;
+    const limit =
+      PLAN_AGENT_LIMITS[(tenant?.plan as keyof typeof PLAN_AGENT_LIMITS) ?? "FREE"] ?? 1;
     if (agentCount >= limit) {
       throw new Error(
         tenant?.plan === "PRO"
@@ -308,66 +319,68 @@ export class AgentsService {
     } = data;
 
     // Create Agent within transaction to link KnowledgeBase if websiteUrl exists
-    const agent = await db.$transaction(async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
-      const newAgent = await tx.aIAgent.create({
-        data: {
-          tenantId,
-          name,
-          role,
-          language,
-          greetingMessage,
-          tone,
-          fallbackMessage,
-          businessInfo: businessInfo || null,
-          websiteUrl: websiteUrl || null,
-          maxDuration: maxDuration ?? 10,
-          dndCompliance: dndCompliance ?? true,
-          recordingConsent: recordingConsent ?? true,
-          isActive: isActive ?? true,
-          voice: voice || "sarvam:shubh",
-          voiceSpeed: voiceSpeed ?? null,
-          voiceSettings: voiceSettings ?? undefined,
-          pronunciations: pronunciations ?? undefined,
-          intakeWorkflowId: intakeWorkflowId || null,
-          smsWorkflowId: smsWorkflowId || null,
-          phoneNumberId: phoneNumberId || null,
-          intakeEnabled: intakeEnabled ?? false,
-          intakeFields: intakeFields ?? [],
-          intakePrompt: intakePrompt || null,
-          smsEnabled: smsEnabled ?? false,
-          smsTriggerCondition: smsTriggerCondition || null,
-          smsTemplate: smsTemplate || null,
-          smsAgentReply: smsAgentReply || null,
-          whatsappEnabled: whatsappEnabled ?? false,
-          whatsappPrompt: whatsappPrompt || null,
-          apiEnabled: apiEnabled ?? false,
-          apiWorkflowId: apiWorkflowId || null,
-          apiPrompt: apiPrompt || null,
-          callTransferEnabled: callTransferEnabled ?? false,
-          callTransferWorkflowId: callTransferWorkflowId || null,
-          callTransferNumber: callTransferNumber || null,
-          callTransferCondition: callTransferCondition || null,
-          callTransferMessage: callTransferMessage || null,
-          callTransferFallbackNumber: callTransferFallbackNumber || null,
-          callTransferTimeoutSec: callTransferTimeoutSec ?? 25,
-          callTransferNoAnswerAction: callTransferNoAnswerAction ?? "take_message",
-          callTransferStyle: callTransferStyle ?? "warm",
-          bookingEnabled: bookingEnabled ?? false,
-          bookingConfig: bookingConfig ?? undefined,
-          timeZone: timeZone ?? "Asia/Kolkata",
-          businessHours: businessHours ?? undefined,
-          agentGuidelines: agentGuidelines || null,
-          modelName: "gemini-2.5-flash",
-        },
-      });
+    const agent = await db.$transaction(
+      async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
+        const newAgent = await tx.aIAgent.create({
+          data: {
+            tenantId,
+            name,
+            role,
+            language,
+            greetingMessage,
+            tone,
+            fallbackMessage,
+            businessInfo: businessInfo || null,
+            websiteUrl: websiteUrl || null,
+            maxDuration: maxDuration ?? 10,
+            dndCompliance: dndCompliance ?? true,
+            recordingConsent: recordingConsent ?? true,
+            isActive: isActive ?? true,
+            voice: voice || "sarvam:shubh",
+            voiceSpeed: voiceSpeed ?? null,
+            voiceSettings: voiceSettings ?? undefined,
+            pronunciations: pronunciations ?? undefined,
+            intakeWorkflowId: intakeWorkflowId || null,
+            smsWorkflowId: smsWorkflowId || null,
+            phoneNumberId: phoneNumberId || null,
+            intakeEnabled: intakeEnabled ?? false,
+            intakeFields: intakeFields ?? [],
+            intakePrompt: intakePrompt || null,
+            smsEnabled: smsEnabled ?? false,
+            smsTriggerCondition: smsTriggerCondition || null,
+            smsTemplate: smsTemplate || null,
+            smsAgentReply: smsAgentReply || null,
+            whatsappEnabled: whatsappEnabled ?? false,
+            whatsappPrompt: whatsappPrompt || null,
+            apiEnabled: apiEnabled ?? false,
+            apiWorkflowId: apiWorkflowId || null,
+            apiPrompt: apiPrompt || null,
+            callTransferEnabled: callTransferEnabled ?? false,
+            callTransferWorkflowId: callTransferWorkflowId || null,
+            callTransferNumber: callTransferNumber || null,
+            callTransferCondition: callTransferCondition || null,
+            callTransferMessage: callTransferMessage || null,
+            callTransferFallbackNumber: callTransferFallbackNumber || null,
+            callTransferTimeoutSec: callTransferTimeoutSec ?? 25,
+            callTransferNoAnswerAction: callTransferNoAnswerAction ?? "take_message",
+            callTransferStyle: callTransferStyle ?? "warm",
+            bookingEnabled: bookingEnabled ?? false,
+            bookingConfig: bookingConfig ?? undefined,
+            timeZone: timeZone ?? "Asia/Kolkata",
+            businessHours: businessHours ?? undefined,
+            agentGuidelines: agentGuidelines || null,
+            modelName: "gemini-2.5-flash",
+          },
+        });
 
-      // Knowledge base row is created outside the transaction by the
-      // background generator below (blank when we don't have real business
-      // info, LLM-populated when we do). Keeps the KB list clean and the
-      // owner never sees a "Pending extraction..." placeholder.
+        // Knowledge base row is created outside the transaction by the
+        // background generator below (blank when we don't have real business
+        // info, LLM-populated when we do). Keeps the KB list clean and the
+        // owner never sees a "Pending extraction..." placeholder.
 
-      return newAgent;
-    });
+        return newAgent;
+      },
+    );
 
     registerWhatsAppSenderInBackground(agent, tenantId);
     generateDefaultKnowledgeBaseInBackground(agent, tenantId);
@@ -421,7 +434,7 @@ export class AgentsService {
     tenantId: string,
     agentId: string,
     userId: string,
-    userName: string
+    userName: string,
   ): Promise<TestCallCredentials> {
     // Ownership check — this agent must belong to the caller's tenant.
     const agent = await db.aIAgent.findFirst({
@@ -459,7 +472,11 @@ export class AgentsService {
     });
   }
 
-  async updateAgent(tenantId: string, id: string, data: UpdateAgentInput): Promise<SerializedAgent> {
+  async updateAgent(
+    tenantId: string,
+    id: string,
+    data: UpdateAgentInput,
+  ): Promise<SerializedAgent> {
     // Confirm agent exists and belongs to tenant
     const existing = await db.aIAgent.findFirst({
       where: {
@@ -544,72 +561,86 @@ export class AgentsService {
       businessHours,
     } = data;
 
-    const updated = await db.$transaction(async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
-      const updatedAgent = await tx.aIAgent.update({
-        where: {
-          id,
-        },
-        data: {
-          name: name !== undefined ? name : undefined,
-          role: role !== undefined ? role : undefined,
-          language: language !== undefined ? language : undefined,
-          greetingMessage: greetingMessage !== undefined ? greetingMessage : undefined,
-          tone: tone !== undefined ? tone : undefined,
-          fallbackMessage: fallbackMessage !== undefined ? fallbackMessage : undefined,
-          businessInfo: businessInfo !== undefined ? businessInfo : undefined,
-          websiteUrl: websiteUrl !== undefined ? websiteUrl : undefined,
-          maxDuration: maxDuration !== undefined ? maxDuration : undefined,
-          dndCompliance: dndCompliance !== undefined ? dndCompliance : undefined,
-          recordingConsent: recordingConsent !== undefined ? recordingConsent : undefined,
-          isActive: isActive !== undefined ? isActive : undefined,
-          voice: voice !== undefined ? voice : undefined,
-          voiceSpeed: voiceSpeed !== undefined ? voiceSpeed : undefined,
-          voiceSettings: voiceSettings !== undefined ? (voiceSettings ?? undefined) : undefined,
-          pronunciations: pronunciations !== undefined ? (pronunciations ?? undefined) : undefined,
-          intakeWorkflowId: intakeWorkflowId !== undefined ? intakeWorkflowId : undefined,
-          smsWorkflowId: smsWorkflowId !== undefined ? smsWorkflowId : undefined,
-          phoneNumberId: phoneNumberId !== undefined ? phoneNumberId : undefined,
-          intakeEnabled: intakeEnabled !== undefined ? intakeEnabled : undefined,
-          intakeFields: intakeFields !== undefined ? intakeFields : undefined,
-          intakePrompt: intakePrompt !== undefined ? intakePrompt : undefined,
-          smsEnabled: smsEnabled !== undefined ? smsEnabled : undefined,
-          smsTriggerCondition: smsTriggerCondition !== undefined ? smsTriggerCondition : undefined,
-          smsTemplate: smsTemplate !== undefined ? smsTemplate : undefined,
-          smsAgentReply: smsAgentReply !== undefined ? smsAgentReply : undefined,
-          whatsappEnabled: whatsappEnabled !== undefined ? whatsappEnabled : undefined,
-          whatsappPrompt: whatsappPrompt !== undefined ? whatsappPrompt : undefined,
-          apiEnabled: apiEnabled !== undefined ? apiEnabled : undefined,
-          apiWorkflowId: apiWorkflowId !== undefined ? apiWorkflowId : undefined,
-          apiPrompt: apiPrompt !== undefined ? apiPrompt : undefined,
-          callTransferEnabled: callTransferEnabled !== undefined ? callTransferEnabled : undefined,
-          callTransferWorkflowId: callTransferWorkflowId !== undefined ? callTransferWorkflowId : undefined,
-          callTransferNumber: callTransferNumber !== undefined ? callTransferNumber : undefined,
-          callTransferCondition: callTransferCondition !== undefined ? callTransferCondition : undefined,
-          callTransferMessage: callTransferMessage !== undefined ? callTransferMessage : undefined,
-          callTransferFallbackNumber: callTransferFallbackNumber !== undefined ? callTransferFallbackNumber : undefined,
-          callTransferTimeoutSec: callTransferTimeoutSec !== undefined ? callTransferTimeoutSec : undefined,
-          callTransferNoAnswerAction: callTransferNoAnswerAction !== undefined ? callTransferNoAnswerAction : undefined,
-          callTransferStyle: callTransferStyle !== undefined ? callTransferStyle : undefined,
-          bookingEnabled: bookingEnabled !== undefined ? bookingEnabled : undefined,
-          bookingConfig: bookingConfig !== undefined ? (bookingConfig ?? undefined) : undefined,
-          timeZone: timeZone !== undefined ? timeZone : undefined,
-          businessHours: businessHours !== undefined ? businessHours : undefined,
-          agentGuidelines: agentGuidelines !== undefined ? agentGuidelines : undefined,
-        },
-      });
+    const updated = await db.$transaction(
+      async (tx: Parameters<Parameters<typeof db.$transaction>[0]>[0]) => {
+        const updatedAgent = await tx.aIAgent.update({
+          where: {
+            id,
+          },
+          data: {
+            name: name !== undefined ? name : undefined,
+            role: role !== undefined ? role : undefined,
+            language: language !== undefined ? language : undefined,
+            greetingMessage: greetingMessage !== undefined ? greetingMessage : undefined,
+            tone: tone !== undefined ? tone : undefined,
+            fallbackMessage: fallbackMessage !== undefined ? fallbackMessage : undefined,
+            businessInfo: businessInfo !== undefined ? businessInfo : undefined,
+            websiteUrl: websiteUrl !== undefined ? websiteUrl : undefined,
+            maxDuration: maxDuration !== undefined ? maxDuration : undefined,
+            dndCompliance: dndCompliance !== undefined ? dndCompliance : undefined,
+            recordingConsent: recordingConsent !== undefined ? recordingConsent : undefined,
+            isActive: isActive !== undefined ? isActive : undefined,
+            voice: voice !== undefined ? voice : undefined,
+            voiceSpeed: voiceSpeed !== undefined ? voiceSpeed : undefined,
+            voiceSettings: voiceSettings !== undefined ? (voiceSettings ?? undefined) : undefined,
+            pronunciations:
+              pronunciations !== undefined ? (pronunciations ?? undefined) : undefined,
+            intakeWorkflowId: intakeWorkflowId !== undefined ? intakeWorkflowId : undefined,
+            smsWorkflowId: smsWorkflowId !== undefined ? smsWorkflowId : undefined,
+            phoneNumberId: phoneNumberId !== undefined ? phoneNumberId : undefined,
+            intakeEnabled: intakeEnabled !== undefined ? intakeEnabled : undefined,
+            intakeFields: intakeFields !== undefined ? intakeFields : undefined,
+            intakePrompt: intakePrompt !== undefined ? intakePrompt : undefined,
+            smsEnabled: smsEnabled !== undefined ? smsEnabled : undefined,
+            smsTriggerCondition:
+              smsTriggerCondition !== undefined ? smsTriggerCondition : undefined,
+            smsTemplate: smsTemplate !== undefined ? smsTemplate : undefined,
+            smsAgentReply: smsAgentReply !== undefined ? smsAgentReply : undefined,
+            whatsappEnabled: whatsappEnabled !== undefined ? whatsappEnabled : undefined,
+            whatsappPrompt: whatsappPrompt !== undefined ? whatsappPrompt : undefined,
+            apiEnabled: apiEnabled !== undefined ? apiEnabled : undefined,
+            apiWorkflowId: apiWorkflowId !== undefined ? apiWorkflowId : undefined,
+            apiPrompt: apiPrompt !== undefined ? apiPrompt : undefined,
+            callTransferEnabled:
+              callTransferEnabled !== undefined ? callTransferEnabled : undefined,
+            callTransferWorkflowId:
+              callTransferWorkflowId !== undefined ? callTransferWorkflowId : undefined,
+            callTransferNumber: callTransferNumber !== undefined ? callTransferNumber : undefined,
+            callTransferCondition:
+              callTransferCondition !== undefined ? callTransferCondition : undefined,
+            callTransferMessage:
+              callTransferMessage !== undefined ? callTransferMessage : undefined,
+            callTransferFallbackNumber:
+              callTransferFallbackNumber !== undefined ? callTransferFallbackNumber : undefined,
+            callTransferTimeoutSec:
+              callTransferTimeoutSec !== undefined ? callTransferTimeoutSec : undefined,
+            callTransferNoAnswerAction:
+              callTransferNoAnswerAction !== undefined ? callTransferNoAnswerAction : undefined,
+            callTransferStyle: callTransferStyle !== undefined ? callTransferStyle : undefined,
+            bookingEnabled: bookingEnabled !== undefined ? bookingEnabled : undefined,
+            bookingConfig: bookingConfig !== undefined ? (bookingConfig ?? undefined) : undefined,
+            timeZone: timeZone !== undefined ? timeZone : undefined,
+            businessHours: businessHours !== undefined ? businessHours : undefined,
+            agentGuidelines: agentGuidelines !== undefined ? agentGuidelines : undefined,
+          },
+        });
 
-      // Website URL changes: we no longer wipe the KB and replace it with a
-      // "Pending extraction..." placeholder — the owner may have already
-      // filled in real content. If they want a fresh KB from the new URL
-      // they can edit or clear the KB explicitly.
+        // Website URL changes: we no longer wipe the KB and replace it with a
+        // "Pending extraction..." placeholder — the owner may have already
+        // filled in real content. If they want a fresh KB from the new URL
+        // they can edit or clear the KB explicitly.
 
-      return updatedAgent;
-    });
+        return updatedAgent;
+      },
+    );
 
     registerWhatsAppSenderInBackground(updated, tenantId);
     // Re-sync the Sarvam dictionary when the mappings changed OR the agent's
     // language changed (entries are stored under the language's code).
-    if (pronunciations !== undefined || (language !== undefined && language !== existing.language)) {
+    if (
+      pronunciations !== undefined ||
+      (language !== undefined && language !== existing.language)
+    ) {
       await this.syncPronunciationDictionary(id);
     }
     return this.serializeAgent(updated, tenantId);
@@ -662,7 +693,7 @@ export class AgentsService {
     if (type && type !== "ALL") {
       whereClause.type = type;
     }
-    
+
     if (extractionStatus && extractionStatus !== "ALL") {
       whereClause.extractionStatus = extractionStatus;
     }
@@ -678,7 +709,7 @@ export class AgentsService {
     }
 
     // Cursor-based query parameters
-    let queryArgs: any = {
+    const queryArgs: any = {
       where: whereClause,
       take: limit,
       orderBy: {
@@ -701,17 +732,17 @@ export class AgentsService {
 
   async deleteAgentLog(tenantId: string, agentId: string, logId: string) {
     const log = await db.communicationLog.findFirst({
-      where: { id: logId, tenantId, agentId }
+      where: { id: logId, tenantId, agentId },
     });
-    
+
     if (!log) {
       throw new Error("Log not found or unauthorized");
     }
-    
+
     await db.communicationLog.delete({
-      where: { id: logId }
+      where: { id: logId },
     });
-    
+
     return true;
   }
 
@@ -754,7 +785,7 @@ export class AgentsService {
           triggerType: "IN_CALL_WORKFLOW",
           actions: JSON.stringify([
             { type: "collect_field", field: "email", prompt: "Aapka email address kya hai?" },
-            { type: "collect_field", field: "name", prompt: "Aapka poora naam bataiye?" }
+            { type: "collect_field", field: "name", prompt: "Aapka poora naam bataiye?" },
           ]),
         },
       });
@@ -765,7 +796,11 @@ export class AgentsService {
           name: "Default Post-Call Follow-up SMS Sequence",
           triggerType: "SMS_WORKFLOW",
           actions: JSON.stringify([
-            { type: "send_sms", template: "Hi {contactName}, thank you for calling. We have updated your details in our CRM." }
+            {
+              type: "send_sms",
+              template:
+                "Hi {contactName}, thank you for calling. We have updated your details in our CRM.",
+            },
           ]),
         },
       });
@@ -815,7 +850,7 @@ export class AgentsService {
         if (agent.pronunciationDictId) {
           await fetch(
             `https://api.sarvam.ai/text-to-speech/pronunciation-dictionary?dict_id=${encodeURIComponent(agent.pronunciationDictId)}`,
-            { method: "DELETE", headers: { "api-subscription-key": apiKey } }
+            { method: "DELETE", headers: { "api-subscription-key": apiKey } },
           ).catch(() => undefined);
           await db.aIAgent.update({ where: { id: agentId }, data: { pronunciationDictId: null } });
         }
@@ -854,7 +889,7 @@ export class AgentsService {
       let res = dictId
         ? await upload(
             "PUT",
-            `https://api.sarvam.ai/text-to-speech/pronunciation-dictionary?dict_id=${encodeURIComponent(dictId)}`
+            `https://api.sarvam.ai/text-to-speech/pronunciation-dictionary?dict_id=${encodeURIComponent(dictId)}`,
           )
         : await upload("POST", "https://api.sarvam.ai/text-to-speech/pronunciation-dictionary");
 
@@ -911,11 +946,26 @@ export class AgentsService {
     // The last five are ElevenLabs Sarah, Matilda, Jessica, Bella, Alice
     // (voice IDs lowercased to match voiceKey).
     const femaleVoices = [
-      "priya", "aditi", "ritu", "deepika", "kavitha",
-      "ishita", "suhani", "neha", "pooja", "roopa",
-      "alloy", "shimmer", "coral", "sage", "marin",
-      "exavitqu4vr4xnsdxmal", "xrexe9ykig1wjnnlvkgx", "cgsgspj2msm6clmckdw9",
-      "hpp4j3vqnfwauoo0d1us", "xb7hh8msujpsbsdyk0k2"
+      "priya",
+      "aditi",
+      "ritu",
+      "deepika",
+      "kavitha",
+      "ishita",
+      "suhani",
+      "neha",
+      "pooja",
+      "roopa",
+      "alloy",
+      "shimmer",
+      "coral",
+      "sage",
+      "marin",
+      "exavitqu4vr4xnsdxmal",
+      "xrexe9ykig1wjnnlvkgx",
+      "cgsgspj2msm6clmckdw9",
+      "hpp4j3vqnfwauoo0d1us",
+      "xb7hh8msujpsbsdyk0k2",
     ];
     const isFemale = femaleVoices.includes(voiceKey);
 
@@ -1022,4 +1072,3 @@ export class AgentsService {
     }
   }
 }
-

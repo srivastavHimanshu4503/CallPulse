@@ -26,7 +26,12 @@ export function Tabs<T extends string>({
 }: TabsProps<T>): React.JSX.Element {
   if (variant === "underline") {
     return (
-      <div className={cn("flex items-center gap-1 border-b border-line-default -mx-1 px-1 overflow-x-auto overflow-y-hidden", className)}>
+      <div
+        className={cn(
+          "flex items-center gap-1 border-b border-line-default -mx-1 px-1 overflow-x-auto overflow-y-hidden",
+          className,
+        )}
+      >
         {tabs.map((t) => {
           const isActive = active === t.id;
           const Icon = t.icon;
@@ -65,7 +70,12 @@ export function Tabs<T extends string>({
 
   // segmented
   return (
-    <div className={cn("inline-flex items-center gap-1 bg-bg-muted border border-line-default p-1 rounded-lg", className)}>
+    <div
+      className={cn(
+        "inline-flex items-center gap-1 bg-bg-muted border border-line-default p-1 rounded-lg",
+        className,
+      )}
+    >
       {tabs.map((t) => {
         const isActive = active === t.id;
         const Icon = t.icon;
@@ -82,13 +92,17 @@ export function Tabs<T extends string>({
                 : "text-fg-secondary hover:text-fg-primary",
             )}
           >
-            {Icon && <Icon className={cn("h-3.5 w-3.5", isActive ? "text-blue-600" : "text-fg-muted")} />}
+            {Icon && (
+              <Icon className={cn("h-3.5 w-3.5", isActive ? "text-blue-600" : "text-fg-muted")} />
+            )}
             <span>{t.label}</span>
             {typeof t.count === "number" && (
               <span
                 className={cn(
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-0.5 tabular-nums",
-                  isActive ? "bg-blue-50 text-blue-700 ring-1 ring-blue-500/25" : "bg-bg-raised text-fg-muted border border-line-default",
+                  isActive
+                    ? "bg-blue-50 text-blue-700 ring-1 ring-blue-500/25"
+                    : "bg-bg-raised text-fg-muted border border-line-default",
                 )}
               >
                 {t.count}

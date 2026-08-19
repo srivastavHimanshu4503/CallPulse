@@ -1,11 +1,7 @@
 import { db } from "../client.js";
 
 type CreditReason =
-  | "SIGNUP_GRANT"
-  | "PLAN_GRANT"
-  | "TOPUP_PURCHASE"
-  | "CALL_DEDUCTION"
-  | "ADJUSTMENT";
+  "SIGNUP_GRANT" | "PLAN_GRANT" | "TOPUP_PURCHASE" | "CALL_DEDUCTION" | "ADJUSTMENT";
 
 /**
  * The single shared way to move credits from background services.
@@ -41,8 +37,7 @@ export const applyCreditDelta = async (input: {
     });
     if (!tenant) throw new Error("Tenant not found");
 
-    const applied =
-      input.delta < 0 ? -Math.min(-input.delta, tenant.creditBalance) : input.delta;
+    const applied = input.delta < 0 ? -Math.min(-input.delta, tenant.creditBalance) : input.delta;
 
     const updated = await tx.tenant.update({
       where: { id: input.tenantId },

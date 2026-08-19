@@ -54,7 +54,7 @@ function FeatureGuard({
 
 function AuthGuard({ children }: AuthGuardProps): React.JSX.Element {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -76,9 +76,9 @@ export function AppRouter(): React.JSX.Element {
     >
       <Routes>
         {/* Auth routing shortcuts */}
-        <Route 
-          path="/" 
-          element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} 
+        <Route
+          path="/"
+          element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
         />
 
         {/* Protected Dashboard Route */}
@@ -215,4 +215,3 @@ export function AppRouter(): React.JSX.Element {
   );
 }
 export default AppRouter;
-

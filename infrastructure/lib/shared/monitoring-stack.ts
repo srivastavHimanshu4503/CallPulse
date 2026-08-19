@@ -63,7 +63,8 @@ export class MonitoringStack extends cdk.Stack {
 
       new cloudwatch.Alarm(this, "BillingLimitAlarm", {
         alarmName: `indiai-billing-limit-alarm-50`,
-        alarmDescription: "Alarms when estimated AWS monthly charges exceed $50. Set your email in SNS subscription after deploy.",
+        alarmDescription:
+          "Alarms when estimated AWS monthly charges exceed $50. Set your email in SNS subscription after deploy.",
         metric: billingMetric,
         threshold: 50,
         evaluationPeriods: 1,

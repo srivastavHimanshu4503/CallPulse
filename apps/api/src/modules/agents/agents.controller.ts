@@ -116,14 +116,16 @@ export class AgentsController {
         tenantId,
         id,
         userId,
-        (req.body?.userName as string | undefined) ?? userId
+        (req.body?.userName as string | undefined) ?? userId,
       );
       sendSuccess(res, result, 200);
     } catch (error: any) {
       const msg = getCleanErrorMessage(error);
-      const status = /not found|inactive/i.test(msg) ? 404
-                    : /not configured/i.test(msg) ? 503
-                    : 500;
+      const status = /not found|inactive/i.test(msg)
+        ? 404
+        : /not configured/i.test(msg)
+          ? 503
+          : 500;
       sendError(res, msg, status);
     }
   }
@@ -291,7 +293,7 @@ export class AgentsController {
         provider,
         voice,
         language,
-        voiceSettings
+        voiceSettings,
       });
       const contentType = provider === "sarvam" ? "audio/wav" : "audio/mpeg";
       res.setHeader("Content-Type", contentType);
@@ -301,4 +303,3 @@ export class AgentsController {
     }
   }
 }
-

@@ -21,7 +21,15 @@ const TONES: Record<KpiTone, string> = {
   negative: "bg-negative-50 text-negative-500 ring-negative-500/15",
 };
 
-export function Kpi({ label, value, delta, hint, icon: Icon, tone = "brand", onClick }: KpiProps): React.JSX.Element {
+export function Kpi({
+  label,
+  value,
+  delta,
+  hint,
+  icon: Icon,
+  tone = "brand",
+  onClick,
+}: KpiProps): React.JSX.Element {
   return (
     <button
       type="button"
@@ -30,13 +38,19 @@ export function Kpi({ label, value, delta, hint, icon: Icon, tone = "brand", onC
       className="text-left w-full rounded-xl border border-line-default bg-bg-raised p-4 shadow-card hover:shadow-raised hover:border-line-strong transition-all disabled:cursor-default disabled:hover:shadow-card disabled:hover:border-line-default"
     >
       <div className="flex items-start justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">{label}</span>
-        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1 ${TONES[tone]}`}>
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+          {label}
+        </span>
+        <span
+          className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1 ${TONES[tone]}`}
+        >
           <Icon className="h-3.5 w-3.5" />
         </span>
       </div>
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-[22px] font-semibold text-fg-primary tracking-tight leading-none">{value}</span>
+        <span className="text-[22px] font-semibold text-fg-primary tracking-tight leading-none">
+          {value}
+        </span>
         {delta && (
           <span
             className={`inline-flex items-center gap-0.5 text-[10.5px] font-semibold ${

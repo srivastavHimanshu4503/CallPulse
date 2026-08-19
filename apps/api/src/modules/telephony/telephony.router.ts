@@ -20,7 +20,7 @@ router.get(
   requireFeature("PHONE_NUMBER_PURCHASE"),
   async (req: Request, res: Response) => {
     try {
-      const country = (String(req.query.country || "US").toUpperCase()) as "US" | "IN";
+      const country = String(req.query.country || "US").toUpperCase() as "US" | "IN";
 
       if (country === "IN") {
         if (!plivo.isPlivoConfigured()) {
@@ -48,15 +48,12 @@ router.get(
 
 // Which providers are usable right now — the UI hides/disables buy buttons
 // for countries whose provider isn't configured yet.
-router.get(
-  "/providers-status",
-  async (_req: Request, res: Response) => {
-    sendSuccess(res, {
-      twilio: twilio.isTwilioConfigured(),
-      plivo: plivo.isPlivoConfigured(),
-    });
-  },
-);
+router.get("/providers-status", async (_req: Request, res: Response) => {
+  sendSuccess(res, {
+    twilio: twilio.isTwilioConfigured(),
+    plivo: plivo.isPlivoConfigured(),
+  });
+});
 
 export const telephonyRouter = router;
 export default telephonyRouter;

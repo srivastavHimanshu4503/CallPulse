@@ -3,11 +3,7 @@ import { useEffect } from "react";
 // Injects BreadcrumbList JSON-LD into <head> so Google renders breadcrumb
 // navigation in search results. Cleans up on unmount so route changes don't
 // leave stale schema. Not visible to users — pure crawler signal.
-export function BreadcrumbSchema({
-  items,
-}: {
-  items: { name: string; url: string }[];
-}) {
+export function BreadcrumbSchema({ items }: { items: { name: string; url: string }[] }) {
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "application/ld+json";

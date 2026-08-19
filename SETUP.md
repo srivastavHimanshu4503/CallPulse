@@ -26,20 +26,26 @@ Make sure the following tools are installed on your machine:
 ## 🚀 2. Step-by-Step Setup
 
 ### Step 2.1: Clone the Repository
+
 ```bash
 git clone <repo_url> DeskBuddy
 cd DeskBuddy
 ```
 
 ### Step 2.2: Install Dependencies
+
 Run the following from the root directory:
+
 ```bash
 pnpm install
 ```
-*(If prompted by pnpm v11 regarding dependency build scripts, run `pnpm approve-builds --all`)*
+
+_(If prompted by pnpm v11 regarding dependency build scripts, run `pnpm approve-builds --all`)_
 
 ### Step 2.3: Set Up Environment Variables
+
 Create your local `.env` file from the example template:
+
 ```bash
 # On Windows PowerShell:
 Copy-Item .env.example .env
@@ -57,6 +63,7 @@ cp .env.example packages/db/.env
 ```
 
 Create frontend env files:
+
 - **`apps/web/.env.local`**:
   ```env
   VITE_API_URL=http://localhost:3000
@@ -69,17 +76,23 @@ Create frontend env files:
 > 💡 **Note**: In `.env`, default placeholder keys are provided. Replace API keys (e.g., `OPENAI_API_KEY`, `LIVEKIT_URL`, `TWILIO_*`, `RAZORPAY_*`) with team credentials if you are testing voice, payment, or telephony features.
 
 ### Step 2.4: Start PostgreSQL & Typesense (Docker)
+
 Ensure Docker Desktop is running, then execute:
+
 ```bash
 docker compose up -d postgres typesense
 ```
+
 To verify containers are running:
+
 ```bash
 docker compose ps
 ```
 
 ### Step 2.5: Generate Prisma Client, Apply Migrations & Build Packages
+
 Generate the Prisma types, apply database schema migrations, and build workspace packages:
+
 ```bash
 pnpm db:generate
 pnpm db:migrate
@@ -91,12 +104,15 @@ pnpm build
 ## 💻 3. Running the Development Servers
 
 ### Run Everything Together
+
 To start all 5 applications concurrently:
+
 ```bash
 pnpm dev
 ```
 
 ### Available Endpoints:
+
 - 🌐 **Web App (Frontend Dashboard)**: [http://localhost:5173](http://localhost:5173)
 - 🔌 **Core REST API Backend**: [http://localhost:3000/api/v1](http://localhost:3000/api/v1)
 - 🎙️ **Voice Server (LiveKit Agent)**: `http://localhost:3001`

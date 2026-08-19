@@ -1,16 +1,8 @@
 import { db } from "../../config/database.js";
-import {
-  buildEntitlements,
-  PLAN_CREDITS,
-  type Entitlements,
-} from "@antigravity/types";
+import { buildEntitlements, PLAN_CREDITS, type Entitlements } from "@antigravity/types";
 
 type CreditReason =
-  | "SIGNUP_GRANT"
-  | "PLAN_GRANT"
-  | "TOPUP_PURCHASE"
-  | "CALL_DEDUCTION"
-  | "ADJUSTMENT";
+  "SIGNUP_GRANT" | "PLAN_GRANT" | "TOPUP_PURCHASE" | "CALL_DEDUCTION" | "ADJUSTMENT";
 
 export class BillingService {
   async getEntitlements(tenantId: string): Promise<Entitlements & { periodEnd: string | null }> {
@@ -162,7 +154,11 @@ export class BillingService {
    * ORDER's notes (server-to-server, never from the browser) and routes to
    * the right grant. Idempotent end to end.
    */
-  async fulfillOrder(orderId: string, paymentId: string, periodDays: number): Promise<string | null> {
+  async fulfillOrder(
+    orderId: string,
+    paymentId: string,
+    periodDays: number,
+  ): Promise<string | null> {
     const { fetchOrder } = await import("./razorpay.js");
     const order = await fetchOrder(orderId);
     const tenantId: string | undefined = order?.notes?.tenantId;
@@ -175,7 +171,9 @@ export class BillingService {
       const credits = Number(order?.notes?.credits || 0);
       if (credits > 0) await this.grantTopup(tenantId, paymentId, credits);
     } else if (product === "phone-number") {
-      const country = (String(order?.notes?.country || "US").toUpperCase() === "IN" ? "IN" : "US") as "US" | "IN";
+      const country = (
+        String(order?.notes?.country || "US").toUpperCase() === "IN" ? "IN" : "US"
+      ) as "US" | "IN";
       await this.provisionPhoneNumber(
         tenantId,
         String(order?.notes?.agentId || ""),

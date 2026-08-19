@@ -13,10 +13,7 @@ export const OPENAI_MODELS = {
 
 export type OpenAIModelId = (typeof OPENAI_MODELS)[keyof typeof OPENAI_MODELS];
 
-export const OPENAI_MODEL_IDS = Object.values(OPENAI_MODELS) as [
-  OpenAIModelId,
-  ...OpenAIModelId[],
-];
+export const OPENAI_MODEL_IDS = Object.values(OPENAI_MODELS) as [OpenAIModelId, ...OpenAIModelId[]];
 
 /**
  * Default for structured extraction (intent, CRM fields, lead scoring):

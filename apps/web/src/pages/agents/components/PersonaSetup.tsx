@@ -39,7 +39,6 @@ const MODELS = [
 const GREETING_MAX = 240;
 const FALLBACK_MAX = 240;
 
-
 export function PersonaSetup({
   name,
   setName,

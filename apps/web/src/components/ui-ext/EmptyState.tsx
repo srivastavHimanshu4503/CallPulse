@@ -29,13 +29,20 @@ export function EmptyState({
       )}
     >
       {Icon && (
-        <div className={cn("mb-3 flex items-center justify-center rounded-full bg-bg-raised border border-line-default text-brand-500", iconSize)}>
+        <div
+          className={cn(
+            "mb-3 flex items-center justify-center rounded-full bg-bg-raised border border-line-default text-brand-500",
+            iconSize,
+          )}
+        >
           <Icon className={size === "lg" ? "h-7 w-7" : "h-5 w-5"} />
         </div>
       )}
       <h3 className="text-sm font-semibold text-fg-primary">{title}</h3>
       {description && (
-        <p className="max-w-sm text-[12px] text-fg-secondary mt-1.5 leading-relaxed">{description}</p>
+        <p className="max-w-sm text-[12px] text-fg-secondary mt-1.5 leading-relaxed">
+          {description}
+        </p>
       )}
       {action && <div className="mt-4">{action}</div>}
     </div>

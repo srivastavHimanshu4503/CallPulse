@@ -22,17 +22,9 @@ export { SearchInput } from "./SearchInput.js";
 export { Timeline, TimelineItem, activityMeta } from "./Timeline.js";
 export { FilterBuilder, evaluateCondition } from "./FilterBuilder.js";
 export type { FilterFieldDef } from "./FilterBuilder.js";
-export {
-  computeLeadScore,
-  BAND_LABEL,
-  BAND_TONE,
-} from "./leadScore.js";
+export { computeLeadScore, BAND_LABEL, BAND_TONE } from "./leadScore.js";
 export type { ScoreBreakdown } from "./leadScore.js";
-export {
-  readConsent,
-  canSend,
-  DEFAULT_CONSENT,
-} from "./consent.js";
+export { readConsent, canSend, DEFAULT_CONSENT } from "./consent.js";
 export type { ConsentState } from "./consent.js";
 export {
   buildSmartSegments,

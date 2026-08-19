@@ -4,7 +4,7 @@ import { getTool } from "./registry.js";
 export async function executeTool(
   name: string,
   argsString: string,
-  context: CallContext
+  context: CallContext,
 ): Promise<string> {
   console.log(`[ToolExecutor] Executing tool "${name}" with args: ${argsString}`);
   const tool = getTool(name);
@@ -16,7 +16,7 @@ export async function executeTool(
   try {
     // Parse arguments with safety check for empty/missing arguments
     const parsedArgs = argsString.trim() ? JSON.parse(argsString) : {};
-    
+
     // Execute the tool and return its response string
     const result = await tool.execute(parsedArgs, context);
     console.log(`[ToolExecutor] Tool "${name}" executed successfully`);

@@ -52,9 +52,7 @@ export class WhatsAppTemplateService {
     });
     if (!res.ok) throw new Error(`Template list failed: ${res.status} ${await res.text()}`);
     const data = (await res.json()) as { contents: any[] };
-    return data.contents
-      .map(parseContent)
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    return data.contents.map(parseContent).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
   /**

@@ -65,10 +65,7 @@ async function audit(path) {
     title = extract(html, /<title[^>]*>([^<]+)<\/title>/i) || "";
     if (!title) errors.push("missing <title>");
 
-    const canonical = extract(
-      html,
-      /<link[^>]*rel="canonical"[^>]*href="([^"]+)"/i,
-    );
+    const canonical = extract(html, /<link[^>]*rel="canonical"[^>]*href="([^"]+)"/i);
     if (!canonical) {
       errors.push("missing canonical");
     } else if (canonical !== url) {
@@ -125,9 +122,7 @@ async function main() {
     }
   }
 
-  console.log(
-    `\n${results.length - failed}/${results.length} URLs pass. ${failed} issue(s).`,
-  );
+  console.log(`\n${results.length - failed}/${results.length} URLs pass. ${failed} issue(s).`);
   process.exit(failed ? 1 : 0);
 }
 

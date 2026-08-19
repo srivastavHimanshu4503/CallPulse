@@ -5,7 +5,10 @@ dotenv.config();
 
 const truthy = (v: string | undefined) => v === "true" || v === "1";
 
-const optionalString = z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined));
+const optionalString = z
+  .string()
+  .optional()
+  .transform((v) => (v && v.trim() ? v.trim() : undefined));
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "staging", "production", "test"]).default("development"),
@@ -74,7 +77,10 @@ const envSchema = z.object({
   ENABLE_POST_CALL_TEMPORAL: z.string().optional().transform(truthy),
   ENABLE_MULTI_TENANT: z.string().optional().transform(truthy),
 
-  POST_CALL_SERVER_URL: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : "http://localhost:3002")),
+  POST_CALL_SERVER_URL: z
+    .string()
+    .optional()
+    .transform((v) => (v && v.trim() ? v.trim() : "http://localhost:3002")),
   POST_CALL_SERVER_SECRET: optionalString,
 });
 
@@ -114,9 +120,12 @@ const API_KEY_ENV: Record<LLMProviderName, string> = {
 
 const resolveApiKey = (provider: LLMProviderName): string | undefined => {
   switch (provider) {
-    case "openai": return env.OPENAI_API_KEY;
-    case "google": return env.GEMINI_API_KEY;
-    case "anthropic": return env.ANTHROPIC_API_KEY;
+    case "openai":
+      return env.OPENAI_API_KEY;
+    case "google":
+      return env.GEMINI_API_KEY;
+    case "anthropic":
+      return env.ANTHROPIC_API_KEY;
   }
 };
 
@@ -132,7 +141,7 @@ const azureOpenAI =
 
 const buildLLMConfig = (
   provider: LLMProviderName,
-  modelOverride: string | undefined
+  modelOverride: string | undefined,
 ): LLMProviderConfig => {
   // Azure replaces api.openai.com for the openai provider when configured.
   // serviceTier is deliberately NOT set on Azure — the parameter is rejected
@@ -153,7 +162,9 @@ const buildLLMConfig = (
   }
   const apiKey = resolveApiKey(provider);
   if (!apiKey) {
-    throw new Error(`LLM provider "${provider}" is configured but ${API_KEY_ENV[provider]} is missing`);
+    throw new Error(
+      `LLM provider "${provider}" is configured but ${API_KEY_ENV[provider]} is missing`,
+    );
   }
   return {
     provider,
@@ -168,7 +179,12 @@ const buildLLMConfig = (
 const primaryLLM = buildLLMConfig(env.LLM_PROVIDER, env.LLM_MODEL);
 
 const parseList = (input: string | undefined): string[] =>
-  input ? input.split(",").map((s) => s.trim()).filter(Boolean) : [];
+  input
+    ? input
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
 
 const fallbackNames = parseList(env.LLM_FALLBACK_PROVIDERS) as LLMProviderName[];
 const fallbackModels = parseList(env.LLM_FALLBACK_MODELS);
@@ -178,7 +194,7 @@ for (const p of fallbackNames) {
   }
 }
 const fallbackLLMs: LLMProviderConfig[] = fallbackNames.map((provider, idx) =>
-  buildLLMConfig(provider, fallbackModels[idx])
+  buildLLMConfig(provider, fallbackModels[idx]),
 );
 
 export const config = {

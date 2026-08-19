@@ -28,7 +28,12 @@ interface TestCallModalProps {
  * can read the Room. The outer component owns just the modal shell + the
  * `useTestCall` control layer.
  */
-export function TestCallModal({ agentId, agentName, isOpen, onClose }: TestCallModalProps): React.JSX.Element {
+export function TestCallModal({
+  agentId,
+  agentName,
+  isOpen,
+  onClose,
+}: TestCallModalProps): React.JSX.Element {
   const call = useTestCall(agentId);
 
   const handleClose = React.useCallback(() => {
@@ -56,7 +61,9 @@ export function TestCallModal({ agentId, agentName, isOpen, onClose }: TestCallM
               <Radio className="h-3.5 w-3.5 text-primary" />
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-text-placeholder">Test Call</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-text-placeholder">
+                Test Call
+              </div>
               <div className="text-xs font-semibold text-text-primary truncate">{agentName}</div>
             </div>
           </div>
@@ -126,7 +133,7 @@ function useCombinedTranscripts(): Array<{
       source: Track.Source.Microphone,
       publication: microphoneTrack,
     }),
-    [localParticipant, microphoneTrack]
+    [localParticipant, microphoneTrack],
   );
   const { segments: userTranscriptions } = useTrackTranscription(micRef);
 
@@ -152,14 +159,18 @@ function useCombinedTranscripts(): Array<{
         firstReceivedTime: v.firstReceivedTime,
       })),
     ]
-      .filter(
-        (seg) => !seg.text.includes("<instruction>") && !seg.text.includes("</instruction>")
-      )
+      .filter((seg) => !seg.text.includes("<instruction>") && !seg.text.includes("</instruction>"))
       .sort((a, b) => (a.firstReceivedTime ?? 0) - (b.firstReceivedTime ?? 0));
   }, [agentTranscriptions, userTranscriptions]);
 }
 
-function TranscriptView({ call, agentName }: { call: CallLike; agentName: string }): React.JSX.Element {
+function TranscriptView({
+  call,
+  agentName,
+}: {
+  call: CallLike;
+  agentName: string;
+}): React.JSX.Element {
   const segments = useCombinedTranscripts();
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const [autoScroll, setAutoScroll] = React.useState(true);
@@ -179,7 +190,9 @@ function TranscriptView({ call, agentName }: { call: CallLike; agentName: string
   return (
     <>
       <div className="px-5 py-2.5 border-b border-border bg-background shrink-0 flex items-center justify-between">
-        <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Live Transcript</span>
+        <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
+          Live Transcript
+        </span>
         {segments.length > 0 && (
           <span className="text-[10px] font-semibold text-text-placeholder tabular-nums">
             {segments.length} {segments.length === 1 ? "message" : "messages"}
@@ -194,7 +207,9 @@ function TranscriptView({ call, agentName }: { call: CallLike; agentName: string
       >
         {segments.length === 0 ? (
           <div className="h-full flex items-center justify-center px-6 text-center">
-            <div className="text-xs text-text-placeholder font-medium">{emptyStateText(call.status)}</div>
+            <div className="text-xs text-text-placeholder font-medium">
+              {emptyStateText(call.status)}
+            </div>
           </div>
         ) : (
           <div className="flex flex-col gap-2.5 px-5 py-4 pb-6">
@@ -221,8 +236,10 @@ function StatusStrip({
   call: CallLike;
   agentState: AgentState;
 }): React.JSX.Element {
-  const canStart = call.status === "idle" || call.status === "disconnected" || call.status === "error";
-  const showTimer = call.status === "connected" || call.status === "reconnecting" || call.status === "disconnected";
+  const canStart =
+    call.status === "idle" || call.status === "disconnected" || call.status === "error";
+  const showTimer =
+    call.status === "connected" || call.status === "reconnecting" || call.status === "disconnected";
 
   return (
     <section className="px-4 py-3 border-b border-border bg-background shrink-0">
@@ -257,11 +274,15 @@ function StatusStrip({
                   call.micMuted
                     ? "bg-error/10 border-error/30 text-error"
                     : "bg-background border-border text-text-primary hover:bg-surface",
-                  "disabled:opacity-50 disabled:cursor-not-allowed"
+                  "disabled:opacity-50 disabled:cursor-not-allowed",
                 )}
                 aria-label={call.micMuted ? "Unmute" : "Mute"}
               >
-                {call.micMuted ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
+                {call.micMuted ? (
+                  <MicOff className="h-3.5 w-3.5" />
+                ) : (
+                  <Mic className="h-3.5 w-3.5" />
+                )}
               </button>
               <button
                 type="button"
@@ -319,7 +340,7 @@ const Bubble = React.memo(function Bubble({
             isAgent
               ? "bg-background border border-border text-text-primary rounded-tl-[3px]"
               : "bg-primary text-primary-text rounded-tr-[3px]",
-            !isFinal && "opacity-80"
+            !isFinal && "opacity-80",
           )}
         >
           <div className="whitespace-pre-wrap break-words">{text}</div>
@@ -334,10 +355,21 @@ const Bubble = React.memo(function Bubble({
   );
 });
 
-function StatusIndicator({ status, agentState }: { status: TestCallStatus; agentState: AgentState }): React.JSX.Element {
+function StatusIndicator({
+  status,
+  agentState,
+}: {
+  status: TestCallStatus;
+  agentState: AgentState;
+}): React.JSX.Element {
   const p = presentation(status, agentState);
   return (
-    <div className={cn("relative h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-200 shrink-0", p.ring)}>
+    <div
+      className={cn(
+        "relative h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-200 shrink-0",
+        p.ring,
+      )}
+    >
       {p.isLoading ? (
         <Loader2 className={cn("h-4 w-4 animate-spin", p.fill)} />
       ) : (
@@ -359,46 +391,108 @@ interface Presentation {
 
 const presentation = (status: TestCallStatus, agentState: AgentState): Presentation => {
   if (status === "requesting-token" || status === "connecting") {
-    return { label: "Preparing…", ring: "bg-warning/10 border border-warning/20", fill: "text-warning", dot: "", isLoading: true };
+    return {
+      label: "Preparing…",
+      ring: "bg-warning/10 border border-warning/20",
+      fill: "text-warning",
+      dot: "",
+      isLoading: true,
+    };
   }
   if (status === "reconnecting") {
-    return { label: "Reconnecting…", ring: "bg-warning/10 border border-warning/20", fill: "text-warning", dot: "", isLoading: true };
+    return {
+      label: "Reconnecting…",
+      ring: "bg-warning/10 border border-warning/20",
+      fill: "text-warning",
+      dot: "",
+      isLoading: true,
+    };
   }
   if (status === "error") {
-    return { label: "Couldn't Connect", ring: "bg-error/10 border border-error/20", fill: "text-error", dot: "bg-error", isLoading: false };
+    return {
+      label: "Couldn't Connect",
+      ring: "bg-error/10 border border-error/20",
+      fill: "text-error",
+      dot: "bg-error",
+      isLoading: false,
+    };
   }
   if (status === "disconnected") {
-    return { label: "Call Ended", ring: "bg-surface border border-border", fill: "text-text-secondary", dot: "bg-text-placeholder", isLoading: false };
+    return {
+      label: "Call Ended",
+      ring: "bg-surface border border-border",
+      fill: "text-text-secondary",
+      dot: "bg-text-placeholder",
+      isLoading: false,
+    };
   }
   if (status === "idle") {
-    return { label: "Ready", ring: "bg-surface border border-border", fill: "text-text-secondary", dot: "bg-text-secondary", isLoading: false };
+    return {
+      label: "Ready",
+      ring: "bg-surface border border-border",
+      fill: "text-text-secondary",
+      dot: "bg-text-secondary",
+      isLoading: false,
+    };
   }
   if (agentState === "speaking") {
-    return { label: "Agent Speaking", ring: "bg-primary/10 border border-primary/30", fill: "text-primary", dot: "bg-primary", isLoading: false };
+    return {
+      label: "Agent Speaking",
+      ring: "bg-primary/10 border border-primary/30",
+      fill: "text-primary",
+      dot: "bg-primary",
+      isLoading: false,
+    };
   }
   if (agentState === "thinking") {
-    return { label: "Thinking…", ring: "bg-primary/10 border border-primary/30", fill: "text-primary", dot: "bg-primary", isLoading: false };
+    return {
+      label: "Thinking…",
+      ring: "bg-primary/10 border border-primary/30",
+      fill: "text-primary",
+      dot: "bg-primary",
+      isLoading: false,
+    };
   }
   if (agentState === "listening") {
-    return { label: "Listening", ring: "bg-success/10 border border-success/30", fill: "text-success", dot: "bg-success", isLoading: false };
+    return {
+      label: "Listening",
+      ring: "bg-success/10 border border-success/30",
+      fill: "text-success",
+      dot: "bg-success",
+      isLoading: false,
+    };
   }
-  return { label: "Getting ready…", ring: "bg-warning/10 border border-warning/20", fill: "text-warning", dot: "", isLoading: true };
+  return {
+    label: "Getting ready…",
+    ring: "bg-warning/10 border border-warning/20",
+    fill: "text-warning",
+    dot: "",
+    isLoading: true,
+  };
 };
 
 const emptyStateText = (status: TestCallStatus): string => {
   switch (status) {
-    case "idle": return "Click Start to begin the test call.";
+    case "idle":
+      return "Click Start to begin the test call.";
     case "requesting-token":
-    case "connecting": return "Preparing the call…";
-    case "reconnecting": return "Reconnecting…";
-    case "connected": return "Agent is coming online…";
-    case "disconnected": return "This call has ended.";
-    case "error": return "Something went wrong. Please try again.";
+    case "connecting":
+      return "Preparing the call…";
+    case "reconnecting":
+      return "Reconnecting…";
+    case "connected":
+      return "Agent is coming online…";
+    case "disconnected":
+      return "This call has ended.";
+    case "error":
+      return "Something went wrong. Please try again.";
   }
 };
 
 const formatDuration = (seconds: number): string => {
-  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const m = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 };

@@ -23,9 +23,7 @@ export interface AvailableNumber {
   region: string | null;
 }
 
-export const listAvailableNumbers = async (
-  areaCode?: string,
-): Promise<AvailableNumber[]> => {
+export const listAvailableNumbers = async (areaCode?: string): Promise<AvailableNumber[]> => {
   const numbers = await getClient()
     .availablePhoneNumbers("US")
     .local.list({
@@ -60,9 +58,7 @@ export const attachNumberToSipTrunk = async (phoneNumberSid: string): Promise<vo
   if (!cachedTrunkSid) {
     const trunks = await client.trunking.v1.trunks.list({ limit: 20 });
     if (trunks.length === 0) {
-      throw new Error(
-        "No Twilio elastic SIP trunk found — create one pointing at LiveKit first",
-      );
+      throw new Error("No Twilio elastic SIP trunk found — create one pointing at LiveKit first");
     }
     let chosen = trunks[0]!.sid;
     if (trunks.length > 1) {

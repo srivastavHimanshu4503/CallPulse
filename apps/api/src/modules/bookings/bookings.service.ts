@@ -34,7 +34,7 @@ export const bookingsService = {
         startTime: "desc",
       },
     });
-    
+
     return bookings.map((b: any) => ({
       ...b,
       startTime: b.startTime.toISOString(),
@@ -55,7 +55,7 @@ export const bookingsService = {
   async updateBooking(
     tenantId: string,
     bookingId: string,
-    data: UpdateBookingInput
+    data: UpdateBookingInput,
   ): Promise<Booking> {
     const existing = await db.booking.findFirst({
       where: { id: bookingId, tenantId },
@@ -86,12 +86,14 @@ export const bookingsService = {
       where: { id: bookingId },
       data: bookingData,
       include: {
-        contact: { select: { id: true, firstName: true, lastName: true, emails: true, phones: true } },
+        contact: {
+          select: { id: true, firstName: true, lastName: true, emails: true, phones: true },
+        },
         agent: { select: { id: true, name: true } },
         assignee: { select: { id: true, name: true, email: true } },
       },
     });
-    
+
     return {
       ...updated,
       startTime: updated.startTime.toISOString(),

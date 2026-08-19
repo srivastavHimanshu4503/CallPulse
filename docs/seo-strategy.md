@@ -12,6 +12,7 @@
 DeskBuddy is an AI phone receptionist for Indian SMBs (Hindi + English + 4 other Indian languages, 24/7, bookings + CRM + WhatsApp follow-ups).
 
 We're competing in three overlapping SERP battles:
+
 1. **Category term** — "AI receptionist India", "AI phone answering service India", "AI voice agent Hindi"
 2. **Vertical term** — "AI receptionist for salon", "AI receptionist for clinic", etc.
 3. **Geo term** — "AI receptionist Mumbai", "AI receptionist Delhi", etc.
@@ -26,20 +27,20 @@ Baseline (2026-07-26): homepage is technically clean (GSC verified, Bing verifie
 
 ### 2.1 Primary cluster — where we want rank #1
 
-| Keyword | Est. monthly volume (IN) | Difficulty | Intent | Priority |
-|---|---|---|---|---|
-| AI receptionist India | ~500–1,000 | Low–Medium | High (buying) | **P0** |
-| AI phone answering service India | ~200–500 | Low | High | **P0** |
-| AI voice agent Hindi | ~300–800 | Low | Medium | P0 |
-| AI receptionist Hindi | ~100–300 | Low | High | P0 |
-| virtual receptionist India | ~500–1,000 | Medium | High | P1 |
-| AI calling platform India | ~200–500 | Medium | Medium | P1 |
-| automated call answering service | ~1,000–2,000 | Medium | High | P1 |
-| Hindi voice AI | ~500–1,500 | Low | Low (mixed) | P2 |
-| AI receptionist for small business India | ~100–300 | Low | High | P1 |
-| missed call solution India | ~1,000–3,000 | High | Medium | P2 |
+| Keyword                                  | Est. monthly volume (IN) | Difficulty | Intent        | Priority |
+| ---------------------------------------- | ------------------------ | ---------- | ------------- | -------- |
+| AI receptionist India                    | ~500–1,000               | Low–Medium | High (buying) | **P0**   |
+| AI phone answering service India         | ~200–500                 | Low        | High          | **P0**   |
+| AI voice agent Hindi                     | ~300–800                 | Low        | Medium        | P0       |
+| AI receptionist Hindi                    | ~100–300                 | Low        | High          | P0       |
+| virtual receptionist India               | ~500–1,000               | Medium     | High          | P1       |
+| AI calling platform India                | ~200–500                 | Medium     | Medium        | P1       |
+| automated call answering service         | ~1,000–2,000             | Medium     | High          | P1       |
+| Hindi voice AI                           | ~500–1,500               | Low        | Low (mixed)   | P2       |
+| AI receptionist for small business India | ~100–300                 | Low        | High          | P1       |
+| missed call solution India               | ~1,000–3,000             | High       | Medium        | P2       |
 
-*Volume estimates are directional — validate with Google Keyword Planner + Ahrefs once we have those accounts.*
+_Volume estimates are directional — validate with Google Keyword Planner + Ahrefs once we have those accounts._
 
 ### 2.2 Vertical cluster — long-tail expansion (Phase 2)
 
@@ -100,6 +101,7 @@ Each geo page targets `"AI receptionist {city}"` + `"virtual receptionist {city}
 - ⚠️ Bing shows homepage as "Indexed successfully" but last crawl was pre-fix; re-crawl requested
 
 **Social preview:**
+
 - ✅ Facebook OG Debugger — card rendering correctly (branded blue "DeskBuddy" card visible)
 - ⚠️ LinkedIn Post Inspector — showing blank due to stale LinkedIn cache; use `?v=2` workaround for testing; will self-heal in ~7 days
 
@@ -127,21 +129,21 @@ pnpm add -D vite-plugin-prerender puppeteer
 Edit `apps/website/vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import prerender from 'vite-plugin-prerender';
-import path from 'path';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import prerender from "vite-plugin-prerender";
+import path from "path";
 
 export default defineConfig({
   plugins: [
     react(),
     prerender({
-      staticDir: path.join(__dirname, 'dist'),
+      staticDir: path.join(__dirname, "dist"),
       routes: [
-        '/',
+        "/",
         // Add vertical + geo routes here as they're built (Phase 2/3)
       ],
-      renderer: '@prerenderer/renderer-puppeteer',
+      renderer: "@prerenderer/renderer-puppeteer",
       rendererOptions: {
         renderAfterTime: 3000, // wait for framer-motion + font swap
         headless: true,
@@ -152,6 +154,7 @@ export default defineConfig({
 ```
 
 **Acceptance criteria:**
+
 - `curl https://www.deskbuddy.in/` returns HTML with `<h1>Every call answered...</h1>` AND `<section>Features...</section>` AND all sections (Hero, Features, HowItWorks, Languages, Industries, Pricing, FAQ, FinalCTA) rendered as static markup.
 - `<div id="root">...</div>` contains the actual DOM tree, not the fallback we hardcoded.
 - `curl -A "Bingbot/2.0" ...` returns identical content (no cloaking).
@@ -171,21 +174,21 @@ Add to `apps/website/index.html` (or dynamically generate from `FAQ.tsx` data):
 
 ```html
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Does DeskBuddy really speak Hindi?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes — DeskBuddy handles native Hindi conversations end-to-end..."
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does DeskBuddy really speak Hindi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — DeskBuddy handles native Hindi conversations end-to-end..."
+        }
       }
-    },
-    // ... one Question per FAQ item
-  ]
-}
+      // ... one Question per FAQ item
+    ]
+  }
 </script>
 ```
 
@@ -200,6 +203,7 @@ Add to `apps/website/index.html` (or dynamically generate from `FAQ.tsx` data):
 **Owner:** Founder / Marketing (not engineer — needs a real business address and phone verification).
 
 **Steps:**
+
 1. Go to https://business.google.com
 2. Add DeskBuddy as a service-area business
 3. Categories: "Software company" + "Business consultant" + "Answering service"
@@ -230,7 +234,7 @@ Currently sitemap has 1 URL (`/`). Add anchor URLs so Google discovers deep cont
 <url><loc>https://www.deskbuddy.in/#how-it-works</loc>...</url>
 ```
 
-*Not as impactful as adding real routes (which comes in Phase 2), but low-effort and can't hurt.*
+_Not as impactful as adding real routes (which comes in Phase 2), but low-effort and can't hurt._
 
 ---
 
@@ -260,6 +264,7 @@ Set up `/blog/*` routes. Publishing calendar: **2 posts per week** for 8 weeks =
 16. "First-week playbook: getting an AI receptionist live in <30 minutes"
 
 **On-page SEO for each post:**
+
 - Target keyword in title, first paragraph, one H2
 - 1,200–2,000 words
 - 3–5 internal links to product pages
@@ -282,6 +287,7 @@ Create 8 dedicated routes:
 - `/for/laundry`
 
 Each page:
+
 - H1 targets `"AI receptionist for {vertical}"`
 - Real use case + example call flow + testimonial from an actual customer in that vertical
 - Vertical-specific pricing (or the same pricing, framed for that vertical)
@@ -290,6 +296,7 @@ Each page:
 - BreadcrumbList JSON-LD
 
 **Wireframe pattern** (reuse from Hero component):
+
 ```
 Hero: "AI receptionist for {vertical}. {Vertical-specific pain point.}"
 Problem: "You lose {X}% of {vertical customers} because {reason}."
@@ -319,21 +326,21 @@ Content: city-specific business types, local testimonial if available, mention o
 
 Target these in order (highest DR first):
 
-| Directory | DR | Effort | Notes |
-|---|---|---|---|
-| Product Hunt | 92 | High (need launch prep) | Schedule launch for Tuesday India morning |
-| G2 | 91 | Medium | Category: "Answering Services", "AI Voice Assistants" |
-| Capterra | 90 | Medium | Same categories |
-| YourStory | 82 | Low | India-specific startup directory |
-| Inc42 | 79 | Low | India tech media |
-| GetApp | 78 | Medium | Sub-brand of Capterra |
-| Software Suggest | 71 | Low | India-focused |
-| SaaSworthy | 68 | Low | Free listing |
-| Business.com | 66 | Low | Free listing |
-| Startupranking | 55 | Low | Free |
-| BetaList | 64 | Low | For beta launches only |
-| IndiaMART (buyer listing) | 88 | Medium | India B2B, high intent |
-| JustDial (business listing) | 78 | Low | India, complements GBP |
+| Directory                   | DR  | Effort                  | Notes                                                 |
+| --------------------------- | --- | ----------------------- | ----------------------------------------------------- |
+| Product Hunt                | 92  | High (need launch prep) | Schedule launch for Tuesday India morning             |
+| G2                          | 91  | Medium                  | Category: "Answering Services", "AI Voice Assistants" |
+| Capterra                    | 90  | Medium                  | Same categories                                       |
+| YourStory                   | 82  | Low                     | India-specific startup directory                      |
+| Inc42                       | 79  | Low                     | India tech media                                      |
+| GetApp                      | 78  | Medium                  | Sub-brand of Capterra                                 |
+| Software Suggest            | 71  | Low                     | India-focused                                         |
+| SaaSworthy                  | 68  | Low                     | Free listing                                          |
+| Business.com                | 66  | Low                     | Free listing                                          |
+| Startupranking              | 55  | Low                     | Free                                                  |
+| BetaList                    | 64  | Low                     | For beta launches only                                |
+| IndiaMART (buyer listing)   | 88  | Medium                  | India B2B, high intent                                |
+| JustDial (business listing) | 78  | Low                     | India, complements GBP                                |
 
 ### 6.2 Content marketing — earned backlinks
 
@@ -372,6 +379,7 @@ Every blog post links to 3–5 relevant vertical pages and to `/pricing`. Every 
 ### 7.4 URL structure
 
 Keep URLs short and keyword-rich:
+
 - ✅ `/for/salon` (not `/verticals/salon-industry-solution`)
 - ✅ `/blog/ai-receptionist-cost-comparison-india` (not `/blog/2026/07/26/...`)
 - ✅ `/city/mumbai` (not `/locations/mumbai-maharashtra-india`)
@@ -386,6 +394,7 @@ Keep URLs short and keyword-rich:
 ### 7.6 Core Web Vitals
 
 Run https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fwww.deskbuddy.in monthly. Targets:
+
 - LCP: <2.5s
 - INP: <200ms
 - CLS: <0.1
@@ -419,16 +428,17 @@ After pre-render lands, LCP should improve dramatically (no JS-render dependency
 
 ## 9. Roadmap summary
 
-| Phase | Timeline | Deliverables | Owner |
-|---|---|---|---|
-| **1. Technical fixes** | Week 1 | Pre-render, FAQ schema, GBP, analytics, sitemap expansion | Engineer + Founder (GBP) |
-| **2a. Blog** | Weeks 2–8 | 16 posts on target topics | Content writer + Engineer (blog infra) |
-| **2b. Vertical pages** | Weeks 3–10 | 8 vertical landing pages | Engineer + Designer |
-| **2c. Geo pages** | Weeks 6–14 | 12 city pages | Engineer (templated from vertical) |
-| **3. Off-page** | Weeks 4–16 | Directory submissions, PR, guest posts | Founder + Marketing |
-| **4. Optimize** | Continuous | Weekly rank tracking, monthly refreshes | Growth lead |
+| Phase                  | Timeline   | Deliverables                                              | Owner                                  |
+| ---------------------- | ---------- | --------------------------------------------------------- | -------------------------------------- |
+| **1. Technical fixes** | Week 1     | Pre-render, FAQ schema, GBP, analytics, sitemap expansion | Engineer + Founder (GBP)               |
+| **2a. Blog**           | Weeks 2–8  | 16 posts on target topics                                 | Content writer + Engineer (blog infra) |
+| **2b. Vertical pages** | Weeks 3–10 | 8 vertical landing pages                                  | Engineer + Designer                    |
+| **2c. Geo pages**      | Weeks 6–14 | 12 city pages                                             | Engineer (templated from vertical)     |
+| **3. Off-page**        | Weeks 4–16 | Directory submissions, PR, guest posts                    | Founder + Marketing                    |
+| **4. Optimize**        | Continuous | Weekly rank tracking, monthly refreshes                   | Growth lead                            |
 
 **Expected result:**
+
 - **Month 1:** Ranking on page 1 for low-competition long-tail (e.g., "AI receptionist for salon India")
 - **Month 3:** Top 5 for one of the P0 keywords, top 10 for the rest
 - **Month 6:** Rank #1 for at least one P0 keyword, top 3 for the P0 cluster overall, dominating the vertical + geo long-tail
@@ -438,32 +448,38 @@ After pre-render lands, LCP should improve dramatically (no JS-render dependency
 ## 10. Files an engineer should touch (concrete implementation guide)
 
 ### For pre-render (§4.1):
+
 - `apps/website/vite.config.ts` — add plugin
 - `apps/website/package.json` — add `vite-plugin-prerender`, `puppeteer` devDeps
 - `apps/website/index.html` — remove fallback content inside `<div id="root">` (line ~91) after verifying pre-render output includes real content
 
 ### For FAQ schema (§4.2):
+
 - `apps/website/src/components/sections/FAQ.tsx` — export FAQ data as a typed array
 - `apps/website/index.html` OR a new `apps/website/src/hooks/useFAQSchema.ts` that injects the JSON-LD via `document.head`
 
 ### For analytics (§4.4):
+
 - `apps/website/package.json` — add `@vercel/analytics`
 - `apps/website/src/App.tsx` — mount `<Analytics />` component
 - `apps/website/index.html` — add gtag.js snippet for GA4 (get GA4 measurement ID from https://analytics.google.com)
 
 ### For blog infra (§5.1):
+
 - Add `astro`-like MDX support to Vite, OR migrate the whole website to **Astro** (recommended long-term)
 - Alternative: use **Contentlayer** with Vite for typed content collections
 - Blog posts live in `apps/website/content/blog/*.mdx`
 - Each MDX file has front-matter: `title`, `description`, `date`, `author`, `tags`, `ogImage`
 
 ### For vertical pages (§5.2):
+
 - Add React Router (or migrate to Astro/Next.js for file-based routing)
 - Route pattern: `/for/:vertical`
 - Data source: `apps/website/data/verticals.ts` (typed array with hero copy, pain points, testimonials per vertical)
 - Reuse existing `Hero`, `Features`, `Pricing`, `CallJourney` components with vertical-specific props
 
 ### For geo pages (§5.3):
+
 - Same as verticals but `/city/:city`
 - Data source: `apps/website/data/cities.ts`
 
@@ -499,15 +515,15 @@ To avoid distraction:
 
 Companies currently ranking for adjacent terms:
 
-| Company | Ranks for | Weakness we exploit |
-|---|---|---|
-| Ozonetel | "cloud IVR India" | No AI voice, no Hindi, no SMB pricing |
-| Exotel | "cloud telephony India" | Same — plus their AI product is english-only |
-| Servetel | "virtual number India" | No AI at all |
-| Ringover | "business phone system India" | France-based, no Indian language support |
-| Knowlarity | "call management India" | Legacy IVR, not AI |
-| Freshdesk / Freshcaller | "call center software" | Enterprise-focused, not SMB pricing |
-| **DeskBuddy** | Nothing yet | AI + Hindi + SMB pricing = wide open |
+| Company                 | Ranks for                     | Weakness we exploit                          |
+| ----------------------- | ----------------------------- | -------------------------------------------- |
+| Ozonetel                | "cloud IVR India"             | No AI voice, no Hindi, no SMB pricing        |
+| Exotel                  | "cloud telephony India"       | Same — plus their AI product is english-only |
+| Servetel                | "virtual number India"        | No AI at all                                 |
+| Ringover                | "business phone system India" | France-based, no Indian language support     |
+| Knowlarity              | "call management India"       | Legacy IVR, not AI                           |
+| Freshdesk / Freshcaller | "call center software"        | Enterprise-focused, not SMB pricing          |
+| **DeskBuddy**           | Nothing yet                   | AI + Hindi + SMB pricing = wide open         |
 
 The category "AI phone receptionist" as understood in the US (Rosie, Numa, Goodcall) doesn't yet have Indian competitors ranking for Indian queries. **This is a first-mover window that closes in 12–18 months** as US players expand to India or Indian VC funds start similar companies. Ship aggressively in the next 6 months.
 

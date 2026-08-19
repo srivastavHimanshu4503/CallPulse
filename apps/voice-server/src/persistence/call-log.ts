@@ -46,11 +46,12 @@ export const persistCallLog = async (input: PersistCallLogInput): Promise<Persis
   // already aborts before session creation, but browser test-calls with a
   // synthesized "unknown" caller number still reach here. We keep them.
   const isBrowser = input.callSource === "browser";
-  const phone = input.callerNumber && input.callerNumber !== "unknown"
-    ? input.callerNumber
-    : isBrowser
-      ? `test-${input.callSid}`
-      : "unknown";
+  const phone =
+    input.callerNumber && input.callerNumber !== "unknown"
+      ? input.callerNumber
+      : isBrowser
+        ? `test-${input.callSid}`
+        : "unknown";
 
   const nameParts = input.callerName?.trim().split(/\s+/) ?? [];
   const firstName = nameParts[0];
@@ -112,6 +113,4 @@ export const persistCallLog = async (input: PersistCallLogInput): Promise<Persis
 };
 
 const flattenTranscript = (turns: TranscriptTurn[]): string =>
-  turns
-    .map((t) => `${t.role === "assistant" ? "Agent" : "Caller"}: ${t.text.trim()}`)
-    .join("\n");
+  turns.map((t) => `${t.role === "assistant" ? "Agent" : "Caller"}: ${t.text.trim()}`).join("\n");

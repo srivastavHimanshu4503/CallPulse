@@ -1,5 +1,10 @@
 import { db } from "../client.js";
-import type { AIAgent, KnowledgeBase, PhoneNumber, Tenant } from "../../generated/prisma-client/index.js";
+import type {
+  AIAgent,
+  KnowledgeBase,
+  PhoneNumber,
+  Tenant,
+} from "../../generated/prisma-client/index.js";
 
 /**
  * Fully-hydrated agent config used by the voice-server on inbound calls.
@@ -23,9 +28,7 @@ export interface AgentContext {
  * in E.164 format (e.g. `+17432227947`) exactly as stored on the PhoneNumber
  * row.
  */
-export const getAgentByPhoneNumber = async (
-  phoneNumber: string
-): Promise<AgentContext | null> => {
+export const getAgentByPhoneNumber = async (phoneNumber: string): Promise<AgentContext | null> => {
   const phone = await db.phoneNumber.findUnique({
     where: { phoneNumber },
     include: { tenant: true },

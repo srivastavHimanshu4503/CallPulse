@@ -365,7 +365,10 @@ export class WhatsAppService {
   async getSessionByLog(tenantId: string, logId: string) {
     const session = await db.chatSession.findFirst({
       where: { tenantId, commLogId: logId },
-      include: { contact: { select: { phones: true } }, agent: { select: { phoneNumberId: true } } },
+      include: {
+        contact: { select: { phones: true } },
+        agent: { select: { phoneNumberId: true } },
+      },
     });
     if (!session) return null;
     return {
@@ -415,7 +418,10 @@ export class WhatsAppService {
     await Promise.all([
       db.communicationLog.update({
         where: { id: session.commLogId },
-        data: { transcriptJson: turns as unknown as object[], transcript: renderTranscriptText(turns) },
+        data: {
+          transcriptJson: turns as unknown as object[],
+          transcript: renderTranscriptText(turns),
+        },
       }),
       db.chatSession.update({
         where: { id: session.id },
@@ -442,7 +448,10 @@ export class WhatsAppService {
     // Send first — no session/contact litter when WhatsApp rejects the message.
     const { error: sendError, sid } = await this.sendWhatsApp(businessPhone, toPhone, message);
     if (sendError) {
-      if (sendError.includes("63016") || sendError.toLowerCase().includes("outside the allowed window")) {
+      if (
+        sendError.includes("63016") ||
+        sendError.toLowerCase().includes("outside the allowed window")
+      ) {
         throw new Error(
           "WhatsApp only allows freeform messages within 24 hours of the customer's last message. This number hasn't messaged you recently — they need to message you first, or use an approved template.",
         );
@@ -491,12 +500,22 @@ export class WhatsAppService {
       const message = getErrorMessage(err);
       log.error("Template send failed", { toPhone, contentSid, error: message });
       if (message.includes("63021") || message.toLowerCase().includes("not approved")) {
-        throw new Error("This template isn't approved by Meta yet — check its status and try again once it's approved.");
+        throw new Error(
+          "This template isn't approved by Meta yet — check its status and try again once it's approved.",
+        );
       }
       throw new Error(`Template send failed: ${message}`);
     }
 
-    return this.recordOutbound(tenantId, agent.id, phone, toPhone, renderedText, sid, template.name);
+    return this.recordOutbound(
+      tenantId,
+      agent.id,
+      phone,
+      toPhone,
+      renderedText,
+      sid,
+      template.name,
+    );
   }
 
   private async resolveAgentLine(tenantId: string, agentId: string) {
@@ -612,7 +631,10 @@ export class WhatsAppService {
     });
     await db.communicationLog.update({
       where: { id: commLog.id },
-      data: { transcriptJson: turns as unknown as object[], transcript: renderTranscriptText(turns) },
+      data: {
+        transcriptJson: turns as unknown as object[],
+        transcript: renderTranscriptText(turns),
+      },
     });
     await db.chatSession.update({ where: { id: session.id }, data: { lastMessageAt: now } });
 

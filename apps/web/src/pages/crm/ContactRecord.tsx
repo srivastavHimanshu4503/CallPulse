@@ -57,7 +57,11 @@ export function ContactRecord(): React.JSX.Element {
   const [isNoteOpen, setIsNoteOpen] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
-  const { data: contact, isLoading, refetch } = useQuery({
+  const {
+    data: contact,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["contact-details", id],
     queryFn: async () => {
       const res = await api.get(`/crm/contacts/${id}`);
@@ -125,10 +129,30 @@ export function ContactRecord(): React.JSX.Element {
 
   const tabDefs = [
     { id: "all" as const, label: "All activity", count: activities.length },
-    { id: "calls" as const, label: "Calls", icon: PhoneCall, count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "calls").length },
-    { id: "sms" as const, label: "SMS", icon: MessageSquare, count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "sms").length },
-    { id: "whatsapp" as const, label: "WhatsApp", icon: MessageCircle, count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "whatsapp").length },
-    { id: "notes" as const, label: "Notes", icon: StickyNote, count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "notes").length },
+    {
+      id: "calls" as const,
+      label: "Calls",
+      icon: PhoneCall,
+      count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "calls").length,
+    },
+    {
+      id: "sms" as const,
+      label: "SMS",
+      icon: MessageSquare,
+      count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "sms").length,
+    },
+    {
+      id: "whatsapp" as const,
+      label: "WhatsApp",
+      icon: MessageCircle,
+      count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "whatsapp").length,
+    },
+    {
+      id: "notes" as const,
+      label: "Notes",
+      icon: StickyNote,
+      count: activities.filter((a: any) => ACTIVITY_CHANNEL_MAP[a.type] === "notes").length,
+    },
   ];
 
   return (
@@ -216,12 +240,7 @@ export function ContactRecord(): React.JSX.Element {
             />
 
             <div className="mb-3 shrink-0">
-              <Tabs
-                tabs={tabDefs}
-                active={activeTab}
-                onChange={setActiveTab}
-                variant="underline"
-              />
+              <Tabs tabs={tabDefs} active={activeTab} onChange={setActiveTab} variant="underline" />
             </div>
 
             {isNoteOpen && (
@@ -311,7 +330,13 @@ export default ContactRecord;
 
 /* ---------------- Profile card ---------------- */
 
-function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }): React.JSX.Element {
+function ProfileCard({
+  contact,
+  onSaved,
+}: {
+  contact: any;
+  onSaved: () => void;
+}): React.JSX.Element {
   const [editing, setEditing] = React.useState(false);
   const [firstName, setFirstName] = React.useState(contact.firstName || "");
   const [lastName, setLastName] = React.useState(contact.lastName || "");
@@ -372,7 +397,9 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
       {editing ? (
         <div className="space-y-3 pt-2">
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">First Name</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">
+              First Name
+            </label>
             <input
               type="text"
               value={firstName}
@@ -381,7 +408,9 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
             />
           </div>
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">Last Name</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">
+              Last Name
+            </label>
             <input
               type="text"
               value={lastName}
@@ -390,7 +419,9 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
             />
           </div>
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">Email</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -399,7 +430,9 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
             />
           </div>
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">Phone</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-1">
+              Phone
+            </label>
             <input
               type="text"
               value={phone}
@@ -411,14 +444,18 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
       ) : (
         <ul className="space-y-2.5 text-[12px]">
           <li>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Name</div>
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+              Name
+            </div>
             <div className="text-fg-primary font-semibold capitalize">
               {contact.firstName} {contact.lastName}
             </div>
           </li>
           {(contact.emails?.length > 0 || email) && (
             <li>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Email</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+                Email
+              </div>
               {contact.emails?.map((e: string) => (
                 <a
                   key={e}
@@ -429,26 +466,50 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
                 </a>
               ))}
               {contact.emails?.length === 0 && email && (
-                <a href={`mailto:${email}`} className="text-brand-600 hover:text-brand-700 font-medium block truncate">{email}</a>
+                <a
+                  href={`mailto:${email}`}
+                  className="text-brand-600 hover:text-brand-700 font-medium block truncate"
+                >
+                  {email}
+                </a>
               )}
             </li>
           )}
           {(contact.phones?.length > 0 || phone) && (
             <li>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Phone</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+                Phone
+              </div>
               {contact.phones?.map((p: string) => (
-                <a key={p} href={`tel:${p}`} className="text-brand-600 hover:text-brand-700 font-medium block">
+                <a
+                  key={p}
+                  href={`tel:${p}`}
+                  className="text-brand-600 hover:text-brand-700 font-medium block"
+                >
                   {p}
                 </a>
               ))}
               {contact.phones?.length === 0 && phone && (
-                <a href={`tel:${phone}`} className="text-brand-600 hover:text-brand-700 font-medium block">{phone}</a>
+                <a
+                  href={`tel:${phone}`}
+                  className="text-brand-600 hover:text-brand-700 font-medium block"
+                >
+                  {phone}
+                </a>
               )}
             </li>
           )}
           <li>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Added</div>
-            <div className="text-fg-secondary">{new Date(contact.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+              Added
+            </div>
+            <div className="text-fg-secondary">
+              {new Date(contact.createdAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </div>
           </li>
         </ul>
       )}
@@ -458,7 +519,13 @@ function ProfileCard({ contact, onSaved }: { contact: any; onSaved: () => void }
 
 /* ---------------- Custom fields (with source badges) ---------------- */
 
-function CustomFieldsCard({ contact, onSaved }: { contact: any; onSaved: () => void }): React.JSX.Element | null {
+function CustomFieldsCard({
+  contact,
+  onSaved,
+}: {
+  contact: any;
+  onSaved: () => void;
+}): React.JSX.Element | null {
   const { data: defs = [] } = useQuery({
     queryKey: ["custom-fields-defs"],
     queryFn: async () => (await api.get("/crm/custom-fields")).data.data,
@@ -475,10 +542,10 @@ function CustomFieldsCard({ contact, onSaved }: { contact: any; onSaved: () => v
         if (!Number.isNaN(t)) {
           const d = new Date(t < 10000000000 ? t * 1000 : t);
           const y = d.getFullYear();
-          const m = String(d.getMonth() + 1).padStart(2, '0');
-          const day = String(d.getDate()).padStart(2, '0');
-          const h = String(d.getHours()).padStart(2, '0');
-          const min = String(d.getMinutes()).padStart(2, '0');
+          const m = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          const h = String(d.getHours()).padStart(2, "0");
+          const min = String(d.getMinutes()).padStart(2, "0");
           map[cf.fieldDefinitionId] = `${y}-${m}-${day}T${h}:${min}`;
         }
       } else {
@@ -566,7 +633,11 @@ function CustomFieldsCard({ contact, onSaved }: { contact: any; onSaved: () => v
                 )}
               </div>
               {editing ? (
-                <CFEditor def={def} value={values[def.id] ?? ""} onChange={(v) => setValues({ ...values, [def.id]: v })} />
+                <CFEditor
+                  def={def}
+                  value={values[def.id] ?? ""}
+                  onChange={(v) => setValues({ ...values, [def.id]: v })}
+                />
               ) : (
                 <div className="text-[12px] text-fg-primary">
                   {formatFieldValue(def, cf) || <span className="text-fg-muted italic">—</span>}
@@ -609,7 +680,15 @@ function formatFieldValue(def: any, cf: any): string {
   return String(cf.value ?? "");
 }
 
-function CFEditor({ def, value, onChange }: { def: any; value: any; onChange: (v: any) => void }): React.JSX.Element {
+function CFEditor({
+  def,
+  value,
+  onChange,
+}: {
+  def: any;
+  value: any;
+  onChange: (v: any) => void;
+}): React.JSX.Element {
   return (
     <div className="flex gap-2 items-center w-full">
       {def.type === "DROPDOWN" ? (
@@ -620,7 +699,9 @@ function CFEditor({ def, value, onChange }: { def: any; value: any; onChange: (v
         >
           <option value="">Select…</option>
           {def.options?.map((o: string) => (
-            <option key={o} value={o}>{o}</option>
+            <option key={o} value={o}>
+              {o}
+            </option>
           ))}
         </select>
       ) : def.type === "BOOLEAN" ? (
@@ -681,7 +762,9 @@ function ConsentCard({ consent }: { consent: any }): React.JSX.Element {
           <ShieldCheck className="h-4 w-4 text-positive-500 shrink-0 mt-0.5" />
           <div>
             <div className="text-[11.5px] font-semibold text-positive-600">DND clear</div>
-            <div className="text-[10.5px] text-fg-secondary mt-0.5 leading-relaxed">Safe to reach out.</div>
+            <div className="text-[10.5px] text-fg-secondary mt-0.5 leading-relaxed">
+              Safe to reach out.
+            </div>
           </div>
         </div>
       )}
@@ -737,7 +820,9 @@ function AIInsightsCard({
       {/* Score meter */}
       <div className="mb-4">
         <div className="flex items-baseline justify-between mb-1">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Lead score</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+            Lead score
+          </span>
           <span className="text-[24px] font-semibold text-fg-primary tabular-nums leading-none">
             {score.score}
           </span>
@@ -784,7 +869,9 @@ function AIInsightsCard({
             }`}
           >
             {latestSentiment > 0.3 ? "Positive" : latestSentiment < -0.3 ? "Negative" : "Neutral"}
-            <span className="text-fg-muted ml-1 text-[10.5px] font-medium">({(latestSentiment * 100).toFixed(0)})</span>
+            <span className="text-fg-muted ml-1 text-[10.5px] font-medium">
+              ({(latestSentiment * 100).toFixed(0)})
+            </span>
           </div>
         </div>
       )}
@@ -792,16 +879,28 @@ function AIInsightsCard({
       {/* Quick metrics */}
       <div className="grid grid-cols-2 gap-2 mb-3">
         <div className="rounded-md bg-bg-subtle border border-line-subtle p-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Calls</div>
-          <div className="text-[14px] font-semibold text-fg-primary tabular-nums">{callCount || 0}</div>
-          {lastCallAt && <div className="text-[9.5px] text-fg-muted mt-0.5">Last {formatTimeAgo(lastCallAt)}</div>}
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+            Calls
+          </div>
+          <div className="text-[14px] font-semibold text-fg-primary tabular-nums">
+            {callCount || 0}
+          </div>
+          {lastCallAt && (
+            <div className="text-[9.5px] text-fg-muted mt-0.5">
+              Last {formatTimeAgo(lastCallAt)}
+            </div>
+          )}
         </div>
         <div className="rounded-md bg-bg-subtle border border-line-subtle p-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Pipeline</div>
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">
+            Pipeline
+          </div>
           <div className="text-[14px] font-semibold text-fg-primary tabular-nums">
             {openDealsCount > 0 ? formatINR(openDealValue) : "—"}
           </div>
-          <div className="text-[9.5px] text-fg-muted mt-0.5">{openDealsCount} open deal{openDealsCount === 1 ? "" : "s"}</div>
+          <div className="text-[9.5px] text-fg-muted mt-0.5">
+            {openDealsCount} open deal{openDealsCount === 1 ? "" : "s"}
+          </div>
         </div>
       </div>
 
@@ -812,7 +911,15 @@ function AIInsightsCard({
 
 /* ---------------- Deals + suggested actions ---------------- */
 
-function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines: any[]; onCreated: () => void }): React.JSX.Element {
+function DealsCard({
+  contact,
+  pipelines,
+  onCreated,
+}: {
+  contact: any;
+  pipelines: any[];
+  onCreated: () => void;
+}): React.JSX.Element {
   const [creating, setCreating] = React.useState(false);
   const [title, setTitle] = React.useState("");
   const [value, setValue] = React.useState("");
@@ -849,7 +956,12 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
     let suggestedTitle: string | null = null;
     for (const [k, v] of Object.entries(extracted)) {
       const lk = k.toLowerCase();
-      if (lk.includes("budget") || lk.includes("value") || lk.includes("price") || lk.includes("amount")) {
+      if (
+        lk.includes("budget") ||
+        lk.includes("value") ||
+        lk.includes("price") ||
+        lk.includes("amount")
+      ) {
         const n = typeof v === "number" ? v : Number(String(v).replace(/[^\d.]/g, ""));
         if (!Number.isNaN(n) && n > 0) suggestedValue = n;
       }
@@ -894,7 +1006,8 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
             <Zap className="h-3 w-3" /> AI suggestion
           </div>
           <div className="text-[11.5px] text-fg-primary mt-1 leading-snug">
-            The AI heard <b>{suggestion.title || "an intent signal"}</b>{suggestion.value ? ` around ${formatINR(suggestion.value)}` : ""} on a recent call.
+            The AI heard <b>{suggestion.title || "an intent signal"}</b>
+            {suggestion.value ? ` around ${formatINR(suggestion.value)}` : ""} on a recent call.
           </div>
           <button
             type="button"
@@ -943,11 +1056,13 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
               onChange={(e) => setStage(e.target.value)}
               className="w-full h-8 bg-bg-raised border border-line-default focus:border-brand-500 text-[12px] text-fg-primary rounded-md px-2 focus:outline-none"
             >
-              {pipelines.find((p: any) => p.id === pipelineId)?.stages?.map((s: string) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
+              {pipelines
+                .find((p: any) => p.id === pipelineId)
+                ?.stages?.map((s: string) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
             </select>
           )}
           <div className="flex items-center justify-end gap-2 pt-1">
@@ -975,10 +1090,14 @@ function DealsCard({ contact, pipelines, onCreated }: { contact: any; pipelines:
           {openDeals.map((d: any) => (
             <li key={d.id} className="rounded-md border border-line-default bg-bg-raised p-2.5">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[12px] font-semibold text-fg-primary truncate">{d.title}</span>
+                <span className="text-[12px] font-semibold text-fg-primary truncate">
+                  {d.title}
+                </span>
                 <StatusPill tone="brand">{d.stage}</StatusPill>
               </div>
-              <div className="text-[11.5px] text-brand-600 font-semibold mt-1">{formatINR(d.value)}</div>
+              <div className="text-[11.5px] text-brand-600 font-semibold mt-1">
+                {formatINR(d.value)}
+              </div>
             </li>
           ))}
         </ul>
@@ -1040,7 +1159,9 @@ function ActivityRow({ activity: a }: { activity: any }): React.JSX.Element {
                   title={String(v)}
                 >
                   <span className="capitalize">{k.replace(/_/g, " ")}:</span>
-                  <span className="text-fg-primary font-bold truncate max-w-[140px]">{String(v)}</span>
+                  <span className="text-fg-primary font-bold truncate max-w-[140px]">
+                    {String(v)}
+                  </span>
                 </span>
               ))}
             </div>

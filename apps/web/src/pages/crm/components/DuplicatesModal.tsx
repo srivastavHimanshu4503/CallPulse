@@ -12,14 +12,32 @@ interface DuplicatesModalProps {
 }
 
 interface DuplicatePair {
-  a: { id: string; firstName: string; lastName: string; emails: string[]; phones: string[]; createdAt: string };
-  b: { id: string; firstName: string; lastName: string; emails: string[]; phones: string[]; createdAt: string };
+  a: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    emails: string[];
+    phones: string[];
+    createdAt: string;
+  };
+  b: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    emails: string[];
+    phones: string[];
+    createdAt: string;
+  };
   via: string;
   matchValue: string;
 }
 
 export function DuplicatesModal({ onClose, onMerged }: DuplicatesModalProps): React.JSX.Element {
-  const { data: pairs = [], isLoading, refetch } = useQuery({
+  const {
+    data: pairs = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["crm-duplicates"],
     queryFn: async () => {
       const res = await api.get("/crm/contacts/duplicates/list");
@@ -45,7 +63,8 @@ export function DuplicatesModal({ onClose, onMerged }: DuplicatesModalProps): Re
     <Modal isOpen={true} onClose={onClose} title="Duplicate contacts" size="xl">
       <div className="flex flex-col max-h-[75vh] font-sans">
         <div className="p-5 border-b border-line-default text-[12px] text-fg-secondary">
-          We look for contacts that share a phone number or email address. Pick which record to keep — the other one will be merged into it (activities, deals, notes and calls move over).
+          We look for contacts that share a phone number or email address. Pick which record to keep
+          — the other one will be merged into it (activities, deals, notes and calls move over).
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-3">
@@ -100,7 +119,9 @@ function DuplicateRow({
 }): React.JSX.Element {
   // Default: keep the older record (created first) as target.
   const olderId =
-    new Date(pair.a.createdAt).getTime() < new Date(pair.b.createdAt).getTime() ? pair.a.id : pair.b.id;
+    new Date(pair.a.createdAt).getTime() < new Date(pair.b.createdAt).getTime()
+      ? pair.a.id
+      : pair.b.id;
   const [targetId, setTargetId] = React.useState<string>(olderId);
   const sourceId = pair.a.id === targetId ? pair.b.id : pair.a.id;
 

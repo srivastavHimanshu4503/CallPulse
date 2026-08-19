@@ -8,12 +8,14 @@ interface CustomFieldsTabProps {
   refetch: () => void;
 }
 
-export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps): React.JSX.Element {
+export function CustomFieldsTab({
+  customFields,
+  refetch,
+}: CustomFieldsTabProps): React.JSX.Element {
   const [isAddOpen, setIsAddOpen] = React.useState(false);
 
   return (
     <div className="flex flex-col h-full overflow-hidden font-sans">
-      
       {/* Header action panel */}
       <div className="flex items-center justify-between shrink-0 mb-4 select-none">
         <div className="flex items-center gap-2">
@@ -36,9 +38,12 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
         {customFields.length === 0 ? (
           <div className="p-20 text-center space-y-3">
             <Sliders className="h-10 w-10 text-text-placeholder mx-auto" />
-            <h4 className="text-sm font-bold text-text-primary">No custom field definitions declared</h4>
+            <h4 className="text-sm font-bold text-text-primary">
+              No custom field definitions declared
+            </h4>
             <p className="text-xs text-text-secondary max-w-xs mx-auto leading-relaxed">
-              Define typed metadata columns (e.g. Budget size, preferred location, movement date) to map customer records parameters cleanly.
+              Define typed metadata columns (e.g. Budget size, preferred location, movement date) to
+              map customer records parameters cleanly.
             </p>
           </div>
         ) : (
@@ -63,7 +68,10 @@ export function CustomFieldsTab({ customFields, refetch }: CustomFieldsTabProps)
                         {def.type}
                       </span>
                       {def.type === "DROPDOWN" && def.options && def.options.length > 0 && (
-                        <span className="text-[10px] text-text-placeholder leading-tight font-medium max-w-xs truncate" title={def.options.join(", ")}>
+                        <span
+                          className="text-[10px] text-text-placeholder leading-tight font-medium max-w-xs truncate"
+                          title={def.options.join(", ")}
+                        >
                           Values: {def.options.join(", ")}
                         </span>
                       )}

@@ -29,7 +29,6 @@ async function main() {
 
     process.once("SIGTERM", gracefulShutdown);
     process.once("SIGINT", gracefulShutdown);
-
   } catch (error) {
     logger.error("Failed to start Antigravity Core API:", error);
     process.exit(1);

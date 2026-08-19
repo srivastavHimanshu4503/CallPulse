@@ -1,8 +1,7 @@
 const LEVELS = { debug: 10, info: 20, warn: 30, error: 40 } as const;
 type Level = keyof typeof LEVELS;
 
-const threshold: number =
-  LEVELS[(process.env.LOG_LEVEL as Level) ?? "info"] ?? LEVELS.info;
+const threshold: number = LEVELS[(process.env.LOG_LEVEL as Level) ?? "info"] ?? LEVELS.info;
 
 const write = (level: Level, scope: string, msg: string, meta?: Record<string, unknown>) => {
   if (LEVELS[level] < threshold) return;

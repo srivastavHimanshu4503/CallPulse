@@ -40,8 +40,8 @@ export function FinalCTA() {
         </Reveal>
         <Reveal delay={0.16}>
           <p className="mt-5 text-[15px] text-white/60 leading-relaxed max-w-md mx-auto">
-            Set up your AI receptionist tonight. Kal subah chai peene se pehle,
-            bookings aana shuru ho jayengi.
+            Set up your AI receptionist tonight. Kal subah chai peene se pehle, bookings aana shuru
+            ho jayengi.
           </p>
         </Reveal>
         <Reveal delay={0.24}>

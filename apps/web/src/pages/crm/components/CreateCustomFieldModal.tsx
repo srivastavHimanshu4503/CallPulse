@@ -11,9 +11,15 @@ interface CreateCustomFieldModalProps {
   onSuccess: () => void;
 }
 
-export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCustomFieldModalProps): React.JSX.Element | null {
+export function CreateCustomFieldModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}: CreateCustomFieldModalProps): React.JSX.Element | null {
   const [name, setName] = React.useState("");
-  const [type, setType] = React.useState<"TEXT" | "NUMBER" | "BOOLEAN" | "DROPDOWN" | "DATE">("TEXT");
+  const [type, setType] = React.useState<"TEXT" | "NUMBER" | "BOOLEAN" | "DROPDOWN" | "DATE">(
+    "TEXT",
+  );
   const [dropdownOptionsText, setDropdownOptionsText] = React.useState("");
 
   const createFieldMutation = useMutation({
@@ -41,9 +47,13 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
       return;
     }
 
-    const options = type === "DROPDOWN"
-      ? dropdownOptionsText.split(",").map((o) => o.trim()).filter(Boolean)
-      : [];
+    const options =
+      type === "DROPDOWN"
+        ? dropdownOptionsText
+            .split(",")
+            .map((o) => o.trim())
+            .filter(Boolean)
+        : [];
 
     if (type === "DROPDOWN" && options.length === 0) {
       toast.error("Dropdown fields require at least one option");
@@ -95,7 +105,9 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-primary mb-1.5">Parameter Value Type *</label>
+            <label className="block text-xs font-semibold text-text-primary mb-1.5">
+              Parameter Value Type *
+            </label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as any)}
@@ -112,7 +124,9 @@ export function CreateCustomFieldModal({ isOpen, onClose, onSuccess }: CreateCus
 
           {type === "DROPDOWN" && (
             <div className="animate-in fade-in slide-in-from-top-1 duration-150">
-              <label className="block text-xs font-semibold text-text-primary mb-1.5">Selectable Options (comma-separated) *</label>
+              <label className="block text-xs font-semibold text-text-primary mb-1.5">
+                Selectable Options (comma-separated) *
+              </label>
               <input
                 type="text"
                 required

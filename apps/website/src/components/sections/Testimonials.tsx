@@ -111,9 +111,7 @@ export function Testimonials() {
                   <Stars />
                   <Quote className="h-4 w-4 text-fg-muted opacity-40" />
                 </div>
-                <p className="text-[13.5px] text-fg-primary leading-relaxed flex-1">
-                  "{t.quote}"
-                </p>
+                <p className="text-[13.5px] text-fg-primary leading-relaxed flex-1">"{t.quote}"</p>
                 <div className="mt-4 pt-4 border-t border-line-subtle flex items-center gap-3">
                   <span
                     className="h-10 w-10 rounded-full text-white text-[12px] font-bold flex items-center justify-center shrink-0"
@@ -139,17 +137,23 @@ export function Testimonials() {
         <Reveal delay={0.15}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
             <div>
-              <p className="text-[24px] sm:text-[28px] font-extrabold text-fg-primary leading-none">4.8/5</p>
+              <p className="text-[24px] sm:text-[28px] font-extrabold text-fg-primary leading-none">
+                4.8/5
+              </p>
               <p className="text-[11.5px] text-fg-muted mt-1">Average rating</p>
             </div>
             <div className="h-8 w-px bg-line-default hidden sm:block" />
             <div>
-              <p className="text-[24px] sm:text-[28px] font-extrabold text-fg-primary leading-none">92%</p>
+              <p className="text-[24px] sm:text-[28px] font-extrabold text-fg-primary leading-none">
+                92%
+              </p>
               <p className="text-[11.5px] text-fg-muted mt-1">Would recommend</p>
             </div>
             <div className="h-8 w-px bg-line-default hidden sm:block" />
             <div>
-              <p className="text-[24px] sm:text-[28px] font-extrabold text-fg-primary leading-none">2 min</p>
+              <p className="text-[24px] sm:text-[28px] font-extrabold text-fg-primary leading-none">
+                2 min
+              </p>
               <p className="text-[11.5px] text-fg-muted mt-1">Median setup time</p>
             </div>
           </div>

@@ -106,113 +106,116 @@ export function useTestCall(agentId: string): UseTestCallResult {
     tc("cleanup done");
   }, [room]);
 
-  const startCall = React.useCallback(async (opts?: { isRetry?: boolean }) => {
-    if (!opts?.isRetry) retryRef.current = 0;
-    callStartRef.t0 = performance.now();
-    tc("startCall invoked", { agentId, isRetry: !!opts?.isRetry });
-    setErrorMessage(undefined);
-    setStatus("requesting-token");
+  const startCall = React.useCallback(
+    async (opts?: { isRetry?: boolean }) => {
+      if (!opts?.isRetry) retryRef.current = 0;
+      callStartRef.t0 = performance.now();
+      tc("startCall invoked", { agentId, isRetry: !!opts?.isRetry });
+      setErrorMessage(undefined);
+      setStatus("requesting-token");
 
-    try {
-      const res = await api.post<{ data: TestCallTokenResponse }>(
-        `/agents/${agentId}/test-call/token`,
-        {}
-      );
-      const creds = res.data.data;
+      try {
+        const res = await api.post<{ data: TestCallTokenResponse }>(
+          `/agents/${agentId}/test-call/token`,
+          {},
+        );
+        const creds = res.data.data;
 
-      setStatus("connecting");
+        setStatus("connecting");
 
-      room.on(RoomEvent.ConnectionStateChanged, (state: ConnectionState) => {
-        tc("ConnectionStateChanged", { state });
-        if (state === ConnectionState.Connected) setStatus("connected");
-        else if (state === ConnectionState.Reconnecting) setStatus("reconnecting");
-        else if (state === ConnectionState.Disconnected) setStatus("disconnected");
-      });
-
-      room.on(RoomEvent.Disconnected, (reason) => {
-        tcWarn("RoomEvent.Disconnected", { reason: reason ?? "unknown" });
-        setStatus("disconnected");
-      });
-
-      // Watchdog: the LiveKit agent worker sometimes fails to spawn a job
-      // process before its init budget (heavy imports, DB warmup), and the
-      // agent's own room connect can take 20s+ on slow networks (observed
-      // in dev). Give it 30s to actually join our room; if nobody remote
-      // shows up we tear down and surface a clear error instead of hanging.
-      agentJoinWatchdogRef.current = setTimeout(() => {
-        if (room.remoteParticipants.size === 0) {
-          // One silent retry with a fresh room + dispatch before giving up —
-          // covers transient worker restarts and lost dispatches.
-          if (retryRef.current === 0) {
-            retryRef.current = 1;
-            tcWarn("agent didn't join within 30s — retrying with a fresh room");
-            void cleanup().then(() => startCallRef.current?.({ isRetry: true }));
-            return;
-          }
-          setErrorMessage("The agent didn't answer. Please try again in a moment.");
-          setStatus("error");
-          void cleanup();
-        }
-      }, 30000);
-
-      room.on(RoomEvent.ParticipantConnected, (participant) => {
-        tc("ParticipantConnected", {
-          participant: participant.identity,
-          local: participant.isLocal,
+        room.on(RoomEvent.ConnectionStateChanged, (state: ConnectionState) => {
+          tc("ConnectionStateChanged", { state });
+          if (state === ConnectionState.Connected) setStatus("connected");
+          else if (state === ConnectionState.Reconnecting) setStatus("reconnecting");
+          else if (state === ConnectionState.Disconnected) setStatus("disconnected");
         });
-        if (participant.isLocal) return;
-        if (agentJoinWatchdogRef.current) {
+
+        room.on(RoomEvent.Disconnected, (reason) => {
+          tcWarn("RoomEvent.Disconnected", { reason: reason ?? "unknown" });
+          setStatus("disconnected");
+        });
+
+        // Watchdog: the LiveKit agent worker sometimes fails to spawn a job
+        // process before its init budget (heavy imports, DB warmup), and the
+        // agent's own room connect can take 20s+ on slow networks (observed
+        // in dev). Give it 30s to actually join our room; if nobody remote
+        // shows up we tear down and surface a clear error instead of hanging.
+        agentJoinWatchdogRef.current = setTimeout(() => {
+          if (room.remoteParticipants.size === 0) {
+            // One silent retry with a fresh room + dispatch before giving up —
+            // covers transient worker restarts and lost dispatches.
+            if (retryRef.current === 0) {
+              retryRef.current = 1;
+              tcWarn("agent didn't join within 30s — retrying with a fresh room");
+              void cleanup().then(() => startCallRef.current?.({ isRetry: true }));
+              return;
+            }
+            setErrorMessage("The agent didn't answer. Please try again in a moment.");
+            setStatus("error");
+            void cleanup();
+          }
+        }, 30000);
+
+        room.on(RoomEvent.ParticipantConnected, (participant) => {
+          tc("ParticipantConnected", {
+            participant: participant.identity,
+            local: participant.isLocal,
+          });
+          if (participant.isLocal) return;
+          if (agentJoinWatchdogRef.current) {
+            clearTimeout(agentJoinWatchdogRef.current);
+            agentJoinWatchdogRef.current = null;
+          }
+          if (agentLeftTimerRef.current) {
+            clearTimeout(agentLeftTimerRef.current);
+            agentLeftTimerRef.current = null;
+          }
+        });
+
+        // If the agent leaves — either because the LLM invoked `end_call` and
+        // the voice-server deleted the room, OR because the voice-server
+        // crashed — give any buffered TTS audio 900ms to finish, then drop
+        // our side of the room.
+        room.on(RoomEvent.ParticipantDisconnected, (participant) => {
+          tcWarn("ParticipantDisconnected", {
+            participant: participant.identity,
+            local: participant.isLocal,
+          });
+          if (participant.isLocal) return;
+          if (agentLeftTimerRef.current) clearTimeout(agentLeftTimerRef.current);
+          agentLeftTimerRef.current = setTimeout(() => {
+            tc("agent-left timer fired → tearing down");
+            setStatus("disconnected");
+            void cleanup();
+          }, 900);
+        });
+
+        tc("room.connect() start", { wsUrl: creds.wsUrl, roomName: creds.roomName });
+        await room.connect(creds.wsUrl, creds.token, { autoSubscribe: true });
+        tc("room.connect() resolved");
+        await room.localParticipant.setMicrophoneEnabled(true);
+        tc("mic enabled");
+
+        if (room.remoteParticipants.size > 0 && agentJoinWatchdogRef.current) {
           clearTimeout(agentJoinWatchdogRef.current);
           agentJoinWatchdogRef.current = null;
         }
-        if (agentLeftTimerRef.current) {
-          clearTimeout(agentLeftTimerRef.current);
-          agentLeftTimerRef.current = null;
-        }
-      });
 
-      // If the agent leaves — either because the LLM invoked `end_call` and
-      // the voice-server deleted the room, OR because the voice-server
-      // crashed — give any buffered TTS audio 900ms to finish, then drop
-      // our side of the room.
-      room.on(RoomEvent.ParticipantDisconnected, (participant) => {
-        tcWarn("ParticipantDisconnected", {
-          participant: participant.identity,
-          local: participant.isLocal,
-        });
-        if (participant.isLocal) return;
-        if (agentLeftTimerRef.current) clearTimeout(agentLeftTimerRef.current);
-        agentLeftTimerRef.current = setTimeout(() => {
-          tc("agent-left timer fired → tearing down");
-          setStatus("disconnected");
-          void cleanup();
-        }, 900);
-      });
-
-      tc("room.connect() start", { wsUrl: creds.wsUrl, roomName: creds.roomName });
-      await room.connect(creds.wsUrl, creds.token, { autoSubscribe: true });
-      tc("room.connect() resolved");
-      await room.localParticipant.setMicrophoneEnabled(true);
-      tc("mic enabled");
-
-      if (room.remoteParticipants.size > 0 && agentJoinWatchdogRef.current) {
-        clearTimeout(agentJoinWatchdogRef.current);
-        agentJoinWatchdogRef.current = null;
+        startedAtRef.current = Date.now();
+        setDurationSeconds(0);
+        timerRef.current = setInterval(() => {
+          setDurationSeconds(Math.floor((Date.now() - startedAtRef.current) / 1000));
+        }, 1000);
+      } catch (err: any) {
+        const msg = err?.response?.data?.error ?? err?.message ?? "Failed to start test call";
+        tcWarn("startCall threw", { message: msg });
+        setErrorMessage(msg);
+        setStatus("error");
+        await cleanup();
       }
-
-      startedAtRef.current = Date.now();
-      setDurationSeconds(0);
-      timerRef.current = setInterval(() => {
-        setDurationSeconds(Math.floor((Date.now() - startedAtRef.current) / 1000));
-      }, 1000);
-    } catch (err: any) {
-      const msg = err?.response?.data?.error ?? err?.message ?? "Failed to start test call";
-      tcWarn("startCall threw", { message: msg });
-      setErrorMessage(msg);
-      setStatus("error");
-      await cleanup();
-    }
-  }, [agentId, cleanup, room]);
+    },
+    [agentId, cleanup, room],
+  );
 
   startCallRef.current = startCall;
 

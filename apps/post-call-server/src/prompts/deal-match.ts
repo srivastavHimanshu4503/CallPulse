@@ -26,7 +26,9 @@ export const DealMatchSchema = z.object({
   dealId: z
     .string()
     .nullable()
-    .describe("The id of the matched deal — copied EXACTLY from the list. Null unless decision is UPDATE_EXISTING."),
+    .describe(
+      "The id of the matched deal — copied EXACTLY from the list. Null unless decision is UPDATE_EXISTING.",
+    ),
   newStage: z
     .string()
     .nullable()
@@ -36,11 +38,15 @@ export const DealMatchSchema = z.object({
   updatedValue: z
     .number()
     .nullable()
-    .describe("New total deal value in rupees if this call changed it (new quote, changed quantity). Null = keep the existing value."),
+    .describe(
+      "New total deal value in rupees if this call changed it (new quote, changed quantity). Null = keep the existing value.",
+    ),
   updatedSummary: z
     .string()
     .nullable()
-    .describe("If updating: 1-2 sentences merging what was already known with what this call added/changed. Null when not updating."),
+    .describe(
+      "If updating: 1-2 sentences merging what was already known with what this call added/changed. Null when not updating.",
+    ),
   newTitle: z
     .string()
     .nullable()
@@ -52,7 +58,8 @@ export const DealMatchSchema = z.object({
 
 export type DealMatchResult = z.infer<typeof DealMatchSchema>;
 
-export const buildDealMatchSystemPrompt = (): string => `You maintain a sales CRM. A contact who already has open deals just finished a phone call with our AI receptionist. Decide whether this call is ABOUT one of their existing open deals, or a brand-new requirement.
+export const buildDealMatchSystemPrompt =
+  (): string => `You maintain a sales CRM. A contact who already has open deals just finished a phone call with our AI receptionist. Decide whether this call is ABOUT one of their existing open deals, or a brand-new requirement.
 
 Rules:
 1. Same event/booking/requirement (confirming it, asking for updates, changing date/quantity/details, negotiating its price, cancelling it) → UPDATE_EXISTING with that deal's id.
@@ -76,10 +83,7 @@ export const buildDealMatchUserPrompt = (
   const dealLines = deals
     .map((d, i) => {
       const stages = d.stages
-        .map(
-          (s) =>
-            `${s.name} (${s.probability}%${s.isWon ? ", won" : s.isLost ? ", lost" : ""})`
-        )
+        .map((s) => `${s.name} (${s.probability}%${s.isWon ? ", won" : s.isLost ? ", lost" : ""})`)
         .join(" → ");
       return `Deal ${i + 1}:
   id: ${d.id}

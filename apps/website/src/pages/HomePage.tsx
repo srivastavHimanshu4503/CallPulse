@@ -6,16 +6,34 @@ import { Hero } from "../components/sections/Hero";
 import { SocialProof } from "../components/sections/SocialProof";
 
 // Below-the-fold sections lazy-load so the hero + call scene ships first.
-const Problem = lazy(() => import("../components/sections/Problem").then((m) => ({ default: m.Problem })));
-const HowItWorks = lazy(() => import("../components/sections/HowItWorks").then((m) => ({ default: m.HowItWorks })));
-const Features = lazy(() => import("../components/sections/Features").then((m) => ({ default: m.Features })));
-const Industries = lazy(() => import("../components/sections/Industries").then((m) => ({ default: m.Industries })));
-const Languages = lazy(() => import("../components/sections/Languages").then((m) => ({ default: m.Languages })));
-const Testimonials = lazy(() => import("../components/sections/Testimonials").then((m) => ({ default: m.Testimonials })));
-const Pricing = lazy(() => import("../components/sections/Pricing").then((m) => ({ default: m.Pricing })));
+const Problem = lazy(() =>
+  import("../components/sections/Problem").then((m) => ({ default: m.Problem })),
+);
+const HowItWorks = lazy(() =>
+  import("../components/sections/HowItWorks").then((m) => ({ default: m.HowItWorks })),
+);
+const Features = lazy(() =>
+  import("../components/sections/Features").then((m) => ({ default: m.Features })),
+);
+const Industries = lazy(() =>
+  import("../components/sections/Industries").then((m) => ({ default: m.Industries })),
+);
+const Languages = lazy(() =>
+  import("../components/sections/Languages").then((m) => ({ default: m.Languages })),
+);
+const Testimonials = lazy(() =>
+  import("../components/sections/Testimonials").then((m) => ({ default: m.Testimonials })),
+);
+const Pricing = lazy(() =>
+  import("../components/sections/Pricing").then((m) => ({ default: m.Pricing })),
+);
 const FAQ = lazy(() => import("../components/sections/FAQ").then((m) => ({ default: m.FAQ })));
-const FinalCTA = lazy(() => import("../components/sections/FinalCTA").then((m) => ({ default: m.FinalCTA })));
-const Footer = lazy(() => import("../components/sections/Footer").then((m) => ({ default: m.Footer })));
+const FinalCTA = lazy(() =>
+  import("../components/sections/FinalCTA").then((m) => ({ default: m.FinalCTA })),
+);
+const Footer = lazy(() =>
+  import("../components/sections/Footer").then((m) => ({ default: m.Footer })),
+);
 
 function SectionSkeleton({ h = "60vh" }: { h?: string }) {
   return <div className="bg-bg-canvas" style={{ minHeight: h }} aria-hidden />;

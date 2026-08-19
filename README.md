@@ -32,16 +32,19 @@ DeskBuddy/
 For detailed end-to-end instructions, see **[SETUP.md](./SETUP.md)**.
 
 ### 1. Prerequisites
+
 - Node.js >= 18
 - pnpm >= 8 (`npm install -g pnpm`)
 - Docker Desktop
 
 ### 2. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 3. Setup Environment Variables
+
 ```bash
 # Copy example env files
 cp .env.example .env
@@ -52,17 +55,20 @@ cp .env.example packages/db/.env
 ```
 
 ### 4. Start Local Postgres and Typesense
+
 ```bash
 docker compose up -d postgres typesense
 ```
 
 ### 5. Generate Database Client & Run Migrations
+
 ```bash
 pnpm db:generate
 pnpm db:migrate
 ```
 
 ### 6. Start All Development Servers
+
 ```bash
 pnpm dev
 ```
