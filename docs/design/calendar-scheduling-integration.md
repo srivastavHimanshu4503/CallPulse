@@ -58,7 +58,8 @@ Both flows share the same Google Client ID/Secret and the same `googleapis`/`goo
 
 Once a tenant connects their Google Calendar (Flow B), the internal Calendar page (`apps/web/src/pages/calendar/Calendar.tsx`) should reflect the connected calendar's existing events, not just internally-created `Booking` rows.
 
-- A sync job (poll on an interval, or push via Google Calendar webhook/watch channel — recommend starting with polling for v1 simplicity, watch channels add expiry/renewal complexity not worth it for a first cut) pulls events from the connected calendar and either mirrors them as read-only entries in the Calendar UI, or — simpler — the Calendar UI's API call fetches live from Google at render time for the connected range, no local mirror table needed for v1. **Open question for review, see §5.**
+**Approach — resolved (raised in review by Kapil): live-fetch for v1, not a mirrored/synced copy.** When the Calendar page loads a date range, the API calls Google's Calendar API directly for that range and returns the events alongside internal `Booking` rows — no local mirror table, no polling job, no webhook/watch-channel subscription to manage. Reasoning: a mirror buys faster page loads and resilience to a brief Google outage, but it costs a sync job (polling or watch-channel renewal, either way ongoing infrastructure to run and monitor) and a staleness window to reason about — for v1, "always current, simpler to build and operate" outweighs "always fast." This is not a permanent decision: if real usage shows the Calendar page is slow or Google's API is a reliability problem, the escalation path is a mirror table fed by a polling sync job (same shape as the `transfer-reconciliation.ts` sweeper already in this codebase) — revisit once there's a real signal to justify it, not speculatively.
+
 - This is display-only sync (see external events, avoid double-booking against them). It does not need to create `Booking` rows for events that didn't originate from this product.
 
 ### 3.3 Data model changes
@@ -98,6 +99,28 @@ model CalendarConnection {
 **Credential storage — resolved (raised in review by Arjun):** these tokens grant direct access to a customer's personal/business calendar, which is a materially more sensitive credential class than the platform-level provider keys already in this codebase (Twilio/Plivo/Razorpay — all single, ops-controlled secrets, not per-tenant, per-customer-data-access tokens). No plaintext option — commit to field-level encryption at rest regardless of whether a specific compliance mandate exists yet, since it's low-cost to do from day one and expensive to retrofit later. Concretely: encrypt `accessToken`/`refreshToken` with a server-held symmetric key (e.g. AES-256-GCM) before writing, decrypt only in-process when a request needs to call Google's API, following the same `optional()` env-var pattern as every other secret in `apps/api/src/config/env.ts` for where the encryption key itself lives (e.g. `CALENDAR_TOKEN_ENCRYPTION_KEY`). This is an engineering default, not a compliance determination — still flagging to whoever owns security/compliance sign-off in case there's a specific requirement (KMS-backed envelope encryption, key rotation policy, etc.) that should shape the implementation further; the encryption itself is not optional either way.
 
 `User` gains `googleId String? @unique` for Flow A.
+
+### 3.3.1 Timezone & working hours — resolved (raised in review by Kapil)
+
+`AgentBookingConfig.workingHoursNote` is a free-text string today ("Mon–Sat, 10:00 AM – 7:00 PM IST") — fine for display, useless for computing availability, since `check_calendar_availability` needs to reliably intersect real open slots with business hours and cannot parse arbitrary text. This needs structuring, and it's in scope for this doc, not deferred — the availability tool genuinely doesn't work without it.
+
+Add to `AgentBookingConfig`:
+
+```ts
+interface AgentBookingConfig {
+  // ...existing fields...
+  timezone: string; // IANA timezone, e.g. "Asia/Kolkata" — required once booking is enabled, no guessed default
+  workingHours: {
+    days: Array<"MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN">;
+    start: string; // 24h local time in `timezone`, e.g. "10:00"
+    end: string; // e.g. "19:00"
+  };
+}
+```
+
+`workingHoursNote` stays as-is for existing agents' display text (no migration required — it's cosmetic), but `check_calendar_availability` reads `timezone`/`workingHours`, not the free-text note. The Agent Wizard's booking config UI (§3.5) needs a timezone picker + simple hours editor to replace the current single text input — a small, contained UI change, not a redesign.
+
+**Why this matters beyond just parsing**: every Google Calendar API call (FreeBusy query, event creation) takes an explicit `timeZone` — if we don't pass the tenant's actual timezone, slots get computed and displayed in the wrong hour relative to what the business and caller actually mean by "10 AM." The confirmation message read back to the caller, and the email sent to them, both need to state the time in `timezone`, not server-local or UTC.
 
 ### 3.4 In-call booking tool-calls
 
@@ -160,7 +183,7 @@ if (ctx.booking) {
 
 Two tools rather than one, because a real conversation needs to present options before confirming — matches the flow described: check availability → tell the caller the slot → get explicit confirmation → book.
 
-**Cross-project dependency:** step 3 (confirmation email) needs real email-sending infrastructure, which doesn't exist yet anywhere in the codebase — it's the same gap tracked in the Notifications project (DES-44) and the Onboarding project (DES-12). `book_appointment` should be built so the booking + calendar-event creation succeed independently of the email step — log/queue the email send and don't fail the whole booking if email infra isn't live yet, same "recordings are a nice-to-have, don't break the pipeline" pattern already used in `apps/post-call-server/src/jobs/recording-fetch.ts`.
+**Booking works independently of the email step — resolved (raised in review by Kapil):** confirming this explicitly rather than leaving it implied. Step 3 (confirmation email) needs real email-sending infrastructure, which doesn't exist yet anywhere in the codebase — it's the same gap tracked in the Notifications project (DES-44) and the Onboarding project (DES-12). `book_appointment`'s steps 1-2 (the internal `Booking` row and the real Google Calendar event) are **not gated on step 3 succeeding or even existing yet** — the appointment is genuinely booked, on the real calendar, whether or not the email goes out. If email infra isn't live, step 3 logs/no-ops rather than throwing, so it can never fail the booking that already happened — same "recordings are a nice-to-have, don't break the pipeline" pattern already used in `apps/post-call-server/src/jobs/recording-fetch.ts`. This means the in-call booking flow can ship and be fully usable before DES-44/DES-12 land; the email is a backfilled enhancement, not a blocking dependency.
 
 ### 3.5 Frontend + notifications
 
@@ -182,6 +205,3 @@ Implementation tickets for each of these three will be created **after this doc 
 ## 5. Open questions for review
 
 - [ ] Google-only signup (Flow A, new user) — is a `User` row without a `passwordHash` acceptable, or should we require setting a password on first Google signup? Affects whether `passwordHash` becomes nullable.
-- [ ] Calendar sync (§3.2) — live-fetch on page load vs. a local mirror table with a poll/webhook sync job. Live-fetch is simpler for v1; mirror is more resilient/faster but is more infrastructure.
-- [ ] `book_appointment`'s email step — confirmed OK to ship ahead of email infra (log-only), and backfill real sending once DES-44/DES-12 lands?
-- [ ] Working-hours source of truth for availability checks — `AgentBookingConfig.workingHoursNote` is currently a free-text string ("Mon–Sat, 10:00 AM – 7:00 PM IST"), not structured data. `check_calendar_availability` needs structured hours to compute slots — does this doc's scope include restructuring that field, or is it a follow-up?
