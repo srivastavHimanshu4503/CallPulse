@@ -1,16 +1,16 @@
-import fs from 'fs';
-import path from 'path';
-import { spawn } from 'child_process';
-import twilio from 'twilio';
+import fs from "fs";
+import path from "path";
+import { spawn } from "child_process";
+import twilio from "twilio";
 
 // Load env variables manually from apps/voice-server/.env
-const envPath = path.resolve('./.env');
-const envContent = fs.readFileSync(envPath, 'utf-8');
+const envPath = path.resolve("./.env");
+const envContent = fs.readFileSync(envPath, "utf-8");
 const env = {};
-envContent.split('\n').forEach(line => {
-  const match = line.match(/^\s*([\w.\-]+)\s*=\s*(.*)?\s*$/);
+envContent.split("\n").forEach((line) => {
+  const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
   if (match) {
-    let value = match[2] || '';
+    let value = match[2] || "";
     if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
     if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1);
     env[match[1]] = value.trim();
@@ -29,10 +29,10 @@ if (!accountSid || !authToken || !phoneNumber) {
 
 async function getNgrokUrl() {
   try {
-    const res = await fetch('http://localhost:4040/api/tunnels');
+    const res = await fetch("http://localhost:4040/api/tunnels");
     if (res.ok) {
       const data = await res.json();
-      const tunnel = data.tunnels.find(t => t.proto === 'https');
+      const tunnel = data.tunnels.find((t) => t.proto === "https");
       if (tunnel) return tunnel.public_url;
     }
   } catch (e) {
@@ -45,15 +45,15 @@ async function main() {
   let url = await getNgrokUrl();
   if (!url) {
     console.log("ngrok is not running. Starting ngrok http " + port + "...");
-    const ngrokProcess = spawn('ngrok', ['http', port.toString()], {
+    const ngrokProcess = spawn("ngrok", ["http", port.toString()], {
       detached: true,
-      stdio: 'ignore'
+      stdio: "ignore",
     });
     ngrokProcess.unref();
 
     // Poll for 5 seconds
     for (let i = 0; i < 10; i++) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       url = await getNgrokUrl();
       if (url) break;
     }
@@ -78,7 +78,7 @@ async function main() {
   const numberSid = numbers[0].sid;
   await client.incomingPhoneNumbers(numberSid).update({
     voiceUrl: webhookUrl,
-    voiceMethod: 'POST'
+    voiceMethod: "POST",
   });
 
   console.log("\n========================================================");
@@ -90,7 +90,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error("Error during execution:", err);
   process.exit(1);
 });

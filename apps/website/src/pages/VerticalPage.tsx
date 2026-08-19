@@ -17,15 +17,17 @@ import { ScrollProgress } from "../components/common/ScrollProgress";
 export function VerticalPage() {
   const { vertical: slug } = useParams<{ vertical: string }>();
   const vertical = slug ? getVerticalBySlug(slug) : undefined;
+  const canonical = vertical
+    ? `https://www.deskbuddy.in/for/${vertical.slug}`
+    : "https://www.deskbuddy.in/";
 
-  if (!vertical) return <Navigate to="/" replace />;
-
-  const canonical = `https://www.deskbuddy.in/for/${vertical.slug}`;
   useSeoMeta({
-    title: vertical.metaTitle,
-    description: vertical.metaDescription,
+    title: vertical?.metaTitle ?? "DeskBuddy",
+    description: vertical?.metaDescription ?? "",
     canonical,
   });
+
+  if (!vertical) return <Navigate to="/" replace />;
 
   return (
     <div className="flex flex-col min-h-screen">

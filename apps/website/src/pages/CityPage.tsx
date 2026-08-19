@@ -17,15 +17,17 @@ import { ScrollProgress } from "../components/common/ScrollProgress";
 export function CityPage() {
   const { city: slug } = useParams<{ city: string }>();
   const city = slug ? getCityBySlug(slug) : undefined;
+  const canonical = city
+    ? `https://www.deskbuddy.in/city/${city.slug}`
+    : "https://www.deskbuddy.in/";
 
-  if (!city) return <Navigate to="/" replace />;
-
-  const canonical = `https://www.deskbuddy.in/city/${city.slug}`;
   useSeoMeta({
-    title: city.metaTitle,
-    description: city.metaDescription,
+    title: city?.metaTitle ?? "DeskBuddy",
+    description: city?.metaDescription ?? "",
     canonical,
   });
+
+  if (!city) return <Navigate to="/" replace />;
 
   return (
     <div className="flex flex-col min-h-screen">
