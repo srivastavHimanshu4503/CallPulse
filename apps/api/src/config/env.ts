@@ -16,6 +16,13 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z
     .string()
     .min(10, { message: "JWT_REFRESH_SECRET must be at least 10 chars" }),
+  CALENDAR_TOKEN_ENCRYPTION_KEY: z
+    .string()
+    .length(64, { message: "CALENDAR_TOKEN_ENCRYPTION_KEY must be exactly 64 hex characters" })
+    .regex(/^[0-9a-fA-F]{64}$/, {
+      message: "CALENDAR_TOKEN_ENCRYPTION_KEY must be a valid hex string",
+    })
+    .optional(),
 
   // LiveKit (required for in-app test calls; optional for other flows)
   LIVEKIT_URL: z.string().min(1).optional(),

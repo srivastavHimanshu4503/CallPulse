@@ -134,6 +134,7 @@ model Tenant {
   creditLedger        CreditLedger[]
   billingSubscription BillingSubscription?
   paymentRecords      PaymentRecord[]
+  calendarConnection  CalendarConnection?
 
   @@map("tenants")
 }
@@ -224,10 +225,12 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
+  googleId     String?   @unique
 
-  tenant   Tenant    @relation(fields: [tenantId], references: [id])
-  deals    Deal[]
-  bookings Booking[]
+  tenant              Tenant               @relation(fields: [tenantId], references: [id])
+  deals               Deal[]
+  bookings            Booking[]
+  calendarConnections CalendarConnection[]
 
   @@unique([tenantId, email])
   @@map("users")
@@ -484,19 +487,23 @@ model DealStageHistory {
 // ─────────────────────────────────────────────
 
 model Booking {
-  id         String   @id @default(uuid())
-  tenantId   String
-  contactId  String
-  title      String
-  startTime  DateTime
-  endTime    DateTime
-  status     String
-  agentId    String?
-  assigneeId String?
-  ccEmails   String[] @default([])
-  notes      String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                 String   @id @default(uuid())
+  tenantId           String
+  contactId          String
+  title              String
+  startTime          DateTime
+  endTime            DateTime
+  status             String
+  agentId            String?
+  assigneeId         String?
+  ccEmails           String[] @default([])
+  notes              String?
+  externalProvider   String?
+  externalEventId    String?
+  externalSyncStatus String?
+  purpose            String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   tenant     Tenant     @relation(fields: [tenantId], references: [id])
   contact    Contact    @relation(fields: [contactId], references: [id])
@@ -866,4 +873,24 @@ model PasswordResetOtp {
 
   @@index([userId])
   @@map("password_reset_otps")
+}
+
+// ─────────────────────────────────────────────
+// CALENDAR CONNECTION — Tenant's external calendar
+// ─────────────────────────────────────────────
+
+model CalendarConnection {
+  id                    String   @id @default(uuid())
+  tenantId              String   @unique
+  provider              String
+  accessTokenEncrypted  String
+  refreshTokenEncrypted String
+  expiresAt             DateTime
+  connectedById         String?
+  connectedAt           DateTime @default(now())
+
+  tenant      Tenant @relation(fields: [tenantId], references: [id])
+  connectedBy User?  @relation(fields: [connectedById], references: [id], onDelete: SetNull)
+
+  @@map("calendar_connections")
 }

@@ -143,6 +143,11 @@ export type Activity = $Result.DefaultSelection<Prisma.$ActivityPayload>
  * 
  */
 export type PasswordResetOtp = $Result.DefaultSelection<Prisma.$PasswordResetOtpPayload>
+/**
+ * Model CalendarConnection
+ * 
+ */
+export type CalendarConnection = $Result.DefaultSelection<Prisma.$CalendarConnectionPayload>
 
 /**
  * Enums
@@ -797,6 +802,16 @@ export class PrismaClient<
     * ```
     */
   get passwordResetOtp(): Prisma.PasswordResetOtpDelegate<ExtArgs>;
+
+  /**
+   * `prisma.calendarConnection`: Exposes CRUD operations for the **CalendarConnection** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CalendarConnections
+    * const calendarConnections = await prisma.calendarConnection.findMany()
+    * ```
+    */
+  get calendarConnection(): Prisma.CalendarConnectionDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1263,7 +1278,8 @@ export namespace Prisma {
     CommunicationLog: 'CommunicationLog',
     ChatSession: 'ChatSession',
     Activity: 'Activity',
-    PasswordResetOtp: 'PasswordResetOtp'
+    PasswordResetOtp: 'PasswordResetOtp',
+    CalendarConnection: 'CalendarConnection'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1279,7 +1295,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "dealEvent" | "postCallJobClaim" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp"
+      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "dealEvent" | "postCallJobClaim" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp" | "calendarConnection"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3103,6 +3119,76 @@ export namespace Prisma {
           }
         }
       }
+      CalendarConnection: {
+        payload: Prisma.$CalendarConnectionPayload<ExtArgs>
+        fields: Prisma.CalendarConnectionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CalendarConnectionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CalendarConnectionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>
+          }
+          findFirst: {
+            args: Prisma.CalendarConnectionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CalendarConnectionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>
+          }
+          findMany: {
+            args: Prisma.CalendarConnectionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>[]
+          }
+          create: {
+            args: Prisma.CalendarConnectionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>
+          }
+          createMany: {
+            args: Prisma.CalendarConnectionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CalendarConnectionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>[]
+          }
+          delete: {
+            args: Prisma.CalendarConnectionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>
+          }
+          update: {
+            args: Prisma.CalendarConnectionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>
+          }
+          deleteMany: {
+            args: Prisma.CalendarConnectionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CalendarConnectionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CalendarConnectionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarConnectionPayload>
+          }
+          aggregate: {
+            args: Prisma.CalendarConnectionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCalendarConnection>
+          }
+          groupBy: {
+            args: Prisma.CalendarConnectionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CalendarConnectionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CalendarConnectionCountArgs<ExtArgs>
+            result: $Utils.Optional<CalendarConnectionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3468,11 +3554,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     deals: number
     bookings: number
+    calendarConnections: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     deals?: boolean | UserCountOutputTypeCountDealsArgs
     bookings?: boolean | UserCountOutputTypeCountBookingsArgs
+    calendarConnections?: boolean | UserCountOutputTypeCountCalendarConnectionsArgs
   }
 
   // Custom InputTypes
@@ -3498,6 +3586,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountBookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BookingWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCalendarConnectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CalendarConnectionWhereInput
   }
 
 
@@ -4337,6 +4432,7 @@ export namespace Prisma {
     creditLedger?: boolean | Tenant$creditLedgerArgs<ExtArgs>
     billingSubscription?: boolean | Tenant$billingSubscriptionArgs<ExtArgs>
     paymentRecords?: boolean | Tenant$paymentRecordsArgs<ExtArgs>
+    calendarConnection?: boolean | Tenant$calendarConnectionArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -4398,6 +4494,7 @@ export namespace Prisma {
     creditLedger?: boolean | Tenant$creditLedgerArgs<ExtArgs>
     billingSubscription?: boolean | Tenant$billingSubscriptionArgs<ExtArgs>
     paymentRecords?: boolean | Tenant$paymentRecordsArgs<ExtArgs>
+    calendarConnection?: boolean | Tenant$calendarConnectionArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4426,6 +4523,7 @@ export namespace Prisma {
       creditLedger: Prisma.$CreditLedgerPayload<ExtArgs>[]
       billingSubscription: Prisma.$BillingSubscriptionPayload<ExtArgs> | null
       paymentRecords: Prisma.$PaymentRecordPayload<ExtArgs>[]
+      calendarConnection: Prisma.$CalendarConnectionPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4828,6 +4926,7 @@ export namespace Prisma {
     creditLedger<T extends Tenant$creditLedgerArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$creditLedgerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CreditLedgerPayload<ExtArgs>, T, "findMany"> | Null>
     billingSubscription<T extends Tenant$billingSubscriptionArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$billingSubscriptionArgs<ExtArgs>>): Prisma__BillingSubscriptionClient<$Result.GetResult<Prisma.$BillingSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     paymentRecords<T extends Tenant$paymentRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$paymentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany"> | Null>
+    calendarConnection<T extends Tenant$calendarConnectionArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$calendarConnectionArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5598,6 +5697,21 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.calendarConnection
+   */
+  export type Tenant$calendarConnectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    where?: CalendarConnectionWhereInput
   }
 
   /**
@@ -8646,6 +8760,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    googleId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -8658,6 +8773,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    googleId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -8670,6 +8786,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     deletedAt: number
+    googleId: number
     _all: number
   }
 
@@ -8684,6 +8801,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    googleId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -8696,6 +8814,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    googleId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -8708,6 +8827,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    googleId?: true
     _all?: true
   }
 
@@ -8793,6 +8913,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
+    googleId: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -8822,9 +8943,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    googleId?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     deals?: boolean | User$dealsArgs<ExtArgs>
     bookings?: boolean | User$bookingsArgs<ExtArgs>
+    calendarConnections?: boolean | User$calendarConnectionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8838,6 +8961,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    googleId?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8851,12 +8975,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    googleId?: boolean
   }
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     deals?: boolean | User$dealsArgs<ExtArgs>
     bookings?: boolean | User$bookingsArgs<ExtArgs>
+    calendarConnections?: boolean | User$calendarConnectionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8869,6 +8995,7 @@ export namespace Prisma {
       tenant: Prisma.$TenantPayload<ExtArgs>
       deals: Prisma.$DealPayload<ExtArgs>[]
       bookings: Prisma.$BookingPayload<ExtArgs>[]
+      calendarConnections: Prisma.$CalendarConnectionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8880,6 +9007,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
+      googleId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -9247,6 +9375,7 @@ export namespace Prisma {
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     deals<T extends User$dealsArgs<ExtArgs> = {}>(args?: Subset<T, User$dealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DealPayload<ExtArgs>, T, "findMany"> | Null>
     bookings<T extends User$bookingsArgs<ExtArgs> = {}>(args?: Subset<T, User$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany"> | Null>
+    calendarConnections<T extends User$calendarConnectionsArgs<ExtArgs> = {}>(args?: Subset<T, User$calendarConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9285,6 +9414,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly deletedAt: FieldRef<"User", 'DateTime'>
+    readonly googleId: FieldRef<"User", 'String'>
   }
     
 
@@ -9640,6 +9770,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BookingScalarFieldEnum | BookingScalarFieldEnum[]
+  }
+
+  /**
+   * User.calendarConnections
+   */
+  export type User$calendarConnectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    where?: CalendarConnectionWhereInput
+    orderBy?: CalendarConnectionOrderByWithRelationInput | CalendarConnectionOrderByWithRelationInput[]
+    cursor?: CalendarConnectionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CalendarConnectionScalarFieldEnum | CalendarConnectionScalarFieldEnum[]
   }
 
   /**
@@ -19167,6 +19317,10 @@ export namespace Prisma {
     agentId: string | null
     assigneeId: string | null
     notes: string | null
+    externalProvider: string | null
+    externalEventId: string | null
+    externalSyncStatus: string | null
+    purpose: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19182,6 +19336,10 @@ export namespace Prisma {
     agentId: string | null
     assigneeId: string | null
     notes: string | null
+    externalProvider: string | null
+    externalEventId: string | null
+    externalSyncStatus: string | null
+    purpose: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19198,6 +19356,10 @@ export namespace Prisma {
     assigneeId: number
     ccEmails: number
     notes: number
+    externalProvider: number
+    externalEventId: number
+    externalSyncStatus: number
+    purpose: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -19215,6 +19377,10 @@ export namespace Prisma {
     agentId?: true
     assigneeId?: true
     notes?: true
+    externalProvider?: true
+    externalEventId?: true
+    externalSyncStatus?: true
+    purpose?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19230,6 +19396,10 @@ export namespace Prisma {
     agentId?: true
     assigneeId?: true
     notes?: true
+    externalProvider?: true
+    externalEventId?: true
+    externalSyncStatus?: true
+    purpose?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19246,6 +19416,10 @@ export namespace Prisma {
     assigneeId?: true
     ccEmails?: true
     notes?: true
+    externalProvider?: true
+    externalEventId?: true
+    externalSyncStatus?: true
+    purpose?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -19335,6 +19509,10 @@ export namespace Prisma {
     assigneeId: string | null
     ccEmails: string[]
     notes: string | null
+    externalProvider: string | null
+    externalEventId: string | null
+    externalSyncStatus: string | null
+    purpose: string | null
     createdAt: Date
     updatedAt: Date
     _count: BookingCountAggregateOutputType | null
@@ -19368,6 +19546,10 @@ export namespace Prisma {
     assigneeId?: boolean
     ccEmails?: boolean
     notes?: boolean
+    externalProvider?: boolean
+    externalEventId?: boolean
+    externalSyncStatus?: boolean
+    purpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -19390,6 +19572,10 @@ export namespace Prisma {
     assigneeId?: boolean
     ccEmails?: boolean
     notes?: boolean
+    externalProvider?: boolean
+    externalEventId?: boolean
+    externalSyncStatus?: boolean
+    purpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -19410,6 +19596,10 @@ export namespace Prisma {
     assigneeId?: boolean
     ccEmails?: boolean
     notes?: boolean
+    externalProvider?: boolean
+    externalEventId?: boolean
+    externalSyncStatus?: boolean
+    purpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -19450,6 +19640,10 @@ export namespace Prisma {
       assigneeId: string | null
       ccEmails: string[]
       notes: string | null
+      externalProvider: string | null
+      externalEventId: string | null
+      externalSyncStatus: string | null
+      purpose: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["booking"]>
@@ -19861,6 +20055,10 @@ export namespace Prisma {
     readonly assigneeId: FieldRef<"Booking", 'String'>
     readonly ccEmails: FieldRef<"Booking", 'String[]'>
     readonly notes: FieldRef<"Booking", 'String'>
+    readonly externalProvider: FieldRef<"Booking", 'String'>
+    readonly externalEventId: FieldRef<"Booking", 'String'>
+    readonly externalSyncStatus: FieldRef<"Booking", 'String'>
+    readonly purpose: FieldRef<"Booking", 'String'>
     readonly createdAt: FieldRef<"Booking", 'DateTime'>
     readonly updatedAt: FieldRef<"Booking", 'DateTime'>
   }
@@ -32257,6 +32455,996 @@ export namespace Prisma {
 
 
   /**
+   * Model CalendarConnection
+   */
+
+  export type AggregateCalendarConnection = {
+    _count: CalendarConnectionCountAggregateOutputType | null
+    _min: CalendarConnectionMinAggregateOutputType | null
+    _max: CalendarConnectionMaxAggregateOutputType | null
+  }
+
+  export type CalendarConnectionMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    provider: string | null
+    accessTokenEncrypted: string | null
+    refreshTokenEncrypted: string | null
+    expiresAt: Date | null
+    connectedById: string | null
+    connectedAt: Date | null
+  }
+
+  export type CalendarConnectionMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    provider: string | null
+    accessTokenEncrypted: string | null
+    refreshTokenEncrypted: string | null
+    expiresAt: Date | null
+    connectedById: string | null
+    connectedAt: Date | null
+  }
+
+  export type CalendarConnectionCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    provider: number
+    accessTokenEncrypted: number
+    refreshTokenEncrypted: number
+    expiresAt: number
+    connectedById: number
+    connectedAt: number
+    _all: number
+  }
+
+
+  export type CalendarConnectionMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    accessTokenEncrypted?: true
+    refreshTokenEncrypted?: true
+    expiresAt?: true
+    connectedById?: true
+    connectedAt?: true
+  }
+
+  export type CalendarConnectionMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    accessTokenEncrypted?: true
+    refreshTokenEncrypted?: true
+    expiresAt?: true
+    connectedById?: true
+    connectedAt?: true
+  }
+
+  export type CalendarConnectionCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    provider?: true
+    accessTokenEncrypted?: true
+    refreshTokenEncrypted?: true
+    expiresAt?: true
+    connectedById?: true
+    connectedAt?: true
+    _all?: true
+  }
+
+  export type CalendarConnectionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendarConnection to aggregate.
+     */
+    where?: CalendarConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarConnections to fetch.
+     */
+    orderBy?: CalendarConnectionOrderByWithRelationInput | CalendarConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CalendarConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CalendarConnections
+    **/
+    _count?: true | CalendarConnectionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CalendarConnectionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CalendarConnectionMaxAggregateInputType
+  }
+
+  export type GetCalendarConnectionAggregateType<T extends CalendarConnectionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCalendarConnection]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCalendarConnection[P]>
+      : GetScalarType<T[P], AggregateCalendarConnection[P]>
+  }
+
+
+
+
+  export type CalendarConnectionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CalendarConnectionWhereInput
+    orderBy?: CalendarConnectionOrderByWithAggregationInput | CalendarConnectionOrderByWithAggregationInput[]
+    by: CalendarConnectionScalarFieldEnum[] | CalendarConnectionScalarFieldEnum
+    having?: CalendarConnectionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CalendarConnectionCountAggregateInputType | true
+    _min?: CalendarConnectionMinAggregateInputType
+    _max?: CalendarConnectionMaxAggregateInputType
+  }
+
+  export type CalendarConnectionGroupByOutputType = {
+    id: string
+    tenantId: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date
+    connectedById: string | null
+    connectedAt: Date
+    _count: CalendarConnectionCountAggregateOutputType | null
+    _min: CalendarConnectionMinAggregateOutputType | null
+    _max: CalendarConnectionMaxAggregateOutputType | null
+  }
+
+  type GetCalendarConnectionGroupByPayload<T extends CalendarConnectionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CalendarConnectionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CalendarConnectionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CalendarConnectionGroupByOutputType[P]>
+            : GetScalarType<T[P], CalendarConnectionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CalendarConnectionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    accessTokenEncrypted?: boolean
+    refreshTokenEncrypted?: boolean
+    expiresAt?: boolean
+    connectedById?: boolean
+    connectedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    connectedBy?: boolean | CalendarConnection$connectedByArgs<ExtArgs>
+  }, ExtArgs["result"]["calendarConnection"]>
+
+  export type CalendarConnectionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    accessTokenEncrypted?: boolean
+    refreshTokenEncrypted?: boolean
+    expiresAt?: boolean
+    connectedById?: boolean
+    connectedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    connectedBy?: boolean | CalendarConnection$connectedByArgs<ExtArgs>
+  }, ExtArgs["result"]["calendarConnection"]>
+
+  export type CalendarConnectionSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    provider?: boolean
+    accessTokenEncrypted?: boolean
+    refreshTokenEncrypted?: boolean
+    expiresAt?: boolean
+    connectedById?: boolean
+    connectedAt?: boolean
+  }
+
+  export type CalendarConnectionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    connectedBy?: boolean | CalendarConnection$connectedByArgs<ExtArgs>
+  }
+  export type CalendarConnectionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    connectedBy?: boolean | CalendarConnection$connectedByArgs<ExtArgs>
+  }
+
+  export type $CalendarConnectionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CalendarConnection"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+      connectedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      provider: string
+      accessTokenEncrypted: string
+      refreshTokenEncrypted: string
+      expiresAt: Date
+      connectedById: string | null
+      connectedAt: Date
+    }, ExtArgs["result"]["calendarConnection"]>
+    composites: {}
+  }
+
+  type CalendarConnectionGetPayload<S extends boolean | null | undefined | CalendarConnectionDefaultArgs> = $Result.GetResult<Prisma.$CalendarConnectionPayload, S>
+
+  type CalendarConnectionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CalendarConnectionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CalendarConnectionCountAggregateInputType | true
+    }
+
+  export interface CalendarConnectionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CalendarConnection'], meta: { name: 'CalendarConnection' } }
+    /**
+     * Find zero or one CalendarConnection that matches the filter.
+     * @param {CalendarConnectionFindUniqueArgs} args - Arguments to find a CalendarConnection
+     * @example
+     * // Get one CalendarConnection
+     * const calendarConnection = await prisma.calendarConnection.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CalendarConnectionFindUniqueArgs>(args: SelectSubset<T, CalendarConnectionFindUniqueArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CalendarConnection that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CalendarConnectionFindUniqueOrThrowArgs} args - Arguments to find a CalendarConnection
+     * @example
+     * // Get one CalendarConnection
+     * const calendarConnection = await prisma.calendarConnection.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CalendarConnectionFindUniqueOrThrowArgs>(args: SelectSubset<T, CalendarConnectionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CalendarConnection that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarConnectionFindFirstArgs} args - Arguments to find a CalendarConnection
+     * @example
+     * // Get one CalendarConnection
+     * const calendarConnection = await prisma.calendarConnection.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CalendarConnectionFindFirstArgs>(args?: SelectSubset<T, CalendarConnectionFindFirstArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CalendarConnection that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarConnectionFindFirstOrThrowArgs} args - Arguments to find a CalendarConnection
+     * @example
+     * // Get one CalendarConnection
+     * const calendarConnection = await prisma.calendarConnection.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CalendarConnectionFindFirstOrThrowArgs>(args?: SelectSubset<T, CalendarConnectionFindFirstOrThrowArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CalendarConnections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarConnectionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CalendarConnections
+     * const calendarConnections = await prisma.calendarConnection.findMany()
+     * 
+     * // Get first 10 CalendarConnections
+     * const calendarConnections = await prisma.calendarConnection.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const calendarConnectionWithIdOnly = await prisma.calendarConnection.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CalendarConnectionFindManyArgs>(args?: SelectSubset<T, CalendarConnectionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CalendarConnection.
+     * @param {CalendarConnectionCreateArgs} args - Arguments to create a CalendarConnection.
+     * @example
+     * // Create one CalendarConnection
+     * const CalendarConnection = await prisma.calendarConnection.create({
+     *   data: {
+     *     // ... data to create a CalendarConnection
+     *   }
+     * })
+     * 
+     */
+    create<T extends CalendarConnectionCreateArgs>(args: SelectSubset<T, CalendarConnectionCreateArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CalendarConnections.
+     * @param {CalendarConnectionCreateManyArgs} args - Arguments to create many CalendarConnections.
+     * @example
+     * // Create many CalendarConnections
+     * const calendarConnection = await prisma.calendarConnection.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CalendarConnectionCreateManyArgs>(args?: SelectSubset<T, CalendarConnectionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CalendarConnections and returns the data saved in the database.
+     * @param {CalendarConnectionCreateManyAndReturnArgs} args - Arguments to create many CalendarConnections.
+     * @example
+     * // Create many CalendarConnections
+     * const calendarConnection = await prisma.calendarConnection.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CalendarConnections and only return the `id`
+     * const calendarConnectionWithIdOnly = await prisma.calendarConnection.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CalendarConnectionCreateManyAndReturnArgs>(args?: SelectSubset<T, CalendarConnectionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CalendarConnection.
+     * @param {CalendarConnectionDeleteArgs} args - Arguments to delete one CalendarConnection.
+     * @example
+     * // Delete one CalendarConnection
+     * const CalendarConnection = await prisma.calendarConnection.delete({
+     *   where: {
+     *     // ... filter to delete one CalendarConnection
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CalendarConnectionDeleteArgs>(args: SelectSubset<T, CalendarConnectionDeleteArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CalendarConnection.
+     * @param {CalendarConnectionUpdateArgs} args - Arguments to update one CalendarConnection.
+     * @example
+     * // Update one CalendarConnection
+     * const calendarConnection = await prisma.calendarConnection.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CalendarConnectionUpdateArgs>(args: SelectSubset<T, CalendarConnectionUpdateArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CalendarConnections.
+     * @param {CalendarConnectionDeleteManyArgs} args - Arguments to filter CalendarConnections to delete.
+     * @example
+     * // Delete a few CalendarConnections
+     * const { count } = await prisma.calendarConnection.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CalendarConnectionDeleteManyArgs>(args?: SelectSubset<T, CalendarConnectionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CalendarConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarConnectionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CalendarConnections
+     * const calendarConnection = await prisma.calendarConnection.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CalendarConnectionUpdateManyArgs>(args: SelectSubset<T, CalendarConnectionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CalendarConnection.
+     * @param {CalendarConnectionUpsertArgs} args - Arguments to update or create a CalendarConnection.
+     * @example
+     * // Update or create a CalendarConnection
+     * const calendarConnection = await prisma.calendarConnection.upsert({
+     *   create: {
+     *     // ... data to create a CalendarConnection
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CalendarConnection we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CalendarConnectionUpsertArgs>(args: SelectSubset<T, CalendarConnectionUpsertArgs<ExtArgs>>): Prisma__CalendarConnectionClient<$Result.GetResult<Prisma.$CalendarConnectionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CalendarConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarConnectionCountArgs} args - Arguments to filter CalendarConnections to count.
+     * @example
+     * // Count the number of CalendarConnections
+     * const count = await prisma.calendarConnection.count({
+     *   where: {
+     *     // ... the filter for the CalendarConnections we want to count
+     *   }
+     * })
+    **/
+    count<T extends CalendarConnectionCountArgs>(
+      args?: Subset<T, CalendarConnectionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CalendarConnectionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CalendarConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarConnectionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CalendarConnectionAggregateArgs>(args: Subset<T, CalendarConnectionAggregateArgs>): Prisma.PrismaPromise<GetCalendarConnectionAggregateType<T>>
+
+    /**
+     * Group by CalendarConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarConnectionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CalendarConnectionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CalendarConnectionGroupByArgs['orderBy'] }
+        : { orderBy?: CalendarConnectionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CalendarConnectionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCalendarConnectionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CalendarConnection model
+   */
+  readonly fields: CalendarConnectionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CalendarConnection.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CalendarConnectionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    connectedBy<T extends CalendarConnection$connectedByArgs<ExtArgs> = {}>(args?: Subset<T, CalendarConnection$connectedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CalendarConnection model
+   */ 
+  interface CalendarConnectionFieldRefs {
+    readonly id: FieldRef<"CalendarConnection", 'String'>
+    readonly tenantId: FieldRef<"CalendarConnection", 'String'>
+    readonly provider: FieldRef<"CalendarConnection", 'String'>
+    readonly accessTokenEncrypted: FieldRef<"CalendarConnection", 'String'>
+    readonly refreshTokenEncrypted: FieldRef<"CalendarConnection", 'String'>
+    readonly expiresAt: FieldRef<"CalendarConnection", 'DateTime'>
+    readonly connectedById: FieldRef<"CalendarConnection", 'String'>
+    readonly connectedAt: FieldRef<"CalendarConnection", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CalendarConnection findUnique
+   */
+  export type CalendarConnectionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarConnection to fetch.
+     */
+    where: CalendarConnectionWhereUniqueInput
+  }
+
+  /**
+   * CalendarConnection findUniqueOrThrow
+   */
+  export type CalendarConnectionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarConnection to fetch.
+     */
+    where: CalendarConnectionWhereUniqueInput
+  }
+
+  /**
+   * CalendarConnection findFirst
+   */
+  export type CalendarConnectionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarConnection to fetch.
+     */
+    where?: CalendarConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarConnections to fetch.
+     */
+    orderBy?: CalendarConnectionOrderByWithRelationInput | CalendarConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendarConnections.
+     */
+    cursor?: CalendarConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendarConnections.
+     */
+    distinct?: CalendarConnectionScalarFieldEnum | CalendarConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarConnection findFirstOrThrow
+   */
+  export type CalendarConnectionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarConnection to fetch.
+     */
+    where?: CalendarConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarConnections to fetch.
+     */
+    orderBy?: CalendarConnectionOrderByWithRelationInput | CalendarConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendarConnections.
+     */
+    cursor?: CalendarConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendarConnections.
+     */
+    distinct?: CalendarConnectionScalarFieldEnum | CalendarConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarConnection findMany
+   */
+  export type CalendarConnectionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarConnections to fetch.
+     */
+    where?: CalendarConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarConnections to fetch.
+     */
+    orderBy?: CalendarConnectionOrderByWithRelationInput | CalendarConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CalendarConnections.
+     */
+    cursor?: CalendarConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarConnections.
+     */
+    skip?: number
+    distinct?: CalendarConnectionScalarFieldEnum | CalendarConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarConnection create
+   */
+  export type CalendarConnectionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CalendarConnection.
+     */
+    data: XOR<CalendarConnectionCreateInput, CalendarConnectionUncheckedCreateInput>
+  }
+
+  /**
+   * CalendarConnection createMany
+   */
+  export type CalendarConnectionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CalendarConnections.
+     */
+    data: CalendarConnectionCreateManyInput | CalendarConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CalendarConnection createManyAndReturn
+   */
+  export type CalendarConnectionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CalendarConnections.
+     */
+    data: CalendarConnectionCreateManyInput | CalendarConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CalendarConnection update
+   */
+  export type CalendarConnectionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CalendarConnection.
+     */
+    data: XOR<CalendarConnectionUpdateInput, CalendarConnectionUncheckedUpdateInput>
+    /**
+     * Choose, which CalendarConnection to update.
+     */
+    where: CalendarConnectionWhereUniqueInput
+  }
+
+  /**
+   * CalendarConnection updateMany
+   */
+  export type CalendarConnectionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CalendarConnections.
+     */
+    data: XOR<CalendarConnectionUpdateManyMutationInput, CalendarConnectionUncheckedUpdateManyInput>
+    /**
+     * Filter which CalendarConnections to update
+     */
+    where?: CalendarConnectionWhereInput
+  }
+
+  /**
+   * CalendarConnection upsert
+   */
+  export type CalendarConnectionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CalendarConnection to update in case it exists.
+     */
+    where: CalendarConnectionWhereUniqueInput
+    /**
+     * In case the CalendarConnection found by the `where` argument doesn't exist, create a new CalendarConnection with this data.
+     */
+    create: XOR<CalendarConnectionCreateInput, CalendarConnectionUncheckedCreateInput>
+    /**
+     * In case the CalendarConnection was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CalendarConnectionUpdateInput, CalendarConnectionUncheckedUpdateInput>
+  }
+
+  /**
+   * CalendarConnection delete
+   */
+  export type CalendarConnectionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+    /**
+     * Filter which CalendarConnection to delete.
+     */
+    where: CalendarConnectionWhereUniqueInput
+  }
+
+  /**
+   * CalendarConnection deleteMany
+   */
+  export type CalendarConnectionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendarConnections to delete
+     */
+    where?: CalendarConnectionWhereInput
+  }
+
+  /**
+   * CalendarConnection.connectedBy
+   */
+  export type CalendarConnection$connectedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CalendarConnection without action
+   */
+  export type CalendarConnectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarConnection
+     */
+    select?: CalendarConnectionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarConnectionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -32345,7 +33533,8 @@ export namespace Prisma {
     role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    googleId: 'googleId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -32514,6 +33703,10 @@ export namespace Prisma {
     assigneeId: 'assigneeId',
     ccEmails: 'ccEmails',
     notes: 'notes',
+    externalProvider: 'externalProvider',
+    externalEventId: 'externalEventId',
+    externalSyncStatus: 'externalSyncStatus',
+    purpose: 'purpose',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -32742,6 +33935,20 @@ export namespace Prisma {
   };
 
   export type PasswordResetOtpScalarFieldEnum = (typeof PasswordResetOtpScalarFieldEnum)[keyof typeof PasswordResetOtpScalarFieldEnum]
+
+
+  export const CalendarConnectionScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    provider: 'provider',
+    accessTokenEncrypted: 'accessTokenEncrypted',
+    refreshTokenEncrypted: 'refreshTokenEncrypted',
+    expiresAt: 'expiresAt',
+    connectedById: 'connectedById',
+    connectedAt: 'connectedAt'
+  };
+
+  export type CalendarConnectionScalarFieldEnum = (typeof CalendarConnectionScalarFieldEnum)[keyof typeof CalendarConnectionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -33176,6 +34383,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerListRelationFilter
     billingSubscription?: XOR<BillingSubscriptionNullableRelationFilter, BillingSubscriptionWhereInput> | null
     paymentRecords?: PaymentRecordListRelationFilter
+    calendarConnection?: XOR<CalendarConnectionNullableRelationFilter, CalendarConnectionWhereInput> | null
   }
 
   export type TenantOrderByWithRelationInput = {
@@ -33215,6 +34423,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerOrderByRelationAggregateInput
     billingSubscription?: BillingSubscriptionOrderByWithRelationInput
     paymentRecords?: PaymentRecordOrderByRelationAggregateInput
+    calendarConnection?: CalendarConnectionOrderByWithRelationInput
   }
 
   export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -33257,6 +34466,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerListRelationFilter
     billingSubscription?: XOR<BillingSubscriptionNullableRelationFilter, BillingSubscriptionWhereInput> | null
     paymentRecords?: PaymentRecordListRelationFilter
+    calendarConnection?: XOR<CalendarConnectionNullableRelationFilter, CalendarConnectionWhereInput> | null
   }, "id" | "slug">
 
   export type TenantOrderByWithAggregationInput = {
@@ -33545,9 +34755,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    googleId?: StringNullableFilter<"User"> | string | null
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     deals?: DealListRelationFilter
     bookings?: BookingListRelationFilter
+    calendarConnections?: CalendarConnectionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -33560,13 +34772,16 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    googleId?: SortOrderInput | SortOrder
     tenant?: TenantOrderByWithRelationInput
     deals?: DealOrderByRelationAggregateInput
     bookings?: BookingOrderByRelationAggregateInput
+    calendarConnections?: CalendarConnectionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    googleId?: string
     tenantId_email?: UserTenantIdEmailCompoundUniqueInput
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
@@ -33582,7 +34797,8 @@ export namespace Prisma {
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
     deals?: DealListRelationFilter
     bookings?: BookingListRelationFilter
-  }, "id" | "tenantId_email">
+    calendarConnections?: CalendarConnectionListRelationFilter
+  }, "id" | "googleId" | "tenantId_email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -33594,6 +34810,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    googleId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -33612,6 +34829,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    googleId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type ContactWhereInput = {
@@ -34451,6 +35669,10 @@ export namespace Prisma {
     assigneeId?: StringNullableFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableFilter<"Booking"> | string | null
+    externalProvider?: StringNullableFilter<"Booking"> | string | null
+    externalEventId?: StringNullableFilter<"Booking"> | string | null
+    externalSyncStatus?: StringNullableFilter<"Booking"> | string | null
+    purpose?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -34472,6 +35694,10 @@ export namespace Prisma {
     assigneeId?: SortOrderInput | SortOrder
     ccEmails?: SortOrder
     notes?: SortOrderInput | SortOrder
+    externalProvider?: SortOrderInput | SortOrder
+    externalEventId?: SortOrderInput | SortOrder
+    externalSyncStatus?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tenant?: TenantOrderByWithRelationInput
@@ -34496,6 +35722,10 @@ export namespace Prisma {
     assigneeId?: StringNullableFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableFilter<"Booking"> | string | null
+    externalProvider?: StringNullableFilter<"Booking"> | string | null
+    externalEventId?: StringNullableFilter<"Booking"> | string | null
+    externalSyncStatus?: StringNullableFilter<"Booking"> | string | null
+    purpose?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -34517,6 +35747,10 @@ export namespace Prisma {
     assigneeId?: SortOrderInput | SortOrder
     ccEmails?: SortOrder
     notes?: SortOrderInput | SortOrder
+    externalProvider?: SortOrderInput | SortOrder
+    externalEventId?: SortOrderInput | SortOrder
+    externalSyncStatus?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BookingCountOrderByAggregateInput
@@ -34539,6 +35773,10 @@ export namespace Prisma {
     assigneeId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    externalProvider?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    externalEventId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    externalSyncStatus?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    purpose?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
   }
@@ -35746,6 +36984,79 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"PasswordResetOtp"> | Date | string
   }
 
+  export type CalendarConnectionWhereInput = {
+    AND?: CalendarConnectionWhereInput | CalendarConnectionWhereInput[]
+    OR?: CalendarConnectionWhereInput[]
+    NOT?: CalendarConnectionWhereInput | CalendarConnectionWhereInput[]
+    id?: StringFilter<"CalendarConnection"> | string
+    tenantId?: StringFilter<"CalendarConnection"> | string
+    provider?: StringFilter<"CalendarConnection"> | string
+    accessTokenEncrypted?: StringFilter<"CalendarConnection"> | string
+    refreshTokenEncrypted?: StringFilter<"CalendarConnection"> | string
+    expiresAt?: DateTimeFilter<"CalendarConnection"> | Date | string
+    connectedById?: StringNullableFilter<"CalendarConnection"> | string | null
+    connectedAt?: DateTimeFilter<"CalendarConnection"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+    connectedBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+  }
+
+  export type CalendarConnectionOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    accessTokenEncrypted?: SortOrder
+    refreshTokenEncrypted?: SortOrder
+    expiresAt?: SortOrder
+    connectedById?: SortOrderInput | SortOrder
+    connectedAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+    connectedBy?: UserOrderByWithRelationInput
+  }
+
+  export type CalendarConnectionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tenantId?: string
+    AND?: CalendarConnectionWhereInput | CalendarConnectionWhereInput[]
+    OR?: CalendarConnectionWhereInput[]
+    NOT?: CalendarConnectionWhereInput | CalendarConnectionWhereInput[]
+    provider?: StringFilter<"CalendarConnection"> | string
+    accessTokenEncrypted?: StringFilter<"CalendarConnection"> | string
+    refreshTokenEncrypted?: StringFilter<"CalendarConnection"> | string
+    expiresAt?: DateTimeFilter<"CalendarConnection"> | Date | string
+    connectedById?: StringNullableFilter<"CalendarConnection"> | string | null
+    connectedAt?: DateTimeFilter<"CalendarConnection"> | Date | string
+    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+    connectedBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+  }, "id" | "tenantId">
+
+  export type CalendarConnectionOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    accessTokenEncrypted?: SortOrder
+    refreshTokenEncrypted?: SortOrder
+    expiresAt?: SortOrder
+    connectedById?: SortOrderInput | SortOrder
+    connectedAt?: SortOrder
+    _count?: CalendarConnectionCountOrderByAggregateInput
+    _max?: CalendarConnectionMaxOrderByAggregateInput
+    _min?: CalendarConnectionMinOrderByAggregateInput
+  }
+
+  export type CalendarConnectionScalarWhereWithAggregatesInput = {
+    AND?: CalendarConnectionScalarWhereWithAggregatesInput | CalendarConnectionScalarWhereWithAggregatesInput[]
+    OR?: CalendarConnectionScalarWhereWithAggregatesInput[]
+    NOT?: CalendarConnectionScalarWhereWithAggregatesInput | CalendarConnectionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CalendarConnection"> | string
+    tenantId?: StringWithAggregatesFilter<"CalendarConnection"> | string
+    provider?: StringWithAggregatesFilter<"CalendarConnection"> | string
+    accessTokenEncrypted?: StringWithAggregatesFilter<"CalendarConnection"> | string
+    refreshTokenEncrypted?: StringWithAggregatesFilter<"CalendarConnection"> | string
+    expiresAt?: DateTimeWithAggregatesFilter<"CalendarConnection"> | Date | string
+    connectedById?: StringNullableWithAggregatesFilter<"CalendarConnection"> | string | null
+    connectedAt?: DateTimeWithAggregatesFilter<"CalendarConnection"> | Date | string
+  }
+
   export type TenantCreateInput = {
     id?: string
     name: string
@@ -35783,6 +37094,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateInput = {
@@ -35822,6 +37134,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUpdateInput = {
@@ -35861,6 +37174,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateInput = {
@@ -35900,6 +37214,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantCreateManyInput = {
@@ -36214,9 +37529,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     tenant: TenantCreateNestedOneWithoutUsersInput
     deals?: DealCreateNestedManyWithoutOwnerInput
     bookings?: BookingCreateNestedManyWithoutAssigneeInput
+    calendarConnections?: CalendarConnectionCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -36229,8 +37546,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     deals?: DealUncheckedCreateNestedManyWithoutOwnerInput
     bookings?: BookingUncheckedCreateNestedManyWithoutAssigneeInput
+    calendarConnections?: CalendarConnectionUncheckedCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserUpdateInput = {
@@ -36242,9 +37561,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
     deals?: DealUpdateManyWithoutOwnerNestedInput
     bookings?: BookingUpdateManyWithoutAssigneeNestedInput
+    calendarConnections?: CalendarConnectionUpdateManyWithoutConnectedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -36257,8 +37578,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     deals?: DealUncheckedUpdateManyWithoutOwnerNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutAssigneeNestedInput
+    calendarConnections?: CalendarConnectionUncheckedUpdateManyWithoutConnectedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -36271,6 +37594,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -36282,6 +37606,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -36294,6 +37619,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ContactCreateInput = {
@@ -37213,6 +38539,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -37234,6 +38564,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -37247,6 +38581,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -37268,6 +38606,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -37285,6 +38627,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -37297,6 +38643,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -37313,6 +38663,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -38668,6 +40022,81 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CalendarConnectionCreateInput = {
+    id?: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutCalendarConnectionInput
+    connectedBy?: UserCreateNestedOneWithoutCalendarConnectionsInput
+  }
+
+  export type CalendarConnectionUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedById?: string | null
+    connectedAt?: Date | string
+  }
+
+  export type CalendarConnectionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutCalendarConnectionNestedInput
+    connectedBy?: UserUpdateOneWithoutCalendarConnectionsNestedInput
+  }
+
+  export type CalendarConnectionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedById?: NullableStringFieldUpdateOperationsInput | string | null
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarConnectionCreateManyInput = {
+    id?: string
+    tenantId: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedById?: string | null
+    connectedAt?: Date | string
+  }
+
+  export type CalendarConnectionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarConnectionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedById?: NullableStringFieldUpdateOperationsInput | string | null
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -38873,6 +40302,11 @@ export namespace Prisma {
     every?: PaymentRecordWhereInput
     some?: PaymentRecordWhereInput
     none?: PaymentRecordWhereInput
+  }
+
+  export type CalendarConnectionNullableRelationFilter = {
+    is?: CalendarConnectionWhereInput | null
+    isNot?: CalendarConnectionWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -39295,6 +40729,16 @@ export namespace Prisma {
     _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
   }
 
+  export type CalendarConnectionListRelationFilter = {
+    every?: CalendarConnectionWhereInput
+    some?: CalendarConnectionWhereInput
+    none?: CalendarConnectionWhereInput
+  }
+
+  export type CalendarConnectionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserTenantIdEmailCompoundUniqueInput = {
     tenantId: string
     email: string
@@ -39310,6 +40754,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    googleId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -39322,6 +40767,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    googleId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -39334,6 +40780,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    googleId?: SortOrder
   }
 
   export type StringNullableListFilter<$PrismaModel = never> = {
@@ -40054,6 +41501,10 @@ export namespace Prisma {
     assigneeId?: SortOrder
     ccEmails?: SortOrder
     notes?: SortOrder
+    externalProvider?: SortOrder
+    externalEventId?: SortOrder
+    externalSyncStatus?: SortOrder
+    purpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -40069,6 +41520,10 @@ export namespace Prisma {
     agentId?: SortOrder
     assigneeId?: SortOrder
     notes?: SortOrder
+    externalProvider?: SortOrder
+    externalEventId?: SortOrder
+    externalSyncStatus?: SortOrder
+    purpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -40084,6 +41539,10 @@ export namespace Prisma {
     agentId?: SortOrder
     assigneeId?: SortOrder
     notes?: SortOrder
+    externalProvider?: SortOrder
+    externalEventId?: SortOrder
+    externalSyncStatus?: SortOrder
+    purpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -40922,6 +42381,39 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type CalendarConnectionCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    accessTokenEncrypted?: SortOrder
+    refreshTokenEncrypted?: SortOrder
+    expiresAt?: SortOrder
+    connectedById?: SortOrder
+    connectedAt?: SortOrder
+  }
+
+  export type CalendarConnectionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    accessTokenEncrypted?: SortOrder
+    refreshTokenEncrypted?: SortOrder
+    expiresAt?: SortOrder
+    connectedById?: SortOrder
+    connectedAt?: SortOrder
+  }
+
+  export type CalendarConnectionMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    provider?: SortOrder
+    accessTokenEncrypted?: SortOrder
+    refreshTokenEncrypted?: SortOrder
+    expiresAt?: SortOrder
+    connectedById?: SortOrder
+    connectedAt?: SortOrder
+  }
+
   export type UserCreateNestedManyWithoutTenantInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -41068,6 +42560,12 @@ export namespace Prisma {
     connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
+  export type CalendarConnectionCreateNestedOneWithoutTenantInput = {
+    create?: XOR<CalendarConnectionCreateWithoutTenantInput, CalendarConnectionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutTenantInput
+    connect?: CalendarConnectionWhereUniqueInput
+  }
+
   export type UserUncheckedCreateNestedManyWithoutTenantInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -41212,6 +42710,12 @@ export namespace Prisma {
     connectOrCreate?: PaymentRecordCreateOrConnectWithoutTenantInput | PaymentRecordCreateOrConnectWithoutTenantInput[]
     createMany?: PaymentRecordCreateManyTenantInputEnvelope
     connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
+  export type CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput = {
+    create?: XOR<CalendarConnectionCreateWithoutTenantInput, CalendarConnectionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutTenantInput
+    connect?: CalendarConnectionWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -41540,6 +43044,16 @@ export namespace Prisma {
     deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
+  export type CalendarConnectionUpdateOneWithoutTenantNestedInput = {
+    create?: XOR<CalendarConnectionCreateWithoutTenantInput, CalendarConnectionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutTenantInput
+    upsert?: CalendarConnectionUpsertWithoutTenantInput
+    disconnect?: CalendarConnectionWhereInput | boolean
+    delete?: CalendarConnectionWhereInput | boolean
+    connect?: CalendarConnectionWhereUniqueInput
+    update?: XOR<XOR<CalendarConnectionUpdateToOneWithWhereWithoutTenantInput, CalendarConnectionUpdateWithoutTenantInput>, CalendarConnectionUncheckedUpdateWithoutTenantInput>
+  }
+
   export type UserUncheckedUpdateManyWithoutTenantNestedInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -41830,6 +43344,16 @@ export namespace Prisma {
     deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
+  export type CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput = {
+    create?: XOR<CalendarConnectionCreateWithoutTenantInput, CalendarConnectionUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutTenantInput
+    upsert?: CalendarConnectionUpsertWithoutTenantInput
+    disconnect?: CalendarConnectionWhereInput | boolean
+    delete?: CalendarConnectionWhereInput | boolean
+    connect?: CalendarConnectionWhereUniqueInput
+    update?: XOR<XOR<CalendarConnectionUpdateToOneWithWhereWithoutTenantInput, CalendarConnectionUpdateWithoutTenantInput>, CalendarConnectionUncheckedUpdateWithoutTenantInput>
+  }
+
   export type TenantCreateNestedOneWithoutCreditLedgerInput = {
     create?: XOR<TenantCreateWithoutCreditLedgerInput, TenantUncheckedCreateWithoutCreditLedgerInput>
     connectOrCreate?: TenantCreateOrConnectWithoutCreditLedgerInput
@@ -41900,6 +43424,13 @@ export namespace Prisma {
     connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
   }
 
+  export type CalendarConnectionCreateNestedManyWithoutConnectedByInput = {
+    create?: XOR<CalendarConnectionCreateWithoutConnectedByInput, CalendarConnectionUncheckedCreateWithoutConnectedByInput> | CalendarConnectionCreateWithoutConnectedByInput[] | CalendarConnectionUncheckedCreateWithoutConnectedByInput[]
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutConnectedByInput | CalendarConnectionCreateOrConnectWithoutConnectedByInput[]
+    createMany?: CalendarConnectionCreateManyConnectedByInputEnvelope
+    connect?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+  }
+
   export type DealUncheckedCreateNestedManyWithoutOwnerInput = {
     create?: XOR<DealCreateWithoutOwnerInput, DealUncheckedCreateWithoutOwnerInput> | DealCreateWithoutOwnerInput[] | DealUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: DealCreateOrConnectWithoutOwnerInput | DealCreateOrConnectWithoutOwnerInput[]
@@ -41912,6 +43443,13 @@ export namespace Prisma {
     connectOrCreate?: BookingCreateOrConnectWithoutAssigneeInput | BookingCreateOrConnectWithoutAssigneeInput[]
     createMany?: BookingCreateManyAssigneeInputEnvelope
     connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+  }
+
+  export type CalendarConnectionUncheckedCreateNestedManyWithoutConnectedByInput = {
+    create?: XOR<CalendarConnectionCreateWithoutConnectedByInput, CalendarConnectionUncheckedCreateWithoutConnectedByInput> | CalendarConnectionCreateWithoutConnectedByInput[] | CalendarConnectionUncheckedCreateWithoutConnectedByInput[]
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutConnectedByInput | CalendarConnectionCreateOrConnectWithoutConnectedByInput[]
+    createMany?: CalendarConnectionCreateManyConnectedByInputEnvelope
+    connect?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
   }
 
   export type TenantUpdateOneRequiredWithoutUsersNestedInput = {
@@ -41950,6 +43488,20 @@ export namespace Prisma {
     deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
   }
 
+  export type CalendarConnectionUpdateManyWithoutConnectedByNestedInput = {
+    create?: XOR<CalendarConnectionCreateWithoutConnectedByInput, CalendarConnectionUncheckedCreateWithoutConnectedByInput> | CalendarConnectionCreateWithoutConnectedByInput[] | CalendarConnectionUncheckedCreateWithoutConnectedByInput[]
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutConnectedByInput | CalendarConnectionCreateOrConnectWithoutConnectedByInput[]
+    upsert?: CalendarConnectionUpsertWithWhereUniqueWithoutConnectedByInput | CalendarConnectionUpsertWithWhereUniqueWithoutConnectedByInput[]
+    createMany?: CalendarConnectionCreateManyConnectedByInputEnvelope
+    set?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    disconnect?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    delete?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    connect?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    update?: CalendarConnectionUpdateWithWhereUniqueWithoutConnectedByInput | CalendarConnectionUpdateWithWhereUniqueWithoutConnectedByInput[]
+    updateMany?: CalendarConnectionUpdateManyWithWhereWithoutConnectedByInput | CalendarConnectionUpdateManyWithWhereWithoutConnectedByInput[]
+    deleteMany?: CalendarConnectionScalarWhereInput | CalendarConnectionScalarWhereInput[]
+  }
+
   export type DealUncheckedUpdateManyWithoutOwnerNestedInput = {
     create?: XOR<DealCreateWithoutOwnerInput, DealUncheckedCreateWithoutOwnerInput> | DealCreateWithoutOwnerInput[] | DealUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: DealCreateOrConnectWithoutOwnerInput | DealCreateOrConnectWithoutOwnerInput[]
@@ -41976,6 +43528,20 @@ export namespace Prisma {
     update?: BookingUpdateWithWhereUniqueWithoutAssigneeInput | BookingUpdateWithWhereUniqueWithoutAssigneeInput[]
     updateMany?: BookingUpdateManyWithWhereWithoutAssigneeInput | BookingUpdateManyWithWhereWithoutAssigneeInput[]
     deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
+  }
+
+  export type CalendarConnectionUncheckedUpdateManyWithoutConnectedByNestedInput = {
+    create?: XOR<CalendarConnectionCreateWithoutConnectedByInput, CalendarConnectionUncheckedCreateWithoutConnectedByInput> | CalendarConnectionCreateWithoutConnectedByInput[] | CalendarConnectionUncheckedCreateWithoutConnectedByInput[]
+    connectOrCreate?: CalendarConnectionCreateOrConnectWithoutConnectedByInput | CalendarConnectionCreateOrConnectWithoutConnectedByInput[]
+    upsert?: CalendarConnectionUpsertWithWhereUniqueWithoutConnectedByInput | CalendarConnectionUpsertWithWhereUniqueWithoutConnectedByInput[]
+    createMany?: CalendarConnectionCreateManyConnectedByInputEnvelope
+    set?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    disconnect?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    delete?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    connect?: CalendarConnectionWhereUniqueInput | CalendarConnectionWhereUniqueInput[]
+    update?: CalendarConnectionUpdateWithWhereUniqueWithoutConnectedByInput | CalendarConnectionUpdateWithWhereUniqueWithoutConnectedByInput[]
+    updateMany?: CalendarConnectionUpdateManyWithWhereWithoutConnectedByInput | CalendarConnectionUpdateManyWithWhereWithoutConnectedByInput[]
+    deleteMany?: CalendarConnectionScalarWhereInput | CalendarConnectionScalarWhereInput[]
   }
 
   export type ContactCreateemailsInput = {
@@ -43939,6 +45505,36 @@ export namespace Prisma {
     update?: XOR<XOR<NoteUpdateToOneWithWhereWithoutActivitiesInput, NoteUpdateWithoutActivitiesInput>, NoteUncheckedUpdateWithoutActivitiesInput>
   }
 
+  export type TenantCreateNestedOneWithoutCalendarConnectionInput = {
+    create?: XOR<TenantCreateWithoutCalendarConnectionInput, TenantUncheckedCreateWithoutCalendarConnectionInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutCalendarConnectionInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCalendarConnectionsInput = {
+    create?: XOR<UserCreateWithoutCalendarConnectionsInput, UserUncheckedCreateWithoutCalendarConnectionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCalendarConnectionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TenantUpdateOneRequiredWithoutCalendarConnectionNestedInput = {
+    create?: XOR<TenantCreateWithoutCalendarConnectionInput, TenantUncheckedCreateWithoutCalendarConnectionInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutCalendarConnectionInput
+    upsert?: TenantUpsertWithoutCalendarConnectionInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutCalendarConnectionInput, TenantUpdateWithoutCalendarConnectionInput>, TenantUncheckedUpdateWithoutCalendarConnectionInput>
+  }
+
+  export type UserUpdateOneWithoutCalendarConnectionsNestedInput = {
+    create?: XOR<UserCreateWithoutCalendarConnectionsInput, UserUncheckedCreateWithoutCalendarConnectionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCalendarConnectionsInput
+    upsert?: UserUpsertWithoutCalendarConnectionsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCalendarConnectionsInput, UserUpdateWithoutCalendarConnectionsInput>, UserUncheckedUpdateWithoutCalendarConnectionsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -44578,8 +46174,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     deals?: DealCreateNestedManyWithoutOwnerInput
     bookings?: BookingCreateNestedManyWithoutAssigneeInput
+    calendarConnections?: CalendarConnectionCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserUncheckedCreateWithoutTenantInput = {
@@ -44591,8 +46189,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     deals?: DealUncheckedCreateNestedManyWithoutOwnerInput
     bookings?: BookingUncheckedCreateNestedManyWithoutAssigneeInput
+    calendarConnections?: CalendarConnectionUncheckedCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserCreateOrConnectWithoutTenantInput = {
@@ -45309,6 +46909,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     contact: ContactCreateNestedOneWithoutBookingsInput
@@ -45328,6 +46932,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -45462,6 +47070,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CalendarConnectionCreateWithoutTenantInput = {
+    id?: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedAt?: Date | string
+    connectedBy?: UserCreateNestedOneWithoutCalendarConnectionsInput
+  }
+
+  export type CalendarConnectionUncheckedCreateWithoutTenantInput = {
+    id?: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedById?: string | null
+    connectedAt?: Date | string
+  }
+
+  export type CalendarConnectionCreateOrConnectWithoutTenantInput = {
+    where: CalendarConnectionWhereUniqueInput
+    create: XOR<CalendarConnectionCreateWithoutTenantInput, CalendarConnectionUncheckedCreateWithoutTenantInput>
+  }
+
   export type UserUpsertWithWhereUniqueWithoutTenantInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutTenantInput, UserUncheckedUpdateWithoutTenantInput>
@@ -45491,6 +47124,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    googleId?: StringNullableFilter<"User"> | string | null
   }
 
   export type ContactUpsertWithWhereUniqueWithoutTenantInput = {
@@ -46071,6 +47705,10 @@ export namespace Prisma {
     assigneeId?: StringNullableFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableFilter<"Booking"> | string | null
+    externalProvider?: StringNullableFilter<"Booking"> | string | null
+    externalEventId?: StringNullableFilter<"Booking"> | string | null
+    externalSyncStatus?: StringNullableFilter<"Booking"> | string | null
+    purpose?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
   }
@@ -46199,6 +47837,37 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
   }
 
+  export type CalendarConnectionUpsertWithoutTenantInput = {
+    update: XOR<CalendarConnectionUpdateWithoutTenantInput, CalendarConnectionUncheckedUpdateWithoutTenantInput>
+    create: XOR<CalendarConnectionCreateWithoutTenantInput, CalendarConnectionUncheckedCreateWithoutTenantInput>
+    where?: CalendarConnectionWhereInput
+  }
+
+  export type CalendarConnectionUpdateToOneWithWhereWithoutTenantInput = {
+    where?: CalendarConnectionWhereInput
+    data: XOR<CalendarConnectionUpdateWithoutTenantInput, CalendarConnectionUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type CalendarConnectionUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedBy?: UserUpdateOneWithoutCalendarConnectionsNestedInput
+  }
+
+  export type CalendarConnectionUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedById?: NullableStringFieldUpdateOperationsInput | string | null
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TenantCreateWithoutCreditLedgerInput = {
     id?: string
     name: string
@@ -46235,6 +47904,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutCreditLedgerInput = {
@@ -46273,6 +47943,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutCreditLedgerInput = {
@@ -46327,6 +47998,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutCreditLedgerInput = {
@@ -46365,6 +48037,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutPaymentRecordsInput = {
@@ -46403,6 +48076,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPaymentRecordsInput = {
@@ -46441,6 +48115,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPaymentRecordsInput = {
@@ -46495,6 +48170,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPaymentRecordsInput = {
@@ -46533,6 +48209,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutBillingSubscriptionInput = {
@@ -46571,6 +48248,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutBillingSubscriptionInput = {
@@ -46609,6 +48287,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutBillingSubscriptionInput = {
@@ -46663,6 +48342,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutBillingSubscriptionInput = {
@@ -46701,6 +48381,7 @@ export namespace Prisma {
     knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutUsersInput = {
@@ -46739,6 +48420,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutUsersInput = {
@@ -46777,6 +48459,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutUsersInput = {
@@ -46870,6 +48553,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -46889,6 +48576,10 @@ export namespace Prisma {
     agentId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -46901,6 +48592,36 @@ export namespace Prisma {
 
   export type BookingCreateManyAssigneeInputEnvelope = {
     data: BookingCreateManyAssigneeInput | BookingCreateManyAssigneeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CalendarConnectionCreateWithoutConnectedByInput = {
+    id?: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutCalendarConnectionInput
+  }
+
+  export type CalendarConnectionUncheckedCreateWithoutConnectedByInput = {
+    id?: string
+    tenantId: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedAt?: Date | string
+  }
+
+  export type CalendarConnectionCreateOrConnectWithoutConnectedByInput = {
+    where: CalendarConnectionWhereUniqueInput
+    create: XOR<CalendarConnectionCreateWithoutConnectedByInput, CalendarConnectionUncheckedCreateWithoutConnectedByInput>
+  }
+
+  export type CalendarConnectionCreateManyConnectedByInputEnvelope = {
+    data: CalendarConnectionCreateManyConnectedByInput | CalendarConnectionCreateManyConnectedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -46951,6 +48672,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutUsersInput = {
@@ -46989,6 +48711,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type DealUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -47021,6 +48744,36 @@ export namespace Prisma {
   export type BookingUpdateManyWithWhereWithoutAssigneeInput = {
     where: BookingScalarWhereInput
     data: XOR<BookingUpdateManyMutationInput, BookingUncheckedUpdateManyWithoutAssigneeInput>
+  }
+
+  export type CalendarConnectionUpsertWithWhereUniqueWithoutConnectedByInput = {
+    where: CalendarConnectionWhereUniqueInput
+    update: XOR<CalendarConnectionUpdateWithoutConnectedByInput, CalendarConnectionUncheckedUpdateWithoutConnectedByInput>
+    create: XOR<CalendarConnectionCreateWithoutConnectedByInput, CalendarConnectionUncheckedCreateWithoutConnectedByInput>
+  }
+
+  export type CalendarConnectionUpdateWithWhereUniqueWithoutConnectedByInput = {
+    where: CalendarConnectionWhereUniqueInput
+    data: XOR<CalendarConnectionUpdateWithoutConnectedByInput, CalendarConnectionUncheckedUpdateWithoutConnectedByInput>
+  }
+
+  export type CalendarConnectionUpdateManyWithWhereWithoutConnectedByInput = {
+    where: CalendarConnectionScalarWhereInput
+    data: XOR<CalendarConnectionUpdateManyMutationInput, CalendarConnectionUncheckedUpdateManyWithoutConnectedByInput>
+  }
+
+  export type CalendarConnectionScalarWhereInput = {
+    AND?: CalendarConnectionScalarWhereInput | CalendarConnectionScalarWhereInput[]
+    OR?: CalendarConnectionScalarWhereInput[]
+    NOT?: CalendarConnectionScalarWhereInput | CalendarConnectionScalarWhereInput[]
+    id?: StringFilter<"CalendarConnection"> | string
+    tenantId?: StringFilter<"CalendarConnection"> | string
+    provider?: StringFilter<"CalendarConnection"> | string
+    accessTokenEncrypted?: StringFilter<"CalendarConnection"> | string
+    refreshTokenEncrypted?: StringFilter<"CalendarConnection"> | string
+    expiresAt?: DateTimeFilter<"CalendarConnection"> | Date | string
+    connectedById?: StringNullableFilter<"CalendarConnection"> | string | null
+    connectedAt?: DateTimeFilter<"CalendarConnection"> | Date | string
   }
 
   export type TenantCreateWithoutContactsInput = {
@@ -47059,6 +48812,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutContactsInput = {
@@ -47097,6 +48851,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutContactsInput = {
@@ -47226,6 +48981,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -47245,6 +49004,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -47487,6 +49250,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutContactsInput = {
@@ -47525,6 +49289,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type CustomFieldValueUpsertWithWhereUniqueWithoutContactInput = {
@@ -47692,6 +49457,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutCustomFieldDefsInput = {
@@ -47730,6 +49496,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutCustomFieldDefsInput = {
@@ -47820,6 +49587,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutCustomFieldDefsInput = {
@@ -47858,6 +49626,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type CustomFieldValueUpsertWithWhereUniqueWithoutFieldDefinitionInput = {
@@ -48060,6 +49829,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutDealsInput = {
@@ -48098,6 +49868,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutDealsInput = {
@@ -48217,8 +49988,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     tenant: TenantCreateNestedOneWithoutUsersInput
     bookings?: BookingCreateNestedManyWithoutAssigneeInput
+    calendarConnections?: CalendarConnectionCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserUncheckedCreateWithoutDealsInput = {
@@ -48231,7 +50004,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     bookings?: BookingUncheckedCreateNestedManyWithoutAssigneeInput
+    calendarConnections?: CalendarConnectionUncheckedCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserCreateOrConnectWithoutDealsInput = {
@@ -48390,6 +50165,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutDealsInput = {
@@ -48428,6 +50204,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutDealsInput = {
@@ -48571,8 +50348,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
     bookings?: BookingUpdateManyWithoutAssigneeNestedInput
+    calendarConnections?: CalendarConnectionUpdateManyWithoutConnectedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDealsInput = {
@@ -48585,7 +50364,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     bookings?: BookingUncheckedUpdateManyWithoutAssigneeNestedInput
+    calendarConnections?: CalendarConnectionUncheckedUpdateManyWithoutConnectedByNestedInput
   }
 
   export type ActivityUpsertWithWhereUniqueWithoutDealInput = {
@@ -48839,6 +50620,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPipelinesInput = {
@@ -48877,6 +50659,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPipelinesInput = {
@@ -49049,6 +50832,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPipelinesInput = {
@@ -49087,6 +50871,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type DealUpsertWithWhereUniqueWithoutPipelineInput = {
@@ -49157,6 +50942,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPipelineStagesInput = {
@@ -49195,6 +50981,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPipelineStagesInput = {
@@ -49354,6 +51141,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPipelineStagesInput = {
@@ -49392,6 +51180,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type PipelineUpsertWithoutStageConfigsInput = {
@@ -49479,6 +51268,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutDealStageHistoryInput = {
@@ -49517,6 +51307,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutDealStageHistoryInput = {
@@ -49644,6 +51435,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutDealStageHistoryInput = {
@@ -49682,6 +51474,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type DealUpsertWithoutStageHistoryInput = {
@@ -49799,6 +51592,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutBookingsInput = {
@@ -49837,6 +51631,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutBookingsInput = {
@@ -50015,8 +51810,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     tenant: TenantCreateNestedOneWithoutUsersInput
     deals?: DealCreateNestedManyWithoutOwnerInput
+    calendarConnections?: CalendarConnectionCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserUncheckedCreateWithoutBookingsInput = {
@@ -50029,7 +51826,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
     deals?: DealUncheckedCreateNestedManyWithoutOwnerInput
+    calendarConnections?: CalendarConnectionUncheckedCreateNestedManyWithoutConnectedByInput
   }
 
   export type UserCreateOrConnectWithoutBookingsInput = {
@@ -50126,6 +51925,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutBookingsInput = {
@@ -50164,6 +51964,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutBookingsInput = {
@@ -50360,8 +52161,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
     deals?: DealUpdateManyWithoutOwnerNestedInput
+    calendarConnections?: CalendarConnectionUpdateManyWithoutConnectedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBookingsInput = {
@@ -50374,7 +52177,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     deals?: DealUncheckedUpdateManyWithoutOwnerNestedInput
+    calendarConnections?: CalendarConnectionUncheckedUpdateManyWithoutConnectedByNestedInput
   }
 
   export type ActivityUpsertWithWhereUniqueWithoutBookingInput = {
@@ -50429,6 +52234,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutNotesInput = {
@@ -50467,6 +52273,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutNotesInput = {
@@ -50604,6 +52411,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutNotesInput = {
@@ -50642,6 +52450,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutNotesInput = {
@@ -50743,6 +52552,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutWorkflowsInput = {
@@ -50781,6 +52591,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutWorkflowsInput = {
@@ -50894,6 +52705,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutWorkflowsInput = {
@@ -50932,6 +52744,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type WorkflowFolderUpsertWithoutWorkflowsInput = {
@@ -51017,6 +52830,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutWorkflowFoldersInput = {
@@ -51055,6 +52869,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutWorkflowFoldersInput = {
@@ -51196,6 +53011,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutWorkflowFoldersInput = {
@@ -51234,6 +53050,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type WorkflowFolderUpsertWithoutChildrenInput = {
@@ -51335,6 +53152,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutWorkflowRunsInput = {
@@ -51373,6 +53191,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutWorkflowRunsInput = {
@@ -51564,6 +53383,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutWorkflowRunsInput = {
@@ -51602,6 +53422,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type WorkflowDefinitionUpsertWithoutRunsInput = {
@@ -51705,6 +53526,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutAiAgentsInput = {
@@ -51743,6 +53565,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutAiAgentsInput = {
@@ -51896,6 +53719,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -51915,6 +53742,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -51977,6 +53808,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutAiAgentsInput = {
@@ -52015,6 +53847,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type CommunicationLogUpsertWithWhereUniqueWithoutAgentInput = {
@@ -52117,6 +53950,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPhoneNumbersInput = {
@@ -52155,6 +53989,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPhoneNumbersInput = {
@@ -52209,6 +54044,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPhoneNumbersInput = {
@@ -52247,6 +54083,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutKnowledgeBaseInput = {
@@ -52285,6 +54122,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutKnowledgeBaseInput = {
@@ -52323,6 +54161,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutKnowledgeBaseInput = {
@@ -52498,6 +54337,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutKnowledgeBaseInput = {
@@ -52536,6 +54376,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type AIAgentUpsertWithoutKnowledgeBasesInput = {
@@ -52701,6 +54542,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutCommunicationLogsInput = {
@@ -52739,6 +54581,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutCommunicationLogsInput = {
@@ -53063,6 +54906,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -53101,6 +54945,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutCommunicationLogsInput = {
@@ -53407,6 +55252,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutChatSessionsInput = {
@@ -53445,6 +55291,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutChatSessionsInput = {
@@ -53729,6 +55576,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutChatSessionsInput = {
@@ -53767,6 +55615,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutChatSessionsInput = {
@@ -53995,6 +55844,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutActivitiesInput = {
@@ -54033,6 +55883,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
     billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+    calendarConnection?: CalendarConnectionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutActivitiesInput = {
@@ -54225,6 +56076,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -54245,6 +56100,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -54353,6 +56212,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutActivitiesInput = {
@@ -54391,6 +56251,7 @@ export namespace Prisma {
     creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
     billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+    calendarConnection?: CalendarConnectionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type ContactUpsertWithoutActivitiesInput = {
@@ -54607,6 +56468,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -54627,6 +56492,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -54695,6 +56564,254 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TenantCreateWithoutCalendarConnectionInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    contacts?: ContactCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionCreateNestedManyWithoutTenantInput
+    deals?: DealCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionCreateNestedManyWithoutTenantInput
+    activities?: ActivityCreateNestedManyWithoutTenantInput
+    notes?: NoteCreateNestedManyWithoutTenantInput
+    bookings?: BookingCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutCalendarConnectionInput = {
+    id?: string
+    name: string
+    slug: string
+    plan?: $Enums.Plan
+    timezone?: string
+    businessType?: string | null
+    websiteUrl?: string | null
+    teamSize?: $Enums.TeamSize | null
+    monthlyRevenue?: string | null
+    onboardingStep?: number
+    onboardingDone?: boolean
+    creditBalance?: number
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutTenantInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    deals?: DealUncheckedCreateNestedManyWithoutTenantInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutTenantInput
+    pipelineStages?: PipelineStageUncheckedCreateNestedManyWithoutTenantInput
+    dealStageHistory?: DealStageHistoryUncheckedCreateNestedManyWithoutTenantInput
+    workflows?: WorkflowDefinitionUncheckedCreateNestedManyWithoutTenantInput
+    workflowFolders?: WorkflowFolderUncheckedCreateNestedManyWithoutTenantInput
+    workflowRuns?: WorkflowRunUncheckedCreateNestedManyWithoutTenantInput
+    aiAgents?: AIAgentUncheckedCreateNestedManyWithoutTenantInput
+    phoneNumbers?: PhoneNumberUncheckedCreateNestedManyWithoutTenantInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutTenantInput
+    chatSessions?: ChatSessionUncheckedCreateNestedManyWithoutTenantInput
+    activities?: ActivityUncheckedCreateNestedManyWithoutTenantInput
+    notes?: NoteUncheckedCreateNestedManyWithoutTenantInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutTenantInput
+    knowledgeBase?: KnowledgeBaseUncheckedCreateNestedManyWithoutTenantInput
+    creditLedger?: CreditLedgerUncheckedCreateNestedManyWithoutTenantInput
+    billingSubscription?: BillingSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutCalendarConnectionInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutCalendarConnectionInput, TenantUncheckedCreateWithoutCalendarConnectionInput>
+  }
+
+  export type UserCreateWithoutCalendarConnectionsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    role: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    googleId?: string | null
+    tenant: TenantCreateNestedOneWithoutUsersInput
+    deals?: DealCreateNestedManyWithoutOwnerInput
+    bookings?: BookingCreateNestedManyWithoutAssigneeInput
+  }
+
+  export type UserUncheckedCreateWithoutCalendarConnectionsInput = {
+    id?: string
+    tenantId: string
+    email: string
+    passwordHash: string
+    name: string
+    role: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    googleId?: string | null
+    deals?: DealUncheckedCreateNestedManyWithoutOwnerInput
+    bookings?: BookingUncheckedCreateNestedManyWithoutAssigneeInput
+  }
+
+  export type UserCreateOrConnectWithoutCalendarConnectionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCalendarConnectionsInput, UserUncheckedCreateWithoutCalendarConnectionsInput>
+  }
+
+  export type TenantUpsertWithoutCalendarConnectionInput = {
+    update: XOR<TenantUpdateWithoutCalendarConnectionInput, TenantUncheckedUpdateWithoutCalendarConnectionInput>
+    create: XOR<TenantCreateWithoutCalendarConnectionInput, TenantUncheckedCreateWithoutCalendarConnectionInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutCalendarConnectionInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutCalendarConnectionInput, TenantUncheckedUpdateWithoutCalendarConnectionInput>
+  }
+
+  export type TenantUpdateWithoutCalendarConnectionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUpdateManyWithoutTenantNestedInput
+    deals?: DealUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUpdateManyWithoutTenantNestedInput
+    notes?: NoteUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutCalendarConnectionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    timezone?: StringFieldUpdateOperationsInput | string
+    businessType?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableEnumTeamSizeFieldUpdateOperationsInput | $Enums.TeamSize | null
+    monthlyRevenue?: NullableStringFieldUpdateOperationsInput | string | null
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    onboardingDone?: BoolFieldUpdateOperationsInput | boolean
+    creditBalance?: IntFieldUpdateOperationsInput | number
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutTenantNestedInput
+    customFieldDefs?: CustomFieldDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    deals?: DealUncheckedUpdateManyWithoutTenantNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutTenantNestedInput
+    pipelineStages?: PipelineStageUncheckedUpdateManyWithoutTenantNestedInput
+    dealStageHistory?: DealStageHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    workflows?: WorkflowDefinitionUncheckedUpdateManyWithoutTenantNestedInput
+    workflowFolders?: WorkflowFolderUncheckedUpdateManyWithoutTenantNestedInput
+    workflowRuns?: WorkflowRunUncheckedUpdateManyWithoutTenantNestedInput
+    aiAgents?: AIAgentUncheckedUpdateManyWithoutTenantNestedInput
+    phoneNumbers?: PhoneNumberUncheckedUpdateManyWithoutTenantNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutTenantNestedInput
+    chatSessions?: ChatSessionUncheckedUpdateManyWithoutTenantNestedInput
+    activities?: ActivityUncheckedUpdateManyWithoutTenantNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutTenantNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutTenantNestedInput
+    knowledgeBase?: KnowledgeBaseUncheckedUpdateManyWithoutTenantNestedInput
+    creditLedger?: CreditLedgerUncheckedUpdateManyWithoutTenantNestedInput
+    billingSubscription?: BillingSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type UserUpsertWithoutCalendarConnectionsInput = {
+    update: XOR<UserUpdateWithoutCalendarConnectionsInput, UserUncheckedUpdateWithoutCalendarConnectionsInput>
+    create: XOR<UserCreateWithoutCalendarConnectionsInput, UserUncheckedCreateWithoutCalendarConnectionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCalendarConnectionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCalendarConnectionsInput, UserUncheckedUpdateWithoutCalendarConnectionsInput>
+  }
+
+  export type UserUpdateWithoutCalendarConnectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
+    deals?: DealUpdateManyWithoutOwnerNestedInput
+    bookings?: BookingUpdateManyWithoutAssigneeNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCalendarConnectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    deals?: DealUncheckedUpdateManyWithoutOwnerNestedInput
+    bookings?: BookingUncheckedUpdateManyWithoutAssigneeNestedInput
+  }
+
   export type UserCreateManyTenantInput = {
     id?: string
     email: string
@@ -54704,6 +56821,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    googleId?: string | null
   }
 
   export type ContactCreateManyTenantInput = {
@@ -54964,6 +57082,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -55008,8 +57130,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     deals?: DealUpdateManyWithoutOwnerNestedInput
     bookings?: BookingUpdateManyWithoutAssigneeNestedInput
+    calendarConnections?: CalendarConnectionUpdateManyWithoutConnectedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTenantInput = {
@@ -55021,8 +57145,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     deals?: DealUncheckedUpdateManyWithoutOwnerNestedInput
     bookings?: BookingUncheckedUpdateManyWithoutAssigneeNestedInput
+    calendarConnections?: CalendarConnectionUncheckedUpdateManyWithoutConnectedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutTenantInput = {
@@ -55034,6 +57160,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ContactUpdateWithoutTenantInput = {
@@ -55837,6 +57964,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contact?: ContactUpdateOneRequiredWithoutBookingsNestedInput
@@ -55856,6 +57987,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -55872,6 +58007,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56011,8 +58150,22 @@ export namespace Prisma {
     agentId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type CalendarConnectionCreateManyConnectedByInput = {
+    id?: string
+    tenantId: string
+    provider: string
+    accessTokenEncrypted: string
+    refreshTokenEncrypted: string
+    expiresAt: Date | string
+    connectedAt?: Date | string
   }
 
   export type DealUpdateWithoutOwnerInput = {
@@ -56122,6 +58275,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -56141,6 +58298,10 @@ export namespace Prisma {
     agentId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -56157,8 +58318,42 @@ export namespace Prisma {
     agentId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarConnectionUpdateWithoutConnectedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutCalendarConnectionNestedInput
+  }
+
+  export type CalendarConnectionUncheckedUpdateWithoutConnectedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarConnectionUncheckedUpdateManyWithoutConnectedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    accessTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    refreshTokenEncrypted?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CustomFieldValueCreateManyContactInput = {
@@ -56216,6 +58411,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -56433,6 +58632,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -56452,6 +58655,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -56468,6 +58675,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57688,6 +59899,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    externalProvider?: string | null
+    externalEventId?: string | null
+    externalSyncStatus?: string | null
+    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -57860,6 +60075,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -57879,6 +60098,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -57895,6 +60118,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -58246,6 +60473,10 @@ export namespace Prisma {
      * @deprecated Use PasswordResetOtpDefaultArgs instead
      */
     export type PasswordResetOtpArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PasswordResetOtpDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CalendarConnectionDefaultArgs instead
+     */
+    export type CalendarConnectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CalendarConnectionDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

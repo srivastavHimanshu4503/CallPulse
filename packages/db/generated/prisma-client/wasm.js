@@ -185,7 +185,8 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  googleId: 'googleId'
 };
 
 exports.Prisma.ContactScalarFieldEnum = {
@@ -324,6 +325,10 @@ exports.Prisma.BookingScalarFieldEnum = {
   assigneeId: 'assigneeId',
   ccEmails: 'ccEmails',
   notes: 'notes',
+  externalProvider: 'externalProvider',
+  externalEventId: 'externalEventId',
+  externalSyncStatus: 'externalSyncStatus',
+  purpose: 'purpose',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -518,6 +523,17 @@ exports.Prisma.PasswordResetOtpScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CalendarConnectionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  provider: 'provider',
+  accessTokenEncrypted: 'accessTokenEncrypted',
+  refreshTokenEncrypted: 'refreshTokenEncrypted',
+  expiresAt: 'expiresAt',
+  connectedById: 'connectedById',
+  connectedAt: 'connectedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -706,7 +722,8 @@ exports.Prisma.ModelName = {
   CommunicationLog: 'CommunicationLog',
   ChatSession: 'ChatSession',
   Activity: 'Activity',
-  PasswordResetOtp: 'PasswordResetOtp'
+  PasswordResetOtp: 'PasswordResetOtp',
+  CalendarConnection: 'CalendarConnection'
 };
 
 /**
