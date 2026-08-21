@@ -94,23 +94,23 @@ enum ActivityType {
 // ─────────────────────────────────────────────
 
 model Tenant {
-  id             String    @id @default(uuid())
-  name           String // business name
-  slug           String    @unique
-  plan           Plan      @default(FREE)
-  timezone       String    @default("Asia/Kolkata")
-  businessType   String? // retail | real estate | garage | ecommerce
-  websiteUrl     String? // auto-scraped for first agent KB
-  teamSize       TeamSize?
-  monthlyRevenue String? // optional range: "0-1L" | "1-10L" | "10L+"
-  onboardingStep Int       @default(0)
-  onboardingDone Boolean   @default(false)
+  id              String        @id @default(uuid())
+  name            String        // business name
+  slug            String        @unique
+  plan            Plan          @default(FREE)
+  timezone        String        @default("Asia/Kolkata")
+  businessType    String?       // retail | real estate | garage | ecommerce
+  websiteUrl      String?       // auto-scraped for first agent KB
+  teamSize        TeamSize?
+  monthlyRevenue  String?       // optional range: "0-1L" | "1-10L" | "10L+"
+  onboardingStep  Int           @default(0)
+  onboardingDone  Boolean       @default(false)
   // Cached credit balance — the CreditLedger is the source of truth; this
   // is kept in sync inside the same transaction as every ledger write.
-  creditBalance  Int       @default(0)
-  deletedAt      DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  creditBalance   Int           @default(0)
+  deletedAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   // Relations
   users               User[]
@@ -227,9 +227,9 @@ model User {
   deletedAt    DateTime?
   googleId     String?   @unique
 
-  tenant              Tenant               @relation(fields: [tenantId], references: [id])
-  deals               Deal[]
-  bookings            Booking[]
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  deals    Deal[]
+  bookings Booking[]
   calendarConnections CalendarConnection[]
 
   @@unique([tenantId, email])
@@ -278,7 +278,7 @@ model CustomFieldDefinition {
   createdAt  DateTime              @default(now())
   updatedAt  DateTime              @updatedAt
 
-  tenant Tenant             @relation(fields: [tenantId], references: [id])
+  tenant Tenant @relation(fields: [tenantId], references: [id])
   values CustomFieldValue[]
 
   @@map("custom_field_defs")
@@ -330,7 +330,7 @@ enum DealHealth {
 }
 
 model Deal {
-  id         String  @id @default(uuid())
+  id         String    @id @default(uuid())
   tenantId   String
   contactId  String
   pipelineId String?
@@ -487,23 +487,23 @@ model DealStageHistory {
 // ─────────────────────────────────────────────
 
 model Booking {
-  id                 String   @id @default(uuid())
-  tenantId           String
-  contactId          String
-  title              String
-  startTime          DateTime
-  endTime            DateTime
-  status             String
-  agentId            String?
-  assigneeId         String?
-  ccEmails           String[] @default([])
-  notes              String?
+  id        String   @id @default(uuid())
+  tenantId  String
+  contactId String
+  title      String
+  startTime  DateTime
+  endTime    DateTime
+  status     String
+  agentId    String?
+  assigneeId String?
+  ccEmails   String[] @default([])
+  notes      String?
+  purpose            String?
   externalProvider   String?
   externalEventId    String?
   externalSyncStatus String?
-  purpose            String?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   tenant     Tenant     @relation(fields: [tenantId], references: [id])
   contact    Contact    @relation(fields: [contactId], references: [id])
@@ -567,9 +567,9 @@ model WorkflowFolder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tenant    Tenant               @relation(fields: [tenantId], references: [id])
-  parent    WorkflowFolder?      @relation("FolderTree", fields: [parentId], references: [id])
-  children  WorkflowFolder[]     @relation("FolderTree")
+  tenant   Tenant             @relation(fields: [tenantId], references: [id])
+  parent   WorkflowFolder?    @relation("FolderTree", fields: [parentId], references: [id])
+  children WorkflowFolder[]   @relation("FolderTree")
   workflows WorkflowDefinition[]
 
   @@index([tenantId, parentId])
@@ -603,69 +603,69 @@ model WorkflowRun {
 // ─────────────────────────────────────────────
 
 model AIAgent {
-  id                         String    @id @default(uuid())
-  tenantId                   String
-  name                       String
-  role                       String    @default("Support")
-  language                   String    @default("Hinglish")
-  greetingMessage            String    @default("Namaste! Main aapki kaise help kar sakta hoon?")
-  tone                       String    @default("Friendly")
-  fallbackMessage            String    @default("I'll connect you with our team for this. One moment please.")
-  businessInfo               String?
-  websiteUrl                 String?
-  maxDuration                Int       @default(10)
-  dndCompliance              Boolean   @default(true)
-  recordingConsent           Boolean   @default(true)
-  isActive                   Boolean   @default(true)
+  id               String             @id @default(uuid())
+  tenantId         String
+  name             String
+  role             String             @default("Support")
+  language         String             @default("Hinglish")
+  greetingMessage  String             @default("Namaste! Main aapki kaise help kar sakta hoon?")
+  tone             String             @default("Friendly")
+  fallbackMessage  String             @default("I'll connect you with our team for this. One moment please.")
+  businessInfo     String?
+  websiteUrl       String?
+  maxDuration      Int                @default(10)
+  dndCompliance    Boolean            @default(true)
+  recordingConsent Boolean            @default(true)
+  isActive         Boolean            @default(true)
   // How the agent should talk and behave — written by the business owner in
   // the dashboard, injected into the live call prompt as its own section.
-  agentGuidelines            String?
-  modelName                  String
-  voice                      String    @default("sarvam:shubh")
+  agentGuidelines  String?
+  modelName        String
+  voice            String             @default("sarvam:shubh")
   // Speaking-speed multiplier. Null = per-provider default (providers pace
   // the same nominal speed very differently, so a single global constant
   // made Sarvam drag and ElevenLabs rush).
-  voiceSpeed                 Float?
+  voiceSpeed       Float?
   // Per-voice provider tunables chosen by the user in the dashboard
   // (ElevenLabs: stability/similarityBoost/style; Sarvam: temperature).
   // Null = provider defaults.
-  voiceSettings              Json?
+  voiceSettings    Json?
   // User-defined word → spoken-form overrides ({"NAIC": "N A I C"}).
   // Source of truth for the synced Sarvam pronunciation dictionary.
-  pronunciations             Json?
+  pronunciations   Json?
   // Sarvam pronunciation dictionary id (p_xxx) synced from `pronunciations`.
-  pronunciationDictId        String?
-  intakeWorkflowId           String?
-  smsWorkflowId              String?
-  phoneNumberId              String?
-  intakeEnabled              Boolean   @default(false)
-  intakeFields               String[]  @default([])
-  intakePrompt               String?
-  smsEnabled                 Boolean   @default(false)
-  smsTriggerCondition        String?
-  smsTemplate                String?
-  smsAgentReply              String?
-  whatsappEnabled            Boolean   @default(false)
-  whatsappPrompt             String?
-  apiEnabled                 Boolean   @default(false)
-  apiWorkflowId              String?
-  apiPrompt                  String?
-  callTransferEnabled        Boolean   @default(false)
-  callTransferWorkflowId     String?
-  callTransferNumber         String?
-  callTransferCondition      String?
-  callTransferMessage        String?
+  pronunciationDictId String?
+  intakeWorkflowId String?
+  smsWorkflowId    String?
+  phoneNumberId    String?
+  intakeEnabled    Boolean            @default(false)
+  intakeFields     String[]           @default([])
+  intakePrompt     String?
+  smsEnabled       Boolean            @default(false)
+  smsTriggerCondition String?
+  smsTemplate      String?
+  smsAgentReply    String?
+  whatsappEnabled  Boolean            @default(false)
+  whatsappPrompt   String?
+  apiEnabled             Boolean            @default(false)
+  apiWorkflowId          String?
+  apiPrompt              String?
+  callTransferEnabled    Boolean            @default(false)
+  callTransferWorkflowId String?
+  callTransferNumber     String?
+  callTransferCondition  String?
+  callTransferMessage    String?
   callTransferFallbackNumber String?
-  callTransferTimeoutSec     Int       @default(25)
-  callTransferNoAnswerAction String    @default("take_message")
-  callTransferStyle          String    @default("warm")
-  bookingEnabled             Boolean   @default(false)
-  bookingConfig              Json?
-  businessHours              Json?
-  timeZone                   String    @default("Asia/Kolkata")
-  deletedAt                  DateTime?
-  createdAt                  DateTime  @default(now())
-  updatedAt                  DateTime  @updatedAt
+  callTransferTimeoutSec Int                @default(25)
+  callTransferNoAnswerAction String         @default("take_message")
+  callTransferStyle      String             @default("warm")
+  bookingEnabled         Boolean            @default(false)
+  bookingConfig          Json?
+  businessHours    Json?
+  timeZone         String             @default("Asia/Kolkata")
+  deletedAt        DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   tenant            Tenant             @relation(fields: [tenantId], references: [id])
   communicationLogs CommunicationLog[]
@@ -699,14 +699,14 @@ enum PhoneNumberCountry {
 }
 
 model PhoneNumber {
-  id          String             @id @default(uuid())
+  id          String          @id @default(uuid())
   tenantId    String
-  phoneNumber String             @unique
+  phoneNumber String          @unique
   label       String?
-  kind        PhoneNumberKind    @default(AGENT_LINE)
+  kind        PhoneNumberKind @default(AGENT_LINE)
   // Which telephony provider owns this DID. Determines which API we hit
   // for hangup/transfer/release. Defaults to TWILIO for the historical rows.
-  provider    TelephonyProvider  @default(TWILIO)
+  provider    TelephonyProvider @default(TWILIO)
   // Country the DID belongs to. Drives UI copy, pricing, and provider dispatch.
   country     PhoneNumberCountry @default(US)
   // Provider-side resource id (Twilio sid, Plivo number id). Needed to
@@ -716,8 +716,8 @@ model PhoneNumber {
   // still populate both `providerRef` and `twilioSid` to avoid breaking
   // any code that still reads the old column.
   twilioSid   String?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 
@@ -834,7 +834,7 @@ model ChatSession {
 // ─────────────────────────────────────────────
 
 model Activity {
-  id            String       @id @default(uuid())
+  id            String            @id @default(uuid())
   tenantId      String
   contactId     String
   type          ActivityType
@@ -847,7 +847,7 @@ model Activity {
   workflowRunId String?
   noteId        String?
   occurredAt    DateTime
-  createdAt     DateTime     @default(now())
+  createdAt     DateTime          @default(now())
 
   tenant      Tenant            @relation(fields: [tenantId], references: [id])
   contact     Contact           @relation(fields: [contactId], references: [id])
@@ -874,6 +874,7 @@ model PasswordResetOtp {
   @@index([userId])
   @@map("password_reset_otps")
 }
+
 
 // ─────────────────────────────────────────────
 // CALENDAR CONNECTION — Tenant's external calendar

@@ -553,7 +553,7 @@ importers:
   packages/utils:
     devDependencies:
       '@types/node':
-        specifier: ^20.19.41
+        specifier: ^20.11.24
         version: 20.19.41
       typescript:
         specifier: ^5.3.3
