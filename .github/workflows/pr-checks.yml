@@ -30,4 +30,6 @@ jobs:
       # (build:no-prerender) so PR checks stay fast and don't burn Actions minutes.
       - run: pnpm --filter "!@antigravity/website" -r build
 
+      - run: pnpm --filter @antigravity/utils test
+
       - run: pnpm --filter @antigravity/website run build:no-prerender
