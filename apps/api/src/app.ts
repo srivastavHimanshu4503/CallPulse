@@ -13,6 +13,7 @@ import { billingRouter, billingWebhookHandler } from "./modules/billing/billing.
 import { telephonyRouter } from "./modules/telephony/telephony.router.js";
 import { recordingsRouter } from "./modules/recordings/recordings.router.js";
 import { whatsappRouter, whatsappConversationsRouter } from "./modules/whatsapp/whatsapp.router.js";
+import { calendarRouter } from "./modules/calendar/calendar.router.js";
 
 const app: Express = express();
 
@@ -33,6 +34,7 @@ app.use("/api/v1/agents", agentsRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/crm", crmRouter);
 app.use("/api/v1/bookings", bookingsRouter);
+app.use("/api/v1/calendar", calendarRouter);
 app.use("/api/v1/workflows", workflowsRouter);
 app.use("/api/v1/billing", billingRouter);
 app.use("/api/v1/telephony", telephonyRouter);
