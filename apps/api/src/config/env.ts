@@ -24,6 +24,11 @@ const envSchema = z.object({
     })
     .optional(),
 
+  // Google OAuth (Sign-in + Google Calendar)
+  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+  GOOGLE_OAUTH_REDIRECT_URL: z.string().url().optional(),
+
   // LiveKit (required for in-app test calls; optional for other flows)
   LIVEKIT_URL: z.string().min(1).optional(),
   LIVEKIT_API_KEY: z.string().min(1).optional(),
