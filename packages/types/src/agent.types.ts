@@ -14,6 +14,12 @@ export interface AgentBookingConfig {
   /** Ask the caller for an email so the calendar invite reaches their inbox.
    *  SMS confirmation is always sent regardless — email is best-effort. */
   askEmail: boolean;
+  timezone: string;
+  workingHours: {
+    days: Array<"MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN">;
+    start: string;
+    end: string;
+  };
 }
 
 /**
