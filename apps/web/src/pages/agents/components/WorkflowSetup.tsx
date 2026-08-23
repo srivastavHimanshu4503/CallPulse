@@ -92,6 +92,12 @@ const DEFAULT_BOOKING: AgentBookingConfig = {
   workingHoursNote: "Mon–Sat, 10:00 AM – 7:00 PM IST",
   confirmationMessage: "Aapki booking confirm ho gayi hai! Aapko confirmation message mil jayega.",
   askEmail: false,
+  timezone: "Asia/Kolkata",
+  workingHours: {
+    days: ["MON", "TUE", "WED", "THU", "FRI", "SAT"],
+    start: "10:00",
+    end: "19:00",
+  },
 };
 
 export function WorkflowSetup({
