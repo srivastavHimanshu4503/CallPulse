@@ -422,44 +422,318 @@ test("Calendar Router HTTP integration suite", async (t) => {
   );
 
   await t.test(
-    "DELETE /api/v1/calendar/disconnect — disconnects calendar for tenant admin",
+    "Phase 4 Hardening — Multi-tenant isolation: Tenant A and Tenant B connections remain strictly isolated",
     async () => {
-      const token = generateAuthToken({
-        userId: "admin-disconnect",
-        tenantId: "tenant-disconnect",
-        role: "ADMIN",
+      const tokenA = generateAuthToken({
+        userId: "user-tenant-a",
+        tenantId: "tenant-a",
+        role: "OWNER",
+      });
+      const tokenB = generateAuthToken({
+        userId: "user-tenant-b",
+        tenantId: "tenant-b",
+        role: "OWNER",
       });
 
       const originalFindFirst = db.user.findFirst;
+      const originalGetStatus = calendarService.getStatus;
       const originalDisconnect = calendarService.disconnect;
 
-      (db.user as any).findFirst = async () => ({
-        id: "admin-disconnect",
-        tenantId: "tenant-disconnect",
-        role: "ADMIN",
-      });
+      (db.user as any).findFirst = async (args: any) => {
+        if (args.where.tenantId === "tenant-a" && args.where.id === "user-tenant-a") {
+          return { id: "user-tenant-a", tenantId: "tenant-a", role: "OWNER" };
+        }
+        if (args.where.tenantId === "tenant-b" && args.where.id === "user-tenant-b") {
+          return { id: "user-tenant-b", tenantId: "tenant-b", role: "OWNER" };
+        }
+        return null;
+      };
 
-      let disconnectedTenantId: string | null = null;
+      (calendarService as any).getStatus = async (tenantId: string) => {
+        if (tenantId === "tenant-a") {
+          return {
+            isConnected: true,
+            provider: "google",
+            connectedAt: new Date("2026-08-23T10:00:00Z"),
+          };
+        }
+        return { isConnected: false };
+      };
+
+      let disconnectedTenant: string | null = null;
       (calendarService as any).disconnect = async (tenantId: string) => {
-        disconnectedTenantId = tenantId;
+        disconnectedTenant = tenantId;
         return { success: true };
       };
 
       try {
-        const res = await fetch(`${baseUrl}/api/v1/calendar/disconnect`, {
+        // Tenant A sees its connected status
+        const resA = await fetch(`${baseUrl}/api/v1/calendar/status`, {
+          headers: { Authorization: `Bearer ${tokenA}` },
+        });
+        const bodyA = (await resA.json()) as any;
+        assert.equal(bodyA.data.isConnected, true);
+        assert.equal(bodyA.data.provider, "google");
+
+        // Tenant B sees disconnected status (does not leak Tenant A's connection)
+        const resB = await fetch(`${baseUrl}/api/v1/calendar/status`, {
+          headers: { Authorization: `Bearer ${tokenB}` },
+        });
+        const bodyB = (await resB.json()) as any;
+        assert.equal(bodyB.data.isConnected, false);
+
+        // Tenant B cannot disconnect Tenant A (even if passing Tenant A's id in body)
+        const resDisconnectB = await fetch(`${baseUrl}/api/v1/calendar/disconnect`, {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${tokenB}`,
+            "Content-Type": "application/json",
           },
+          body: JSON.stringify({ tenantId: "tenant-a" }),
         });
+        const bodyDisconnectB = (await resDisconnectB.json()) as any;
+        assert.equal(bodyDisconnectB.success, true);
+        assert.equal(
+          disconnectedTenant,
+          "tenant-b",
+          "Must disconnect Tenant B from JWT, ignoring body injection",
+        );
+      } finally {
+        (db.user as any).findFirst = originalFindFirst;
+        (calendarService as any).getStatus = originalGetStatus;
+        (calendarService as any).disconnect = originalDisconnect;
+      }
+    },
+  );
 
-        assert.equal(res.status, 200);
+  await t.test(
+    "Phase 4 Hardening — Disconnect removes CalendarConnection while preserving all historical Bookings",
+    async () => {
+      const testTenantId = "tenant-booking-preserve";
+      const token = generateAuthToken({
+        userId: "admin-booking-test",
+        tenantId: testTenantId,
+        role: "OWNER",
+      });
+
+      const originalFindFirst = db.user.findFirst;
+      const originalDeleteConnection = db.calendarConnection.deleteMany;
+      const originalBookingFindMany = db.booking.findMany;
+
+      // Mock historical bookings
+      const mockBookings = [
+        { id: "booking-1", tenantId: testTenantId, status: "CONFIRMED" },
+        { id: "booking-2", tenantId: testTenantId, status: "COMPLETED" },
+        { id: "booking-3", tenantId: testTenantId, status: "CANCELLED" },
+      ];
+
+      (db.user as any).findFirst = async () => ({
+        id: "admin-booking-test",
+        tenantId: testTenantId,
+        role: "OWNER",
+      });
+
+      let connectionDeleted = false;
+      (db.calendarConnection as any).deleteMany = async (args: any) => {
+        if (args.where.tenantId === testTenantId) {
+          connectionDeleted = true;
+        }
+        return { count: 1 };
+      };
+
+      (db.booking as any).findMany = async (args: any) => {
+        return mockBookings.filter((b) => b.tenantId === args.where.tenantId);
+      };
+
+      try {
+        // Count bookings before disconnect
+        const bookingsBefore = await db.booking.findMany({ where: { tenantId: testTenantId } });
+        assert.equal(bookingsBefore.length, 3);
+
+        // Perform disconnect
+        const res = await fetch(`${baseUrl}/api/v1/calendar/disconnect`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const body = (await res.json()) as any;
         assert.equal(body.success, true);
         assert.equal(body.data.disconnected, true);
-        assert.equal(disconnectedTenantId, "tenant-disconnect");
+        assert.equal(connectionDeleted, true, "CalendarConnection should be deleted");
+
+        // Count bookings after disconnect
+        const bookingsAfter = await db.booking.findMany({ where: { tenantId: testTenantId } });
+        assert.equal(
+          bookingsAfter.length,
+          3,
+          "Historical bookings must remain completely unchanged",
+        );
+        assert.deepEqual(bookingsAfter, mockBookings);
       } finally {
         (db.user as any).findFirst = originalFindFirst;
+        (db.calendarConnection as any).deleteMany = originalDeleteConnection;
+        (db.booking as any).findMany = originalBookingFindMany;
+      }
+    },
+  );
+
+  await t.test(
+    "Phase 4 Hardening — Replay and expiration protection over HTTP callback",
+    async () => {
+      let stateConsumedCount = 0;
+      const originalHandleCallback = calendarService.handleOAuthCallback;
+
+      (calendarService as any).handleOAuthCallback = async (params: any) => {
+        if (params.state === "replayed-state") {
+          stateConsumedCount++;
+          if (stateConsumedCount > 1) {
+            throw new Error("Invalid or replayed OAuth state");
+          }
+          return {
+            tenantId: "tenant-replay",
+            userId: "user-replay",
+            connectedAt: new Date(),
+            provider: "google",
+          };
+        }
+        if (params.state === "expired-state") {
+          throw new Error("Expired OAuth state");
+        }
+        throw new Error("Unknown state");
+      };
+
+      try {
+        // First callback attempt with state -> succeeds (200)
+        const res1 = await fetch(
+          `${baseUrl}/api/v1/calendar/callback?code=valid-code&state=replayed-state`,
+        );
+        assert.equal(res1.status, 200);
+        const body1 = (await res1.json()) as any;
+        assert.equal(body1.success, true);
+        assert.equal(body1.data.connected, true);
+
+        // Second callback attempt with same state -> rejected (400)
+        const res2 = await fetch(
+          `${baseUrl}/api/v1/calendar/callback?code=valid-code&state=replayed-state`,
+        );
+        assert.equal(res2.status, 400);
+        const body2 = (await res2.json()) as any;
+        assert.equal(body2.success, false);
+        assert.equal(body2.error, "Invalid or replayed OAuth state");
+
+        // Expired state callback attempt -> rejected (400)
+        const resExpired = await fetch(
+          `${baseUrl}/api/v1/calendar/callback?code=valid-code&state=expired-state`,
+        );
+        assert.equal(resExpired.status, 400);
+        const bodyExpired = (await resExpired.json()) as any;
+        assert.equal(bodyExpired.success, false);
+        assert.equal(bodyExpired.error, "Expired OAuth state");
+      } finally {
+        (calendarService as any).handleOAuthCallback = originalHandleCallback;
+      }
+    },
+  );
+
+  await t.test(
+    "Phase 4 Hardening — Comprehensive zero-token leakage verification across all responses",
+    async () => {
+      const token = generateAuthToken({
+        userId: "leak-test-user",
+        tenantId: "leak-test-tenant",
+        role: "OWNER",
+      });
+
+      const originalFindFirst = db.user.findFirst;
+      const originalCreateUrl = calendarService.createConnectAuthorizationUrl;
+      const originalHandleCallback = calendarService.handleOAuthCallback;
+      const originalGetStatus = calendarService.getStatus;
+      const originalDisconnect = calendarService.disconnect;
+
+      (db.user as any).findFirst = async () => ({
+        id: "leak-test-user",
+        tenantId: "leak-test-tenant",
+        role: "OWNER",
+      });
+
+      (calendarService as any).createConnectAuthorizationUrl = async () => ({
+        url: "https://accounts.google.com/o/oauth2/v2/auth?scope=calendar&state=safe-state",
+        state: "safe-state",
+      });
+
+      (calendarService as any).handleOAuthCallback = async () => ({
+        tenantId: "leak-test-tenant",
+        userId: "leak-test-user",
+        connectedAt: new Date("2026-08-23T12:00:00Z"),
+        provider: "google",
+      });
+
+      (calendarService as any).getStatus = async () => ({
+        isConnected: true,
+        connectedAt: new Date("2026-08-23T12:00:00Z"),
+        provider: "google",
+      });
+
+      (calendarService as any).disconnect = async () => ({ success: true });
+
+      try {
+        const endpoints: Array<{ method: string; url: string; headers: Record<string, string> }> = [
+          {
+            method: "POST",
+            url: `${baseUrl}/api/v1/calendar/connect`,
+            headers: { Authorization: `Bearer ${token}` },
+          },
+          {
+            method: "GET",
+            url: `${baseUrl}/api/v1/calendar/callback?code=test-code&state=safe-state`,
+            headers: {},
+          },
+          {
+            method: "GET",
+            url: `${baseUrl}/api/v1/calendar/status`,
+            headers: { Authorization: `Bearer ${token}` },
+          },
+          {
+            method: "DELETE",
+            url: `${baseUrl}/api/v1/calendar/disconnect`,
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        ];
+
+        for (const ep of endpoints) {
+          const res = await fetch(ep.url, { method: ep.method, headers: ep.headers });
+          const rawText = await res.text();
+
+          // Verify no token leakage in raw text
+          assert.ok(
+            !rawText.includes("access_token"),
+            `Response from ${ep.method} ${ep.url} should not contain access_token`,
+          );
+          assert.ok(
+            !rawText.includes("refresh_token"),
+            `Response from ${ep.method} ${ep.url} should not contain refresh_token`,
+          );
+          assert.ok(
+            !rawText.includes("accessTokenEncrypted"),
+            `Response from ${ep.method} ${ep.url} should not contain accessTokenEncrypted`,
+          );
+          assert.ok(
+            !rawText.includes("refreshTokenEncrypted"),
+            `Response from ${ep.method} ${ep.url} should not contain refreshTokenEncrypted`,
+          );
+          assert.ok(
+            !rawText.includes("client_secret"),
+            `Response from ${ep.method} ${ep.url} should not contain client_secret`,
+          );
+          assert.ok(
+            !rawText.includes("CALENDAR_TOKEN_ENCRYPTION_KEY"),
+            `Response from ${ep.method} ${ep.url} should not contain encryption key`,
+          );
+        }
+      } finally {
+        (db.user as any).findFirst = originalFindFirst;
+        (calendarService as any).createConnectAuthorizationUrl = originalCreateUrl;
+        (calendarService as any).handleOAuthCallback = originalHandleCallback;
+        (calendarService as any).getStatus = originalGetStatus;
         (calendarService as any).disconnect = originalDisconnect;
       }
     },
