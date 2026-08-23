@@ -498,10 +498,10 @@ model Booking {
   assigneeId         String?
   ccEmails           String[] @default([])
   notes              String?
+  purpose            String?
   externalProvider   String?
   externalEventId    String?
   externalSyncStatus String?
-  purpose            String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
@@ -893,4 +893,20 @@ model CalendarConnection {
   connectedBy User?  @relation(fields: [connectedById], references: [id], onDelete: SetNull)
 
   @@map("calendar_connections")
+}
+
+// ─────────────────────────────────────────────
+// CALENDAR OAUTH STATE — Ephemeral OAuth State
+// ─────────────────────────────────────────────
+
+model CalendarOAuthState {
+  id        String   @id @default(uuid())
+  state     String   @unique
+  tenantId  String
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([state])
+  @@map("calendar_oauth_states")
 }

@@ -148,6 +148,11 @@ export type PasswordResetOtp = $Result.DefaultSelection<Prisma.$PasswordResetOtp
  * 
  */
 export type CalendarConnection = $Result.DefaultSelection<Prisma.$CalendarConnectionPayload>
+/**
+ * Model CalendarOAuthState
+ * 
+ */
+export type CalendarOAuthState = $Result.DefaultSelection<Prisma.$CalendarOAuthStatePayload>
 
 /**
  * Enums
@@ -812,6 +817,16 @@ export class PrismaClient<
     * ```
     */
   get calendarConnection(): Prisma.CalendarConnectionDelegate<ExtArgs>;
+
+  /**
+   * `prisma.calendarOAuthState`: Exposes CRUD operations for the **CalendarOAuthState** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CalendarOAuthStates
+    * const calendarOAuthStates = await prisma.calendarOAuthState.findMany()
+    * ```
+    */
+  get calendarOAuthState(): Prisma.CalendarOAuthStateDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1279,7 +1294,8 @@ export namespace Prisma {
     ChatSession: 'ChatSession',
     Activity: 'Activity',
     PasswordResetOtp: 'PasswordResetOtp',
-    CalendarConnection: 'CalendarConnection'
+    CalendarConnection: 'CalendarConnection',
+    CalendarOAuthState: 'CalendarOAuthState'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1295,7 +1311,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "dealEvent" | "postCallJobClaim" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp" | "calendarConnection"
+      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "dealEvent" | "postCallJobClaim" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp" | "calendarConnection" | "calendarOAuthState"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3186,6 +3202,76 @@ export namespace Prisma {
           count: {
             args: Prisma.CalendarConnectionCountArgs<ExtArgs>
             result: $Utils.Optional<CalendarConnectionCountAggregateOutputType> | number
+          }
+        }
+      }
+      CalendarOAuthState: {
+        payload: Prisma.$CalendarOAuthStatePayload<ExtArgs>
+        fields: Prisma.CalendarOAuthStateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CalendarOAuthStateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CalendarOAuthStateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>
+          }
+          findFirst: {
+            args: Prisma.CalendarOAuthStateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CalendarOAuthStateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>
+          }
+          findMany: {
+            args: Prisma.CalendarOAuthStateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>[]
+          }
+          create: {
+            args: Prisma.CalendarOAuthStateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>
+          }
+          createMany: {
+            args: Prisma.CalendarOAuthStateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CalendarOAuthStateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>[]
+          }
+          delete: {
+            args: Prisma.CalendarOAuthStateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>
+          }
+          update: {
+            args: Prisma.CalendarOAuthStateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>
+          }
+          deleteMany: {
+            args: Prisma.CalendarOAuthStateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CalendarOAuthStateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CalendarOAuthStateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarOAuthStatePayload>
+          }
+          aggregate: {
+            args: Prisma.CalendarOAuthStateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCalendarOAuthState>
+          }
+          groupBy: {
+            args: Prisma.CalendarOAuthStateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CalendarOAuthStateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CalendarOAuthStateCountArgs<ExtArgs>
+            result: $Utils.Optional<CalendarOAuthStateCountAggregateOutputType> | number
           }
         }
       }
@@ -19317,10 +19403,10 @@ export namespace Prisma {
     agentId: string | null
     assigneeId: string | null
     notes: string | null
+    purpose: string | null
     externalProvider: string | null
     externalEventId: string | null
     externalSyncStatus: string | null
-    purpose: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19336,10 +19422,10 @@ export namespace Prisma {
     agentId: string | null
     assigneeId: string | null
     notes: string | null
+    purpose: string | null
     externalProvider: string | null
     externalEventId: string | null
     externalSyncStatus: string | null
-    purpose: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19356,10 +19442,10 @@ export namespace Prisma {
     assigneeId: number
     ccEmails: number
     notes: number
+    purpose: number
     externalProvider: number
     externalEventId: number
     externalSyncStatus: number
-    purpose: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -19377,10 +19463,10 @@ export namespace Prisma {
     agentId?: true
     assigneeId?: true
     notes?: true
+    purpose?: true
     externalProvider?: true
     externalEventId?: true
     externalSyncStatus?: true
-    purpose?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19396,10 +19482,10 @@ export namespace Prisma {
     agentId?: true
     assigneeId?: true
     notes?: true
+    purpose?: true
     externalProvider?: true
     externalEventId?: true
     externalSyncStatus?: true
-    purpose?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19416,10 +19502,10 @@ export namespace Prisma {
     assigneeId?: true
     ccEmails?: true
     notes?: true
+    purpose?: true
     externalProvider?: true
     externalEventId?: true
     externalSyncStatus?: true
-    purpose?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -19509,10 +19595,10 @@ export namespace Prisma {
     assigneeId: string | null
     ccEmails: string[]
     notes: string | null
+    purpose: string | null
     externalProvider: string | null
     externalEventId: string | null
     externalSyncStatus: string | null
-    purpose: string | null
     createdAt: Date
     updatedAt: Date
     _count: BookingCountAggregateOutputType | null
@@ -19546,10 +19632,10 @@ export namespace Prisma {
     assigneeId?: boolean
     ccEmails?: boolean
     notes?: boolean
+    purpose?: boolean
     externalProvider?: boolean
     externalEventId?: boolean
     externalSyncStatus?: boolean
-    purpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -19572,10 +19658,10 @@ export namespace Prisma {
     assigneeId?: boolean
     ccEmails?: boolean
     notes?: boolean
+    purpose?: boolean
     externalProvider?: boolean
     externalEventId?: boolean
     externalSyncStatus?: boolean
-    purpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -19596,10 +19682,10 @@ export namespace Prisma {
     assigneeId?: boolean
     ccEmails?: boolean
     notes?: boolean
+    purpose?: boolean
     externalProvider?: boolean
     externalEventId?: boolean
     externalSyncStatus?: boolean
-    purpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -19640,10 +19726,10 @@ export namespace Prisma {
       assigneeId: string | null
       ccEmails: string[]
       notes: string | null
+      purpose: string | null
       externalProvider: string | null
       externalEventId: string | null
       externalSyncStatus: string | null
-      purpose: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["booking"]>
@@ -20055,10 +20141,10 @@ export namespace Prisma {
     readonly assigneeId: FieldRef<"Booking", 'String'>
     readonly ccEmails: FieldRef<"Booking", 'String[]'>
     readonly notes: FieldRef<"Booking", 'String'>
+    readonly purpose: FieldRef<"Booking", 'String'>
     readonly externalProvider: FieldRef<"Booking", 'String'>
     readonly externalEventId: FieldRef<"Booking", 'String'>
     readonly externalSyncStatus: FieldRef<"Booking", 'String'>
-    readonly purpose: FieldRef<"Booking", 'String'>
     readonly createdAt: FieldRef<"Booking", 'DateTime'>
     readonly updatedAt: FieldRef<"Booking", 'DateTime'>
   }
@@ -33445,6 +33531,896 @@ export namespace Prisma {
 
 
   /**
+   * Model CalendarOAuthState
+   */
+
+  export type AggregateCalendarOAuthState = {
+    _count: CalendarOAuthStateCountAggregateOutputType | null
+    _min: CalendarOAuthStateMinAggregateOutputType | null
+    _max: CalendarOAuthStateMaxAggregateOutputType | null
+  }
+
+  export type CalendarOAuthStateMinAggregateOutputType = {
+    id: string | null
+    state: string | null
+    tenantId: string | null
+    userId: string | null
+    expiresAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type CalendarOAuthStateMaxAggregateOutputType = {
+    id: string | null
+    state: string | null
+    tenantId: string | null
+    userId: string | null
+    expiresAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type CalendarOAuthStateCountAggregateOutputType = {
+    id: number
+    state: number
+    tenantId: number
+    userId: number
+    expiresAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CalendarOAuthStateMinAggregateInputType = {
+    id?: true
+    state?: true
+    tenantId?: true
+    userId?: true
+    expiresAt?: true
+    createdAt?: true
+  }
+
+  export type CalendarOAuthStateMaxAggregateInputType = {
+    id?: true
+    state?: true
+    tenantId?: true
+    userId?: true
+    expiresAt?: true
+    createdAt?: true
+  }
+
+  export type CalendarOAuthStateCountAggregateInputType = {
+    id?: true
+    state?: true
+    tenantId?: true
+    userId?: true
+    expiresAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CalendarOAuthStateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendarOAuthState to aggregate.
+     */
+    where?: CalendarOAuthStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarOAuthStates to fetch.
+     */
+    orderBy?: CalendarOAuthStateOrderByWithRelationInput | CalendarOAuthStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CalendarOAuthStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarOAuthStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarOAuthStates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CalendarOAuthStates
+    **/
+    _count?: true | CalendarOAuthStateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CalendarOAuthStateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CalendarOAuthStateMaxAggregateInputType
+  }
+
+  export type GetCalendarOAuthStateAggregateType<T extends CalendarOAuthStateAggregateArgs> = {
+        [P in keyof T & keyof AggregateCalendarOAuthState]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCalendarOAuthState[P]>
+      : GetScalarType<T[P], AggregateCalendarOAuthState[P]>
+  }
+
+
+
+
+  export type CalendarOAuthStateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CalendarOAuthStateWhereInput
+    orderBy?: CalendarOAuthStateOrderByWithAggregationInput | CalendarOAuthStateOrderByWithAggregationInput[]
+    by: CalendarOAuthStateScalarFieldEnum[] | CalendarOAuthStateScalarFieldEnum
+    having?: CalendarOAuthStateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CalendarOAuthStateCountAggregateInputType | true
+    _min?: CalendarOAuthStateMinAggregateInputType
+    _max?: CalendarOAuthStateMaxAggregateInputType
+  }
+
+  export type CalendarOAuthStateGroupByOutputType = {
+    id: string
+    state: string
+    tenantId: string
+    userId: string
+    expiresAt: Date
+    createdAt: Date
+    _count: CalendarOAuthStateCountAggregateOutputType | null
+    _min: CalendarOAuthStateMinAggregateOutputType | null
+    _max: CalendarOAuthStateMaxAggregateOutputType | null
+  }
+
+  type GetCalendarOAuthStateGroupByPayload<T extends CalendarOAuthStateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CalendarOAuthStateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CalendarOAuthStateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CalendarOAuthStateGroupByOutputType[P]>
+            : GetScalarType<T[P], CalendarOAuthStateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CalendarOAuthStateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    state?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["calendarOAuthState"]>
+
+  export type CalendarOAuthStateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    state?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["calendarOAuthState"]>
+
+  export type CalendarOAuthStateSelectScalar = {
+    id?: boolean
+    state?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+  }
+
+
+  export type $CalendarOAuthStatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CalendarOAuthState"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      state: string
+      tenantId: string
+      userId: string
+      expiresAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["calendarOAuthState"]>
+    composites: {}
+  }
+
+  type CalendarOAuthStateGetPayload<S extends boolean | null | undefined | CalendarOAuthStateDefaultArgs> = $Result.GetResult<Prisma.$CalendarOAuthStatePayload, S>
+
+  type CalendarOAuthStateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CalendarOAuthStateFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CalendarOAuthStateCountAggregateInputType | true
+    }
+
+  export interface CalendarOAuthStateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CalendarOAuthState'], meta: { name: 'CalendarOAuthState' } }
+    /**
+     * Find zero or one CalendarOAuthState that matches the filter.
+     * @param {CalendarOAuthStateFindUniqueArgs} args - Arguments to find a CalendarOAuthState
+     * @example
+     * // Get one CalendarOAuthState
+     * const calendarOAuthState = await prisma.calendarOAuthState.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CalendarOAuthStateFindUniqueArgs>(args: SelectSubset<T, CalendarOAuthStateFindUniqueArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CalendarOAuthState that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CalendarOAuthStateFindUniqueOrThrowArgs} args - Arguments to find a CalendarOAuthState
+     * @example
+     * // Get one CalendarOAuthState
+     * const calendarOAuthState = await prisma.calendarOAuthState.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CalendarOAuthStateFindUniqueOrThrowArgs>(args: SelectSubset<T, CalendarOAuthStateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CalendarOAuthState that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarOAuthStateFindFirstArgs} args - Arguments to find a CalendarOAuthState
+     * @example
+     * // Get one CalendarOAuthState
+     * const calendarOAuthState = await prisma.calendarOAuthState.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CalendarOAuthStateFindFirstArgs>(args?: SelectSubset<T, CalendarOAuthStateFindFirstArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CalendarOAuthState that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarOAuthStateFindFirstOrThrowArgs} args - Arguments to find a CalendarOAuthState
+     * @example
+     * // Get one CalendarOAuthState
+     * const calendarOAuthState = await prisma.calendarOAuthState.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CalendarOAuthStateFindFirstOrThrowArgs>(args?: SelectSubset<T, CalendarOAuthStateFindFirstOrThrowArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CalendarOAuthStates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarOAuthStateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CalendarOAuthStates
+     * const calendarOAuthStates = await prisma.calendarOAuthState.findMany()
+     * 
+     * // Get first 10 CalendarOAuthStates
+     * const calendarOAuthStates = await prisma.calendarOAuthState.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const calendarOAuthStateWithIdOnly = await prisma.calendarOAuthState.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CalendarOAuthStateFindManyArgs>(args?: SelectSubset<T, CalendarOAuthStateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CalendarOAuthState.
+     * @param {CalendarOAuthStateCreateArgs} args - Arguments to create a CalendarOAuthState.
+     * @example
+     * // Create one CalendarOAuthState
+     * const CalendarOAuthState = await prisma.calendarOAuthState.create({
+     *   data: {
+     *     // ... data to create a CalendarOAuthState
+     *   }
+     * })
+     * 
+     */
+    create<T extends CalendarOAuthStateCreateArgs>(args: SelectSubset<T, CalendarOAuthStateCreateArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CalendarOAuthStates.
+     * @param {CalendarOAuthStateCreateManyArgs} args - Arguments to create many CalendarOAuthStates.
+     * @example
+     * // Create many CalendarOAuthStates
+     * const calendarOAuthState = await prisma.calendarOAuthState.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CalendarOAuthStateCreateManyArgs>(args?: SelectSubset<T, CalendarOAuthStateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CalendarOAuthStates and returns the data saved in the database.
+     * @param {CalendarOAuthStateCreateManyAndReturnArgs} args - Arguments to create many CalendarOAuthStates.
+     * @example
+     * // Create many CalendarOAuthStates
+     * const calendarOAuthState = await prisma.calendarOAuthState.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CalendarOAuthStates and only return the `id`
+     * const calendarOAuthStateWithIdOnly = await prisma.calendarOAuthState.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CalendarOAuthStateCreateManyAndReturnArgs>(args?: SelectSubset<T, CalendarOAuthStateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CalendarOAuthState.
+     * @param {CalendarOAuthStateDeleteArgs} args - Arguments to delete one CalendarOAuthState.
+     * @example
+     * // Delete one CalendarOAuthState
+     * const CalendarOAuthState = await prisma.calendarOAuthState.delete({
+     *   where: {
+     *     // ... filter to delete one CalendarOAuthState
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CalendarOAuthStateDeleteArgs>(args: SelectSubset<T, CalendarOAuthStateDeleteArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CalendarOAuthState.
+     * @param {CalendarOAuthStateUpdateArgs} args - Arguments to update one CalendarOAuthState.
+     * @example
+     * // Update one CalendarOAuthState
+     * const calendarOAuthState = await prisma.calendarOAuthState.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CalendarOAuthStateUpdateArgs>(args: SelectSubset<T, CalendarOAuthStateUpdateArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CalendarOAuthStates.
+     * @param {CalendarOAuthStateDeleteManyArgs} args - Arguments to filter CalendarOAuthStates to delete.
+     * @example
+     * // Delete a few CalendarOAuthStates
+     * const { count } = await prisma.calendarOAuthState.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CalendarOAuthStateDeleteManyArgs>(args?: SelectSubset<T, CalendarOAuthStateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CalendarOAuthStates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarOAuthStateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CalendarOAuthStates
+     * const calendarOAuthState = await prisma.calendarOAuthState.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CalendarOAuthStateUpdateManyArgs>(args: SelectSubset<T, CalendarOAuthStateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CalendarOAuthState.
+     * @param {CalendarOAuthStateUpsertArgs} args - Arguments to update or create a CalendarOAuthState.
+     * @example
+     * // Update or create a CalendarOAuthState
+     * const calendarOAuthState = await prisma.calendarOAuthState.upsert({
+     *   create: {
+     *     // ... data to create a CalendarOAuthState
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CalendarOAuthState we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CalendarOAuthStateUpsertArgs>(args: SelectSubset<T, CalendarOAuthStateUpsertArgs<ExtArgs>>): Prisma__CalendarOAuthStateClient<$Result.GetResult<Prisma.$CalendarOAuthStatePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CalendarOAuthStates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarOAuthStateCountArgs} args - Arguments to filter CalendarOAuthStates to count.
+     * @example
+     * // Count the number of CalendarOAuthStates
+     * const count = await prisma.calendarOAuthState.count({
+     *   where: {
+     *     // ... the filter for the CalendarOAuthStates we want to count
+     *   }
+     * })
+    **/
+    count<T extends CalendarOAuthStateCountArgs>(
+      args?: Subset<T, CalendarOAuthStateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CalendarOAuthStateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CalendarOAuthState.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarOAuthStateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CalendarOAuthStateAggregateArgs>(args: Subset<T, CalendarOAuthStateAggregateArgs>): Prisma.PrismaPromise<GetCalendarOAuthStateAggregateType<T>>
+
+    /**
+     * Group by CalendarOAuthState.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarOAuthStateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CalendarOAuthStateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CalendarOAuthStateGroupByArgs['orderBy'] }
+        : { orderBy?: CalendarOAuthStateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CalendarOAuthStateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCalendarOAuthStateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CalendarOAuthState model
+   */
+  readonly fields: CalendarOAuthStateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CalendarOAuthState.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CalendarOAuthStateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CalendarOAuthState model
+   */ 
+  interface CalendarOAuthStateFieldRefs {
+    readonly id: FieldRef<"CalendarOAuthState", 'String'>
+    readonly state: FieldRef<"CalendarOAuthState", 'String'>
+    readonly tenantId: FieldRef<"CalendarOAuthState", 'String'>
+    readonly userId: FieldRef<"CalendarOAuthState", 'String'>
+    readonly expiresAt: FieldRef<"CalendarOAuthState", 'DateTime'>
+    readonly createdAt: FieldRef<"CalendarOAuthState", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CalendarOAuthState findUnique
+   */
+  export type CalendarOAuthStateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * Filter, which CalendarOAuthState to fetch.
+     */
+    where: CalendarOAuthStateWhereUniqueInput
+  }
+
+  /**
+   * CalendarOAuthState findUniqueOrThrow
+   */
+  export type CalendarOAuthStateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * Filter, which CalendarOAuthState to fetch.
+     */
+    where: CalendarOAuthStateWhereUniqueInput
+  }
+
+  /**
+   * CalendarOAuthState findFirst
+   */
+  export type CalendarOAuthStateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * Filter, which CalendarOAuthState to fetch.
+     */
+    where?: CalendarOAuthStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarOAuthStates to fetch.
+     */
+    orderBy?: CalendarOAuthStateOrderByWithRelationInput | CalendarOAuthStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendarOAuthStates.
+     */
+    cursor?: CalendarOAuthStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarOAuthStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarOAuthStates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendarOAuthStates.
+     */
+    distinct?: CalendarOAuthStateScalarFieldEnum | CalendarOAuthStateScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarOAuthState findFirstOrThrow
+   */
+  export type CalendarOAuthStateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * Filter, which CalendarOAuthState to fetch.
+     */
+    where?: CalendarOAuthStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarOAuthStates to fetch.
+     */
+    orderBy?: CalendarOAuthStateOrderByWithRelationInput | CalendarOAuthStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendarOAuthStates.
+     */
+    cursor?: CalendarOAuthStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarOAuthStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarOAuthStates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendarOAuthStates.
+     */
+    distinct?: CalendarOAuthStateScalarFieldEnum | CalendarOAuthStateScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarOAuthState findMany
+   */
+  export type CalendarOAuthStateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * Filter, which CalendarOAuthStates to fetch.
+     */
+    where?: CalendarOAuthStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarOAuthStates to fetch.
+     */
+    orderBy?: CalendarOAuthStateOrderByWithRelationInput | CalendarOAuthStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CalendarOAuthStates.
+     */
+    cursor?: CalendarOAuthStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarOAuthStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarOAuthStates.
+     */
+    skip?: number
+    distinct?: CalendarOAuthStateScalarFieldEnum | CalendarOAuthStateScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarOAuthState create
+   */
+  export type CalendarOAuthStateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * The data needed to create a CalendarOAuthState.
+     */
+    data: XOR<CalendarOAuthStateCreateInput, CalendarOAuthStateUncheckedCreateInput>
+  }
+
+  /**
+   * CalendarOAuthState createMany
+   */
+  export type CalendarOAuthStateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CalendarOAuthStates.
+     */
+    data: CalendarOAuthStateCreateManyInput | CalendarOAuthStateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CalendarOAuthState createManyAndReturn
+   */
+  export type CalendarOAuthStateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CalendarOAuthStates.
+     */
+    data: CalendarOAuthStateCreateManyInput | CalendarOAuthStateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CalendarOAuthState update
+   */
+  export type CalendarOAuthStateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * The data needed to update a CalendarOAuthState.
+     */
+    data: XOR<CalendarOAuthStateUpdateInput, CalendarOAuthStateUncheckedUpdateInput>
+    /**
+     * Choose, which CalendarOAuthState to update.
+     */
+    where: CalendarOAuthStateWhereUniqueInput
+  }
+
+  /**
+   * CalendarOAuthState updateMany
+   */
+  export type CalendarOAuthStateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CalendarOAuthStates.
+     */
+    data: XOR<CalendarOAuthStateUpdateManyMutationInput, CalendarOAuthStateUncheckedUpdateManyInput>
+    /**
+     * Filter which CalendarOAuthStates to update
+     */
+    where?: CalendarOAuthStateWhereInput
+  }
+
+  /**
+   * CalendarOAuthState upsert
+   */
+  export type CalendarOAuthStateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * The filter to search for the CalendarOAuthState to update in case it exists.
+     */
+    where: CalendarOAuthStateWhereUniqueInput
+    /**
+     * In case the CalendarOAuthState found by the `where` argument doesn't exist, create a new CalendarOAuthState with this data.
+     */
+    create: XOR<CalendarOAuthStateCreateInput, CalendarOAuthStateUncheckedCreateInput>
+    /**
+     * In case the CalendarOAuthState was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CalendarOAuthStateUpdateInput, CalendarOAuthStateUncheckedUpdateInput>
+  }
+
+  /**
+   * CalendarOAuthState delete
+   */
+  export type CalendarOAuthStateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+    /**
+     * Filter which CalendarOAuthState to delete.
+     */
+    where: CalendarOAuthStateWhereUniqueInput
+  }
+
+  /**
+   * CalendarOAuthState deleteMany
+   */
+  export type CalendarOAuthStateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendarOAuthStates to delete
+     */
+    where?: CalendarOAuthStateWhereInput
+  }
+
+  /**
+   * CalendarOAuthState without action
+   */
+  export type CalendarOAuthStateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarOAuthState
+     */
+    select?: CalendarOAuthStateSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -33703,10 +34679,10 @@ export namespace Prisma {
     assigneeId: 'assigneeId',
     ccEmails: 'ccEmails',
     notes: 'notes',
+    purpose: 'purpose',
     externalProvider: 'externalProvider',
     externalEventId: 'externalEventId',
     externalSyncStatus: 'externalSyncStatus',
-    purpose: 'purpose',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -33949,6 +34925,18 @@ export namespace Prisma {
   };
 
   export type CalendarConnectionScalarFieldEnum = (typeof CalendarConnectionScalarFieldEnum)[keyof typeof CalendarConnectionScalarFieldEnum]
+
+
+  export const CalendarOAuthStateScalarFieldEnum: {
+    id: 'id',
+    state: 'state',
+    tenantId: 'tenantId',
+    userId: 'userId',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt'
+  };
+
+  export type CalendarOAuthStateScalarFieldEnum = (typeof CalendarOAuthStateScalarFieldEnum)[keyof typeof CalendarOAuthStateScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -35669,10 +36657,10 @@ export namespace Prisma {
     assigneeId?: StringNullableFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableFilter<"Booking"> | string | null
+    purpose?: StringNullableFilter<"Booking"> | string | null
     externalProvider?: StringNullableFilter<"Booking"> | string | null
     externalEventId?: StringNullableFilter<"Booking"> | string | null
     externalSyncStatus?: StringNullableFilter<"Booking"> | string | null
-    purpose?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -35694,10 +36682,10 @@ export namespace Prisma {
     assigneeId?: SortOrderInput | SortOrder
     ccEmails?: SortOrder
     notes?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
     externalProvider?: SortOrderInput | SortOrder
     externalEventId?: SortOrderInput | SortOrder
     externalSyncStatus?: SortOrderInput | SortOrder
-    purpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tenant?: TenantOrderByWithRelationInput
@@ -35722,10 +36710,10 @@ export namespace Prisma {
     assigneeId?: StringNullableFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableFilter<"Booking"> | string | null
+    purpose?: StringNullableFilter<"Booking"> | string | null
     externalProvider?: StringNullableFilter<"Booking"> | string | null
     externalEventId?: StringNullableFilter<"Booking"> | string | null
     externalSyncStatus?: StringNullableFilter<"Booking"> | string | null
-    purpose?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -35747,10 +36735,10 @@ export namespace Prisma {
     assigneeId?: SortOrderInput | SortOrder
     ccEmails?: SortOrder
     notes?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
     externalProvider?: SortOrderInput | SortOrder
     externalEventId?: SortOrderInput | SortOrder
     externalSyncStatus?: SortOrderInput | SortOrder
-    purpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BookingCountOrderByAggregateInput
@@ -35773,10 +36761,10 @@ export namespace Prisma {
     assigneeId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    purpose?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     externalProvider?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     externalEventId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     externalSyncStatus?: StringNullableWithAggregatesFilter<"Booking"> | string | null
-    purpose?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
   }
@@ -37055,6 +38043,63 @@ export namespace Prisma {
     expiresAt?: DateTimeWithAggregatesFilter<"CalendarConnection"> | Date | string
     connectedById?: StringNullableWithAggregatesFilter<"CalendarConnection"> | string | null
     connectedAt?: DateTimeWithAggregatesFilter<"CalendarConnection"> | Date | string
+  }
+
+  export type CalendarOAuthStateWhereInput = {
+    AND?: CalendarOAuthStateWhereInput | CalendarOAuthStateWhereInput[]
+    OR?: CalendarOAuthStateWhereInput[]
+    NOT?: CalendarOAuthStateWhereInput | CalendarOAuthStateWhereInput[]
+    id?: StringFilter<"CalendarOAuthState"> | string
+    state?: StringFilter<"CalendarOAuthState"> | string
+    tenantId?: StringFilter<"CalendarOAuthState"> | string
+    userId?: StringFilter<"CalendarOAuthState"> | string
+    expiresAt?: DateTimeFilter<"CalendarOAuthState"> | Date | string
+    createdAt?: DateTimeFilter<"CalendarOAuthState"> | Date | string
+  }
+
+  export type CalendarOAuthStateOrderByWithRelationInput = {
+    id?: SortOrder
+    state?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CalendarOAuthStateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    state?: string
+    AND?: CalendarOAuthStateWhereInput | CalendarOAuthStateWhereInput[]
+    OR?: CalendarOAuthStateWhereInput[]
+    NOT?: CalendarOAuthStateWhereInput | CalendarOAuthStateWhereInput[]
+    tenantId?: StringFilter<"CalendarOAuthState"> | string
+    userId?: StringFilter<"CalendarOAuthState"> | string
+    expiresAt?: DateTimeFilter<"CalendarOAuthState"> | Date | string
+    createdAt?: DateTimeFilter<"CalendarOAuthState"> | Date | string
+  }, "id" | "state">
+
+  export type CalendarOAuthStateOrderByWithAggregationInput = {
+    id?: SortOrder
+    state?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: CalendarOAuthStateCountOrderByAggregateInput
+    _max?: CalendarOAuthStateMaxOrderByAggregateInput
+    _min?: CalendarOAuthStateMinOrderByAggregateInput
+  }
+
+  export type CalendarOAuthStateScalarWhereWithAggregatesInput = {
+    AND?: CalendarOAuthStateScalarWhereWithAggregatesInput | CalendarOAuthStateScalarWhereWithAggregatesInput[]
+    OR?: CalendarOAuthStateScalarWhereWithAggregatesInput[]
+    NOT?: CalendarOAuthStateScalarWhereWithAggregatesInput | CalendarOAuthStateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CalendarOAuthState"> | string
+    state?: StringWithAggregatesFilter<"CalendarOAuthState"> | string
+    tenantId?: StringWithAggregatesFilter<"CalendarOAuthState"> | string
+    userId?: StringWithAggregatesFilter<"CalendarOAuthState"> | string
+    expiresAt?: DateTimeWithAggregatesFilter<"CalendarOAuthState"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"CalendarOAuthState"> | Date | string
   }
 
   export type TenantCreateInput = {
@@ -38539,10 +39584,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -38564,10 +39609,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -38581,10 +39626,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -38606,10 +39651,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -38627,10 +39672,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -38643,10 +39688,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -38663,10 +39708,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -40097,6 +41142,69 @@ export namespace Prisma {
     connectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CalendarOAuthStateCreateInput = {
+    id?: string
+    state: string
+    tenantId: string
+    userId: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type CalendarOAuthStateUncheckedCreateInput = {
+    id?: string
+    state: string
+    tenantId: string
+    userId: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type CalendarOAuthStateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarOAuthStateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarOAuthStateCreateManyInput = {
+    id?: string
+    state: string
+    tenantId: string
+    userId: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type CalendarOAuthStateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarOAuthStateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -41501,10 +42609,10 @@ export namespace Prisma {
     assigneeId?: SortOrder
     ccEmails?: SortOrder
     notes?: SortOrder
+    purpose?: SortOrder
     externalProvider?: SortOrder
     externalEventId?: SortOrder
     externalSyncStatus?: SortOrder
-    purpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -41520,10 +42628,10 @@ export namespace Prisma {
     agentId?: SortOrder
     assigneeId?: SortOrder
     notes?: SortOrder
+    purpose?: SortOrder
     externalProvider?: SortOrder
     externalEventId?: SortOrder
     externalSyncStatus?: SortOrder
-    purpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -41539,10 +42647,10 @@ export namespace Prisma {
     agentId?: SortOrder
     assigneeId?: SortOrder
     notes?: SortOrder
+    purpose?: SortOrder
     externalProvider?: SortOrder
     externalEventId?: SortOrder
     externalSyncStatus?: SortOrder
-    purpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -42412,6 +43520,33 @@ export namespace Prisma {
     expiresAt?: SortOrder
     connectedById?: SortOrder
     connectedAt?: SortOrder
+  }
+
+  export type CalendarOAuthStateCountOrderByAggregateInput = {
+    id?: SortOrder
+    state?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CalendarOAuthStateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    state?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CalendarOAuthStateMinOrderByAggregateInput = {
+    id?: SortOrder
+    state?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutTenantInput = {
@@ -46909,10 +48044,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     contact: ContactCreateNestedOneWithoutBookingsInput
@@ -46932,10 +48067,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -47705,10 +48840,10 @@ export namespace Prisma {
     assigneeId?: StringNullableFilter<"Booking"> | string | null
     ccEmails?: StringNullableListFilter<"Booking">
     notes?: StringNullableFilter<"Booking"> | string | null
+    purpose?: StringNullableFilter<"Booking"> | string | null
     externalProvider?: StringNullableFilter<"Booking"> | string | null
     externalEventId?: StringNullableFilter<"Booking"> | string | null
     externalSyncStatus?: StringNullableFilter<"Booking"> | string | null
-    purpose?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
   }
@@ -48553,10 +49688,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -48576,10 +49711,10 @@ export namespace Prisma {
     agentId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -48981,10 +50116,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -49004,10 +50139,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -53719,10 +54854,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -53742,10 +54877,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activities?: ActivityUncheckedCreateNestedManyWithoutBookingInput
@@ -56076,10 +57211,10 @@ export namespace Prisma {
     status: string
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutBookingsInput
@@ -56100,10 +57235,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -56468,10 +57603,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -56492,10 +57627,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57082,10 +58217,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -57964,10 +59099,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contact?: ContactUpdateOneRequiredWithoutBookingsNestedInput
@@ -57987,10 +59122,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -58007,10 +59142,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -58150,10 +59285,10 @@ export namespace Prisma {
     agentId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -58275,10 +59410,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -58298,10 +59433,10 @@ export namespace Prisma {
     agentId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -58318,10 +59453,10 @@ export namespace Prisma {
     agentId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -58411,10 +59546,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -58632,10 +59767,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -58655,10 +59790,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -58675,10 +59810,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -59899,10 +61034,10 @@ export namespace Prisma {
     assigneeId?: string | null
     ccEmails?: BookingCreateccEmailsInput | string[]
     notes?: string | null
+    purpose?: string | null
     externalProvider?: string | null
     externalEventId?: string | null
     externalSyncStatus?: string | null
-    purpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -60075,10 +61210,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutBookingsNestedInput
@@ -60098,10 +61233,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activities?: ActivityUncheckedUpdateManyWithoutBookingNestedInput
@@ -60118,10 +61253,10 @@ export namespace Prisma {
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     ccEmails?: BookingUpdateccEmailsInput | string[]
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     externalProvider?: NullableStringFieldUpdateOperationsInput | string | null
     externalEventId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSyncStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    purpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -60477,6 +61612,10 @@ export namespace Prisma {
      * @deprecated Use CalendarConnectionDefaultArgs instead
      */
     export type CalendarConnectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CalendarConnectionDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CalendarOAuthStateDefaultArgs instead
+     */
+    export type CalendarOAuthStateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CalendarOAuthStateDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

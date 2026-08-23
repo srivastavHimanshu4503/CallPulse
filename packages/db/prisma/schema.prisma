@@ -895,3 +895,19 @@ model CalendarConnection {
 
   @@map("calendar_connections")
 }
+
+// ─────────────────────────────────────────────
+// CALENDAR OAUTH STATE — Ephemeral OAuth State
+// ─────────────────────────────────────────────
+
+model CalendarOAuthState {
+  id        String   @id @default(uuid())
+  state     String   @unique
+  tenantId  String
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([state])
+  @@map("calendar_oauth_states")
+}
