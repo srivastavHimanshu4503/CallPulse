@@ -298,7 +298,7 @@ timeline
 #### Phase 3: DX & Frontend Architecture (Sprint 3)
 
 - [x] **Task 3.1:** Add `turbo.json` and configure monorepo build caching with Turborepo. _(Completed: Integrated Turborepo v2 with `turbo.json` task dependency pipelines for build, test, and lint with package caching, reducing incremental build time from ~75s to <9s)_
-- [ ] **Task 3.2:** Migrate components from `apps/web/src/components/ui-ext/` to `packages/ui/`.
+- [x] **Task 3.2:** Migrate components from `apps/web/src/components/ui-ext/` to `packages/ui/`. _(Completed: Consolidated all 15 UI primitives and domain components into `@antigravity/ui` including Card, StatusPill, DataTable, Timeline, FilterBuilder, Tabs, and Kpi; re-exported backwards-compatibly in web)_
 - [ ] **Task 3.3:** Implement lazy-loading for `@xyflow/react` and LiveKit components in `apps/web`.
 - [ ] **Task 3.4:** Implement Transactional Outbox pattern for syncing PostgreSQL mutations with Typesense.
 
