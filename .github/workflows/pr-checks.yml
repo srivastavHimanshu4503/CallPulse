@@ -24,6 +24,9 @@ jobs:
 
       - uses: pnpm/action-setup@v4
 
+      - name: Configure environment variables
+        run: cp .env.example .env
+
       - run: pnpm install --frozen-lockfile
 
       # website build separately: skips its Puppeteer prerender step
@@ -31,5 +34,15 @@ jobs:
       - run: pnpm --filter "!@antigravity/website" -r build
 
       - run: pnpm test
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:localpass@localhost:5432/indiai
+          JWT_SECRET: local-dev-jwt-secret-min-32-characters
+          JWT_REFRESH_SECRET: local-dev-refresh-secret-min-32-characters
+          CALENDAR_TOKEN_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+          TYPESENSE_HOST: localhost
+          TYPESENSE_PORT: 8108
+          TYPESENSE_PROTOCOL: http
+          TYPESENSE_API_KEY: local-dev-key
 
       - run: pnpm --filter @antigravity/website run build:no-prerender
