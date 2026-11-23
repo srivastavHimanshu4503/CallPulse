@@ -31,6 +31,7 @@ import { TwilioTelephonyProvider } from "../telephony/twilio/provider.js";
 import { resolveLanguageCodes } from "../voices/config.js";
 import { startCallEgress, stopCallEgress } from "../recording/egress.js";
 import { resolveDialedNumber, resolveCallerNumber } from "./routing.js";
+import { formatCallInceptionGreeting } from "./consent.js";
 
 const log = createLogger("agent");
 // This module runs inside LiveKit's child job processes — init Sentry here
@@ -631,7 +632,7 @@ export default defineAgent({
       instructions: systemPrompt,
       tools,
       stt: sttInstance,
-      llm: pipelineLLM,
+      llm: pipelineLLM as any,
       tts: ttsInstance,
     });
 
@@ -1041,7 +1042,13 @@ export default defineAgent({
       return;
     }
 
-    agentSession.say(persona.greetingMessage, {
+    const inceptionMessage = formatCallInceptionGreeting(
+      persona.greetingMessage,
+      languageKey,
+      callSource !== "browser",
+    );
+
+    agentSession.say(inceptionMessage, {
       allowInterruptions: false,
       addToChatCtx: true,
     });
@@ -1063,7 +1070,10 @@ export default defineAgent({
         const warmCtx = agentsLLM.ChatContext.empty();
         warmCtx.addMessage({ role: "system", content: systemPrompt });
         warmCtx.addMessage({ role: "user", content: "hi" });
-        const stream = warmupLLM.chat({ chatCtx: warmCtx, toolCtx: tools });
+        const stream = (warmupLLM as any).chat({
+          chatCtx: warmCtx as any,
+          toolCtx: tools as any,
+        });
         for await (const _chunk of stream) {
           break; // first chunk proves the prefix is processed — stop paying for output
         }
