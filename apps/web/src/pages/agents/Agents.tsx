@@ -31,7 +31,9 @@ import {
   X,
 } from "lucide-react";
 import { AgentWizard } from "./components/AgentWizard.js";
-import { TestCallModal } from "./components/TestCallModal.js";
+const TestCallModal = React.lazy(() =>
+  import("./components/TestCallModal.js").then((m) => ({ default: m.TestCallModal })),
+);
 import { PurchaseNumberModal } from "./components/PurchaseNumberModal.js";
 import type { SerializedAgent } from "@antigravity/types";
 
@@ -480,12 +482,14 @@ export function Agents(): React.JSX.Element {
       )}
 
       {testingAgent && (
-        <TestCallModal
-          agentId={testingAgent.id}
-          agentName={testingAgent.name}
-          isOpen={!!testingAgent}
-          onClose={() => setTestingAgent(null)}
-        />
+        <React.Suspense fallback={null}>
+          <TestCallModal
+            agentId={testingAgent.id}
+            agentName={testingAgent.name}
+            isOpen={!!testingAgent}
+            onClose={() => setTestingAgent(null)}
+          />
+        </React.Suspense>
       )}
 
       {buyingNumberAgent && (

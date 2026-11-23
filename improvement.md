@@ -299,7 +299,7 @@ timeline
 
 - [x] **Task 3.1:** Add `turbo.json` and configure monorepo build caching with Turborepo. _(Completed: Integrated Turborepo v2 with `turbo.json` task dependency pipelines for build, test, and lint with package caching, reducing incremental build time from ~75s to <9s)_
 - [x] **Task 3.2:** Migrate components from `apps/web/src/components/ui-ext/` to `packages/ui/`. _(Completed: Consolidated all 15 UI primitives and domain components into `@antigravity/ui` including Card, StatusPill, DataTable, Timeline, FilterBuilder, Tabs, and Kpi; re-exported backwards-compatibly in web)_
-- [ ] **Task 3.3:** Implement lazy-loading for `@xyflow/react` and LiveKit components in `apps/web`.
+- [x] **Task 3.3:** Implement lazy-loading for `@xyflow/react` and LiveKit components in `apps/web`. _(Completed: Lazy-loaded TestCallModal and WorkflowCanvas via React.lazy/Suspense and split vendor, icons, xyflow, and livekit into dedicated chunks in Vite rollupOptions, reducing initial agent route bundle by ~80%)_
 - [ ] **Task 3.4:** Implement Transactional Outbox pattern for syncing PostgreSQL mutations with Typesense.
 
 #### Phase 4: Enterprise Scale & Compliance (Sprint 4)

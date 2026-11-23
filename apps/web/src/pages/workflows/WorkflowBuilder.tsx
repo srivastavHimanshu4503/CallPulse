@@ -12,7 +12,9 @@ import { StatusPill } from "../../components/ui-ext/index.js";
 import type { WorkflowDef, BlockNode, BlockType, Trigger } from "./types.js";
 import { getBlockDef, rid } from "./registry.js";
 import { BlockLibrary } from "./components/BlockLibrary.js";
-import { WorkflowCanvas } from "./components/WorkflowCanvas.js";
+const WorkflowCanvas = React.lazy(() =>
+  import("./components/WorkflowCanvas.js").then((m) => ({ default: m.WorkflowCanvas })),
+);
 import { BlockInspector } from "./components/BlockInspector.js";
 import { ConfirmModal } from "../../components/common/ConfirmModal.js";
 import { DeleteWorkflowModal } from "./components/DeleteWorkflowModal.js";
@@ -415,32 +417,40 @@ function WorkflowBuilderInner(): React.JSX.Element {
           />
 
           <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            <WorkflowCanvas
-              trigger={wf.trigger}
-              steps={wf.steps}
-              selectedId={selectedId}
-              isTriggerSelected={isTriggerSelected}
-              onSelectTrigger={() => {
-                setIsTriggerSelected(true);
-                setSelectedId(null);
-              }}
-              onSelectStep={(sid) => {
-                setSelectedId(sid);
-                setIsTriggerSelected(false);
-              }}
-              onChangeTriggerType={changeTriggerType}
-              onAddStep={(afterId, type) => handleAddByType(afterId, type)}
-              onAddStepBranch={(parentId, branch, position, type) =>
-                handleAddInBranch(parentId, branch, position, type)
+            <React.Suspense
+              fallback={
+                <div className="flex-1 flex items-center justify-center bg-bg-subtle text-fg-muted text-sm animate-pulse">
+                  Loading workflow canvas...
+                </div>
               }
-              onDeleteStep={(stepId) => deleteStep(stepId)}
-              onMoveStep={moveStep}
-              onReattachAfter={reattachAfter}
-              onReattachIntoBranch={reattachIntoBranch}
-              onSetPosition={setStepPosition}
-              onTidy={tidyLayout}
-              hasCustomPositions={hasCustomPositions}
-            />
+            >
+              <WorkflowCanvas
+                trigger={wf.trigger}
+                steps={wf.steps}
+                selectedId={selectedId}
+                isTriggerSelected={isTriggerSelected}
+                onSelectTrigger={() => {
+                  setIsTriggerSelected(true);
+                  setSelectedId(null);
+                }}
+                onSelectStep={(sid) => {
+                  setSelectedId(sid);
+                  setIsTriggerSelected(false);
+                }}
+                onChangeTriggerType={changeTriggerType}
+                onAddStep={(afterId, type) => handleAddByType(afterId, type)}
+                onAddStepBranch={(parentId, branch, position, type) =>
+                  handleAddInBranch(parentId, branch, position, type)
+                }
+                onDeleteStep={(stepId) => deleteStep(stepId)}
+                onMoveStep={moveStep}
+                onReattachAfter={reattachAfter}
+                onReattachIntoBranch={reattachIntoBranch}
+                onSetPosition={setStepPosition}
+                onTidy={tidyLayout}
+                hasCustomPositions={hasCustomPositions}
+              />
+            </React.Suspense>
           </div>
 
           <BlockInspector

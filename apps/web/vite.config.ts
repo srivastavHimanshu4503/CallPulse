@@ -13,4 +13,16 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          icons: ["lucide-react"],
+          livekit: ["@livekit/components-react", "livekit-client"],
+          xyflow: ["@xyflow/react"],
+        },
+      },
+    },
+  },
 });
