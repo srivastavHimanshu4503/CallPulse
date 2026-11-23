@@ -307,7 +307,7 @@ timeline
 - [x] **Task 4.1:** Migrate dev EC2 single-box setup to AWS ECS Fargate or EKS with auto-scaling groups. _(Completed: Modernized ComputeStack with ApplicationLoadBalancedFargateService, least-privilege IAM task/execution roles, CloudWatch logging & alarms, and horizontal auto-scaling targets for CPU/Memory and request-surge tracking)_
 - [x] **Task 4.2:** Configure S3 lifecycle expiration policies for call audio recordings. _(Completed: Implemented automated DPDP-compliant S3 lifecycle rules with 30-day Glacier transition, 90-day automatic purge, permanent retention tag filters, and 1-day multipart abort)_
 - [x] **Task 4.3:** Add automatic consent disclaimer announcement to inbound voice calls for DPDP Act compliance. _(Completed: Implemented consent.ts with statutory DPDP recording disclosures across 12 Indian regional languages, wired into call inception announcement, and added automated regex PII redaction for Aadhaar, PAN, and payment cards)_
-- [ ] **Task 4.4:** Introduce AWS KMS-based key encryption and rotation for OAuth tokens.
+- [x] **Task 4.4:** Introduce AWS KMS-based key encryption and rotation for OAuth tokens. _(Completed: Implemented versioned envelope encryption (version:iv:tag:ciphertext), zero-downtime rotateTokenEncryption, KeyRing resolution, and backwards compatibility for legacy 3-part payloads in packages/utils/src/crypto.ts)_
 
 ---
 
