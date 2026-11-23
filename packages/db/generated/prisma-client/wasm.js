@@ -543,6 +543,21 @@ exports.Prisma.CalendarOAuthStateScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SearchOutboxEventScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  action: 'action',
+  payload: 'payload',
+  status: 'status',
+  retryCount: 'retryCount',
+  lastError: 'lastError',
+  processedAt: 'processedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -705,6 +720,13 @@ exports.ActivityType = exports.$Enums.ActivityType = {
   CONTACT_CREATED: 'CONTACT_CREATED'
 };
 
+exports.OutboxStatus = exports.$Enums.OutboxStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED'
+};
+
 exports.Prisma.ModelName = {
   Tenant: 'Tenant',
   CreditLedger: 'CreditLedger',
@@ -733,7 +755,8 @@ exports.Prisma.ModelName = {
   Activity: 'Activity',
   PasswordResetOtp: 'PasswordResetOtp',
   CalendarConnection: 'CalendarConnection',
-  CalendarOAuthState: 'CalendarOAuthState'
+  CalendarOAuthState: 'CalendarOAuthState',
+  SearchOutboxEvent: 'SearchOutboxEvent'
 };
 
 /**

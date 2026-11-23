@@ -153,6 +153,11 @@ export type CalendarConnection = $Result.DefaultSelection<Prisma.$CalendarConnec
  * 
  */
 export type CalendarOAuthState = $Result.DefaultSelection<Prisma.$CalendarOAuthStatePayload>
+/**
+ * Model SearchOutboxEvent
+ * 
+ */
+export type SearchOutboxEvent = $Result.DefaultSelection<Prisma.$SearchOutboxEventPayload>
 
 /**
  * Enums
@@ -347,6 +352,16 @@ export const ActivityType: {
 
 export type ActivityType = (typeof ActivityType)[keyof typeof ActivityType]
 
+
+export const OutboxStatus: {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED'
+};
+
+export type OutboxStatus = (typeof OutboxStatus)[keyof typeof OutboxStatus]
+
 }
 
 export type Plan = $Enums.Plan
@@ -424,6 +439,10 @@ export const ChatSessionStatus: typeof $Enums.ChatSessionStatus
 export type ActivityType = $Enums.ActivityType
 
 export const ActivityType: typeof $Enums.ActivityType
+
+export type OutboxStatus = $Enums.OutboxStatus
+
+export const OutboxStatus: typeof $Enums.OutboxStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -827,6 +846,16 @@ export class PrismaClient<
     * ```
     */
   get calendarOAuthState(): Prisma.CalendarOAuthStateDelegate<ExtArgs>;
+
+  /**
+   * `prisma.searchOutboxEvent`: Exposes CRUD operations for the **SearchOutboxEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SearchOutboxEvents
+    * const searchOutboxEvents = await prisma.searchOutboxEvent.findMany()
+    * ```
+    */
+  get searchOutboxEvent(): Prisma.SearchOutboxEventDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1295,7 +1324,8 @@ export namespace Prisma {
     Activity: 'Activity',
     PasswordResetOtp: 'PasswordResetOtp',
     CalendarConnection: 'CalendarConnection',
-    CalendarOAuthState: 'CalendarOAuthState'
+    CalendarOAuthState: 'CalendarOAuthState',
+    SearchOutboxEvent: 'SearchOutboxEvent'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1311,7 +1341,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "dealEvent" | "postCallJobClaim" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp" | "calendarConnection" | "calendarOAuthState"
+      modelProps: "tenant" | "creditLedger" | "paymentRecord" | "billingSubscription" | "user" | "contact" | "customFieldDefinition" | "customFieldValue" | "deal" | "dealEvent" | "postCallJobClaim" | "pipeline" | "pipelineStage" | "dealStageHistory" | "booking" | "note" | "workflowDefinition" | "workflowFolder" | "workflowRun" | "aIAgent" | "phoneNumber" | "knowledgeBase" | "communicationLog" | "chatSession" | "activity" | "passwordResetOtp" | "calendarConnection" | "calendarOAuthState" | "searchOutboxEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3272,6 +3302,76 @@ export namespace Prisma {
           count: {
             args: Prisma.CalendarOAuthStateCountArgs<ExtArgs>
             result: $Utils.Optional<CalendarOAuthStateCountAggregateOutputType> | number
+          }
+        }
+      }
+      SearchOutboxEvent: {
+        payload: Prisma.$SearchOutboxEventPayload<ExtArgs>
+        fields: Prisma.SearchOutboxEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SearchOutboxEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SearchOutboxEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>
+          }
+          findFirst: {
+            args: Prisma.SearchOutboxEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SearchOutboxEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>
+          }
+          findMany: {
+            args: Prisma.SearchOutboxEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>[]
+          }
+          create: {
+            args: Prisma.SearchOutboxEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>
+          }
+          createMany: {
+            args: Prisma.SearchOutboxEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SearchOutboxEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>[]
+          }
+          delete: {
+            args: Prisma.SearchOutboxEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>
+          }
+          update: {
+            args: Prisma.SearchOutboxEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.SearchOutboxEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SearchOutboxEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SearchOutboxEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SearchOutboxEventPayload>
+          }
+          aggregate: {
+            args: Prisma.SearchOutboxEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSearchOutboxEvent>
+          }
+          groupBy: {
+            args: Prisma.SearchOutboxEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SearchOutboxEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SearchOutboxEventCountArgs<ExtArgs>
+            result: $Utils.Optional<SearchOutboxEventCountAggregateOutputType> | number
           }
         }
       }
@@ -34421,6 +34521,998 @@ export namespace Prisma {
 
 
   /**
+   * Model SearchOutboxEvent
+   */
+
+  export type AggregateSearchOutboxEvent = {
+    _count: SearchOutboxEventCountAggregateOutputType | null
+    _avg: SearchOutboxEventAvgAggregateOutputType | null
+    _sum: SearchOutboxEventSumAggregateOutputType | null
+    _min: SearchOutboxEventMinAggregateOutputType | null
+    _max: SearchOutboxEventMaxAggregateOutputType | null
+  }
+
+  export type SearchOutboxEventAvgAggregateOutputType = {
+    retryCount: number | null
+  }
+
+  export type SearchOutboxEventSumAggregateOutputType = {
+    retryCount: number | null
+  }
+
+  export type SearchOutboxEventMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    entityType: string | null
+    entityId: string | null
+    action: string | null
+    status: $Enums.OutboxStatus | null
+    retryCount: number | null
+    lastError: string | null
+    processedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SearchOutboxEventMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    entityType: string | null
+    entityId: string | null
+    action: string | null
+    status: $Enums.OutboxStatus | null
+    retryCount: number | null
+    lastError: string | null
+    processedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SearchOutboxEventCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    entityType: number
+    entityId: number
+    action: number
+    payload: number
+    status: number
+    retryCount: number
+    lastError: number
+    processedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SearchOutboxEventAvgAggregateInputType = {
+    retryCount?: true
+  }
+
+  export type SearchOutboxEventSumAggregateInputType = {
+    retryCount?: true
+  }
+
+  export type SearchOutboxEventMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    entityType?: true
+    entityId?: true
+    action?: true
+    status?: true
+    retryCount?: true
+    lastError?: true
+    processedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SearchOutboxEventMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    entityType?: true
+    entityId?: true
+    action?: true
+    status?: true
+    retryCount?: true
+    lastError?: true
+    processedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SearchOutboxEventCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    entityType?: true
+    entityId?: true
+    action?: true
+    payload?: true
+    status?: true
+    retryCount?: true
+    lastError?: true
+    processedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SearchOutboxEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SearchOutboxEvent to aggregate.
+     */
+    where?: SearchOutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SearchOutboxEvents to fetch.
+     */
+    orderBy?: SearchOutboxEventOrderByWithRelationInput | SearchOutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SearchOutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SearchOutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SearchOutboxEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SearchOutboxEvents
+    **/
+    _count?: true | SearchOutboxEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SearchOutboxEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SearchOutboxEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SearchOutboxEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SearchOutboxEventMaxAggregateInputType
+  }
+
+  export type GetSearchOutboxEventAggregateType<T extends SearchOutboxEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateSearchOutboxEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSearchOutboxEvent[P]>
+      : GetScalarType<T[P], AggregateSearchOutboxEvent[P]>
+  }
+
+
+
+
+  export type SearchOutboxEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SearchOutboxEventWhereInput
+    orderBy?: SearchOutboxEventOrderByWithAggregationInput | SearchOutboxEventOrderByWithAggregationInput[]
+    by: SearchOutboxEventScalarFieldEnum[] | SearchOutboxEventScalarFieldEnum
+    having?: SearchOutboxEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SearchOutboxEventCountAggregateInputType | true
+    _avg?: SearchOutboxEventAvgAggregateInputType
+    _sum?: SearchOutboxEventSumAggregateInputType
+    _min?: SearchOutboxEventMinAggregateInputType
+    _max?: SearchOutboxEventMaxAggregateInputType
+  }
+
+  export type SearchOutboxEventGroupByOutputType = {
+    id: string
+    tenantId: string
+    entityType: string
+    entityId: string
+    action: string
+    payload: JsonValue
+    status: $Enums.OutboxStatus
+    retryCount: number
+    lastError: string | null
+    processedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SearchOutboxEventCountAggregateOutputType | null
+    _avg: SearchOutboxEventAvgAggregateOutputType | null
+    _sum: SearchOutboxEventSumAggregateOutputType | null
+    _min: SearchOutboxEventMinAggregateOutputType | null
+    _max: SearchOutboxEventMaxAggregateOutputType | null
+  }
+
+  type GetSearchOutboxEventGroupByPayload<T extends SearchOutboxEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SearchOutboxEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SearchOutboxEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SearchOutboxEventGroupByOutputType[P]>
+            : GetScalarType<T[P], SearchOutboxEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SearchOutboxEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    action?: boolean
+    payload?: boolean
+    status?: boolean
+    retryCount?: boolean
+    lastError?: boolean
+    processedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["searchOutboxEvent"]>
+
+  export type SearchOutboxEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    action?: boolean
+    payload?: boolean
+    status?: boolean
+    retryCount?: boolean
+    lastError?: boolean
+    processedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["searchOutboxEvent"]>
+
+  export type SearchOutboxEventSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    action?: boolean
+    payload?: boolean
+    status?: boolean
+    retryCount?: boolean
+    lastError?: boolean
+    processedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $SearchOutboxEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SearchOutboxEvent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      entityType: string
+      entityId: string
+      action: string
+      payload: Prisma.JsonValue
+      status: $Enums.OutboxStatus
+      retryCount: number
+      lastError: string | null
+      processedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["searchOutboxEvent"]>
+    composites: {}
+  }
+
+  type SearchOutboxEventGetPayload<S extends boolean | null | undefined | SearchOutboxEventDefaultArgs> = $Result.GetResult<Prisma.$SearchOutboxEventPayload, S>
+
+  type SearchOutboxEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<SearchOutboxEventFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: SearchOutboxEventCountAggregateInputType | true
+    }
+
+  export interface SearchOutboxEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SearchOutboxEvent'], meta: { name: 'SearchOutboxEvent' } }
+    /**
+     * Find zero or one SearchOutboxEvent that matches the filter.
+     * @param {SearchOutboxEventFindUniqueArgs} args - Arguments to find a SearchOutboxEvent
+     * @example
+     * // Get one SearchOutboxEvent
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SearchOutboxEventFindUniqueArgs>(args: SelectSubset<T, SearchOutboxEventFindUniqueArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one SearchOutboxEvent that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {SearchOutboxEventFindUniqueOrThrowArgs} args - Arguments to find a SearchOutboxEvent
+     * @example
+     * // Get one SearchOutboxEvent
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SearchOutboxEventFindUniqueOrThrowArgs>(args: SelectSubset<T, SearchOutboxEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first SearchOutboxEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SearchOutboxEventFindFirstArgs} args - Arguments to find a SearchOutboxEvent
+     * @example
+     * // Get one SearchOutboxEvent
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SearchOutboxEventFindFirstArgs>(args?: SelectSubset<T, SearchOutboxEventFindFirstArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first SearchOutboxEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SearchOutboxEventFindFirstOrThrowArgs} args - Arguments to find a SearchOutboxEvent
+     * @example
+     * // Get one SearchOutboxEvent
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SearchOutboxEventFindFirstOrThrowArgs>(args?: SelectSubset<T, SearchOutboxEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more SearchOutboxEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SearchOutboxEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SearchOutboxEvents
+     * const searchOutboxEvents = await prisma.searchOutboxEvent.findMany()
+     * 
+     * // Get first 10 SearchOutboxEvents
+     * const searchOutboxEvents = await prisma.searchOutboxEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const searchOutboxEventWithIdOnly = await prisma.searchOutboxEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SearchOutboxEventFindManyArgs>(args?: SelectSubset<T, SearchOutboxEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a SearchOutboxEvent.
+     * @param {SearchOutboxEventCreateArgs} args - Arguments to create a SearchOutboxEvent.
+     * @example
+     * // Create one SearchOutboxEvent
+     * const SearchOutboxEvent = await prisma.searchOutboxEvent.create({
+     *   data: {
+     *     // ... data to create a SearchOutboxEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends SearchOutboxEventCreateArgs>(args: SelectSubset<T, SearchOutboxEventCreateArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many SearchOutboxEvents.
+     * @param {SearchOutboxEventCreateManyArgs} args - Arguments to create many SearchOutboxEvents.
+     * @example
+     * // Create many SearchOutboxEvents
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SearchOutboxEventCreateManyArgs>(args?: SelectSubset<T, SearchOutboxEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SearchOutboxEvents and returns the data saved in the database.
+     * @param {SearchOutboxEventCreateManyAndReturnArgs} args - Arguments to create many SearchOutboxEvents.
+     * @example
+     * // Create many SearchOutboxEvents
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SearchOutboxEvents and only return the `id`
+     * const searchOutboxEventWithIdOnly = await prisma.searchOutboxEvent.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SearchOutboxEventCreateManyAndReturnArgs>(args?: SelectSubset<T, SearchOutboxEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a SearchOutboxEvent.
+     * @param {SearchOutboxEventDeleteArgs} args - Arguments to delete one SearchOutboxEvent.
+     * @example
+     * // Delete one SearchOutboxEvent
+     * const SearchOutboxEvent = await prisma.searchOutboxEvent.delete({
+     *   where: {
+     *     // ... filter to delete one SearchOutboxEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SearchOutboxEventDeleteArgs>(args: SelectSubset<T, SearchOutboxEventDeleteArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one SearchOutboxEvent.
+     * @param {SearchOutboxEventUpdateArgs} args - Arguments to update one SearchOutboxEvent.
+     * @example
+     * // Update one SearchOutboxEvent
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SearchOutboxEventUpdateArgs>(args: SelectSubset<T, SearchOutboxEventUpdateArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more SearchOutboxEvents.
+     * @param {SearchOutboxEventDeleteManyArgs} args - Arguments to filter SearchOutboxEvents to delete.
+     * @example
+     * // Delete a few SearchOutboxEvents
+     * const { count } = await prisma.searchOutboxEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SearchOutboxEventDeleteManyArgs>(args?: SelectSubset<T, SearchOutboxEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SearchOutboxEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SearchOutboxEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SearchOutboxEvents
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SearchOutboxEventUpdateManyArgs>(args: SelectSubset<T, SearchOutboxEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one SearchOutboxEvent.
+     * @param {SearchOutboxEventUpsertArgs} args - Arguments to update or create a SearchOutboxEvent.
+     * @example
+     * // Update or create a SearchOutboxEvent
+     * const searchOutboxEvent = await prisma.searchOutboxEvent.upsert({
+     *   create: {
+     *     // ... data to create a SearchOutboxEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SearchOutboxEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SearchOutboxEventUpsertArgs>(args: SelectSubset<T, SearchOutboxEventUpsertArgs<ExtArgs>>): Prisma__SearchOutboxEventClient<$Result.GetResult<Prisma.$SearchOutboxEventPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of SearchOutboxEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SearchOutboxEventCountArgs} args - Arguments to filter SearchOutboxEvents to count.
+     * @example
+     * // Count the number of SearchOutboxEvents
+     * const count = await prisma.searchOutboxEvent.count({
+     *   where: {
+     *     // ... the filter for the SearchOutboxEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends SearchOutboxEventCountArgs>(
+      args?: Subset<T, SearchOutboxEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SearchOutboxEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SearchOutboxEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SearchOutboxEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SearchOutboxEventAggregateArgs>(args: Subset<T, SearchOutboxEventAggregateArgs>): Prisma.PrismaPromise<GetSearchOutboxEventAggregateType<T>>
+
+    /**
+     * Group by SearchOutboxEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SearchOutboxEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SearchOutboxEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SearchOutboxEventGroupByArgs['orderBy'] }
+        : { orderBy?: SearchOutboxEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SearchOutboxEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSearchOutboxEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SearchOutboxEvent model
+   */
+  readonly fields: SearchOutboxEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SearchOutboxEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SearchOutboxEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SearchOutboxEvent model
+   */ 
+  interface SearchOutboxEventFieldRefs {
+    readonly id: FieldRef<"SearchOutboxEvent", 'String'>
+    readonly tenantId: FieldRef<"SearchOutboxEvent", 'String'>
+    readonly entityType: FieldRef<"SearchOutboxEvent", 'String'>
+    readonly entityId: FieldRef<"SearchOutboxEvent", 'String'>
+    readonly action: FieldRef<"SearchOutboxEvent", 'String'>
+    readonly payload: FieldRef<"SearchOutboxEvent", 'Json'>
+    readonly status: FieldRef<"SearchOutboxEvent", 'OutboxStatus'>
+    readonly retryCount: FieldRef<"SearchOutboxEvent", 'Int'>
+    readonly lastError: FieldRef<"SearchOutboxEvent", 'String'>
+    readonly processedAt: FieldRef<"SearchOutboxEvent", 'DateTime'>
+    readonly createdAt: FieldRef<"SearchOutboxEvent", 'DateTime'>
+    readonly updatedAt: FieldRef<"SearchOutboxEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SearchOutboxEvent findUnique
+   */
+  export type SearchOutboxEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * Filter, which SearchOutboxEvent to fetch.
+     */
+    where: SearchOutboxEventWhereUniqueInput
+  }
+
+  /**
+   * SearchOutboxEvent findUniqueOrThrow
+   */
+  export type SearchOutboxEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * Filter, which SearchOutboxEvent to fetch.
+     */
+    where: SearchOutboxEventWhereUniqueInput
+  }
+
+  /**
+   * SearchOutboxEvent findFirst
+   */
+  export type SearchOutboxEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * Filter, which SearchOutboxEvent to fetch.
+     */
+    where?: SearchOutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SearchOutboxEvents to fetch.
+     */
+    orderBy?: SearchOutboxEventOrderByWithRelationInput | SearchOutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SearchOutboxEvents.
+     */
+    cursor?: SearchOutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SearchOutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SearchOutboxEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SearchOutboxEvents.
+     */
+    distinct?: SearchOutboxEventScalarFieldEnum | SearchOutboxEventScalarFieldEnum[]
+  }
+
+  /**
+   * SearchOutboxEvent findFirstOrThrow
+   */
+  export type SearchOutboxEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * Filter, which SearchOutboxEvent to fetch.
+     */
+    where?: SearchOutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SearchOutboxEvents to fetch.
+     */
+    orderBy?: SearchOutboxEventOrderByWithRelationInput | SearchOutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SearchOutboxEvents.
+     */
+    cursor?: SearchOutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SearchOutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SearchOutboxEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SearchOutboxEvents.
+     */
+    distinct?: SearchOutboxEventScalarFieldEnum | SearchOutboxEventScalarFieldEnum[]
+  }
+
+  /**
+   * SearchOutboxEvent findMany
+   */
+  export type SearchOutboxEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * Filter, which SearchOutboxEvents to fetch.
+     */
+    where?: SearchOutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SearchOutboxEvents to fetch.
+     */
+    orderBy?: SearchOutboxEventOrderByWithRelationInput | SearchOutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SearchOutboxEvents.
+     */
+    cursor?: SearchOutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SearchOutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SearchOutboxEvents.
+     */
+    skip?: number
+    distinct?: SearchOutboxEventScalarFieldEnum | SearchOutboxEventScalarFieldEnum[]
+  }
+
+  /**
+   * SearchOutboxEvent create
+   */
+  export type SearchOutboxEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * The data needed to create a SearchOutboxEvent.
+     */
+    data: XOR<SearchOutboxEventCreateInput, SearchOutboxEventUncheckedCreateInput>
+  }
+
+  /**
+   * SearchOutboxEvent createMany
+   */
+  export type SearchOutboxEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SearchOutboxEvents.
+     */
+    data: SearchOutboxEventCreateManyInput | SearchOutboxEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SearchOutboxEvent createManyAndReturn
+   */
+  export type SearchOutboxEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many SearchOutboxEvents.
+     */
+    data: SearchOutboxEventCreateManyInput | SearchOutboxEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SearchOutboxEvent update
+   */
+  export type SearchOutboxEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * The data needed to update a SearchOutboxEvent.
+     */
+    data: XOR<SearchOutboxEventUpdateInput, SearchOutboxEventUncheckedUpdateInput>
+    /**
+     * Choose, which SearchOutboxEvent to update.
+     */
+    where: SearchOutboxEventWhereUniqueInput
+  }
+
+  /**
+   * SearchOutboxEvent updateMany
+   */
+  export type SearchOutboxEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SearchOutboxEvents.
+     */
+    data: XOR<SearchOutboxEventUpdateManyMutationInput, SearchOutboxEventUncheckedUpdateManyInput>
+    /**
+     * Filter which SearchOutboxEvents to update
+     */
+    where?: SearchOutboxEventWhereInput
+  }
+
+  /**
+   * SearchOutboxEvent upsert
+   */
+  export type SearchOutboxEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * The filter to search for the SearchOutboxEvent to update in case it exists.
+     */
+    where: SearchOutboxEventWhereUniqueInput
+    /**
+     * In case the SearchOutboxEvent found by the `where` argument doesn't exist, create a new SearchOutboxEvent with this data.
+     */
+    create: XOR<SearchOutboxEventCreateInput, SearchOutboxEventUncheckedCreateInput>
+    /**
+     * In case the SearchOutboxEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SearchOutboxEventUpdateInput, SearchOutboxEventUncheckedUpdateInput>
+  }
+
+  /**
+   * SearchOutboxEvent delete
+   */
+  export type SearchOutboxEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+    /**
+     * Filter which SearchOutboxEvent to delete.
+     */
+    where: SearchOutboxEventWhereUniqueInput
+  }
+
+  /**
+   * SearchOutboxEvent deleteMany
+   */
+  export type SearchOutboxEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SearchOutboxEvents to delete
+     */
+    where?: SearchOutboxEventWhereInput
+  }
+
+  /**
+   * SearchOutboxEvent without action
+   */
+  export type SearchOutboxEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchOutboxEvent
+     */
+    select?: SearchOutboxEventSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -34939,6 +36031,24 @@ export namespace Prisma {
   export type CalendarOAuthStateScalarFieldEnum = (typeof CalendarOAuthStateScalarFieldEnum)[keyof typeof CalendarOAuthStateScalarFieldEnum]
 
 
+  export const SearchOutboxEventScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    action: 'action',
+    payload: 'payload',
+    status: 'status',
+    retryCount: 'retryCount',
+    lastError: 'lastError',
+    processedAt: 'processedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SearchOutboxEventScalarFieldEnum = (typeof SearchOutboxEventScalarFieldEnum)[keyof typeof SearchOutboxEventScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -35325,6 +36435,20 @@ export namespace Prisma {
    * Reference to a field of type 'ActivityType[]'
    */
   export type ListEnumActivityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActivityType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'OutboxStatus'
+   */
+  export type EnumOutboxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OutboxStatus[]'
+   */
+  export type ListEnumOutboxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxStatus[]'>
     
   /**
    * Deep Input Types
@@ -38100,6 +39224,95 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"CalendarOAuthState"> | string
     expiresAt?: DateTimeWithAggregatesFilter<"CalendarOAuthState"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"CalendarOAuthState"> | Date | string
+  }
+
+  export type SearchOutboxEventWhereInput = {
+    AND?: SearchOutboxEventWhereInput | SearchOutboxEventWhereInput[]
+    OR?: SearchOutboxEventWhereInput[]
+    NOT?: SearchOutboxEventWhereInput | SearchOutboxEventWhereInput[]
+    id?: StringFilter<"SearchOutboxEvent"> | string
+    tenantId?: StringFilter<"SearchOutboxEvent"> | string
+    entityType?: StringFilter<"SearchOutboxEvent"> | string
+    entityId?: StringFilter<"SearchOutboxEvent"> | string
+    action?: StringFilter<"SearchOutboxEvent"> | string
+    payload?: JsonFilter<"SearchOutboxEvent">
+    status?: EnumOutboxStatusFilter<"SearchOutboxEvent"> | $Enums.OutboxStatus
+    retryCount?: IntFilter<"SearchOutboxEvent"> | number
+    lastError?: StringNullableFilter<"SearchOutboxEvent"> | string | null
+    processedAt?: DateTimeNullableFilter<"SearchOutboxEvent"> | Date | string | null
+    createdAt?: DateTimeFilter<"SearchOutboxEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"SearchOutboxEvent"> | Date | string
+  }
+
+  export type SearchOutboxEventOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    action?: SortOrder
+    payload?: SortOrder
+    status?: SortOrder
+    retryCount?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SearchOutboxEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SearchOutboxEventWhereInput | SearchOutboxEventWhereInput[]
+    OR?: SearchOutboxEventWhereInput[]
+    NOT?: SearchOutboxEventWhereInput | SearchOutboxEventWhereInput[]
+    tenantId?: StringFilter<"SearchOutboxEvent"> | string
+    entityType?: StringFilter<"SearchOutboxEvent"> | string
+    entityId?: StringFilter<"SearchOutboxEvent"> | string
+    action?: StringFilter<"SearchOutboxEvent"> | string
+    payload?: JsonFilter<"SearchOutboxEvent">
+    status?: EnumOutboxStatusFilter<"SearchOutboxEvent"> | $Enums.OutboxStatus
+    retryCount?: IntFilter<"SearchOutboxEvent"> | number
+    lastError?: StringNullableFilter<"SearchOutboxEvent"> | string | null
+    processedAt?: DateTimeNullableFilter<"SearchOutboxEvent"> | Date | string | null
+    createdAt?: DateTimeFilter<"SearchOutboxEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"SearchOutboxEvent"> | Date | string
+  }, "id">
+
+  export type SearchOutboxEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    action?: SortOrder
+    payload?: SortOrder
+    status?: SortOrder
+    retryCount?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SearchOutboxEventCountOrderByAggregateInput
+    _avg?: SearchOutboxEventAvgOrderByAggregateInput
+    _max?: SearchOutboxEventMaxOrderByAggregateInput
+    _min?: SearchOutboxEventMinOrderByAggregateInput
+    _sum?: SearchOutboxEventSumOrderByAggregateInput
+  }
+
+  export type SearchOutboxEventScalarWhereWithAggregatesInput = {
+    AND?: SearchOutboxEventScalarWhereWithAggregatesInput | SearchOutboxEventScalarWhereWithAggregatesInput[]
+    OR?: SearchOutboxEventScalarWhereWithAggregatesInput[]
+    NOT?: SearchOutboxEventScalarWhereWithAggregatesInput | SearchOutboxEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SearchOutboxEvent"> | string
+    tenantId?: StringWithAggregatesFilter<"SearchOutboxEvent"> | string
+    entityType?: StringWithAggregatesFilter<"SearchOutboxEvent"> | string
+    entityId?: StringWithAggregatesFilter<"SearchOutboxEvent"> | string
+    action?: StringWithAggregatesFilter<"SearchOutboxEvent"> | string
+    payload?: JsonWithAggregatesFilter<"SearchOutboxEvent">
+    status?: EnumOutboxStatusWithAggregatesFilter<"SearchOutboxEvent"> | $Enums.OutboxStatus
+    retryCount?: IntWithAggregatesFilter<"SearchOutboxEvent"> | number
+    lastError?: StringNullableWithAggregatesFilter<"SearchOutboxEvent"> | string | null
+    processedAt?: DateTimeNullableWithAggregatesFilter<"SearchOutboxEvent"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SearchOutboxEvent"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SearchOutboxEvent"> | Date | string
   }
 
   export type TenantCreateInput = {
@@ -41205,6 +42418,111 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SearchOutboxEventCreateInput = {
+    id?: string
+    tenantId: string
+    entityType: string
+    entityId: string
+    action: string
+    payload: JsonNullValueInput | InputJsonValue
+    status?: $Enums.OutboxStatus
+    retryCount?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SearchOutboxEventUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    entityType: string
+    entityId: string
+    action: string
+    payload: JsonNullValueInput | InputJsonValue
+    status?: $Enums.OutboxStatus
+    retryCount?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SearchOutboxEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SearchOutboxEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SearchOutboxEventCreateManyInput = {
+    id?: string
+    tenantId: string
+    entityType: string
+    entityId: string
+    action: string
+    payload: JsonNullValueInput | InputJsonValue
+    status?: $Enums.OutboxStatus
+    retryCount?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SearchOutboxEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SearchOutboxEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -43547,6 +44865,74 @@ export namespace Prisma {
     userId?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumOutboxStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusFilter<$PrismaModel> | $Enums.OutboxStatus
+  }
+
+  export type SearchOutboxEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    action?: SortOrder
+    payload?: SortOrder
+    status?: SortOrder
+    retryCount?: SortOrder
+    lastError?: SortOrder
+    processedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SearchOutboxEventAvgOrderByAggregateInput = {
+    retryCount?: SortOrder
+  }
+
+  export type SearchOutboxEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    action?: SortOrder
+    status?: SortOrder
+    retryCount?: SortOrder
+    lastError?: SortOrder
+    processedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SearchOutboxEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    action?: SortOrder
+    status?: SortOrder
+    retryCount?: SortOrder
+    lastError?: SortOrder
+    processedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SearchOutboxEventSumOrderByAggregateInput = {
+    retryCount?: SortOrder
+  }
+
+  export type EnumOutboxStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOutboxStatusFilter<$PrismaModel>
+    _max?: NestedEnumOutboxStatusFilter<$PrismaModel>
   }
 
   export type UserCreateNestedManyWithoutTenantInput = {
@@ -46670,6 +48056,10 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCalendarConnectionsInput, UserUpdateWithoutCalendarConnectionsInput>, UserUncheckedUpdateWithoutCalendarConnectionsInput>
   }
 
+  export type EnumOutboxStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OutboxStatus
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -47298,6 +48688,23 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumDirectionNullableFilter<$PrismaModel>
     _max?: NestedEnumDirectionNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumOutboxStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusFilter<$PrismaModel> | $Enums.OutboxStatus
+  }
+
+  export type NestedEnumOutboxStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOutboxStatusFilter<$PrismaModel>
+    _max?: NestedEnumOutboxStatusFilter<$PrismaModel>
   }
 
   export type UserCreateWithoutTenantInput = {
@@ -61616,6 +63023,10 @@ export namespace Prisma {
      * @deprecated Use CalendarOAuthStateDefaultArgs instead
      */
     export type CalendarOAuthStateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CalendarOAuthStateDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use SearchOutboxEventDefaultArgs instead
+     */
+    export type SearchOutboxEventArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SearchOutboxEventDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

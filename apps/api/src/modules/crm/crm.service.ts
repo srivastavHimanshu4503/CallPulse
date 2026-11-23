@@ -1,4 +1,5 @@
 import { db } from "../../config/database.js";
+import { enqueueSearchOutbox } from "@antigravity/db";
 import type { Contact, Deal, Booking, Note, SerializedContactDetails } from "@antigravity/types";
 import type { CreateDealInput, UpdateDealInput } from "@antigravity/validators";
 import {
@@ -199,6 +200,22 @@ export class CrmService {
         },
       });
 
+      await enqueueSearchOutbox(tx, {
+        tenantId,
+        entityType: "contact",
+        entityId: created.id,
+        action: "UPSERT",
+        payload: {
+          id: created.id,
+          tenantId,
+          firstName: created.firstName,
+          lastName: created.lastName,
+          emails: created.emails,
+          phones: created.phones,
+          createdAt: created.createdAt.toISOString(),
+        },
+      });
+
       return {
         id: created.id,
         tenantId: created.tenantId,
@@ -247,6 +264,18 @@ export class CrmService {
             occurredAt: new Date(),
           },
         });
+
+        await enqueueSearchOutbox(tx, {
+          tenantId,
+          entityType: "contact",
+          entityId: id,
+          action: "UPSERT",
+          payload: {
+            id,
+            tenantId,
+            ...updateData,
+          },
+        });
       }
     });
   }
@@ -270,6 +299,14 @@ export class CrmService {
       const existing = await tx.contact.findFirst({ where: { id, tenantId, deletedAt: null } });
       if (!existing) throw new Error("Contact not found");
       await tx.contact.update({ where: { id }, data: { deletedAt: new Date() } });
+
+      await enqueueSearchOutbox(tx, {
+        tenantId,
+        entityType: "contact",
+        entityId: id,
+        action: "DELETE",
+        payload: { id, tenantId },
+      });
 
       // The timeline dies with the contact.
       await tx.activity.deleteMany({ where: { contactId: id, tenantId } });
@@ -688,6 +725,22 @@ export class CrmService {
 
       await tx.dealStageHistory.create({
         data: { tenantId, dealId: created.id, fromStage: null, toStage: created.stage },
+      });
+
+      await enqueueSearchOutbox(tx, {
+        tenantId,
+        entityType: "deal",
+        entityId: created.id,
+        action: "UPSERT",
+        payload: {
+          id: created.id,
+          tenantId,
+          contactId: created.contactId,
+          title: created.title,
+          value: created.value,
+          stage: created.stage,
+          createdAt: created.createdAt.toISOString(),
+        },
       });
 
       await tx.activity.create({

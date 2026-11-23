@@ -918,3 +918,33 @@ model CalendarOAuthState {
   @@index([state])
   @@map("calendar_oauth_states")
 }
+
+// ─────────────────────────────────────────────
+// SEARCH OUTBOX — Transactional Outbox for Typesense
+// ─────────────────────────────────────────────
+
+enum OutboxStatus {
+  PENDING
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+model SearchOutboxEvent {
+  id          String       @id @default(uuid())
+  tenantId    String
+  entityType  String
+  entityId    String
+  action      String
+  payload     Json
+  status      OutboxStatus @default(PENDING)
+  retryCount  Int          @default(0)
+  lastError   String?
+  processedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([status, createdAt])
+  @@index([tenantId, entityType, entityId])
+  @@map("search_outbox_events")
+}
