@@ -59,9 +59,10 @@ const parseS3Url = (url: string): { bucket: string; key: string } | null => {
       return { bucket: env.RECORDINGS_S3_BUCKET, key: u.pathname.replace(/^\//, "") };
     }
     if (host.startsWith("s3.") && host.endsWith(".amazonaws.com")) {
-      const [, bucket, ...rest] = u.pathname.split("/");
-      if (bucket === env.RECORDINGS_S3_BUCKET) {
-        return { bucket, key: rest.join("/") };
+      const parts = u.pathname.split("/");
+      const bucket = parts[1];
+      if (bucket && bucket === env.RECORDINGS_S3_BUCKET) {
+        return { bucket: env.RECORDINGS_S3_BUCKET, key: parts.slice(2).join("/") };
       }
     }
     return null;
