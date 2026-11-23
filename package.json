@@ -1,14 +1,15 @@
 {
   "name": "antigravity-monorepo",
   "private": true,
+  "packageManager": "pnpm@11.22.0",
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
   },
   "scripts": {
     "dev": "pnpm --parallel dev",
-    "build": "pnpm -r build",
-    "test": "pnpm -r --if-present test",
+    "build": "turbo run build",
+    "test": "turbo run test",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -31,6 +32,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
+    "turbo": "^2.11.13",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.22.0"
   },
