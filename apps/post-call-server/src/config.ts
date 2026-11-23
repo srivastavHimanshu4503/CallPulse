@@ -25,6 +25,15 @@ const envSchema = z.object({
   // processes, since the in-memory queue does not share state across procs.
   POST_CALL_CONCURRENCY: z.coerce.number().int().positive().default(4),
 
+  // Queue backend: "auto" uses BullMQ if Redis is configured, else falls back to in-memory.
+  POST_CALL_QUEUE_BACKEND: z.enum(["in-memory", "bullmq", "auto"]).default("auto"),
+
+  // Redis configuration for BullMQ
+  REDIS_URL: optionalString,
+  REDIS_HOST: z.string().default("localhost"),
+  REDIS_PORT: z.coerce.number().int().positive().default(6379),
+  REDIS_PASSWORD: optionalString,
+
   OPENAI_API_KEY: optionalString,
 
   // Twilio — used to fetch call recordings after each call.
@@ -69,8 +78,15 @@ export const config = {
     sharedSecret: env.POST_CALL_SERVER_SECRET,
   },
   queue: {
+    backend: env.POST_CALL_QUEUE_BACKEND,
     concurrency: env.POST_CALL_CONCURRENCY,
     maxAttempts: env.POST_CALL_MAX_ATTEMPTS,
+  },
+  redis: {
+    url: env.REDIS_URL,
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+    password: env.REDIS_PASSWORD,
   },
   llm: {
     openaiApiKey: env.OPENAI_API_KEY,

@@ -33,7 +33,7 @@ export interface Queue<T> {
   process(processor: JobProcessor<T>): void;
   on<K extends keyof QueueEvents<T>>(event: K, listener: QueueEvents<T>[K]): void;
   /** Snapshot of queue depth — for /health and future admin UI. */
-  metrics(): QueueMetrics;
+  metrics(): QueueMetrics | Promise<QueueMetrics>;
   close(): Promise<void>;
 }
 

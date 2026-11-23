@@ -43,12 +43,12 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
   next();
 });
 
-app.get("/health", (_req, res) => {
+app.get("/health", async (_req, res) => {
   res.json({
     status: "healthy",
     env: config.env,
     timestamp: new Date().toISOString(),
-    queue: queue.metrics(),
+    queue: await queue.metrics(),
   });
 });
 

@@ -72,7 +72,7 @@ export const createIngestRouter = (queue: Queue<PostCallJob>): Router => {
       logId: job.logId,
       callSid: job.callSid,
       turnCount: job.transcript.length,
-      queue: queue.metrics(),
+      queue: await queue.metrics(),
     });
     res.status(202).json({ ok: true, logId: job.logId });
   });
