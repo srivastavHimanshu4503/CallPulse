@@ -12,9 +12,9 @@ new AntigravityPipelineStack(app, "IndiAiPipelineStack", {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "us-east-1",
   },
-  githubOwner: process.env.GITHUB_OWNER ?? "yogendraft21",
-  githubRepo: "IndiAi",
-  githubBranch: "main",
+  githubOwner: process.env.GITHUB_OWNER ?? "srivastavHimanshu4503",
+  githubRepo: process.env.GITHUB_REPO ?? "CallPulse",
+  githubBranch: process.env.GITHUB_BRANCH ?? "main",
 });
 
 // 2. Dev Deployment Stage (Enables direct npx cdk commands like deploy/diff for Dev environment)
