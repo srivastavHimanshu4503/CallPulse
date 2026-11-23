@@ -21,13 +21,11 @@ aws ecr get-login-password --region "$REGION" |
 
 $COMPOSE pull
 
-# Sync Prisma schema to the DB BEFORE booting the new api image — we use
-# `db push` (not migrations) as the source of truth, so every deploy must
-# reconcile any schema change with the live DB. Runs inside a throwaway
-# `api` container using the just-pulled image; DATABASE_URL comes from
-# the .env we wrote above.
+# Sync Prisma schema to the DB BEFORE booting the new api image.
+# Uses `prisma migrate deploy` as the production source of truth so every deploy
+# applies version-controlled migrations deterministically without schema drift.
 $COMPOSE run --rm --entrypoint sh api -c \
-  "pnpm --filter @antigravity/db exec prisma db push --skip-generate"
+  "pnpm --filter @antigravity/db db:deploy"
 
 $COMPOSE up -d --remove-orphans
 # Caddyfile is a single-file bind mount: git pull replaces the inode and the

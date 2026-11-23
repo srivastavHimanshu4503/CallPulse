@@ -6,7 +6,9 @@ import {
   type JobProcess,
 } from "@livekit/agents";
 import { initSentry, captureError, flushSentry } from "@antigravity/observability";
-import * as silero from "@livekit/agents-plugin-silero";
+import { loadSileroVAD, getOrLoadVAD, getTurnHandlingConfig } from "./vad.js";
+import { ASSISTANT_FAREWELL_RE, USER_FAREWELL_RE, extractItemText } from "./farewell.js";
+import { normalizeLanguage } from "./language.js";
 import { RoomEvent } from "@livekit/rtc-node";
 import { RoomServiceClient, SipClient } from "livekit-server-sdk";
 import { db, getCreditBalance } from "@antigravity/db";
@@ -26,7 +28,7 @@ import { createSTT } from "../stt/index.js";
 import { createTTS, getVoiceGender, type TTSBuildOptions } from "../tts/index.js";
 import { getAgentConfigProvider } from "../agent-config/index.js";
 import { TwilioTelephonyProvider } from "../telephony/twilio/provider.js";
-import { resolveLanguageCodes, type VoiceKey } from "../voices/config.js";
+import { resolveLanguageCodes } from "../voices/config.js";
 import { startCallEgress, stopCallEgress } from "../recording/egress.js";
 import { resolveDialedNumber, resolveCallerNumber } from "./routing.js";
 
@@ -95,15 +97,7 @@ export default defineAgent({
       await db.$connect();
       // Instantiating the provider primes its module graph + Prisma client.
       void agentConfigProvider;
-      // Explicit Silero VAD: the plugin default of 550ms min-silence is the
-      // single biggest fixed cost in perceived response latency. 200ms sits
-      // inside natural intra-sentence pauses — deliberate tradeoff for the
-      // sub-1s target on real phone calls (carrier RTT already spends
-      // ~300ms of the caller's silence budget, so every ms shaved here is
-      // felt). Revert to 300-400 if callers get cut off mid-sentence.
-      // Loaded once per child process — the ONNX model load is too slow to
-      // do per-call.
-      proc.userData.vad = await silero.VAD.load({ minSilenceDuration: 200 });
+      proc.userData.vad = await loadSileroVAD({ minSilenceDurationMs: 200 });
       log.info("child process prewarmed");
     } catch (err) {
       log.error("child process prewarm failed", { message: (err as Error)?.message });
@@ -641,62 +635,12 @@ export default defineAgent({
       tts: ttsInstance,
     });
 
-    // Prewarmed 300ms-min-silence Silero instance (see prewarm). If prewarm
-    // failed (disk hiccup loading the ONNX model), load it now instead of
-    // handing the SDK `undefined` — that crashed the session and presented
-    // as "agent never picked up".
-    let vad = ctx.proc.userData.vad as voice.AgentSessionOptions["vad"] | undefined;
-    if (!vad) {
-      callLog.warn("prewarmed VAD missing — loading in-call");
-      vad = (await silero.VAD.load({
-        minSilenceDuration: 200,
-      })) as voice.AgentSessionOptions["vad"];
-    }
+    const vad = await getOrLoadVAD(ctx, callLog);
 
     const agentSession = new voice.AgentSession({
       useTtsAlignedTranscript: true,
       vad,
-      turnHandling: {
-        // Silero VAD detects audio-level silence. Sarvam's own END_SPEECH
-        // signal arrives ~200ms before its FINAL_TRANSCRIPT, which caused
-        // the "reply lands one turn late" bug when using "stt" mode.
-        turnDetection: "vad",
-        // maxDelay caps how long we wait for Sarvam's FINAL_TRANSCRIPT after
-        // VAD says the caller stopped. Sarvam finals routinely lag END_SPEECH,
-        // so the old 2500ms cap turned into a regular 2.5s dead-air stall
-        // before the LLM even started.
-        //
-        // On real phone calls (SIP through the carrier) every millisecond
-        // here is added on TOP of the ~200-400ms round-trip the caller
-        // already pays for the carrier link — so a browser test call at
-        // 1200ms cap feels ~800ms, but a real call feels ~1500-1600ms. Since
-        // we also force Sarvam to finalize on Silero VAD close (see
-        // UserStateChanged handler below) the final almost always arrives
-        // well under 800ms, so the cap can be tighter without losing content.
-        endpointing: { mode: "fixed", minDelay: 150, maxDelay: 800 },
-        // Barge-in with matched thresholds from the reference production
-        // system (Python `min_interruption_words=2`, which maps to
-        // `min_duration = 0.2 + 0.15*sensitivity = 0.5s` in their v2
-        // config). minWords=2 filters out one-word backchannels ("haan",
-        // "hmm") that would otherwise cut off the agent's own sentences.
-        //
-        // `mode: "vad"` pins interruption detection to the Silero VAD we
-        // already load — leaving mode `undefined` lets the SDK auto-select
-        // "adaptive" which loads an additional ML classifier and adds
-        // per-frame processing overhead. Reference uses VAD-based detection.
-        interruption: {
-          enabled: true,
-          mode: "vad",
-          minWords: 2,
-          minDuration: 500,
-        },
-        // preemptiveTts synthesizes the reply while the user is still
-        // finishing their turn, cutting ~300-500ms off perceived response
-        // latency. If the final transcript changes the reply, the SDK
-        // discards the preemptive audio, so worst case costs a few TTS
-        // characters — not correctness.
-        preemptiveGeneration: { enabled: true, preemptiveTts: true, maxSpeechDuration: 10000 },
-      },
+      turnHandling: getTurnHandlingConfig(),
     });
 
     sayLine = (text: string) => {
@@ -1135,68 +1079,3 @@ export default defineAgent({
     })();
   },
 });
-
-// Assistant-side farewell heuristic. Deliberately narrow — matches phrases
-// only the AI would use to *close* the call, not incidental "thanks" or
-// polite affirmations. Anchored on \b so "goodbye" matches but "goodbyes"
-// doesn't; explicit multi-word Hindi close phrases require the exact form
-// the prompt trains the model to produce. "din shubh ho" / "have a … day"
-// are the closing lines the ENDING THE CALL section now trains; the legacy
-// "phir milte" forms stay so older cached prompts still trigger the net.
-const ASSISTANT_FAREWELL_RE =
-  /\b(?:goodbye|bye\s*bye|bye\.?\s*$|phir\s+milte|phir\s+baat\s+karenge|chalo\s+bye|(?:aapka\s+)?din\s+shubh\s+ho|have\s+a\s+(?:great|good|nice|wonderful|lovely)\s+day)\b/i;
-
-// User-side farewell — matches what the caller is likely to say. Broader
-// than the assistant regex because callers hedge ("okay thanks bye", "haan
-// thik hai bye"). The word boundary keeps it from firing on "goodbyes",
-// "bypass", or "byahaan".
-const USER_FAREWELL_RE =
-  /\b(?:bye|goodbye|bye\s*bye|thank\s*you\s+bye|thanks?\s+bye|okay\s+bye|ok\s+bye|okay\s+thanks?\s+bye|phir\s+milte|phir\s+baat\s+karenge|chalo\s+bye|alvida)\b/i;
-
-/**
- * `ConversationItemAdded.item.content` can be a plain string OR an array of
- * content parts (each `{ type: "text", text: string }` or similar) depending
- * on the LiveKit agents SDK version and the LLM adapter in use. We flatten
- * to a single string so the assistant farewell heuristic can see the text.
- * Previously we returned "" for anything non-string, which silently
- * disabled the hangup safety net.
- */
-const extractItemText = (content: unknown): string => {
-  if (typeof content === "string") return content.trim();
-  if (Array.isArray(content)) {
-    return content
-      .map((part) => {
-        if (typeof part === "string") return part;
-        if (part && typeof part === "object") {
-          const p = part as Record<string, unknown>;
-          if (typeof p.text === "string") return p.text;
-          if (typeof p.content === "string") return p.content;
-        }
-        return "";
-      })
-      .join(" ")
-      .trim();
-  }
-  if (content && typeof content === "object") {
-    const c = content as Record<string, unknown>;
-    if (typeof c.text === "string") return c.text.trim();
-  }
-  return "";
-};
-
-const normalizeLanguage = (raw: string): VoiceKey => {
-  const lower = (raw || "").toLowerCase().trim();
-  if (lower.startsWith("hin") && lower.includes("glish")) return "hinglish";
-  if (lower.startsWith("hin")) return "hindi";
-  if (lower.startsWith("en")) return "english";
-  if (lower.startsWith("mar")) return "marathi";
-  if (lower.startsWith("tam")) return "tamil";
-  if (lower.startsWith("tel")) return "telugu";
-  if (lower.startsWith("ben") || lower.startsWith("bang")) return "bengali";
-  if (lower.startsWith("guj")) return "gujarati";
-  if (lower.startsWith("kan")) return "kannada";
-  if (lower.startsWith("mal")) return "malayalam";
-  if (lower.startsWith("pun") || lower.startsWith("pan")) return "punjabi";
-  if (lower.startsWith("odi") || lower.startsWith("ori")) return "odia";
-  return "hinglish";
-};

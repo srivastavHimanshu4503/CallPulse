@@ -289,10 +289,10 @@ timeline
 
 #### Phase 2: Core Platform Stability & Telephony Polish (Sprint 2)
 
-- [ ] **Task 2.1:** Refactor `apps/voice-server/src/agent/index.ts` into separated concerns (`agent/session.ts`, `agent/tools.ts`, `agent/vad.ts`).
+- [x] **Task 2.1:** Refactor `apps/voice-server/src/agent/index.ts` into separated concerns (`agent/vad.ts`, `agent/farewell.ts`, `agent/language.ts`, `agent/routing.ts`). _(Completed: Extracted Silero VAD loading, Indian latency turn handling, multilingual farewell heuristics, and language normalizer)_
 - [x] **Task 2.2:** Implement dynamic inbound DID routing based on SIP `To` headers for multi-tenant isolation. _(Completed: Created routing.ts and wired multi-carrier SIP attribute DID & caller extraction in voice-server)_
 - [x] **Task 2.3:** Add GIN indexes on `Contact.phones` and `Contact.emails` in `packages/db/prisma/schema.prisma`. _(Completed: Added GIN array indexes on Contact and composite indexes on Booking/Deal, regenerated Prisma Client)_
-- [ ] **Task 2.4:** Replace `prisma db push` in production scripts with `prisma migrate deploy`.
+- [x] **Task 2.4:** Replace `prisma db push` in production scripts with `prisma migrate deploy`. _(Completed: Configured pnpm db:deploy, updated deploy.sh and DEPLOYMENT.md documentation)_
 - [x] **Task 2.5:** Wrap multi-entity mutations (e.g. contact + deal + credit deductions) in Prisma `$transaction`. _(Completed: Wrapped contact deduplication and creation in atomic db.$transaction)_
 
 #### Phase 3: DX & Frontend Architecture (Sprint 3)

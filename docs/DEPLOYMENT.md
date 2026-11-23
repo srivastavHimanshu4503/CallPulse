@@ -62,10 +62,10 @@ Config-only changes (compose files, deploy script, secrets) need **no image rebu
 
 ## Database schema changes
 
-No Prisma migrations dir — we use `db push`. After deploying a schema change:
+Production uses version-controlled Prisma migrations via `prisma migrate deploy` (`pnpm db:deploy`). After deploying a schema change:
 
 ```bash
-aws ssm send-command ... --parameters 'commands=["cd /app/indiAi","docker compose -f docker-compose.yml -f docker-compose.deploy.yml exec -T api pnpm --filter @antigravity/db exec prisma db push --skip-generate"]'
+aws ssm send-command ... --parameters 'commands=["cd /app/indiAi","docker compose -f docker-compose.yml -f docker-compose.deploy.yml exec -T api pnpm db:deploy"]'
 ```
 
 ## Why manual? (temporary)
