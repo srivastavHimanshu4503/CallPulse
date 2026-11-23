@@ -305,7 +305,7 @@ timeline
 #### Phase 4: Enterprise Scale & Compliance (Sprint 4)
 
 - [x] **Task 4.1:** Migrate dev EC2 single-box setup to AWS ECS Fargate or EKS with auto-scaling groups. _(Completed: Modernized ComputeStack with ApplicationLoadBalancedFargateService, least-privilege IAM task/execution roles, CloudWatch logging & alarms, and horizontal auto-scaling targets for CPU/Memory and request-surge tracking)_
-- [ ] **Task 4.2:** Configure S3 lifecycle expiration policies for call audio recordings.
+- [x] **Task 4.2:** Configure S3 lifecycle expiration policies for call audio recordings. _(Completed: Implemented automated DPDP-compliant S3 lifecycle rules with 30-day Glacier transition, 90-day automatic purge, permanent retention tag filters, and 1-day multipart abort)_
 - [ ] **Task 4.3:** Add automatic consent disclaimer announcement to inbound voice calls for DPDP Act compliance.
 - [ ] **Task 4.4:** Introduce AWS KMS-based key encryption and rotation for OAuth tokens.
 

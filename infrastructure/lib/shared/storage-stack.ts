@@ -34,19 +34,33 @@ export class StorageStack extends cdk.Stack {
       ],
       lifecycleRules: [
         {
-          id: "ArchiveRecordingLifecycle",
+          id: "StandardCallRecordingLifecycle",
           enabled: true,
+          abortIncompleteMultipartUploadAfter: cdk.Duration.days(1),
           transitions: [
             {
-              storageClass: s3.StorageClass.INFREQUENT_ACCESS,
+              storageClass: s3.StorageClass.GLACIER,
+              transitionAfter: cdk.Duration.days(30),
+            },
+          ],
+          expiration: cdk.Duration.days(90),
+          noncurrentVersionExpiration: cdk.Duration.days(30),
+        },
+        {
+          id: "PermanentRetainedRecordingLifecycle",
+          enabled: true,
+          tagFilters: { retention: "permanent" },
+          transitions: [
+            {
+              storageClass: s3.StorageClass.GLACIER,
               transitionAfter: cdk.Duration.days(30),
             },
             {
-              storageClass: s3.StorageClass.GLACIER,
-              transitionAfter: cdk.Duration.days(90),
+              storageClass: s3.StorageClass.DEEP_ARCHIVE,
+              transitionAfter: cdk.Duration.days(180),
             },
           ],
-          expiration: cdk.Duration.days(365),
+          noncurrentVersionExpiration: cdk.Duration.days(90),
         },
       ],
     });
