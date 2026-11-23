@@ -1,6 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "JWT_SECRET",
+    "JWT_REFRESH_SECRET",
+    "CALENDAR_TOKEN_ENCRYPTION_KEY",
+    "TYPESENSE_HOST",
+    "TYPESENSE_PORT",
+    "TYPESENSE_PROTOCOL",
+    "TYPESENSE_API_KEY",
+    "NODE_ENV"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

@@ -1,8 +1,10 @@
+import path from "node:path";
 import { z } from "zod";
 import dotenv from "dotenv";
 
-// Load local environment variables from file
+// Load local environment variables from file (checking local first, then monorepo root)
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(4000),

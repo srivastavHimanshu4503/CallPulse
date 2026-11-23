@@ -25,7 +25,9 @@ jobs:
       - uses: pnpm/action-setup@v4
 
       - name: Configure environment variables
-        run: cp .env.example .env
+        run: |
+          cp .env.example .env
+          cp .env.example apps/api/.env
 
       - run: pnpm install --frozen-lockfile
 
