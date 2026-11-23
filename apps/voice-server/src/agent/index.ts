@@ -28,6 +28,7 @@ import { getAgentConfigProvider } from "../agent-config/index.js";
 import { TwilioTelephonyProvider } from "../telephony/twilio/provider.js";
 import { resolveLanguageCodes, type VoiceKey } from "../voices/config.js";
 import { startCallEgress, stopCallEgress } from "../recording/egress.js";
+import { resolveDialedNumber, resolveCallerNumber } from "./routing.js";
 
 const log = createLogger("agent");
 // This module runs inside LiveKit's child job processes — init Sentry here
@@ -190,8 +191,8 @@ export default defineAgent({
       await connectPromise;
       const participant = await ctx.waitForParticipant();
       const attrs = (participant.attributes ?? {}) as Record<string, string>;
-      const dialed = attrs["sip.trunkPhoneNumber"] || dialedNumber;
-      if (attrs["sip.phoneNumber"]) callerNumber = attrs["sip.phoneNumber"];
+      const dialed = resolveDialedNumber(attrs, dialedNumber);
+      callerNumber = resolveCallerNumber(attrs, callerNumber, roomHint.callerId);
       sipParticipantIdentity = participant.identity || null;
 
       if (!dialed) {

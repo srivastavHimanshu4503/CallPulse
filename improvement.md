@@ -284,16 +284,16 @@ timeline
 - [x] **Task 1.1:** Replace `InMemoryQueue` in `apps/post-call-server` with Redis-backed BullMQ or AWS SQS with DLQ support. _(Completed: Implemented BullMqQueue with Redis persistence, automatic fallback to InMemoryQueue, Docker Compose Redis service, and environment configuration)_
 - [x] **Task 1.2:** Resolve the ESM module resolution issue in `packages/utils/src/crypto.test.ts`. _(Completed: Configured compiled test runner target in package.json, 6/6 tests passing)_
 - [x] **Task 1.3:** Add `"test"` scripts to root `package.json` and `apps/api/package.json`; wire full test execution into `.github/workflows/pr-checks.yml`. _(Completed: Added tsx test runner for apps/api with 38/38 tests passing, monorepo test pipeline enabled)_
-- [ ] **Task 1.4:** Replace `cors({ origin: "*" })` in `apps/api/src/app.ts` with explicit domain configuration.
-- [ ] **Task 1.5:** Add rate limiting to auth endpoints using `express-rate-limit`.
+- [x] **Task 1.4:** Replace `cors({ origin: "*" })` in `apps/api/src/app.ts` with explicit domain configuration. _(Completed: Added environment-driven origin whitelist and strict headers)_
+- [x] **Task 1.5:** Add rate limiting to auth endpoints using `express-rate-limit`. _(Completed: Implemented authRateLimiter and passwordResetRateLimiter middleware on auth router)_
 
 #### Phase 2: Core Platform Stability & Telephony Polish (Sprint 2)
 
 - [ ] **Task 2.1:** Refactor `apps/voice-server/src/agent/index.ts` into separated concerns (`agent/session.ts`, `agent/tools.ts`, `agent/vad.ts`).
-- [ ] **Task 2.2:** Implement dynamic inbound DID routing based on SIP `To` headers for multi-tenant isolation.
-- [ ] **Task 2.3:** Add GIN indexes on `Contact.phones` and `Contact.emails` in `packages/db/prisma/schema.prisma`.
+- [x] **Task 2.2:** Implement dynamic inbound DID routing based on SIP `To` headers for multi-tenant isolation. _(Completed: Created routing.ts and wired multi-carrier SIP attribute DID & caller extraction in voice-server)_
+- [x] **Task 2.3:** Add GIN indexes on `Contact.phones` and `Contact.emails` in `packages/db/prisma/schema.prisma`. _(Completed: Added GIN array indexes on Contact and composite indexes on Booking/Deal, regenerated Prisma Client)_
 - [ ] **Task 2.4:** Replace `prisma db push` in production scripts with `prisma migrate deploy`.
-- [ ] **Task 2.5:** Wrap multi-entity mutations (e.g. contact + deal + credit deductions) in Prisma `$transaction`.
+- [x] **Task 2.5:** Wrap multi-entity mutations (e.g. contact + deal + credit deductions) in Prisma `$transaction`. _(Completed: Wrapped contact deduplication and creation in atomic db.$transaction)_
 
 #### Phase 3: DX & Frontend Architecture (Sprint 3)
 

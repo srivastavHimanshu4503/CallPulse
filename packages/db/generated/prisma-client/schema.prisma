@@ -261,6 +261,10 @@ model Contact {
   communicationLogs CommunicationLog[]
   chatSessions      ChatSession[]
 
+  @@index([tenantId])
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@index([phones], type: Gin)
+  @@index([emails], type: Gin)
   @@map("contacts")
 }
 
@@ -381,6 +385,7 @@ model Deal {
   @@index([tenantId, pipelineId, stage])
   @@index([tenantId, nextFollowUpAt])
   @@index([tenantId, contactId, actualCloseDate])
+  @@index([tenantId, createdAt(sort: Desc)])
   @@map("deals")
 }
 
@@ -511,6 +516,9 @@ model Booking {
   assignee   User?      @relation(fields: [assigneeId], references: [id])
   activities Activity[]
 
+  @@index([tenantId, startTime])
+  @@index([contactId, startTime])
+  @@index([tenantId, status])
   @@map("bookings")
 }
 

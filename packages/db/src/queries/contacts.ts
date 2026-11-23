@@ -12,22 +12,24 @@ export const findOrCreateContactByPhone = async (input: {
   firstName?: string;
   lastName?: string;
 }): Promise<Contact> => {
-  const existing = await db.contact.findFirst({
-    where: {
-      tenantId: input.tenantId,
-      phones: { has: input.phone },
-      deletedAt: null,
-    },
-  });
-  if (existing) return existing;
+  return db.$transaction(async (tx) => {
+    const existing = await tx.contact.findFirst({
+      where: {
+        tenantId: input.tenantId,
+        phones: { has: input.phone },
+        deletedAt: null,
+      },
+    });
+    if (existing) return existing;
 
-  return db.contact.create({
-    data: {
-      tenantId: input.tenantId,
-      firstName: input.firstName ?? "Unknown",
-      lastName: input.lastName ?? "Caller",
-      phones: [input.phone],
-      emails: [],
-    },
+    return tx.contact.create({
+      data: {
+        tenantId: input.tenantId,
+        firstName: input.firstName ?? "Unknown",
+        lastName: input.lastName ?? "Caller",
+        phones: [input.phone],
+        emails: [],
+      },
+    });
   });
 };

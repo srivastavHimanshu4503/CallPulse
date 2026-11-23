@@ -18,7 +18,33 @@ import { calendarRouter } from "./modules/calendar/calendar.router.js";
 const app: Express = express();
 
 // Standard express middleware configurations
-app.use(cors({ origin: "*" })); // Configure strictly in production
+const defaultAllowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  "https://app.deskbuddy.in",
+  "https://deskbuddy.in",
+];
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+  : defaultAllowedOrigins;
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, server-to-server, curl)
+      if (!origin) return callback(null, true);
+      if (process.env.NODE_ENV !== "production" || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS origin "${origin}" not allowed by policy`));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "x-post-call-secret"],
+  }),
+);
 app.use(requestLoggerMiddleware);
 
 // Razorpay webhook needs the RAW request bytes for signature verification,
